@@ -13,6 +13,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import server.team33.exception.bussiness.BusinessLogicException;
@@ -23,21 +24,20 @@ import javax.validation.ConstraintViolationException;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionController {
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse methodArgumentNotValidException(
             MethodArgumentNotValidException e ){
-        ErrorResponse response = ErrorResponse.of(e.getBindingResult());
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+       return ErrorResponse.of(e.getBindingResult());
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> constraintViolationException(
-            ConstraintViolationException e ){
-        ErrorResponse response = ErrorResponse.of(e.getConstraintViolations());
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponse> constraintViolationException(
+//            ConstraintViolationException e ){
+//        ErrorResponse response = ErrorResponse.of(e.getConstraintViolations());
+//
+//        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> businessLogicException( BusinessLogicException e ){
