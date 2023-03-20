@@ -15,7 +15,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Setter
 @Getter
 @NoArgsConstructor
 @Entity
@@ -31,37 +31,26 @@ public class User extends Auditable implements Principal {
 
     @Column(name = "DISPALY_NAME", length = 20)
     private String displayName;
-
-    @Column()
     private String password;
-
-    @Column()
     private String address;
     @Column(name = "Datail_ADDRESS")
-
     private String detailAddress;
-
     @Column(name = "REAL_NAME")
     private String realName;
-
     @Column(unique = true)
     private String phone;
-
     @Column(name = "OAUTH_ID")
     private String oauthId;
-
     private String provider;
-
     @Column(name = "PROVIDER_ID")
     private String providerId;
-
     private String sid;
 
     @Enumerated(EnumType.STRING)
     private UserRoles roles;
 
     @Enumerated(value = EnumType.STRING)
-    private UserStatus userStatus = USER_ACTIVE;
+    private UserStatus userStatus;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Cart cart;
@@ -113,6 +102,13 @@ public class User extends Auditable implements Principal {
     }
 
 
+    public void applyEncyrptPassword(String encryptedPwd) {
+        this.password = encryptedPwd;
+    }
+
+    public void addCart(Cart cart) {
+        this.cart = cart;
+    }
 }
 
 
