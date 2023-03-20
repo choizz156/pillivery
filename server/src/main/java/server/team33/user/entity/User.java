@@ -1,9 +1,13 @@
 package server.team33.user.entity;
 
+import static server.team33.user.entity.UserRoles.USER;
+import static server.team33.user.entity.UserStatus.USER_ACTIVE;
+
 import lombok.*;
 import server.team33.audit.Auditable;
 import server.team33.cart.entity.Cart;
 import server.team33.order.entity.Order;
+import server.team33.user.dto.UserPostDto;
 import server.team33.wish.entity.Wish;
 
 import javax.persistence.*;
@@ -13,14 +17,10 @@ import java.util.List;
 
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "USERS")
-@NoArgsConstructor
-@Builder
-@AllArgsConstructor
 public class User extends Auditable implements Principal {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,33 +57,56 @@ public class User extends Auditable implements Principal {
 
     private String sid;
 
-//    @Column(name = "BILLING_KEY")
-//    private String BillingKey;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private UserRoles roles;
 
     @Enumerated(value = EnumType.STRING)
-    private UserStatus userStatus = UserStatus.USER_ACTIVE;
+    private UserStatus userStatus = USER_ACTIVE;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Cart cart;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL) // user가 삭제될 경우 연관관계 wish 도 같이 삭제되도록 설정.
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Wish> wishList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
-        //    @OneToMany(mappedBy = "user")
-//    private List<Review> reviews = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "user")
-//    private List<Talk> talks = new ArrayList<>();
-//
-//
-//    @OneToMany(mappedBy = "user")
-//    private List<TalkComment> talkComments = new ArrayList<>();
+    @Builder
+    private User(   String email,
+                    String displayName,
+                    String password,
+                    String address,
+                    String detailAddress,
+                    String realName,
+                    String phone,
+                    UserRoles roles,
+                    UserStatus userStatus
+    ) {
+        this.email = email;
+        this.displayName = displayName;
+        this.password = password;
+        this.address = address;
+        this.detailAddress = detailAddress;
+        this.realName = realName;
+        this.phone = phone;
+        this.roles = roles;
+        this.userStatus = userStatus;
+    }
+
+    public static User createUser(UserPostDto userDto) {
+        return User.builder().email(userDto.getEmail())
+            .displayName(userDto.getDisplayName())
+            .password(userDto.getPassword())
+            .address(userDto.getAddress())
+            .detailAddress(userDto.getDetailAddress())
+            .realName(userDto.getRealName())
+            .phone(userDto.getPhone())
+            .roles(USER)
+            .userStatus(USER_ACTIVE)
+            .build();
+    }
+
     @Override
     public String getName(){
         return getEmail();
