@@ -44,13 +44,8 @@ public class Cart {
 
     @OneToOne
     private User user;
-
     @OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST)
     List<ItemCart> itemCarts = new ArrayList<>();
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public void addItemCart(ItemCart itemCart) {
         this.itemCarts.add(itemCart);
@@ -62,7 +57,7 @@ public class Cart {
     public static Cart createCart(User user) {
         Cart cart = new Cart();
         cart.user = user;
-        user.setCart(cart);
+        user.addCart(cart);
         return cart;
     }
 }
