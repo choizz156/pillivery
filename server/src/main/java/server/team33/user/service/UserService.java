@@ -1,5 +1,10 @@
 package server.team33.user.service;
 
+import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -14,50 +19,47 @@ import server.team33.exception.bussiness.BusinessLogicException;
 import server.team33.exception.bussiness.ExceptionCode;
 import server.team33.login.jwt.JwtToken;
 import server.team33.user.dto.UserDto;
+import server.team33.user.dto.UserPostDto;
 import server.team33.user.entity.AuthUtils;
 import server.team33.user.entity.User;
 import server.team33.user.entity.UserStatus;
 import server.team33.user.repository.UserRepository;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
-
-@Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Service
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthUtils authUtils;
     private final JwtToken jwtToken;
-    private final UserInfoFilter userInfoFilter;
+    //    private final UserInfoFilter userInfoFilter;
     private final CartRepository cartRepository;
 
-    public User joinUser( User user ){
-        userInfoFilter.filterUserInfo(user);
-        encodePassword(user);
-        createRole(user);
+    @Transactional
+    public User joinUser(UserPostDto userDto) {
+//        userInfoFilter.filterUserInfo(userDto);
+
+        User user = User.createUser(userDto);
+        String encryptedPwd = encryptPassword(userDto.getPassword());
+        user.applyEncyrptPassword(encryptedPwd);
         makeCart(user);
-        userRepository.save(user);
-        return user;
+
+        return userRepository.save(user);
     }
 
 
-    public User deleteUser(){
+    public User deleteUser() {
         User loginUser = getLoginUser();
         loginUser.setUserStatus(UserStatus.USER_WITHDRAWAL);
         return loginUser;
     }
 
-    public User updateUser( UserDto.Post userDto ){
+    public User updateUser(UserDto.Post userDto) {
 
-        userInfoFilter.filterUpdateUser(userDto);
+//        userInfoFilter.filterUpdateUser(userDto);
 
         User loginUser = getLoginUser();
         loginUser.setAddress(userDto.getAddress());
@@ -72,13 +74,13 @@ public class UserService {
         return loginUser;
     }
 
-    public User updateOAuthInfo( UserDto.PostMoreInfo userDto ){
+    public User updateOAuthInfo(UserDto.PostMoreInfo userDto) {
 
         Optional<User> loginUser = userRepository.findByEmail(userDto.getEmail());
 
-        if(loginUser.isPresent()){
+        if (loginUser.isPresent()) {
             makeCart(loginUser.get());
-            userInfoFilter.filterMoreInfo(userDto);
+//            userInfoFilter.filterMoreInfo(userDto);
             loginUser.get().setUserStatus(UserStatus.USER_ACTIVE);
             loginUser.get().setAddress(userDto.getAddress());
             loginUser.get().setDetailAddress(userDto.getDetailAddress());
@@ -93,7 +95,7 @@ public class UserService {
         throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
     }
 
-    public void giveToken( User user, HttpServletResponse response ) throws IOException{
+    public void giveToken(User user, HttpServletResponse response) throws IOException {
         String s = jwtToken.delegateAccessToken(user);
         String r = jwtToken.delegateRefreshToken(user);
         String accessToken = "Bearer " + s;
@@ -106,33 +108,31 @@ public class UserService {
         response.getWriter().write("추가 정보 기입 완료");
     }
 
-    private void createRole( User user ){
-        List<String> roles = authUtils.createRoles();
-        user.setRoles(roles);
-    }
-
-    private void encodePassword( User user ){
-        String encodedPwd = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPwd);
-    }
-
-    public User getLoginUser(){
+    public User getLoginUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String name = authentication.getName();
         log.info("회원 이메일 = {}", name);
         Optional<User> user = userRepository.findByEmail(name);
-        return user.orElseThrow(() -> new AuthenticationServiceException("Authentication exception"));
+        return user.orElseThrow(
+            () -> new AuthenticationServiceException("Authentication exception"));
     }
 
-    public Long getUserId(){
+    public Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String name = authentication.getName();
         Optional<User> user = userRepository.findByEmail(name);
-        if(user.isPresent()) return user.get().getUserId();
+        if (user.isPresent()) {
+            return user.get().getUserId();
+        }
         throw new AuthenticationServiceException("Authentication exception");
     }
-    private void makeCart( User user ){
+
+    private void makeCart(User user) {
         Cart cart = Cart.createCart(user);
         cartRepository.save(cart);
+    }
+
+    private String encryptPassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }
