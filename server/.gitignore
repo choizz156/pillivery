@@ -369,3 +369,5 @@ application.yml
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,macos,gradle
 
 application-auth.yml
+application-local.yml
+
