@@ -1,4 +1,6 @@
-package server.team33.login.handler;
+package server.team33.auth.security.handler;
+
+import static server.team33.auth.security.handler.ErrorResponser.errorToJson;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,6 @@ public class UserAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle( HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException ) throws IOException, ServletException{
         log.error("권한 없는 사용자");
-        UserAuthenticationEntryPoint.errorToJson(response, accessDeniedException, HttpStatus.FORBIDDEN);
+        errorToJson(response, accessDeniedException, HttpStatus.FORBIDDEN);
     }
 }

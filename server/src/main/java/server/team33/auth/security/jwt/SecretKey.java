@@ -1,4 +1,4 @@
-package server.team33.login.jwt;
+package server.team33.auth.security.jwt;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
@@ -16,18 +16,11 @@ public class SecretKey {
     @Value("${jwt.secret-key}")
     private String baseKey;
 
-    public Key getSecretKey( String baseKey ){
-        String encodeSecretKey = encodeSecretKey(baseKey);
-        return getKeyFromEncodedKey(encodeSecretKey);
-    }
-
-    private Key getKeyFromEncodedKey( String encodeSecretKey ){
-        byte[] keyBytes = Decoders.BASE64.decode(encodeSecretKey);
+    public Key getSecretKey(){
+        byte[] keyBytes = Decoders.BASE64.decode(getEncodeSecretKey(baseKey));
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
-    public String encodeSecretKey( String baseKey ){
+    private String getEncodeSecretKey( String baseKey ){
         return Encoders.BASE64.encode(baseKey.getBytes(StandardCharsets.UTF_8));
     }
-
 }
