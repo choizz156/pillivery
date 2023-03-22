@@ -1,12 +1,11 @@
 package server.team33.user.dto;
 
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class UserPostDto {
+public class UserPatchDto {
     @NotBlank
     @Email
     private String email;
@@ -22,4 +21,5 @@ public class UserPostDto {
     private String realName;
     @NotBlank
     private String phone;
+
 }
