@@ -1,4 +1,4 @@
-package server.team33.login.config;
+package server.team33.auth.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
