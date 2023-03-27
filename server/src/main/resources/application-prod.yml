@@ -1,0 +1,31 @@
+spring:
+  quartz:
+    scheduler-name: QuartzScheduler
+    properties:
+      org:
+        quartz:
+          threadPool:
+            threadCount: 5
+    job-store-type: memory
+
+
+  jpa:
+    hibernate:
+      ddl-auto:
+#    show-sql: true
+    properties:
+      hibernate:
+#        format_sql: true
+    defer-datasource-initialization: true
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: INFO
+
+server:
+  servlet:
+    encoding:
+      force-response: true
