@@ -6,9 +6,10 @@ import static server.team33.user.entity.UserStatus.USER_ACTIVE;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import server.team33.user.entity.User;
 
-
+@Slf4j
 @Getter
 public class OAuthAttributes {
 
@@ -26,20 +27,34 @@ public class OAuthAttributes {
         this.email = email;
     }
 
-//    public static OAuthAttributes of( String userNameAttributeName,
-//                                      Map<String, Object> attributes
-//    ) {
-//        return ofGoogle(userNameAttributeName, attributes);
-//    }
+    public static OAuthAttributes of( String registrationId,
+                                    String userNameAttributeName,
+                                      Map<String, Object> attributes
+    ) {
+        if ("kakao".equals(registrationId))
+            return ofKakao("id_kakao", attributes);
 
-    public static OAuthAttributes ofGoogle(String userNameAttributeName,
+        return ofGoogle(userNameAttributeName, attributes);
+    }
+
+    private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+
+        return OAuthAttributes.builder()
+            .nameAttributeKey(userNameAttributeName)
+            .name(String.valueOf(profile.get("nickname")))
+            .email((String) kakaoAccount.get("email"))
+            .build();
+    }
+
+    private static OAuthAttributes ofGoogle(String userNameAttributeName,
                                             Map<String, Object> attributes
     ) {
         return OAuthAttributes.builder()
             .name(String.valueOf(attributes.get("name")))
             .email(String.valueOf(attributes.get("email")))
-            .attributes(attributes)
-            .nameAttributeKey(userNameAttributeName)
+            .nameAttributeKey(userNameAttributeName + "google")
             .build();
     }
 
@@ -50,7 +65,6 @@ public class OAuthAttributes {
             .roles(USER)
             .oauthId(nameAttributeKey)
             .userStatus(USER_ACTIVE)
-            .password("임시 비밀번호 입니다.")
             .build();
     }
 }
