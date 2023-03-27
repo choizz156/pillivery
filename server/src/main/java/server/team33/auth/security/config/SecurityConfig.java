@@ -14,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import server.team33.auth.security.handler.UserAccessDeniedHandler;
 import server.team33.auth.security.handler.UserAuthFailureHandler;
-import server.team33.auth.security.handler.UserAuthSuccessHandler;
 import server.team33.auth.security.handler.UserAuthenticationEntryPoint;
+import server.team33.auth.security.handler.UserOAuthSuccessHandler;
 import server.team33.auth.security.jwt.JwtTokenProvider;
 import server.team33.user.service.Logout;
 
@@ -30,7 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.headers().frameOptions().sameOrigin()
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             .and()
 
             .formLogin().disable()
@@ -46,7 +46,7 @@ public class SecurityConfig {
 
             .and()
             .oauth2Login()
-            .successHandler(new UserAuthSuccessHandler(jwtTokenProvider))
+            .successHandler(new UserOAuthSuccessHandler(jwtTokenProvider))
             .failureHandler(new UserAuthFailureHandler())
 
             .and()
