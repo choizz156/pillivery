@@ -63,7 +63,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private void putAuthToSecurityContext(HttpServletRequest request) {
         try {
-            setAuthToSecurityContext(jwtTokenProvider.getJws(request));
+            setAuthToSecurityContext(jwtTokenProvider.getJwsBody(request));
         } catch (InsufficientAuthenticationException e1) {
             log.error(InsufficientAuthenticationException.class.getSimpleName());
         } catch (MalformedJwtException e1) {
