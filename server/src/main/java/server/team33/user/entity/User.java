@@ -21,9 +21,8 @@ import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import server.team33.audit.Auditable;
+import server.team33.audit.BaseEntity;
 import server.team33.cart.entity.Cart;
 import server.team33.order.entity.Order;
 import server.team33.user.dto.UserPatchDto;
@@ -32,12 +31,11 @@ import server.team33.user.dto.UserPostOauthDto;
 import server.team33.wish.entity.Wish;
 
 @Slf4j
-@Setter
 @Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "USERS")
-public class User extends Auditable {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,22 +53,19 @@ public class User extends Auditable {
     private String phone;
     @Column(name = "OAUTH_ID")
     private String oauthId;
-
     private String sid;
-
     @Enumerated(EnumType.STRING)
     private UserRoles roles;
-
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private Cart cart;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Wish> wishList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
     @Builder
@@ -131,6 +126,10 @@ public class User extends Auditable {
 
     public void withdrawal() {
         this.userStatus = UserStatus.USER_WITHDRAWAL;
+    }
+
+    public void addSid(String sid) {
+        this.sid = sid;
     }
 }
 
