@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,11 +42,12 @@ public class JwtTokenProvider {
         return request.getHeader("Authorization").replace("Bearer ", "");
     }
 
-    public String delegateAccessToken(User user) {
+    private String delegateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("username", user.getEmail());
         claims.put("roles", user.getRoles().name());
+        claims.put("id", user.getUserId());
 
         String subject = user.getEmail();
         Date expiration = getExpiration(accessTokenExpirationMinutes);
@@ -55,20 +57,25 @@ public class JwtTokenProvider {
     }
 
     private Date getExpiration(int tokenExpirationMinutes) {
-        Calendar instance = Calendar.getInstance();
+        final Calendar instance = Calendar.getInstance();
         instance.add(Calendar.MINUTE, tokenExpirationMinutes);
         return instance.getTime();
     }
 
-    public Map<String, Object> getJws(HttpServletRequest request) {
+    public Map<String, Object> getJwsBody(HttpServletRequest request) {
         String jws = extractJws(request);
         Key key = secretKey.getSecretKey();
         return getJws(jws, key).getBody();
     }
 
-    //jws의 클레임 추출
     public Jws<Claims> getJws(String jws, Key key) {
-        return Jwts.parserBuilder().setSigningKey(key) // 시크릿 키 이용해서 토큰 해석
-            .build().parseClaimsJws(jws); //클레임값 파싱
+        return Jwts.parserBuilder().setSigningKey(key)
+            .build().parseClaimsJws(jws);
+    }
+
+    public void addTokenInResponse(HttpServletResponse response, User user){
+        String accessToken = delegateAccessToken(user);
+        response.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("userId", String.valueOf(user.getUserId()));
     }
 }
