@@ -27,12 +27,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserInfoVerifier userInfoVerifier;
+    private final DuplicationVerifier duplicationVerifier;
     private final CartRepository cartRepository;
 
     @Transactional
     public User join(UserPostDto userDto) {
-        userInfoVerifier.checkDuplicationUserInfo(userDto);
+        duplicationVerifier.checkUserInfo(userDto);
 
         User user = User.createUser(userDto);
         String encryptedPwd = encryptPassword(userDto.getPassword());
@@ -51,7 +51,7 @@ public class UserService {
 
     @Transactional
     public User updateUser(UserPatchDto userDto) {
-        userInfoVerifier.checkDuplicationUserInfoOnUpdate(userDto);
+        duplicationVerifier.checkDuplicationOnUpdate(userDto);
 
         User loginUser = getLoginUser();
         loginUser.updateUserInfo(userDto);
@@ -64,7 +64,7 @@ public class UserService {
     @Transactional
     public User addOAuthInfo(UserPostOauthDto userDto) {
 
-        userInfoVerifier.checkDuplicationOauthAdditionalInfo(userDto);
+        duplicationVerifier.checkOauthAdditionalInfo(userDto);
 
         Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
         if (optionalUser.isPresent()) {

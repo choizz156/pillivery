@@ -15,22 +15,22 @@ import server.team33.user.repository.UserRepository;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-public class UserInfoVerifier {
+public class DuplicationVerifier {
 
     private final UserRepository userRepository;
 
-    public void checkDuplicationUserInfo(UserPostDto userDto) {
+    public void checkUserInfo(UserPostDto userDto) {
         checkExistEmail(userDto.getEmail());
         checkExistDisplayName(userDto.getDisplayName());
         checkExistPhoneNum(userDto.getPhone());
     }
 
-    public void checkDuplicationOauthAdditionalInfo(UserPostOauthDto userDto) {
+    public void checkOauthAdditionalInfo(UserPostOauthDto userDto) {
         checkExistDisplayName(userDto.getDisplayName());
         checkExistPhoneNum(userDto.getPhone());
     }
 
-    public void checkDuplicationUserInfoOnUpdate(UserPatchDto userDto) {
+    public void checkDuplicationOnUpdate(UserPatchDto userDto) {
         Optional<User> loginUser = userRepository.findByEmail(userDto.getEmail());
         if (loginUser.isPresent()) {
             checkExistPhoneOnUpdate(loginUser.get(), userDto);
