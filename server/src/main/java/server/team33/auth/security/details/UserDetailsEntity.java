@@ -66,6 +66,6 @@ public class UserDetailsEntity implements UserDetails, OAuth2User {
 
     @Override
     public String getName() {
-        return "";
+        return (String) attributes.get("email");
     }
 }
