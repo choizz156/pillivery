@@ -14,10 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import server.team33.auth.security.details.UserDetailsEntity;
 import server.team33.auth.security.dto.LoginDto;
 import server.team33.auth.security.jwt.JwtTokenProvider;
-import server.team33.user.entity.User;
 import server.team33.util.JsonMapper;
 
 @RequiredArgsConstructor
@@ -49,25 +47,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     ) throws ServletException, IOException {
         log.info("로그인 성공");
 
-        UserDetailsEntity principal = (UserDetailsEntity) authResult.getPrincipal();
-        User user = principal.getUser();
-
-        if (isGeneralLogin(response, user)) {
-            return;
-        }
-
         successOAuth(request, response, authResult);
-    }
-
-    private boolean isGeneralLogin(HttpServletResponse response, User user) throws IOException {
-        if (user.getDisplayName() != null) {
-            String accessToken = jwtTokenProvider.delegateAccessToken(user);
-            response.setHeader("Authorization", "Bearer " + accessToken);
-            response.setHeader("userId", String.valueOf(user.getUserId()));
-            response.getWriter().write("로그인완료");
-            return true;
-        }
-        return false;
     }
 
     private void successOAuth(HttpServletRequest request, HttpServletResponse response,
