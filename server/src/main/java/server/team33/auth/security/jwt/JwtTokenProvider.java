@@ -34,20 +34,43 @@ public class JwtTokenProvider {
 
     public String createAccessToken(Map<String, Object> claims, String subject, Date expiration,
         Key key) {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setExpiration(expiration)
-            .setIssuedAt(Calendar.getInstance().getTime()).signWith(key).compact();
+        return Jwts.builder()
+            .setClaims(claims)
+            .setSubject(subject)
+            .setExpiration(expiration)
+            .setIssuedAt(Calendar.getInstance().getTime())
+            .signWith(key)
+            .compact();
     }
 
     public String extractJws(HttpServletRequest request) {
         return request.getHeader("Authorization").replace("Bearer ", "");
     }
 
-    private String delegateAccessToken(User user) {
+    public Map<String, Object> getJwsBody(HttpServletRequest request) {
+        String jws = extractJws(request);
+        Key key = secretKey.getSecretKey();
+        return getJws(jws, key).getBody();
+    }
+
+    public Jws<Claims> getJws(String jws, Key key) {
+        return Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(jws);
+    }
+
+    public void addTokenInResponse(HttpServletResponse response, User user){
+        String accessToken = delegateAccessToken(user);
+        response.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("userId", String.valueOf(user.getUserId()));
+    }
+
+    public String delegateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("username", user.getEmail());
         claims.put("roles", user.getRoles().name());
-        claims.put("id", user.getUserId());
 
         String subject = user.getEmail();
         Date expiration = getExpiration(accessTokenExpirationMinutes);
@@ -60,22 +83,5 @@ public class JwtTokenProvider {
         final Calendar instance = Calendar.getInstance();
         instance.add(Calendar.MINUTE, tokenExpirationMinutes);
         return instance.getTime();
-    }
-
-    public Map<String, Object> getJwsBody(HttpServletRequest request) {
-        String jws = extractJws(request);
-        Key key = secretKey.getSecretKey();
-        return getJws(jws, key).getBody();
-    }
-
-    public Jws<Claims> getJws(String jws, Key key) {
-        return Jwts.parserBuilder().setSigningKey(key)
-            .build().parseClaimsJws(jws);
-    }
-
-    public void addTokenInResponse(HttpServletResponse response, User user){
-        String accessToken = delegateAccessToken(user);
-        response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("userId", String.valueOf(user.getUserId()));
     }
 }
