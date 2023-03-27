@@ -19,7 +19,6 @@ public class CorsConfig {
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addExposedHeader("Authorization");
-        corsConfiguration.addExposedHeader("Refresh");
         corsConfiguration.addExposedHeader("userId");
 
         source.registerCorsConfiguration("/**",corsConfiguration);
