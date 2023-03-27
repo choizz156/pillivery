@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    group:
+      prod:
+        - auth
+        - prod
