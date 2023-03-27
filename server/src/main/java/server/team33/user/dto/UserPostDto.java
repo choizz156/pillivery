@@ -3,10 +3,14 @@ package server.team33.user.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UserPostDto {
+
     @NotBlank
     @Email
     private String email;
@@ -22,4 +26,21 @@ public class UserPostDto {
     private String realName;
     @NotBlank
     private String phone;
+
+    @Builder
+    public UserPostDto(String email,
+                        String password,
+                        String displayName,
+                        String city,
+                        String detailAddress,
+                        String realName, String phone
+    ) {
+        this.email = email;
+        this.password = password;
+        this.displayName = displayName;
+        this.city = city;
+        this.detailAddress = detailAddress;
+        this.realName = realName;
+        this.phone = phone;
+    }
 }
