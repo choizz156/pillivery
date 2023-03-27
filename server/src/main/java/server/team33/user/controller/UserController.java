@@ -37,7 +37,8 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private static final String JOIN_COMPLETE = "회원 가입 완료";
-    private static final String LOGOUT_COMPLETE  = "로그아웃 완료";
+    private static final String LOGOUT_COMPLETE = "로그아웃 완료";
+    private static final String OAUTH_JOIN_COMPLETE = "소셜 회원 추가 정보 기입 완료";
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,10 +50,12 @@ public class UserController {
     @PostMapping("/more-info")
     @ResponseStatus(HttpStatus.CREATED)
     public void moreInfo(@Valid @RequestBody UserPostOauthDto userDto,
-                            HttpServletResponse response
+        HttpServletResponse response
     ) throws IOException {
         User user = userService.addOAuthInfo(userDto);
-        giveToken(user, response);
+        jwtTokenProvider.addTokenInResponse(response, user);
+
+        response.getWriter().write(OAUTH_JOIN_COMPLETE);
     }
 
     @PatchMapping
@@ -80,15 +83,6 @@ public class UserController {
         logout.doLogout(request);
         return new SingleResponseDto<>(user.getUserStatus().name());
     }
-
-    private void giveToken(User user, HttpServletResponse response) throws IOException {
-        String s = jwtTokenProvider.delegateAccessToken(user);
-        String accessToken = "Bearer " + s;
-
-        response.setHeader("Authorization", accessToken);
-        response.setHeader("userId", String.valueOf(user.getUserId()));
-
-        response.getWriter().write("추가 정보 기입 완료");
-    }
 }
+
 
