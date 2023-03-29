@@ -28,12 +28,13 @@ public class UserPostDto {
     private String phone;
 
     @Builder
-    public UserPostDto(String email,
-                        String password,
-                        String displayName,
-                        String city,
-                        String detailAddress,
-                        String realName, String phone
+    public UserPostDto(
+        String email,
+        String password,
+        String displayName,
+        String city,
+        String detailAddress,
+        String realName, String phone
     ) {
         this.email = email;
         this.password = password;

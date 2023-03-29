@@ -2,9 +2,12 @@ package server.team33.domain.user.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UserPatchDto {
     @NotBlank
     @Email
@@ -22,4 +25,22 @@ public class UserPatchDto {
     @NotBlank
     private String phone;
 
+    @Builder
+    public UserPatchDto(
+        String email,
+        String password,
+        String displayName,
+        String city,
+        String detailAddress,
+        String realName,
+        String phone
+    ) {
+        this.email = email;
+        this.password = password;
+        this.displayName = displayName;
+        this.city = city;
+        this.detailAddress = detailAddress;
+        this.realName = realName;
+        this.phone = phone;
+    }
 }
