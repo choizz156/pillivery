@@ -106,10 +106,11 @@ public class UserOAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         HttpServletResponse response,
         UserDetailsEntity principalDetails
     ) throws IOException {
-        getRedirectStrategy().sendRedirect(
-            request,
-            response,
-            createInfoURI(principalDetails).toString()
-        );
+        getRedirectStrategy()
+            .sendRedirect(
+                request,
+                response,
+                createInfoURI(principalDetails).toString()
+            );
     }
 }
