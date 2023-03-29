@@ -13,10 +13,15 @@ public class ErrorResponser {
     private ErrorResponser() {
     }
 
-    public static void errorToJson(HttpServletResponse response, Exception exception,
-        HttpStatus status) throws IOException {
+    public static void errorToJson(
+        HttpServletResponse response,
+        Exception exception,
+        HttpStatus status
+    ) throws IOException {
+
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(status.value());
+
         ErrorResponse exceptions = ErrorResponse.builder()
             .status(status.value()).message(exception.getMessage()).build();
 
