@@ -7,16 +7,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import server.team33.global.auth.security.jwt.JwtTokenProvider;
 import server.team33.domain.cart.entity.Cart;
 import server.team33.domain.cart.repository.CartRepository;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
 import server.team33.domain.user.dto.UserPatchDto;
 import server.team33.domain.user.dto.UserPostDto;
 import server.team33.domain.user.dto.UserPostOauthDto;
 import server.team33.domain.user.entity.User;
 import server.team33.domain.user.repository.UserRepository;
+import server.team33.global.exception.bussiness.BusinessLogicException;
+import server.team33.global.exception.bussiness.ExceptionCode;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,12 +25,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
     private final DuplicationVerifier duplicationVerifier;
     private final CartRepository cartRepository;
 
     @Transactional
-    public User join(UserPostDto userDto) {
+    public void join(UserPostDto userDto) {
         duplicationVerifier.checkUserInfo(userDto);
 
         User user = User.createUser(userDto);
@@ -39,7 +37,7 @@ public class UserService {
         user.applyEncryptPassword(encryptedPwd);
         makeCart(user);
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Transactional
@@ -72,6 +70,7 @@ public class UserService {
             optionalUser.get().addAdditionalOauthUserInfo(userDto);
             return optionalUser.get();
         }
+
         throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
     }
 
@@ -82,10 +81,7 @@ public class UserService {
             .getPrincipal();
 
         Optional<User> userOptional = userRepository.findByEmail(principal);
-        if (userOptional.isPresent()){
-            return userOptional.get();
-        }
-        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        return userOptional.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     private void makeCart(User user) {
