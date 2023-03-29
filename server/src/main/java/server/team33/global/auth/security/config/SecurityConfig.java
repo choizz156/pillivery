@@ -26,6 +26,10 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final Logout logout;
 
+    private static final String USER_URL = "/users/**";
+    private static final String CART_URL = "/carts/**";
+    private static final String WISHS_URL = "/wishes/**";
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.headers().frameOptions().sameOrigin()
@@ -51,15 +55,15 @@ public class SecurityConfig {
 
             .and()
             .authorizeHttpRequests(authorize -> authorize
-                .antMatchers(HttpMethod.GET, "/users/**").hasRole("USER")
-                .antMatchers(HttpMethod.PATCH, "/users/**").hasRole("USER")
-                .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("USER")
-                .antMatchers(HttpMethod.GET, "/carts").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/carts/**").hasRole("USER")
-                .antMatchers(HttpMethod.DELETE, "/carts/**").hasRole("USER")
-                .antMatchers(HttpMethod.GET, "/wishes/**").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/wishes/**").hasRole("USER")
-                .antMatchers("/wishes/**").hasRole("USER")
+                .antMatchers(HttpMethod.GET, USER_URL).hasRole("USER")
+                .antMatchers(HttpMethod.PATCH, USER_URL).hasRole("USER")
+                .antMatchers(HttpMethod.DELETE, USER_URL).hasRole("USER")
+                .antMatchers(HttpMethod.GET, CART_URL).hasRole("USER")
+                .antMatchers(HttpMethod.POST, CART_URL).hasRole("USER")
+                .antMatchers(HttpMethod.DELETE, CART_URL).hasRole("USER")
+                .antMatchers(HttpMethod.GET, WISHS_URL).hasRole("USER")
+                .antMatchers(HttpMethod.POST, WISHS_URL).hasRole("USER")
+                .antMatchers(WISHS_URL).hasRole("USER")
                 .antMatchers("/orders/**").hasRole("USER")
                 .antMatchers("/reviews/**").hasRole("USER")
                 .anyRequest().permitAll());
