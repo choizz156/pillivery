@@ -49,7 +49,8 @@ public class UserController {
 
     @PostMapping("/more-info")
     @ResponseStatus(HttpStatus.CREATED)
-    public void moreInfo(@Valid @RequestBody UserPostOauthDto userDto,
+    public void moreInfo(
+        @Valid @RequestBody UserPostOauthDto userDto,
         HttpServletResponse response
     ) throws IOException {
         User user = userService.addOAuthInfo(userDto);
@@ -72,12 +73,14 @@ public class UserController {
     }
 
     @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public SingleResponseDto<String> handleLogout(HttpServletRequest request) {
         logout.doLogout(request);
         return new SingleResponseDto<>(LOGOUT_COMPLETE);
     }
 
     @DeleteMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public SingleResponseDto<String> deleteUser(HttpServletRequest request) {
         User user = userService.deleteUser();
         logout.doLogout(request);
