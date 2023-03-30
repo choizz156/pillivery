@@ -19,13 +19,10 @@ public class ApiTest {
 
     @LocalServerPort
     private int port;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -35,11 +32,11 @@ public class ApiTest {
     }
 
     @AfterEach
-    void afterEach(){
+    void afterEach() {
         userRepository.deleteAll();
     }
 
-    protected String getToken(){
+    protected String getToken() {
         User loginUser = userService.getLoginUser();
         return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
     }
