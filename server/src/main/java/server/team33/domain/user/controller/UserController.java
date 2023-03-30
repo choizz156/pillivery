@@ -86,8 +86,6 @@ public class UserController {
         logout.doLogout(request);
         return new SingleResponseDto<>(user.getUserStatus().name());
     }
-
-
 }
 
 

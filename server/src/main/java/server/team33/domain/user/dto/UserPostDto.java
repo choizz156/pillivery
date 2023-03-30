@@ -34,7 +34,8 @@ public class UserPostDto {
         String displayName,
         String city,
         String detailAddress,
-        String realName, String phone
+        String realName,
+        String phone
     ) {
         this.email = email;
         this.password = password;
