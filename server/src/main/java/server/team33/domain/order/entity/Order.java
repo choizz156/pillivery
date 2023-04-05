@@ -25,7 +25,6 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private String address;
 
-    @Column
     private String detailAddress;
 
     @Column(nullable = false)
@@ -34,21 +33,19 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private boolean subscription;
 
-    @Column
     @Setter
     private Integer totalItems; // 주문에 포함된 아이템 종류
 
-    @Column
     @Setter
     private Integer totalPrice;
 
-    @Column
     @Setter
     private Integer totalDiscountPrice;
 
-    @Column
     @Setter
     private Integer expectPrice; // 실제 결제 금액 (정가 - 할인가)
+
+    private String sid;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
@@ -62,6 +59,11 @@ public class Order extends BaseEntity {
 
     @Transient
     private int totalQuantity;
+
+    public void addSid(String sid) {
+        this.sid = sid;
+    }
+
     public Order( Order origin ){
 
         this.name = origin.getName();

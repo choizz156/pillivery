@@ -1,22 +1,21 @@
 package server.team33.domain.order.service;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
 import server.team33.domain.order.entity.ItemOrder;
+import server.team33.domain.order.entity.Order;
 import server.team33.domain.order.entity.OrderStatus;
+import server.team33.domain.order.reposiroty.ItemOrderRepository;
 import server.team33.domain.order.reposiroty.OrderRepository;
 import server.team33.domain.user.entity.User;
-import server.team33.domain.order.entity.Order;
-import server.team33.domain.order.reposiroty.ItemOrderRepository;
-
-import java.util.List;
-import java.util.Optional;
+import server.team33.global.exception.bussiness.BusinessLogicException;
+import server.team33.global.exception.bussiness.ExceptionCode;
 
 @Service
 @Transactional
@@ -43,7 +42,7 @@ public class OrderService {
         order.setOrderStatus(OrderStatus.ORDER_REQUEST);
         order.setTotalQuantity(itemOrderService.countQuantity(itemOrders));
 
-        for(ItemOrder itemOrder : itemOrders) {
+        for (ItemOrder itemOrder : itemOrders) {
             itemOrder.setOrder(order);
             itemOrderService.plusSales(itemOrder); // 판매량 누적
             itemOrderRepository.save(itemOrder);
@@ -52,7 +51,6 @@ public class OrderService {
         orderRepository.save(order);
         return order;
     }
-
 
     //    public Order createOrder(Order order) {
 //        return orderRepository.save(order);
@@ -70,56 +68,66 @@ public class OrderService {
         return findOrder;
     }
 
+    public Order findVerifiedOrder(long orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        Order findOrder = optionalOrder.orElseThrow(
+            () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
+        return findOrder;
+    }
+
+
     public Page<Order> findOrders(User user, int page, boolean subscription) {
-        if(subscription) {
+        if (subscription) {
             Page<Order> findAllOrder = orderRepository.findAllByUserAndSubscriptionAndOrderStatusNot(
-                    PageRequest.of(page, 7, Sort.by("orderId").descending()),
-                    user, true, OrderStatus.ORDER_REQUEST);
+                PageRequest.of(page, 7, Sort.by("orderId").descending()),
+                user, true, OrderStatus.ORDER_REQUEST);
 
             return findAllOrder;
         }
         Page<Order> findAllOrder = orderRepository.findAllByUserAndSubscriptionAndOrderStatusNotAndOrderStatusNot(
-                PageRequest.of(page, 7, Sort.by("orderId").descending()),
-                user, false, OrderStatus.ORDER_REQUEST, OrderStatus.ORDER_SUBSCRIBE);
+            PageRequest.of(page, 7, Sort.by("orderId").descending()),
+            user, false, OrderStatus.ORDER_REQUEST, OrderStatus.ORDER_SUBSCRIBE);
 
         return findAllOrder;
     }
 
     public Page<Order> findSubs(User user, int page) {
         Page<Order> findAllSubs = orderRepository.findAllByUserAndOrderStatus(
-                PageRequest.of(page, 6, Sort.by("orderId").descending()), user, OrderStatus.ORDER_SUBSCRIBE);
+            PageRequest.of(page, 6, Sort.by("orderId").descending()), user,
+            OrderStatus.ORDER_SUBSCRIBE);
 
         return findAllSubs;
     }
 
     public Page<ItemOrder> findAllSubs(User user, int page) {
         Page<ItemOrder> findAllSubs = itemOrderRepository.findAllSubs(
-                PageRequest.of(page, 6, Sort.by("itemOrderId").descending()), OrderStatus.ORDER_SUBSCRIBE, user.getUserId());
+            PageRequest.of(page, 6, Sort.by("itemOrderId").descending()),
+            OrderStatus.ORDER_SUBSCRIBE, user.getUserId());
 
         return findAllSubs;
     }
 
-    public Order findVerifiedOrder(long orderId) {
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        Order findOrder = optionalOrder.orElseThrow(
-                () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
-        return findOrder;
-    }
     public boolean isShopper(long itemId, long userId) { // 유저의 특정 아이템 구매여부 확인
-        List<Order> order = orderRepository.findByItemAndUser(itemId, userId, OrderStatus.ORDER_REQUEST);
-        if(order.size() == 0) return false;
-        else return true;
+        List<Order> order = orderRepository.findByItemAndUser(itemId, userId,
+            OrderStatus.ORDER_REQUEST);
+        if (order.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
-    public void completeOrder( Long orderId ){
+
+    public void completeOrder(Long orderId) {
         Order order = findOrder(orderId);
         order.setOrderStatus(OrderStatus.ORDER_COMPLETE);
     }
 
-    public void subsOrder( Long orderId ){
+    public void subsOrder(Long orderId) {
         Order order = findOrder(orderId);
         order.setOrderStatus(OrderStatus.ORDER_SUBSCRIBE);
     }
-    public Order deepCopy(Order order){
+
+    public Order deepCopy(Order order) {
         Order newOrder = new Order(order);
         orderRepository.save(newOrder);
         return newOrder;
