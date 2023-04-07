@@ -26,9 +26,4 @@ public class RestTemplateConfig {
 
         return new RestTemplate();
     }
-
-    @Bean
-    public HttpHeaders httpHeaders(){
-      return new HttpHeaders();
-    }
 }

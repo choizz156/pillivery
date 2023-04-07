@@ -1,4 +1,4 @@
-package server.team33.domain.payment.contoller;
+package server.team33.domain.payment.kakao.controller;
 
 
 import java.net.URI;
@@ -10,18 +10,19 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import server.team33.domain.order.entity.Order;
 import server.team33.domain.order.service.OrderService;
-import server.team33.domain.payment.dto.KakaoResponseDto;
-import server.team33.domain.payment.dto.KakaoResponseDto.Approve;
-import server.team33.domain.payment.service.KakaoPayApprove;
-import server.team33.domain.payment.service.KakaoPayRequest;
+import server.team33.domain.payment.kakao.dto.KakaoResponseDto;
+import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Approve;
+import server.team33.domain.payment.kakao.service.KakaoPayApprove;
+import server.team33.domain.payment.kakao.service.KakaoPayRequest;
 
 @RequiredArgsConstructor
 @Component
-public class PaymentFacade {
+public class KakaoPaymentFacade {
 
     private final KakaoPayRequest kakaoPayRequestImpl;
     private final KakaoPayApprove kakaoPayApproveImpl;
     private final OrderService orderService;
+    private final RestTemplate restTemplate;
 
     public KakaoResponseDto.Request request(Order order) {
         return order.isSubscription()
@@ -39,6 +40,7 @@ public class PaymentFacade {
             doKakaoScheduling(order.getOrderId());
             return approve;
         }
+
         Approve approve = kakaoPayApproveImpl.approveOneTime(tid, pgToken, order.getOrderId());
         orderService.completeOrder(order.getOrderId());
         return approve;
@@ -54,7 +56,6 @@ public class PaymentFacade {
             .path("/schedule/kakao")
             .queryParams(queryParam).build().toUri();
 
-        RestTemplate restTemplate = new RestTemplate();
         restTemplate.getForObject(uri, String.class);
     }
 }

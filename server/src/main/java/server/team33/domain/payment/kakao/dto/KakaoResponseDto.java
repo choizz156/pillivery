@@ -1,4 +1,4 @@
-package server.team33.domain.payment.dto;
+package server.team33.domain.payment.kakao.dto;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

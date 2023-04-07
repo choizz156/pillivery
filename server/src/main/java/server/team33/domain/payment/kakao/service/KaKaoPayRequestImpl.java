@@ -1,31 +1,22 @@
-package server.team33.domain.payment.service;
+package server.team33.domain.payment.kakao.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import server.team33.domain.order.entity.Order;
-import server.team33.domain.payment.dto.KakaoResponseDto;
-import server.team33.domain.payment.dto.KakaoResponseDto.Request;
+import server.team33.domain.payment.kakao.dto.KakaoResponseDto;
+import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Request;
 
+@RequiredArgsConstructor
 @Service
 public class KaKaoPayRequestImpl extends KaKaoPayService implements KakaoPayRequest {
 
     private final ParameterProvider parameterProvider;
     private final RestTemplate restTemplate;
     private static final String READY_URL = "https//kapi.kakao.com/v1/payment/ready";
-
-    public KaKaoPayRequestImpl(
-        HttpHeaders httpHeaders,
-        ParameterProvider parameterProvider,
-        RestTemplate restTemplate
-    ) {
-        super(httpHeaders);
-        this.parameterProvider = parameterProvider;
-        this.restTemplate = restTemplate;
-    }
 
     @SneakyThrows
     @Override

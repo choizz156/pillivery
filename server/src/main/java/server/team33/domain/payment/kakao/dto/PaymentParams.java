@@ -1,4 +1,4 @@
-package server.team33.domain.payment.dto;
+package server.team33.domain.payment.kakao.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +11,7 @@ public class PaymentParams {
     private final String itemName;
     private final String sid;
     private final Long orderId;
+
 
     @Builder
     public PaymentParams(

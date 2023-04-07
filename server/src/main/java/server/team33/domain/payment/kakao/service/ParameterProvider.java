@@ -1,10 +1,10 @@
-package server.team33.domain.payment.service;
+package server.team33.domain.payment.kakao.service;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import server.team33.domain.order.entity.Order;
-import server.team33.domain.payment.dto.PaymentParams;
+import server.team33.domain.payment.kakao.dto.PaymentParams;
 
 @Component
 public class ParameterProvider {
@@ -68,7 +68,6 @@ public class ParameterProvider {
 //            .itemName(itemName)
 //            .sid(sid)
 //            .build();
-
 //    }
 
     private MultiValueMap<String, String> getCommonApproveParams(
