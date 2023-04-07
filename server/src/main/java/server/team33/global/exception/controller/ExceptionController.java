@@ -1,7 +1,6 @@
 package server.team33.global.exception.controller;
 
 
-import io.jsonwebtoken.ExpiredJwtException;
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,10 +49,12 @@ public class ExceptionController {
         return ErrorResponse.of(e.getMessage());
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
+    @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse expiredJwtException(ExpiredJwtException e) {
-       return ErrorResponse.of( e.getMessage());
+    public ErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        return ErrorResponse.of(e.getMessage());
     }
 }
+
+
 

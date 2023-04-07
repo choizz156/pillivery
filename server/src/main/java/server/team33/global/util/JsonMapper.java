@@ -12,7 +12,11 @@ public class JsonMapper {
     public static <T> T stringToObj(HttpServletRequest request, T object) throws IOException {
          return OBJECT_MAPPER.readValue(request.getInputStream(), (Class<T>) object.getClass());
     }
-    public static <T> String objToString(T object) throws JsonProcessingException {
-        return OBJECT_MAPPER.writeValueAsString(object);
+    public static <T> String objToString(T object){
+        try {
+            return OBJECT_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }
