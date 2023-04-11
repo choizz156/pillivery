@@ -1,7 +1,6 @@
 package server.team33.domain.payment.kakao.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -18,7 +17,6 @@ public class KaKaoPayRequestImpl extends KaKaoPayService implements KakaoPayRequ
     private final RestTemplate restTemplate;
     private static final String READY_URL = "https//kapi.kakao.com/v1/payment/ready";
 
-    @SneakyThrows
     @Override
     public KakaoResponseDto.Request requestOneTime(Order order) {
         MultiValueMap<String, String> oneTimeReqsParams =
@@ -27,7 +25,6 @@ public class KaKaoPayRequestImpl extends KaKaoPayService implements KakaoPayRequ
         return getResponseDtoAboutRequest(oneTimeReqsParams);
     }
 
-    @SneakyThrows
     @Override
     public KakaoResponseDto.Request requestSubscription(Order order) {
         MultiValueMap<String, String> subscriptionReqsParams =
