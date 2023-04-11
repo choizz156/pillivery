@@ -38,7 +38,10 @@ public class KakaoPayApproveImpl extends KaKaoPayService implements KakaoPayAppr
         HttpEntity<MultiValueMap<String, String>> entity
             = new HttpEntity<>(params, super.getHeaders());
 
-        return restTemplate.postForObject(KAKAO_APPROVE_URL, entity,
-            KakaoResponseDto.Approve.class);
+        return restTemplate.postForObject(
+            KAKAO_APPROVE_URL,
+            entity,
+            KakaoResponseDto.Approve.class
+        );
     }
 }

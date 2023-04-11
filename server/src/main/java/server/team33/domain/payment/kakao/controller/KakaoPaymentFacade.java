@@ -34,7 +34,7 @@ public class KakaoPaymentFacade {
         if (order.isSubscription()) {
             Approve approve =
                 kakaoPayApproveImpl.approveSubscription(tid, pgToken, order.getOrderId());
-
+            
             order.addSid(approve.getSid());
             orderService.subsOrder(order.getOrderId());
             doKakaoScheduling(order.getOrderId());
