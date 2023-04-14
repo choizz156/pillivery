@@ -1,4 +1,4 @@
-package server.team33.global.exception.bussiness;
+package server.team33.global.exception;
 
 import lombok.Getter;
 
