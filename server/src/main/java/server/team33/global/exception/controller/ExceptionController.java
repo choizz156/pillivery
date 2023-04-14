@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import server.team33.global.exception.bussiness.BusinessLogicException;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.QuartzSchedulerException;
 import server.team33.global.exception.response.ErrorResponse;
 
 @Slf4j
@@ -52,6 +53,12 @@ public class ExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        return ErrorResponse.of(e.getMessage());
+    }
+
+    @ExceptionHandler(QuartzSchedulerException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse quartzSchedulerExceptionHandler(QuartzSchedulerException e){
         return ErrorResponse.of(e.getMessage());
     }
 }

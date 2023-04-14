@@ -1,4 +1,4 @@
-package server.team33.global.exception.bussiness;
+package server.team33.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ public enum ExceptionCode {
     ACCESS_DENIED_USER(403, "권한이 없는 유저입니다."),
     EXPIRED_TID(404,"tid가 null입니다."),
     PERIOD_NOT_CHANGE(400, "주기를 변경할 수 없습니다.");
+
 
     private final int code;
     private final String message;
