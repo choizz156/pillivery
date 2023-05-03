@@ -1,6 +1,5 @@
 package server.team33.domain.payment.kakao.controller;
 
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import net.jodah.expiringmap.ExpirationPolicy;
@@ -13,12 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import server.team33.domain.order.entity.Order;
-import server.team33.domain.order.reposiroty.OrderRepository;
 import server.team33.domain.payment.kakao.dto.KakaoResponseDto;
 import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Request;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
+import server.team33.domain.payment.kakao.service.PaymentTypeFacade;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.ExceptionCode;
 
 
 @RequiredArgsConstructor
@@ -26,8 +24,7 @@ import server.team33.global.exception.bussiness.ExceptionCode;
 @RestController
 public class kakaoPayController {
 
-    private final KakaoPaymentFacade kakaoPaymentFacade;
-    private final OrderRepository orderRepository;
+    private final PaymentTypeFacade kakaoPaymentFacade;
 
     public static final ExpiringMap<Long, String> tidStore =
         ExpiringMap.builder()
@@ -38,8 +35,7 @@ public class kakaoPayController {
     @GetMapping("/kakao/{orderId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public KakaoResponseDto.Request requestPayment(@PathVariable("orderId") Long orderId) {
-        Order order = findOrder(orderId);
-        Request response = kakaoPaymentFacade.request(order);
+        Request response = kakaoPaymentFacade.request(orderId);
         saveTid(response, orderId);
 
         return response;
@@ -51,11 +47,9 @@ public class kakaoPayController {
         @RequestParam("pg_token") String pgToken,
         @PathVariable("orderId") Long orderId
     ) {
-        Order order = findOrder(orderId);
         String tid = getTid(orderId);
-        return kakaoPaymentFacade.approve(tid, pgToken, order);
+        return kakaoPaymentFacade.approve(tid, pgToken, orderId);
     }
-
 
     //TODO: 정기결제
 //    @GetMapping("/kakao/subscription")
@@ -68,7 +62,7 @@ public class kakaoPayController {
 
     @GetMapping("/cancel")
     public ResponseEntity cancel() {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/fail")
@@ -78,13 +72,6 @@ public class kakaoPayController {
 
     private void saveTid(Request requestResponse, Long orderId) {
         tidStore.put(orderId, requestResponse.getTid());
-    }
-
-    private Order findOrder(Long orderId) {
-        Optional<Order> orderOptional = orderRepository.findById(orderId);
-        return orderOptional.orElseThrow(
-            () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND)
-        );
     }
 
     private String getTid(Long orderId) {

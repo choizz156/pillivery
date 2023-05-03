@@ -1,7 +1,8 @@
-package server.team33.domain.payment.kakao.controller;
+package server.team33.domain.payment.kakao.service;
 
 
 import java.net.URI;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -9,40 +10,46 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import server.team33.domain.order.entity.Order;
+import server.team33.domain.order.reposiroty.OrderRepository;
 import server.team33.domain.order.service.OrderService;
 import server.team33.domain.payment.kakao.dto.KakaoResponseDto;
 import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Approve;
-import server.team33.domain.payment.kakao.service.KakaoPayApprove;
-import server.team33.domain.payment.kakao.service.KakaoPayRequest;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.ExceptionCode;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoPaymentFacade {
+public class KakaoPaymentFacade implements PaymentTypeFacade {
 
     private final KakaoPayRequest kakaoPayRequestImpl;
     private final KakaoPayApprove kakaoPayApproveImpl;
     private final OrderService orderService;
     private final RestTemplate restTemplate;
+    private final OrderRepository orderRepository;
 
-    public KakaoResponseDto.Request request(Order order) {
+    @Override
+    public KakaoResponseDto.Request request(long orderId) {
+        Order order = findOrder(orderId);
         return order.isSubscription()
             ? kakaoPayRequestImpl.requestSubscription(order)
             : kakaoPayRequestImpl.requestOneTime(order);
     }
 
-    public KakaoResponseDto.Approve approve(String tid, String pgToken, Order order) {
+    @Override
+    public KakaoResponseDto.Approve approve(String tid, String pgToken, Long orderId) {
+        Order order = findOrder(orderId);
         if (order.isSubscription()) {
             Approve approve =
-                kakaoPayApproveImpl.approveSubscription(tid, pgToken, order.getOrderId());
+                kakaoPayApproveImpl.approveSubscription(tid, pgToken, orderId);
             
             order.addSid(approve.getSid());
-            orderService.subsOrder(order.getOrderId());
-            doKakaoScheduling(order.getOrderId());
+            orderService.subsOrder(orderId);
+            doKakaoScheduling(orderId);
             return approve;
         }
 
-        Approve approve = kakaoPayApproveImpl.approveOneTime(tid, pgToken, order.getOrderId());
-        orderService.completeOrder(order.getOrderId());
+        Approve approve = kakaoPayApproveImpl.approveOneTime(tid, pgToken, orderId);
+        orderService.completeOrder(orderId);
         return approve;
     }
 
@@ -57,5 +64,12 @@ public class KakaoPaymentFacade {
             .queryParams(queryParam).build().toUri();
 
         restTemplate.getForObject(uri, String.class);
+    }
+
+    private Order findOrder(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        return orderOptional.orElseThrow(
+            () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND)
+        );
     }
 }
