@@ -1,5 +1,7 @@
 package server.team33.domain.subscription.job;
 
+import static org.quartz.JobBuilder.newJob;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;
@@ -8,13 +10,11 @@ import org.quartz.JobKey;
 import org.springframework.stereotype.Component;
 import server.team33.domain.order.entity.ItemOrder;
 
-import static org.quartz.JobBuilder.newJob;
-
 @Slf4j
-@Component
 @RequiredArgsConstructor
+@Component
 public class JobDetailService {
-    public JobDetail buildJobDetail( JobKey jobKey, Long orderId, ItemOrder itemOrder ){
+    public JobDetail build( JobKey jobKey, Long orderId, ItemOrder itemOrder ){
 
         log.warn("job detail orderId= {}", orderId);
         log.warn("job datail itemOrderId = {}", itemOrder.getItemOrderId());

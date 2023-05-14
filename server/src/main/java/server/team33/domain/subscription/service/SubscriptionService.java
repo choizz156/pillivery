@@ -1,28 +1,31 @@
 package server.team33.domain.subscription.service;
 
+import static org.quartz.JobKey.jobKey;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.*;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
 import org.springframework.stereotype.Service;
-import server.team33.domain.subscription.job.JobDetailService;
-import server.team33.domain.subscription.trigger.TriggerService;
-import server.team33.domain.user.entity.User;
 import server.team33.domain.order.entity.ItemOrder;
 import server.team33.domain.order.entity.Order;
 import server.team33.domain.order.service.ItemOrderService;
 import server.team33.domain.order.service.OrderService;
+import server.team33.domain.subscription.job.JobDetailService;
+import server.team33.domain.subscription.trigger.TriggerService;
+import server.team33.domain.user.entity.User;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.List;
-
-import static org.quartz.JobKey.jobKey;
-
-@Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class SubscriptionService {
+
     private final Scheduler scheduler;
     private final TriggerService trigger;
     private final JobDetailService jobDetail;
@@ -30,31 +33,25 @@ public class SubscriptionService {
     private final ItemOrderService itemOrderService;
 
 
-    public void startSchedule( Long orderId, ItemOrder itemOrder ) throws SchedulerException{
-        User user = getUser(orderId);
-        JobKey jobkey = jobKey(user.getUserId() + itemOrder.getItem().getTitle(), String.valueOf(user.getUserId()));
-        JobDetail payDay = jobDetail.buildJobDetail(jobkey, orderId, itemOrder);
-        Trigger lastTrigger = trigger.buildTrigger(jobkey, orderId, itemOrder);
-        Date date = scheduler.scheduleJob(payDay, lastTrigger);
-        log.warn("new scheduler = {}", date);
+    public void startSchedule(Order order, ItemOrder itemOrder) {
+        applySchedule(order, itemOrder);
     }
 
 
-    public ItemOrder changePeriod( Long orderId, Integer period, Long itemOrderId ) throws SchedulerException, InterruptedException{
+    public ItemOrder changePeriod(Long orderId, Integer period, Long itemOrderId) {
 
-        ItemOrder itemOrder = itemOrderService.setItemPeriod(orderId, period, findItemOrderInOrder(orderId, itemOrderId));
-        log.info("changed period = {}", itemOrder.getPeriod());
+        ItemOrder itemOrder = itemOrderService.setItemPeriod(orderId, period,
+            findItemOrderInOrder(orderId, itemOrderId));
 
-        if(payDirectly(orderId, period, itemOrder)){
+        if (payDirectly(orderId, period, itemOrder)) {
             itemOrder.getPaymentDay().plusDays(itemOrder.getPeriod());
             return itemOrder;
         }
 
         ZonedDateTime paymentDay = itemOrder.getPaymentDay();
-        String nextDelivery = String.valueOf(paymentDay.plusDays(itemOrder.getPeriod()));
-        log.info("extend nextDelivery = {}", nextDelivery);
-
-        ItemOrder updatedItemOrder = itemOrderService.setDeliveryInfo(orderId, paymentDay, nextDelivery, itemOrder);
+        ZonedDateTime nextDelivery = paymentDay.plusDays(itemOrder.getPeriod());
+        ItemOrder updatedItemOrder = itemOrderService.updateDeliveryInfo(orderId, paymentDay,
+            nextDelivery, itemOrder);
 
         extendPeriod(orderId, updatedItemOrder);
 
@@ -63,11 +60,12 @@ public class SubscriptionService {
     }
 
 
-    private boolean payDirectly( Long orderId, Integer period, ItemOrder itemOrder ) throws SchedulerException{
-        boolean noMargin = itemOrder.getPaymentDay().plusDays(period).isBefore(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))); //바궈야진
+    private boolean payDirectly(Long orderId, Integer period, ItemOrder itemOrder){
+        boolean noMargin = itemOrder.getPaymentDay().plusDays(period)
+            .isBefore(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))); //바궈야진
         log.info("margin = {}", noMargin);
 
-        if(noMargin){
+        if (noMargin) {
             log.info("directly pay");
             resetSchedule(orderId, itemOrder);
             return true;
@@ -75,58 +73,81 @@ public class SubscriptionService {
         return false;
     }
 
-    private void deleteSchedule( Long orderId, ItemOrder itemOrder ) throws SchedulerException{
+    private void deleteSchedule(Long orderId, ItemOrder itemOrder){
         log.info("delete schedule");
         User user = getUser(orderId);
-        scheduler.deleteJob(jobKey(user.getUserId() + itemOrder.getItem().getTitle(), String.valueOf(user.getUserId())));
+        try {
+            scheduler.deleteJob(jobKey(user.getUserId() + itemOrder.getItem().getTitle(),
+                String.valueOf(user.getUserId())));
+        } catch (SchedulerException e) {
+            JobExecutionException jobExecutionException = new JobExecutionException(e);
+            jobExecutionException.refireImmediately();
+        }
     }
 
-    private void extendPeriod( Long orderId, ItemOrder itemOrder ) throws SchedulerException, InterruptedException{
+    private void extendPeriod(Long orderId, ItemOrder itemOrder) {
         log.warn("extendPeriod = {}", itemOrder.getPeriod());
         resetSchedule(orderId, itemOrder);
     }
 
 
-    public ItemOrder delayDelivery( Long orderId, Integer delay, Long itemOrderId ) throws SchedulerException{
+    public ItemOrder delayDelivery(Long orderId, Integer delay, Long itemOrderId) {
         log.info("delay Delivery");
-        ItemOrder itemOrder = itemOrderService.delayDelivery(orderId, delay, findItemOrderInOrder(orderId, itemOrderId));
+        ItemOrder itemOrder = itemOrderService.delayDelivery(orderId, delay,
+            findItemOrderInOrder(orderId, itemOrderId));
         resetSchedule(orderId, itemOrder);
-        //        itemOrder.getNextDelivery();
         return itemOrder;
     }
 
-    public void cancelScheduler( Long orderId, Long itemOrderId ) throws SchedulerException{
+    public void cancelScheduler(Long orderId, Long itemOrderId) {
         log.info("cancelScheduler");
         ItemOrder itemOrder = getItemOrder(itemOrderId);
+
         deleteSchedule(orderId, itemOrder);
         itemOrderService.cancelItemOrder(orderId, itemOrder);
         log.warn("canceled item title = {}", itemOrder.getItem().getTitle());
     }
 
-    private void resetSchedule( Long orderId, ItemOrder itemOrder ) throws SchedulerException{
-        deleteSchedule(orderId, itemOrder);
-        startSchedule(orderId, itemOrder);
-    }
-
-    public List<ItemOrder> getItemOrders( Long orderId ){
+    private void resetSchedule(Long orderId, ItemOrder itemOrder){
         Order order = orderService.findOrder(orderId);
-        return order.getItemOrders();
+        deleteSchedule(orderId, itemOrder);
+        startSchedule(order, itemOrder);
     }
 
-    public ItemOrder getItemOrder( Long itemOrderId ){
+    public ItemOrder getItemOrder(Long itemOrderId) {
         return itemOrderService.findItemOrder(itemOrderId);
     }
 
-    public User getUser( Long orderId ){
+    public User getUser(Long orderId) {
         Order order = orderService.findOrder(orderId);
         return order.getUser();
     }
 
-    private ItemOrder findItemOrderInOrder( Long orderId, Long itemOrderId ){
+    private ItemOrder findItemOrderInOrder(Long orderId, Long itemOrderId) {
         Order order = orderService.findOrder(orderId);
         ItemOrder itemOrder = getItemOrder(itemOrderId);
         int i = order.getItemOrders().indexOf(itemOrder);
         return order.getItemOrders().get(i);
     }
 
+
+    private void schedule(JobDetail payDay, Trigger lastTrigger) {
+        try {
+            scheduler.scheduleJob(payDay, lastTrigger);
+        } catch (SchedulerException e) {
+            JobExecutionException jobExecutionException = new JobExecutionException(e);
+            jobExecutionException.refireImmediately();
+        }
+    }
+
+    private void applySchedule(Order order, ItemOrder itemOrder) {
+        User user = order.getUser();
+        JobKey jobkey = jobKey(
+            user.getUserId() + itemOrder.getItem().getTitle(),
+            String.valueOf(user.getUserId())
+        );
+        JobDetail payDay = jobDetail.build(jobkey, order.getOrderId(), itemOrder);
+        Trigger lastTrigger = trigger.build(jobkey, order.getOrderId(), itemOrder);
+        schedule(payDay, lastTrigger);
+    }
 }
