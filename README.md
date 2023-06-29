@@ -67,6 +67,8 @@
 ### 👉 기술 회고
 [꼭 JWT를 써야 했을까?](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-JWT%EB%A5%BC-%EA%BC%AD-%EC%8D%A8%EC%95%BC%EB%90%90%EC%9D%84%EA%B9%8C)</br>
 [무엇인가 잘못된 유저 객체 가지고 오기](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80-%EC%9E%98%EB%AA%BB%EB%90%9C-%EA%B2%83-%EA%B0%99%EC%9D%80-User-%EA%B0%9D%EC%B2%B4-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0)
+[정기 배송 구현에 scheduler 사용](https://velog.io/@choizz/%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EC%97%90%EC%84%9C-%EC%A0%95%EA%B8%B0-%EB%B0%B0%EC%86%A1-%EA%B5%AC%ED%98%84%EC%97%90-Scheduler-%EC%82%AC%EC%9A%A9)
+[정기 배송 구현에 quartz 사용](https://velog.io/@choizz/%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EC%97%90%EC%84%9C-%EC%A0%95%EA%B8%B0-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84-Quartz.-v2)
 #### 커뮤니케이션
 - 저는 클라이언트와 서버 둘 다와 관련 있는 JWT나 OAuth 같은 용어들을 당연히 프론트엔드 팀원들도 알고 있을 거로 생각하고 사용했습니다. 그런데, 프론트엔드 팀원들은 이런 용어들을 알지 못했습니다.
 - 제가 상대방도 당연히 알 것으로 생각했던 것들을 상대방을 모를 수도 있다는 것을 깨달았습니다. 그래서 상대방과 커뮤니케이션할 때는 최대한 상대방이 이해하기 쉬운 용어와 표현을 사용하는 것이 의사소통에 중요하다는 것을 알게 됐습니다.
@@ -84,5 +86,5 @@
 
 ## 6. 리팩토링 및 테스트 코드
 개인 공부를 진행하면서 점진적으로 제가 구현 기능에 대해 리팩토링을 하고 테스트 코드를 작성하고 있습니다.</br>
-[리팩토링 진행 상황](https://github.com/choizz156/seb40_main_033/wiki/%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%EC%A7%84%ED%96%89-%EC%83%81%ED%99%A9)</br>
-[테스트 코드 진행 상황](https://github.com/choizz156/seb40_main_033/wiki/%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C-%EC%A7%84%ED%96%89-%EC%83%81%ED%99%A9)
+[리팩토링](https://github.com/choizz156/seb40_main_033/wiki/%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81)</br>
+[테스트 코드](https://github.com/choizz156/seb40_main_033/wiki/%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C)
