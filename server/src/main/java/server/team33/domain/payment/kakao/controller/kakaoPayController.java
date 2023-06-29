@@ -34,7 +34,7 @@ public class kakaoPayController {
 
     @GetMapping("/kakao/{orderId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public KakaoResponseDto.Request requestPayment(@PathVariable("orderId") Long orderId) {
+    public KakaoResponseDto.Request request(@PathVariable("orderId") Long orderId) {
         Request response = kakaoPaymentFacade.request(orderId);
         saveTid(response, orderId);
 
@@ -43,7 +43,7 @@ public class kakaoPayController {
 
     @GetMapping("/kakao/approve/{orderId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public KakaoResponseDto.Approve kakaoApprove(
+    public KakaoResponseDto.Approve approve(
         @RequestParam("pg_token") String pgToken,
         @PathVariable("orderId") Long orderId
     ) {
@@ -53,7 +53,7 @@ public class kakaoPayController {
 
     @GetMapping("/kakao/subscription")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public KakaoResponseDto.Approve subscriptionByKaKao(@RequestParam Long orderId) {
+    public KakaoResponseDto.Approve subscription(@RequestParam Long orderId) {
        return kakaoPaymentFacade.approveSubscription(orderId);
     }
 
