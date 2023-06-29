@@ -11,7 +11,7 @@ import server.team33.domain.payment.kakao.dto.KakaoResponseDto;
 
 @RequiredArgsConstructor
 @Service
-public class KaKaoPayApprove extends KaKaoPayService implements PayApprove {
+public class KaKaoPayApprove extends KaKaoHeader implements PayApprove {
 
     private final ParameterProvider parameterProvider;
     private final RestTemplate restTemplate;

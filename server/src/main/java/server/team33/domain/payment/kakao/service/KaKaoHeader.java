@@ -2,7 +2,7 @@ package server.team33.domain.payment.kakao.service;
 
 import org.springframework.http.HttpHeaders;
 
-public abstract class KaKaoPayService {
+public abstract class KaKaoHeader {
 
     HttpHeaders getHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();

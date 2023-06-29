@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -31,7 +32,7 @@ import server.team33.domain.user.entity.User;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-
+@DisallowConcurrentExecution
 public class KaKaoSubscriptionJob implements Job {
     private final ItemOrderService itemOrderService;
     private final OrderService orderService;

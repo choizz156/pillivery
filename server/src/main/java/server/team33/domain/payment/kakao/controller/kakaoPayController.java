@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,16 +54,6 @@ public class kakaoPayController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public KakaoResponseDto.Approve subscription(@RequestParam Long orderId) {
        return kakaoPaymentFacade.approveSubscription(orderId);
-    }
-
-    @GetMapping("/cancel")
-    public ResponseEntity cancel() {
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
-    @GetMapping("/fail")
-    public ResponseEntity fail() {
-        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     private void saveTid(Request requestResponse, Long orderId) {
