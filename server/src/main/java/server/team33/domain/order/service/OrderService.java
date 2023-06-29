@@ -14,8 +14,8 @@ import server.team33.domain.order.entity.OrderStatus;
 import server.team33.domain.order.reposiroty.ItemOrderRepository;
 import server.team33.domain.order.reposiroty.OrderRepository;
 import server.team33.domain.user.entity.User;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.ExceptionCode;
 
 @Service
 @Transactional
@@ -132,5 +132,4 @@ public class OrderService {
         orderRepository.save(newOrder);
         return newOrder;
     }
-
 }

@@ -4,7 +4,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.SchedulerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,25 +34,20 @@ public class ScheduleController {
     private final ItemMapper itemMapper;
 
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @GetMapping("/kakao")
+    @GetMapping
     public void startsKakaoSchedule(@RequestParam(name = "orderId") Long orderId) {
 
         Order order = orderService.findOrder(orderId);
         List<ItemOrder> itemOrders = order.getItemOrders();
 
-        for (ItemOrder itemOrder : itemOrders) {
-            ZonedDateTime nextDelivery = order.getCreatedAt().plusDays(itemOrder.getPeriod());
-            ItemOrder itemOrder1 = itemOrderService.updateDeliveryInfo(orderId,
-                order.getCreatedAt(), nextDelivery, itemOrder);
-            subscriptionService.startSchedule(order, itemOrder1);
-        }
+        applySchedule(orderId, order, itemOrders);
     }
 
     @PatchMapping("/change")
     public SingleResponseDto changePeriod(
         @RequestParam(name = "orderId") Long orderId, @RequestParam(name = "period") Integer period,
         @RequestParam(name = "itemOrderId") Long itemOrderId)
-        throws SchedulerException, InterruptedException {
+         {
         ItemOrder itemOrder = subscriptionService.changePeriod(orderId, period, itemOrderId);
         return new SingleResponseDto<>(itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));
     }
@@ -61,7 +55,7 @@ public class ScheduleController {
     @PatchMapping("/delay")
     public SingleResponseDto delay(@RequestParam(name = "orderId") Long orderId,
         @RequestParam(name = "delay") Integer delay,
-        @RequestParam(name = "itemOrderId") Long itemOrderId) throws SchedulerException {
+        @RequestParam(name = "itemOrderId") Long itemOrderId){
         ItemOrder itemOrder = subscriptionService.delayDelivery(orderId, delay, itemOrderId);
         return new SingleResponseDto<>(itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));
     }
@@ -73,6 +67,15 @@ public class ScheduleController {
         return ZonedDateTime.now();
     }
 
+    private void applySchedule(final Long orderId, final Order order,
+        final List<ItemOrder> itemOrders) {
+        for (ItemOrder itemOrder : itemOrders) {
+            ZonedDateTime nextDelivery = order.getCreatedAt().plusDays(itemOrder.getPeriod());
+            ItemOrder itemOrder1 = itemOrderService.updateDeliveryInfo(orderId,
+                order.getCreatedAt(), nextDelivery, itemOrder);
+            subscriptionService.startSchedule(order, itemOrder1);
+        }
+    }
 }
 
 

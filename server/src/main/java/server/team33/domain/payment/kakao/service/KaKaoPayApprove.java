@@ -22,7 +22,7 @@ public class KaKaoPayApprove extends KaKaoPayService implements PayApprove {
     public KakaoResponseDto.Approve approveOneTime(String tid, String pgToken, Long orderId) {
         var oneTimeApproveParams = parameterProvider.getOneTimeApproveParams(tid, pgToken, orderId);
 
-        return getResponseDtoAboutApprove(oneTimeApproveParams);
+        return getResponseDtoAboutApprove(oneTimeApproveParams, KAKAO_APPROVE_URL);
     }
 
     @Override
