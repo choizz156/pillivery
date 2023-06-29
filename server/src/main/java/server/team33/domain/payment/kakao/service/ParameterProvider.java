@@ -14,9 +14,10 @@ public class ParameterProvider {
     private static final String SUBSCRIPTION_APPROVAL_URI = "http://localhost:9090/payments/kakao/subs/approve";
     private static final String CANCEL_URI = "http://localhost:9090/cancel";
     private static final String FAIL_URI = "http://localhost:9090/fail";
+    private static final int NAME_INDEX = 0;
 
     public MultiValueMap<String, String> getOneTimeReqsParams(Order order) {
-        MultiValueMap<String, String> commonReqsParams = getRequestParams(order);
+        var commonReqsParams = getRequestParams(order);
         commonReqsParams.add("cid", "TC0ONETIME");
         commonReqsParams.add("approval_url", ONE_TIME_APPROVAL_URL + order.getOrderId());
 
@@ -24,7 +25,7 @@ public class ParameterProvider {
     }
 
     public MultiValueMap<String, String> getSubscriptionReqsParams(Order order) {
-        MultiValueMap<String, String> commonReqsParams = getRequestParams(order);
+        var commonReqsParams = getRequestParams(order);
         commonReqsParams.add("cid", "TCSUBSCRIP");
         commonReqsParams.add("approval_url", SUBSCRIPTION_APPROVAL_URI);
         return commonReqsParams;
@@ -35,29 +36,37 @@ public class ParameterProvider {
         String pgToken,
         Long orderId
     ) {
-        MultiValueMap<String, String> commonApproveParams =
+        var commonApproveParams =
             getCommonApproveParams(tid, pgToken, orderId);
         commonApproveParams.add("cid", "TC0ONETIME");
         return commonApproveParams;
     }
 
-    public MultiValueMap<String, String> getSubscriptionApproveParams(
+    public MultiValueMap<String, String> getSubscriptionFirstApproveParams(
         String tid,
         String pgToken,
         Long orderId
     ) {
-        MultiValueMap<String, String> commonSubsParams = getCommonApproveParams(tid, pgToken,
-            orderId);
+        var commonSubsParams = getCommonApproveParams(tid, pgToken, orderId);
         commonSubsParams.add("cid", "TCSUBSCRIP");
+
         return commonSubsParams;
+    }
+
+    public MultiValueMap<String, String> getSubscriptionApproveParams(String sid, Order order) {
+        var subsApproveParams = getRequestParams(order);
+        subsApproveParams.add("sid", sid);
+        subsApproveParams.add("cid", "TCSUBSCRIP");
+
+        return subsApproveParams;
     }
 
     private MultiValueMap<String, String> getRequestParams(Order order) {
         PaymentParams requestParamsInfo = getRequestParamsInfo(order);
         return getCommonReqsParams(requestParamsInfo);
     }
-    //1회 결제 이후 다음 정기 결제일 때 사용
-//    private PaymentParams getApproveParamsInfo(Long orderId) {
+
+//    private PaymentParams getSubsApproveParams(Long orderId) {
 //        this.orderId = new AtomicLong(order.getOrderId());
 //        String itemName = getItemName(order);
 //        String sid = order.getUser().getSid();
@@ -68,6 +77,12 @@ public class ParameterProvider {
 //            .itemName(itemName)
 //            .sid(sid)
 //            .build();
+//    }
+
+//    private MultiValueMap<String, String> getSubsApproveParam(Long orderId) {
+//        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+//        parameters.add("cid", "TCSUBSCRIP");
+//        parameters.add("sid", );
 //    }
 
     private MultiValueMap<String, String> getCommonApproveParams(
@@ -113,11 +128,15 @@ public class ParameterProvider {
 
     private String getItemName(Order order) {
         Integer itemQuantity = order.getTotalItems();
-        String itemName = order.getItemOrders().get(0).getItem().getTitle();
+        String itemName = getTitle(order);
 
         if (itemQuantity == 1) {
             return itemName;
         }
         return itemName + " 그 외 " + (itemQuantity - 1);
+    }
+
+    private String getTitle(final Order order) {
+        return order.getItemOrders().get(NAME_INDEX).getItem().getTitle();
     }
 }

@@ -21,8 +21,8 @@ import server.team33.global.exception.ExceptionCode;
 @Component
 public class KakaoPaymentFacade implements PaymentTypeFacade {
 
-    private final KakaoPayRequest kakaoPayRequestImpl;
-    private final KakaoPayApprove kakaoPayApproveImpl;
+    private final PayRequest kakaoPayRequest;
+    private final PayApprove kakaoPayApprove;
     private final OrderService orderService;
     private final RestTemplate restTemplate;
     private final OrderRepository orderRepository;
@@ -31,8 +31,8 @@ public class KakaoPaymentFacade implements PaymentTypeFacade {
     public KakaoResponseDto.Request request(long orderId) {
         Order order = findOrder(orderId);
         return order.isSubscription()
-            ? kakaoPayRequestImpl.requestSubscription(order)
-            : kakaoPayRequestImpl.requestOneTime(order);
+            ? kakaoPayRequest.requestSubscription(order)
+            : kakaoPayRequest.requestOneTime(order);
     }
 
     @Override
@@ -40,17 +40,25 @@ public class KakaoPaymentFacade implements PaymentTypeFacade {
         Order order = findOrder(orderId);
         if (order.isSubscription()) {
             Approve approve =
-                kakaoPayApproveImpl.approveSubscription(tid, pgToken, orderId);
-            
+                kakaoPayApprove.approveFirstSubscription(tid, pgToken, orderId);
+
             order.addSid(approve.getSid());
             orderService.subsOrder(orderId);
             doKakaoScheduling(orderId);
             return approve;
         }
 
-        Approve approve = kakaoPayApproveImpl.approveOneTime(tid, pgToken, orderId);
+        Approve approve = kakaoPayApprove.approveOneTime(tid, pgToken, orderId);
         orderService.completeOrder(orderId);
         return approve;
+    }
+
+    @Override
+    public Approve approveSubscription(final Long orderId) {
+        Order order = findOrder(orderId);
+
+        String sid = order.getSid();
+        return kakaoPayApprove.approveSubscription(sid, order);
     }
 
     private void doKakaoScheduling(Long orderId) {
@@ -59,8 +67,10 @@ public class KakaoPaymentFacade implements PaymentTypeFacade {
 
         queryParam.add("orderId", String.valueOf(orderId));
 
-        URI uri = UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(9090)
-            .path("/schedule/kakao")
+        URI uri = UriComponentsBuilder.newInstance().scheme("http")
+            .host("localhost")
+            .port(9090)
+            .path("/schedule")
             .queryParams(queryParam).build().toUri();
 
         restTemplate.getForObject(uri, String.class);

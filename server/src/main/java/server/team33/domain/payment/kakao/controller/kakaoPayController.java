@@ -51,14 +51,11 @@ public class kakaoPayController {
         return kakaoPaymentFacade.approve(tid, pgToken, orderId);
     }
 
-    //TODO: 정기결제
-//    @GetMapping("/kakao/subscription")
-//    public ResponseEntity subscriptionByKaKao(@RequestParam Long orderId) {
-//        KakaoPayApproveDto kakaoPayApproveDto = getKakaoPayApproveDto(orderId);
-//        orderService.subsOrder(orderId);
-//
-//        return new ResponseEntity<>(kakaoPayApproveDto, HttpStatus.CREATED);
-//    }
+    @GetMapping("/kakao/subscription")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public KakaoResponseDto.Approve subscriptionByKaKao(@RequestParam Long orderId) {
+       return kakaoPaymentFacade.approveSubscription(orderId);
+    }
 
     @GetMapping("/cancel")
     public ResponseEntity cancel() {

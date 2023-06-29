@@ -11,7 +11,7 @@ import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Request;
 
 @RequiredArgsConstructor
 @Service
-public class KaKaoPayRequestImpl extends KaKaoPayService implements KakaoPayRequest {
+public class KaKaoPayRequest extends KaKaoPayService implements PayRequest {
 
     private final ParameterProvider parameterProvider;
     private final RestTemplate restTemplate;
@@ -19,16 +19,16 @@ public class KaKaoPayRequestImpl extends KaKaoPayService implements KakaoPayRequ
 
     @Override
     public KakaoResponseDto.Request requestOneTime(Order order) {
-        MultiValueMap<String, String> oneTimeReqsParams =
-            parameterProvider.getOneTimeReqsParams(order);
+        MultiValueMap<String, String> oneTimeReqsParams
+            = parameterProvider.getOneTimeReqsParams(order);
 
         return getResponseDtoAboutRequest(oneTimeReqsParams);
     }
 
     @Override
     public KakaoResponseDto.Request requestSubscription(Order order) {
-        MultiValueMap<String, String> subscriptionReqsParams =
-            parameterProvider.getSubscriptionReqsParams(order);
+        MultiValueMap<String, String> subscriptionReqsParams
+            = parameterProvider.getSubscriptionReqsParams(order);
 
         return getResponseDtoAboutRequest(subscriptionReqsParams);
     }
