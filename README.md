@@ -51,12 +51,9 @@
       - 결제 요청이 들어올 때, `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청을 구분하여 결제 요청 서비스에 위임합니다.
       - 결제 요청과 결제 승인에 `전략 패턴`을 활용했습니다.
 
-<details>
-<summary>클래스 다이어그램</summary>
-
 ![image](https://github.com/choizz156/seb40_main_033/assets/106965005/8cf2c827-b900-4c21-aa5c-d009a2207cd8)
 
-</details>
+
   
 #### 4) 정기 구독(결제) 기능 구현 📌[디렉토리 이동](https://github.com/choizz156/seb40_main_033/tree/main/server/src/main/java/server/team33/domain/subscription)
 - 정기 구독 시 Quartz 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동합니다..
