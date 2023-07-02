@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
-import server.team33.global.exception.bussiness.ExceptionCode;
+import server.team33.global.exception.ExceptionCode;
 
 @Getter
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)

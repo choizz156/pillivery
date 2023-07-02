@@ -1,0 +1,35 @@
+spring:
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler-name: pillivery_
+          threadPool:
+            threadCount: 5
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: false
+            misfireThreshold: 60000
+            useProperties: true
+            dataSource: quartz
+
+          dataSource:
+            quartz:
+            driver-class-name:
+            url: jdbc:h2:tcp://localhost/~/quartz
+            username: sa
+            password:
+            maxConnections: 10
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/quartz
+    username: sa
+    password:
+
+

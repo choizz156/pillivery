@@ -1,17 +1,7 @@
 spring:
-  quartz:
-    scheduler-name: QuartzScheduler
-    properties:
-      org:
-        quartz:
-          threadPool:
-            threadCount: 5
-    job-store-type: memory
-
-
   jpa:
     hibernate:
-      ddl-auto:
+      ddl-auto: none
 #    show-sql: true
     properties:
       hibernate:

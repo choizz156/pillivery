@@ -4,3 +4,4 @@ spring:
       prod:
         - auth
         - prod
+        - quartz

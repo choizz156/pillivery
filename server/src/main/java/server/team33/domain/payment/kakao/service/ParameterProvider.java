@@ -10,10 +10,10 @@ import server.team33.domain.payment.kakao.dto.PaymentParams;
 public class ParameterProvider {
 
     private static final String PARTNER_USER_ID = "pillivery";
-    private static final String ONE_TIME_APPROVAL_URL = "http://localhost:9090/payments/kakao/approve/";
-    private static final String SUBSCRIPTION_APPROVAL_URI = "http://localhost:9090/payments/kakao/subs/approve";
-    private static final String CANCEL_URI = "http://localhost:9090/cancel";
-    private static final String FAIL_URI = "http://localhost:9090/fail";
+    private static final String ONE_TIME_APPROVAL_URL = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kakao/approve/";
+    private static final String SUBSCRIPTION_APPROVAL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kakao/subs/approve";
+    private static final String CANCEL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/cancel";
+    private static final String FAIL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/fail";
     private static final int NAME_INDEX = 0;
 
     public MultiValueMap<String, String> getOneTimeReqsParams(Order order) {

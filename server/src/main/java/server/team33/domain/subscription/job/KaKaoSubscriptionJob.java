@@ -29,6 +29,9 @@ import server.team33.domain.order.service.OrderService;
 import server.team33.domain.subscription.service.SubscriptionService;
 import server.team33.domain.user.entity.User;
 
+/**
+ Job 클래스내에서 @Autowired 할 수 있도록 하기 위해서 사용함
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -49,26 +52,35 @@ public class KaKaoSubscriptionJob implements Job {
         log.info("start itemOrderId = {}", itemOrder.getItemOrderId());
         log.info("itemOrder title = {}", itemOrder.getItem().getTitle());
 
-        ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        log.info("payment = {}", paymentDay);
-
         Long orderId = (Long) mergedJobDataMap.get("orderId");
         log.info("start orderId = {}", orderId);
-        ZonedDateTime nextDelivery = paymentDay.plusDays(itemOrder.getPeriod());
-        itemOrderService.updateDeliveryInfo(orderId, paymentDay, nextDelivery, itemOrder);
+
+        updateDeliveryDate(itemOrder, orderId);
 
         Order newOrder = getNewOrder(orderId);
-        log.info("newOrder Id = {}", newOrder.getOrderId());
         ItemOrder newItemOrder = itemOrderService.itemOrderCopy(orderId, newOrder, itemOrder);
 
         JobDetail newJob = updateJob(itemOrder, orderId, newOrder, newItemOrder);
+        updateJob(newJob);
+
+        connectKaKaoPay(newOrder.getOrderId());
+    }
+
+    private void updateJob(final JobDetail newJob) {
         try{
             scheduler.addJob(newJob, true);
         } catch(SchedulerException e){
+            log.warn(e.getMessage());
             JobExecutionException jobExecutionException = new JobExecutionException(e);
             jobExecutionException.refireImmediately();
         }
-        connectKaKaoPay(newOrder.getOrderId());
+    }
+
+    private void updateDeliveryDate(final ItemOrder itemOrder, final Long orderId) {
+        ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        log.info("payment = {}", paymentDay);
+        ZonedDateTime nextDelivery = paymentDay.plusDays(itemOrder.getPeriod());
+        itemOrderService.updateDeliveryInfo(orderId, paymentDay, nextDelivery, itemOrder);
     }
 
     private Order getNewOrder( Long orderId ){
