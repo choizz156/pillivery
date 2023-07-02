@@ -45,8 +45,10 @@ public class ScheduleController {
 
     @PatchMapping("/change")
     public SingleResponseDto changePeriod(
-        @RequestParam(name = "orderId") Long orderId, @RequestParam(name = "period") Integer period,
-        @RequestParam(name = "itemOrderId") Long itemOrderId)
+        @RequestParam(name = "orderId") Long orderId,
+        @RequestParam(name = "period") Integer period,
+        @RequestParam(name = "itemOrderId") Long itemOrderId
+    )
          {
         ItemOrder itemOrder = subscriptionService.changePeriod(orderId, period, itemOrderId);
         return new SingleResponseDto<>(itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));

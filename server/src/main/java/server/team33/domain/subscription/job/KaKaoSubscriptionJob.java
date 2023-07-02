@@ -37,6 +37,7 @@ import server.team33.domain.user.entity.User;
 @Component
 @DisallowConcurrentExecution
 public class KaKaoSubscriptionJob implements Job {
+
     private final ItemOrderService itemOrderService;
     private final OrderService orderService;
     private final Scheduler scheduler;
@@ -57,13 +58,18 @@ public class KaKaoSubscriptionJob implements Job {
 
         updateDeliveryDate(itemOrder, orderId);
 
-        Order newOrder = getNewOrder(orderId);
-        ItemOrder newItemOrder = itemOrderService.itemOrderCopy(orderId, newOrder, itemOrder);
-
-        JobDetail newJob = updateJob(itemOrder, orderId, newOrder, newItemOrder);
-        updateJob(newJob);
+        Order newOrder = getNewOrder(itemOrder, orderId);
 
         connectKaKaoPay(newOrder.getOrderId());
+    }
+
+    private Order getNewOrder(final ItemOrder itemOrder, final Long orderId) {
+        Order newOrder = getNewOrder(orderId);
+        ItemOrder newItemOrder = itemOrderService.itemOrderCopy(orderId, newOrder, itemOrder);
+        JobDetail newJob = updateJobDetails(itemOrder, orderId, newOrder, newItemOrder);
+
+        updateJob(newJob);
+        return newOrder;
     }
 
     private void updateJob(final JobDetail newJob) {
@@ -89,7 +95,7 @@ public class KaKaoSubscriptionJob implements Job {
         return orderService.deepCopy(order);
     }
 
-    private JobDetail updateJob( ItemOrder itemOrder, Long orderId, Order newOrder, ItemOrder newItemOrder ){
+    private JobDetail updateJobDetails( ItemOrder itemOrder, Long orderId, Order newOrder, ItemOrder newItemOrder ){
         User user = subscriptionService.getUser(orderId);
         JobKey jobkey = jobKey(user.getUserId() + itemOrder.getItem().getTitle(), String.valueOf(user.getUserId()));
         return jobDetail.build(jobkey, newOrder.getOrderId(), newItemOrder);

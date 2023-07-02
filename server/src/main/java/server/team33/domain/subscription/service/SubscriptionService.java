@@ -37,21 +37,44 @@ public class SubscriptionService {
         applySchedule(order, itemOrder);
     }
 
-
     public ItemOrder changePeriod(Long orderId, Integer period, Long itemOrderId) {
 
         ItemOrder itemOrder = itemOrderService.setItemPeriod(orderId, period,
             findItemOrderInOrder(orderId, itemOrderId));
 
-        if (payDirectly(orderId, period, itemOrder)) {
+        if (isPaymentDirectly(orderId, period, itemOrder)) {
             itemOrder.getPaymentDay().plusDays(itemOrder.getPeriod());
             return itemOrder;
         }
 
+        return getChangedItemOrder(orderId, itemOrder);
+    }
+
+    public ItemOrder delayDelivery(Long orderId, Integer delay, Long itemOrderId) {
+        log.info("delay Delivery");
+        ItemOrder itemOrder =
+            itemOrderService.delayDelivery(
+                orderId, delay, findItemOrderInOrder(orderId, itemOrderId)
+            );
+        resetSchedule(orderId, itemOrder);
+        return itemOrder;
+    }
+
+    public void cancelScheduler(Long orderId, Long itemOrderId) {
+        log.info("cancelScheduler");
+        ItemOrder itemOrder = getItemOrder(itemOrderId);
+
+        deleteSchedule(orderId, itemOrder);
+        itemOrderService.cancelItemOrder(orderId, itemOrder);
+        log.info("canceled item title = {}", itemOrder.getItem().getTitle());
+    }
+
+    private ItemOrder getChangedItemOrder(final Long orderId, final ItemOrder itemOrder) {
         ZonedDateTime paymentDay = itemOrder.getPaymentDay();
         ZonedDateTime nextDelivery = paymentDay.plusDays(itemOrder.getPeriod());
-        ItemOrder updatedItemOrder = itemOrderService.updateDeliveryInfo(orderId, paymentDay,
-            nextDelivery, itemOrder);
+        ItemOrder updatedItemOrder = itemOrderService.updateDeliveryInfo(
+            orderId, paymentDay, nextDelivery, itemOrder
+        );
 
         extendPeriod(orderId, updatedItemOrder);
 
@@ -59,11 +82,10 @@ public class SubscriptionService {
         return updatedItemOrder;
     }
 
-
-    private boolean payDirectly(Long orderId, Integer period, ItemOrder itemOrder){
-        boolean noMargin = itemOrder.getPaymentDay().plusDays(period)
+    private boolean isPaymentDirectly(Long orderId, Integer period, ItemOrder itemOrder) {
+        boolean noMargin = itemOrder.getPaymentDay()
+            .plusDays(period)
             .isBefore(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))); //바궈야진
-        log.info("margin = {}", noMargin);
 
         if (noMargin) {
             log.info("directly pay");
@@ -73,12 +95,18 @@ public class SubscriptionService {
         return false;
     }
 
-    private void deleteSchedule(Long orderId, ItemOrder itemOrder){
+    private void deleteSchedule(Long orderId, ItemOrder itemOrder) {
         log.info("delete schedule");
         User user = getUser(orderId);
+        deleteSchedule(itemOrder, user);
+    }
+
+    private void deleteSchedule(final ItemOrder itemOrder, final User user) {
         try {
-            scheduler.deleteJob(jobKey(user.getUserId() + itemOrder.getItem().getTitle(),
-                String.valueOf(user.getUserId())));
+            scheduler.deleteJob(jobKey(
+                user.getUserId() + itemOrder.getItem().getTitle(),
+                String.valueOf(user.getUserId()))
+            );
         } catch (SchedulerException e) {
             JobExecutionException jobExecutionException = new JobExecutionException(e);
             jobExecutionException.refireImmediately();
@@ -90,31 +118,13 @@ public class SubscriptionService {
         resetSchedule(orderId, itemOrder);
     }
 
-
-    public ItemOrder delayDelivery(Long orderId, Integer delay, Long itemOrderId) {
-        log.info("delay Delivery");
-        ItemOrder itemOrder = itemOrderService.delayDelivery(orderId, delay,
-            findItemOrderInOrder(orderId, itemOrderId));
-        resetSchedule(orderId, itemOrder);
-        return itemOrder;
-    }
-
-    public void cancelScheduler(Long orderId, Long itemOrderId) {
-        log.info("cancelScheduler");
-        ItemOrder itemOrder = getItemOrder(itemOrderId);
-
-        deleteSchedule(orderId, itemOrder);
-        itemOrderService.cancelItemOrder(orderId, itemOrder);
-        log.warn("canceled item title = {}", itemOrder.getItem().getTitle());
-    }
-
-    private void resetSchedule(Long orderId, ItemOrder itemOrder){
+    private void resetSchedule(Long orderId, ItemOrder itemOrder) {
         Order order = orderService.findOrder(orderId);
         deleteSchedule(orderId, itemOrder);
         startSchedule(order, itemOrder);
     }
 
-    public ItemOrder getItemOrder(Long itemOrderId) {
+    private ItemOrder getItemOrder(Long itemOrderId) {
         return itemOrderService.findItemOrder(itemOrderId);
     }
 
@@ -147,7 +157,7 @@ public class SubscriptionService {
             String.valueOf(user.getUserId())
         );
         JobDetail payDay = jobDetail.build(jobkey, order.getOrderId(), itemOrder);
-        Trigger lastTrigger = trigger.build(jobkey, order.getOrderId(), itemOrder);
+        Trigger lastTrigger = trigger.build(jobkey, itemOrder);
         schedule(payDay, lastTrigger);
     }
 }
