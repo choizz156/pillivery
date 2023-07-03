@@ -1,4 +1,4 @@
-package server.team33.domain.payment.Toss.controller;
+package server.team33.domain.payment.toss.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import server.team33.domain.order.service.OrderService;
-import server.team33.domain.payment.Toss.service.TossPayService;
+import server.team33.domain.payment.toss.service.TossPayService;
 
 @RequiredArgsConstructor
 @RequestMapping("/payments")

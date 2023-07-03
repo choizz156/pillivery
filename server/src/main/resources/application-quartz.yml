@@ -3,9 +3,10 @@ spring:
     properties:
       org:
         quartz:
-          scheduler-name: pillivery_
+          scheduler-name: QRTZ_
           threadPool:
             threadCount: 5
+
           jobStore:
             class: org.quartz.impl.jdbcjobstore.JobStoreTX
             driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
@@ -22,14 +23,9 @@ spring:
             username: sa
             password:
             maxConnections: 10
+
     job-store-type: jdbc
     jdbc:
       initialize-schema: always
-
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/quartz
-    username: sa
-    password:
 
 

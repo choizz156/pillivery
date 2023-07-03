@@ -1,4 +1,4 @@
-package server.team33.domain.payment.Toss.dto;
+package server.team33.domain.payment.toss.dto;
 
 import lombok.Builder;
 import lombok.Getter;

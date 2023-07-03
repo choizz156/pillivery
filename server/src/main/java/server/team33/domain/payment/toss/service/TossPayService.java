@@ -1,4 +1,4 @@
-package server.team33.domain.payment.Toss.service;
+package server.team33.domain.payment.toss.service;
 
 
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import server.team33.domain.payment.Toss.dto.TossApproveDto;
+import server.team33.domain.payment.toss.dto.TossApproveDto;
 import server.team33.global.util.JsonMapper;
 
 @RequiredArgsConstructor

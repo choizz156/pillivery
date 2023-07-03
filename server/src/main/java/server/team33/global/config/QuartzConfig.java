@@ -13,8 +13,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 @Configuration
 public class QuartzConfig {
 
@@ -25,7 +25,9 @@ public class QuartzConfig {
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
+
         AutoWiringSpringBeanJobFactory autoWiringSpringBeanJobFactory = new AutoWiringSpringBeanJobFactory();
+
         autoWiringSpringBeanJobFactory.setApplicationContext(applicationContext);
         schedulerFactoryBean.setJobFactory(autoWiringSpringBeanJobFactory);
         schedulerFactoryBean.setDataSource(dataSource);
@@ -33,6 +35,7 @@ public class QuartzConfig {
         schedulerFactoryBean.setAutoStartup(true);
         schedulerFactoryBean.setTransactionManager(platformTransactionManager);
         schedulerFactoryBean.setQuartzProperties(quartzProperties());
+
         return schedulerFactoryBean;
     }
 
@@ -48,5 +51,4 @@ public class QuartzConfig {
         }
         return properties;
     }
-
 }
