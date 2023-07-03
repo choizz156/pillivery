@@ -66,25 +66,6 @@ public class ParameterProvider {
         return getCommonReqsParams(requestParamsInfo);
     }
 
-//    private PaymentParams getSubsApproveParams(Long orderId) {
-//        this.orderId = new AtomicLong(order.getOrderId());
-//        String itemName = getItemName(order);
-//        String sid = order.getUser().getSid();
-//
-//        return PaymentParams.builder().totalAmount(order.getTotalPrice())
-//            .quantity(order.getTotalQuantity())
-//            .orderId(this.orderId)
-//            .itemName(itemName)
-//            .sid(sid)
-//            .build();
-//    }
-
-//    private MultiValueMap<String, String> getSubsApproveParam(Long orderId) {
-//        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-//        parameters.add("cid", "TCSUBSCRIP");
-//        parameters.add("sid", );
-//    }
-
     private MultiValueMap<String, String> getCommonApproveParams(
         String tid,
         String pgToken,
@@ -124,7 +105,6 @@ public class ParameterProvider {
             .orderId(order.getOrderId())
             .build();
     }
-
 
     private String getItemName(Order order) {
         Integer itemQuantity = order.getTotalItems();

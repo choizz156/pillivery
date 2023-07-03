@@ -26,8 +26,11 @@ public class KaKaoPayApprove extends KaKaoHeader implements PayApprove {
     }
 
     @Override
-    public KakaoResponseDto.Approve approveFirstSubscription(String tid, String pgToken,
-        Long orderId) {
+    public KakaoResponseDto.Approve approveFirstSubscription(
+        String tid,
+        String pgToken,
+        Long orderId
+    ) {
         var firstSubscriptionApproveParams =
             parameterProvider.getSubscriptionFirstApproveParams(tid, pgToken, orderId);
 
@@ -41,7 +44,8 @@ public class KaKaoPayApprove extends KaKaoHeader implements PayApprove {
     }
 
     private KakaoResponseDto.Approve getResponseDtoAboutApprove(
-        MultiValueMap<String, String> params, String url
+        MultiValueMap<String, String> params,
+        String url
     ) {
         var entity = new HttpEntity<>(params, super.getHeaders());
 
