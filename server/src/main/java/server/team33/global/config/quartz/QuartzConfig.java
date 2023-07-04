@@ -1,4 +1,4 @@
-package server.team33.global.config;
+package server.team33.global.config.quartz;
 
 import java.io.IOException;
 import java.util.Properties;
