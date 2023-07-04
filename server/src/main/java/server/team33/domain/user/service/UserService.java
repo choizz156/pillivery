@@ -14,8 +14,8 @@ import server.team33.domain.user.dto.UserPostDto;
 import server.team33.domain.user.dto.UserPostOauthDto;
 import server.team33.domain.user.entity.User;
 import server.team33.domain.user.repository.UserRepository;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.ExceptionCode;
 
 @Slf4j
 @RequiredArgsConstructor

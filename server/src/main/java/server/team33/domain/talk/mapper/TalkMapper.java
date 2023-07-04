@@ -21,8 +21,8 @@ import server.team33.domain.talk.service.TalkCommentService;
 import server.team33.domain.talk.service.TalkService;
 import server.team33.domain.user.entity.User;
 import server.team33.domain.user.service.UserService;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.ExceptionCode;
 
 @Mapper(componentModel = "spring")
 public interface TalkMapper {

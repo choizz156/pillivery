@@ -1,8 +1,8 @@
 package server.team33.domain.review.mapper;
 
 import org.mapstruct.Mapper;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.ExceptionCode;
 import server.team33.domain.item.mapper.ItemMapper;
 import server.team33.domain.item.service.ItemService;
 import server.team33.domain.review.dto.ReviewDetailResponseDto;

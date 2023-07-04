@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import server.team33.domain.cart.entity.Cart;
 import server.team33.domain.cart.entity.ItemCart;
 import server.team33.domain.cart.repository.ItemCartRepository;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.ExceptionCode;
 
 import java.util.List;
 import java.util.Optional;

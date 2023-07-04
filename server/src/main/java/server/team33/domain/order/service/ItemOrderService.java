@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import server.team33.global.exception.bussiness.BusinessLogicException;
-import server.team33.global.exception.bussiness.ExceptionCode;
+import server.team33.global.exception.BusinessLogicException;
+import server.team33.global.exception.ExceptionCode;
 import server.team33.domain.item.repository.ItemRepository;
 import server.team33.domain.order.entity.ItemOrder;
 import server.team33.domain.order.reposiroty.OrderRepository;
@@ -141,14 +141,14 @@ public class ItemOrderService {
     }
 
 
-    public ItemOrder setDeliveryInfo( Long orderId, ZonedDateTime paymentDay, String nextDelivery, ItemOrder io ){
+    public ItemOrder updateDeliveryInfo( Long orderId, ZonedDateTime paymentDay, ZonedDateTime nextDelivery, ItemOrder io ){
 
         Optional<Order> order = orderRepository.findById(orderId);
 
         if(order.isPresent()){
             ItemOrder itemOrder = getItemOrder(io, order);
             itemOrder.setPaymentDay(paymentDay);
-            itemOrder.setNextDelivery(ZonedDateTime.parse(nextDelivery));
+            itemOrder.setNextDelivery(nextDelivery);
             return itemOrder;
         }
 
