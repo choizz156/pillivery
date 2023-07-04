@@ -1,4 +1,4 @@
-package server.team33.global.config;
+package server.team33.global.config.quartz;
 
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;

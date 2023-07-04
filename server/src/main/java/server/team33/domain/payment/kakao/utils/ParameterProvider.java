@@ -1,4 +1,4 @@
-package server.team33.domain.payment.kakao.service;
+package server.team33.domain.payment.kakao.utils;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -7,27 +7,20 @@ import server.team33.domain.order.entity.Order;
 import server.team33.domain.payment.kakao.dto.PaymentParams;
 
 @Component
-public class ParameterProvider {
-
-    private static final String PARTNER_USER_ID = "pillivery";
-    private static final String ONE_TIME_APPROVAL_URL = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kakao/approve/";
-    private static final String SUBSCRIPTION_APPROVAL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kakao/subs/approve";
-    private static final String CANCEL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/cancel";
-    private static final String FAIL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/fail";
-    private static final int NAME_INDEX = 0;
+public class ParameterProvider extends ParamsConst {
 
     public MultiValueMap<String, String> getOneTimeReqsParams(Order order) {
         var commonReqsParams = getRequestParams(order);
-        commonReqsParams.add("cid", "TC0ONETIME");
-        commonReqsParams.add("approval_url", ONE_TIME_APPROVAL_URL + order.getOrderId());
+        commonReqsParams.add(CID, ONE_TIME_CID);
+        commonReqsParams.add(APPROVAL_URL, ONE_TIME_APPROVAL_URL + order.getOrderId());
 
         return commonReqsParams;
     }
 
     public MultiValueMap<String, String> getSubscriptionReqsParams(Order order) {
         var commonReqsParams = getRequestParams(order);
-        commonReqsParams.add("cid", "TCSUBSCRIP");
-        commonReqsParams.add("approval_url", SUBSCRIPTION_APPROVAL_URI);
+        commonReqsParams.add(CID, SUBSCRIP_CID);
+        commonReqsParams.add(APPROVAL_URL, SUBSCRIPTION_APPROVAL_URI);
         return commonReqsParams;
     }
 
@@ -38,7 +31,7 @@ public class ParameterProvider {
     ) {
         var commonApproveParams =
             getCommonApproveParams(tid, pgToken, orderId);
-        commonApproveParams.add("cid", "TC0ONETIME");
+        commonApproveParams.add(CID, ONE_TIME_CID);
         return commonApproveParams;
     }
 
@@ -48,15 +41,15 @@ public class ParameterProvider {
         Long orderId
     ) {
         var commonSubsParams = getCommonApproveParams(tid, pgToken, orderId);
-        commonSubsParams.add("cid", "TCSUBSCRIP");
+        commonSubsParams.add(CID, SUBSCRIP_CID);
 
         return commonSubsParams;
     }
 
     public MultiValueMap<String, String> getSubscriptionApproveParams(String sid, Order order) {
         var subsApproveParams = getRequestParams(order);
-        subsApproveParams.add("sid", sid);
-        subsApproveParams.add("cid", "TCSUBSCRIP");
+        subsApproveParams.add(SID, sid);
+        subsApproveParams.add(CID, SUBSCRIP_CID);
 
         return subsApproveParams;
     }
@@ -73,10 +66,10 @@ public class ParameterProvider {
     ) {
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 
-        parameters.add("tid", tid);
-        parameters.add("partner_order_id", String.valueOf(orderId));
-        parameters.add("partner_user_id", PARTNER_USER_ID);
-        parameters.add("pg_token", pgToken);
+        parameters.add(TID, tid);
+        parameters.add(PARTNER_ORDER_ID, String.valueOf(orderId));
+        parameters.add(ParameterProvider.PARTNER_USER_ID, PARTNER_USER_ID);
+        parameters.add(PG_TOKEN, pgToken);
 
         return parameters;
     }
@@ -84,14 +77,14 @@ public class ParameterProvider {
     private MultiValueMap<String, String> getCommonReqsParams(PaymentParams paymentParams) {
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 
-        parameters.add("partner_order_id", String.valueOf(paymentParams.getOrderId()));
-        parameters.add("partner_user_id", PARTNER_USER_ID);
-        parameters.add("item_name", paymentParams.getItemName());
-        parameters.add("quantity", String.valueOf(paymentParams.getQuantity()));
-        parameters.add("total_amount", String.valueOf(paymentParams.getTotalAmount()));
-        parameters.add("tax_free_amount", "0");
-        parameters.add("cancel_url", CANCEL_URI);
-        parameters.add("fail_url", FAIL_URI);
+        parameters.add(PARTNER_ORDER_ID, String.valueOf(paymentParams.getOrderId()));
+        parameters.add(PARTNER_USER_ID, PARTNER);
+        parameters.add(ITEM_NAME, paymentParams.getItemName());
+        parameters.add(QUANTITY, String.valueOf(paymentParams.getQuantity()));
+        parameters.add(TOTAL_AMOUNT, String.valueOf(paymentParams.getTotalAmount()));
+        parameters.add(TAX_FREE_AMOUNT, "0");
+        parameters.add(CANCEL_URL, CANCEL_URI);
+        parameters.add(FAIL_URL, FAIL_URI);
 
         return parameters;
     }

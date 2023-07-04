@@ -14,6 +14,7 @@ import server.team33.domain.order.reposiroty.OrderRepository;
 import server.team33.domain.order.service.OrderService;
 import server.team33.domain.payment.kakao.dto.KakaoResponseDto;
 import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Approve;
+import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Request;
 import server.team33.global.exception.BusinessLogicException;
 import server.team33.global.exception.ExceptionCode;
 
@@ -30,14 +31,19 @@ public class KakaoPaymentFacade implements PaymentTypeFacade {
     @Override
     public KakaoResponseDto.Request request(long orderId) {
         Order order = findOrder(orderId);
-        return order.isSubscription()
-            ? kakaoPayRequest.requestSubscription(order)
-            : kakaoPayRequest.requestOneTime(order);
+        if(order.isSubscription()){
+            return kakaoPayRequest.requestSubscription(order);
+        }
+
+        Request request = kakaoPayRequest.requestOneTime(order);
+        order.addTid(request.getTid());
+        return request;
     }
 
     @Override
-    public KakaoResponseDto.Approve approve(String tid, String pgToken, Long orderId) {
+    public KakaoResponseDto.Approve approve(String pgToken, Long orderId) {
         Order order = findOrder(orderId);
+        String tid = order.getTid();
         if (order.isSubscription()) {
             Approve approve =
                 kakaoPayApprove.approveFirstSubscription(tid, pgToken, orderId);

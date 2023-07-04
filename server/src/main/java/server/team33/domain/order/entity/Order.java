@@ -47,6 +47,8 @@ public class Order extends BaseEntity {
 
     private String sid;
 
+    private String tid;
+
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
@@ -64,6 +66,10 @@ public class Order extends BaseEntity {
         this.sid = sid;
     }
 
+    public void addTid(String tid) {
+        this.tid = tid;
+    }
+
     public Order( Order origin ){
 
         this.name = origin.getName();
@@ -79,5 +85,7 @@ public class Order extends BaseEntity {
         this.itemOrders = origin.getItemOrders();
         this.orderStatus = OrderStatus.ORDER_SUBSCRIBE;
         this.totalQuantity = origin.getTotalQuantity();
+        this.sid = origin.getSid();
+        this.tid = origin.getTid();
     }
 }
