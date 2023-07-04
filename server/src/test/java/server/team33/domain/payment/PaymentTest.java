@@ -23,7 +23,7 @@ import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Approve;
 import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Request;
 import server.team33.domain.payment.kakao.service.KaKaoPayApprove;
 import server.team33.domain.payment.kakao.service.KaKaoPayRequest;
-import server.team33.domain.payment.kakao.service.ParameterProvider;
+import server.team33.domain.payment.kakao.utils.ParameterProvider;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentTest {

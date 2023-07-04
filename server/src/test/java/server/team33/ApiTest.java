@@ -13,9 +13,9 @@ import server.team33.domain.user.repository.UserRepository;
 import server.team33.domain.user.service.UserService;
 import server.team33.global.auth.security.jwt.JwtTokenProvider;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "quartz"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class ApiTest {
+public abstract class ApiTest {
 
     @LocalServerPort
     private int port;
@@ -33,7 +33,7 @@ public class ApiTest {
 
     @AfterEach
     void afterEach() {
-        userRepository.deleteAll();
+        userRepository.deleteAllInBatch();
     }
 
     protected String getToken() {

@@ -1,4 +1,4 @@
-package server.team33.domain.user.controller;
+package server.team33.domain.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -32,7 +32,6 @@ class UserApiTest extends ApiTest {
     private UserService userService;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
 
     @DisplayName("회원 가입")
     @Test
