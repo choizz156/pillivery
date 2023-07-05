@@ -1,68 +1,100 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-}
-
-group = 'server'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+buildscript {
+    ext {
+        springBootVersion = '2.7.5'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.15.RELEASE"
     }
 }
 
-repositories {
-    mavenCentral()
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'server'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
+    compileJava.options.encoding = 'UTF-8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        //lombok
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+        //junit5
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+
+        //api-test
+        implementation 'io.rest-assured:rest-assured'
+
+        //fixture-monkey
+        implementation 'com.navercorp.fixturemonkey:fixture-monkey:0.5.2'
+        testImplementation('com.navercorp.fixturemonkey:fixture-monkey-mockito:0.5.2')
+
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+project(':module-core') {
+    bootJar { enabled = true }
+    jar { enabled = true }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        //oauth2 설정
+        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+        testImplementation 'org.springframework.security:spring-security-test'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+
+        //mapstruct
+        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+        //db
+        runtimeOnly 'com.h2database:h2'
+        implementation 'mysql:mysql-connector-java'
+
+        //jwt
+        implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+        runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+        runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+        //http클라이어트 디버깅
+        implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+        //expiringMap
+        implementation 'net.jodah:expiringmap:0.5.9'
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+project(':module-quartz') {
+    bootJar { enabled = true }
+    jar { enabled = false }
 
-    //oauth2 설정
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    //mapstruct
-    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-
-    //db
-    runtimeOnly 'com.h2database:h2'
-    implementation 'mysql:mysql-connector-java'
-
-    //jwt
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
-
-    //http클라이어트 디버깅
-    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-
-    //quartz
-    implementation 'org.springframework.boot:spring-boot-starter-quartz'
-
-    //expiringMap
-    implementation 'net.jodah:expiringmap:0.5.9'
-
-    //api-test
-    implementation 'io.rest-assured:rest-assured'
-
-    //fixture-monkey
-    implementation 'com.navercorp.fixturemonkey:fixture-monkey:0.5.2'
-    testImplementation('com.navercorp.fixturemonkey:fixture-monkey-mockito:0.5.2')
+    dependencies {
+        api project(':module-core')
+        //quartz
+        implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
