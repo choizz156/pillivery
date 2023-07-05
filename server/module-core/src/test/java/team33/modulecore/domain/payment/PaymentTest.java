@@ -1,29 +1,25 @@
-package server.team33.domain.payment;
+package team33.modulecore.domain.payment;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
-import server.team33.domain.order.entity.Order;
-import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Approve;
-import server.team33.domain.payment.kakao.dto.KakaoResponseDto.Request;
-import server.team33.domain.payment.kakao.service.KaKaoPayApprove;
-import server.team33.domain.payment.kakao.service.KaKaoPayRequest;
-import server.team33.domain.payment.kakao.utils.ParameterProvider;
+import team33.modulecore.domain.order.entity.Order;
+import team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Approve;
+import team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Request;
+import team33.modulecore.domain.payment.kakao.service.KaKaoPayApprove;
+import team33.modulecore.domain.payment.kakao.service.KaKaoPayRequest;
+import team33.modulecore.domain.payment.kakao.utils.ParameterProvider;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentTest {
@@ -47,7 +43,7 @@ class PaymentTest {
     void payRequestTest() throws Exception {
         //then
         Order order = fixtureMonkey.giveMeOne(Order.class);
-        given(payRequest.requestOneTime(any(Order.class)))
+        BDDMockito.given(payRequest.requestOneTime(ArgumentMatchers.any(Order.class)))
             .willReturn(Request.class.getDeclaredConstructor().newInstance());
 
         //when
@@ -55,8 +51,9 @@ class PaymentTest {
 
         //then
         assertThat(request).isInstanceOf(Request.class);
-        verify(parameterProvider, times(1)).getOneTimeReqsParams(any(Order.class));
-        verify(restTemplate, times(1)).postForObject(anyString(), any(), eq(Request.class));
+        Mockito.verify(parameterProvider, Mockito.times(1)).getOneTimeReqsParams(
+            ArgumentMatchers.any(Order.class));
+        Mockito.verify(restTemplate, Mockito.times(1)).postForObject(ArgumentMatchers.anyString(), ArgumentMatchers.any(), ArgumentMatchers.eq(Request.class));
     }
 
     @DisplayName("카카오 단건 결제 승인이 완료되면 응답 객체를 받는다.")
@@ -64,7 +61,8 @@ class PaymentTest {
     void payProveTest() throws Exception {
         //given
         Request request = fixtureMonkey.giveMeOne(Request.class);
-        given(payApprove.approveOneTime(anyString(), anyString(), anyLong()))
+        BDDMockito.given(payApprove.approveOneTime(
+                ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyLong()))
             .willReturn(Approve.class.getDeclaredConstructor().newInstance());
 
         //when
@@ -72,9 +70,9 @@ class PaymentTest {
 
         //then
         assertThat(approve).isInstanceOf(Approve.class);
-        verify(parameterProvider, times(1))
-            .getOneTimeApproveParams(anyString(), anyString(), anyLong());
-        verify(restTemplate, times(1)).postForObject(anyString(), any(), eq(Approve.class));
+        Mockito.verify(parameterProvider, Mockito.times(1))
+            .getOneTimeApproveParams(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyLong());
+        Mockito.verify(restTemplate, Mockito.times(1)).postForObject(ArgumentMatchers.anyString(), ArgumentMatchers.any(), ArgumentMatchers.eq(Approve.class));
     }
 
     @DisplayName("카카오 최초 정기 결제 요청이 완료되면 응답 객체를 받는다.")
@@ -82,7 +80,7 @@ class PaymentTest {
     void subFirstRequest() throws Exception {
         //given
         Order order = fixtureMonkey.giveMeOne(Order.class);
-        given(payRequest.requestSubscription(any(Order.class)))
+        BDDMockito.given(payRequest.requestSubscription(ArgumentMatchers.any(Order.class)))
             .willReturn(Request.class.getDeclaredConstructor().newInstance());
 
         //when
@@ -90,15 +88,16 @@ class PaymentTest {
 
         //then
         assertThat(request).isInstanceOf(Request.class);
-        verify(parameterProvider, times(1)).getSubscriptionReqsParams(any(Order.class));
-        verify(restTemplate, times(1)).postForObject(anyString(), any(), eq(Request.class));
+        Mockito.verify(parameterProvider, Mockito.times(1)).getSubscriptionReqsParams(
+            ArgumentMatchers.any(Order.class));
+        Mockito.verify(restTemplate, Mockito.times(1)).postForObject(ArgumentMatchers.anyString(), ArgumentMatchers.any(), ArgumentMatchers.eq(Request.class));
     }
 
     @DisplayName("카카오 최초 정기 결제 승인이 완료되면 응답 객체를 받는다.")
     @Test
     void subFirstApprove() throws Exception {
         //given
-        given(payApprove.approveFirstSubscription(anyString(), anyString(), anyLong()))
+        BDDMockito.given(payApprove.approveFirstSubscription(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyLong()))
             .willReturn(Approve.class.getDeclaredConstructor().newInstance());
 
         //when
@@ -106,7 +105,7 @@ class PaymentTest {
 
         //then
         assertThat(approve).isInstanceOf(Approve.class);
-        verify(restTemplate, times(1)).postForObject(anyString(), any(), eq(Approve.class));
+        Mockito.verify(restTemplate, Mockito.times(1)).postForObject(ArgumentMatchers.anyString(), ArgumentMatchers.any(), ArgumentMatchers.eq(Approve.class));
     }
 
     @DisplayName("카카오 최초 정기 결제 후 결제 승인이 완료되면 응답 객체를 받는다.")
@@ -114,16 +113,16 @@ class PaymentTest {
     void subApprove() throws Exception {
         //given
         Order order = fixtureMonkey.giveMeOne(Order.class);
-        given(payApprove.approveSubscription(anyString(), any(Order.class)))
+        BDDMockito.given(payApprove.approveSubscription(ArgumentMatchers.anyString(), ArgumentMatchers.any(Order.class)))
             .willReturn(Approve.class.getDeclaredConstructor().newInstance());
         //when
         Approve approve = payApprove.approveSubscription("sid", order);
 
         //then
         assertThat(approve).isInstanceOf(Approve.class);
-        verify(parameterProvider, times(1))
-            .getSubscriptionApproveParams(anyString(), any(Order.class));
-        verify(restTemplate, times(1)).postForObject(anyString(), any(), eq(Approve.class));
+        Mockito.verify(parameterProvider, Mockito.times(1))
+            .getSubscriptionApproveParams(ArgumentMatchers.anyString(), ArgumentMatchers.any(Order.class));
+        Mockito.verify(restTemplate, Mockito.times(1)).postForObject(ArgumentMatchers.anyString(), ArgumentMatchers.any(), ArgumentMatchers.eq(Approve.class));
     }
 }
 

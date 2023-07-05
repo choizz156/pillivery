@@ -1,4 +1,4 @@
-package server.team33.domain;
+package team33.modulecore.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -7,8 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
-import server.team33.domain.user.dto.UserPostDto;
-import server.team33.domain.user.service.UserService;
+import team33.modulecore.domain.user.dto.UserPostDto;
+import team33.modulecore.domain.user.service.UserService;
 
 
 public class UserAccountFactory implements WithSecurityContextFactory<UserAccount> {

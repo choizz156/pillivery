@@ -1,4 +1,4 @@
-package server.team33.domain;
+package team33.modulecore.domain;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
