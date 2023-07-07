@@ -34,18 +34,18 @@
 ![erd 수정](https://user-images.githubusercontent.com/106965005/228384360-5a59318c-74c4-4449-9717-f097a6903ee3.png)
 
 ## 4. 내가 만든 기능
-#### 1) User 도메인 CRUD 📌[디렉토리 이동](https://github.com/choizz156/seb40_main_033/tree/main/server/src/main/java/server/team33/domain/user)
+#### 1) User 도메인 CRUD 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user)
 - 회원가입, 정보 수정, 회원 탈퇴, 회원 정보 조회와 같은 User 도메인 api를 개발했습니다.
 - API path만 보더라도 해당 api의 용도를 명확하게 이해할 수 있도록 가독성을 고려했습니다.
 - Rest ApI 디자인 가이드 중  Resources, Http Methods, Status Code를 지키며 개발했습니다.
 ---
-#### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/seb40_main_033/tree/main/server/src/main/java/server/team33/global/auth)
+#### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
 - 회원가입 후 로그인하면 바로 토큰을 발급합니다.
 - OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 토큰이 발급됩니다. 
   - 추가 정보 기입을 완료한 후에는 OAuth 로그인 시 바로 토큰이 발급됩니다.
   - 리소스 서버에서 받은 리소스와 따로 추가한 정보는 서버의 데이터베이스에서 따로 관리합니다.
 ---  
-#### 3) 외부 결제 API 연동(카카오 페이, 토스 페이먼츠) 📌[디렉토리 이동](https://github.com/choizz156/seb40_main_033/tree/main/server/src/main/java/server/team33/domain/payment)
+#### 3) 외부 결제 API 연동(카카오 페이, 토스 페이먼츠) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment)
 - 카카오 페이와 토스 페이먼츠, 두 결제 api와 저희 서버를 연동했습니다.
     - 카카오 페이의 경우,
       - 결제 요청이 들어올 때, `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청을 구분하여 결제 요청 서비스에 위임합니다.
@@ -55,12 +55,12 @@
 
 ---
   
-#### 4) 정기 구독(결제) 기능 구현 📌[디렉토리 이동](https://github.com/choizz156/seb40_main_033/tree/main/server/src/main/java/server/team33/domain/subscription)
+#### 4) 정기 구독(결제) 기능 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-quartz/src/main/java/com/team33/modulequartz/subscription)
 - 정기 구독 시 Quartz 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동합니다..
     - job이 설정한 스케쥴에 실행되지 않을 시 `중복 실행 방지`(@DisallowConcurrentExecution).
     - job 자체에서 `예외가 발생 시 바로 재실행` 조치(JobExecutionException).
 ---
-#### 5) Exception 핸들링과 공통 Exception Response 구현 📌[디렉토리 이동](https://github.com/choizz156/seb40_main_033/tree/main/server/src/main/java/server/team33/global/exception)
+#### 5) Exception 핸들링과 공통 Exception Response 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/exception)
 - `@RestControllerAdivce`를 이용하여 Exception을 핸들링하고, 공통적인 예외 Response 객체를 만들어 응답을 보냈습니다.
 
 
