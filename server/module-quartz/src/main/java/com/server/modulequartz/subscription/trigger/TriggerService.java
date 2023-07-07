@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
 import org.springframework.stereotype.Component;
-import server.team33.domain.order.entity.ItemOrder;
+import team33.modulecore.domain.order.entity.ItemOrder;
 
 @Slf4j
 @Component
