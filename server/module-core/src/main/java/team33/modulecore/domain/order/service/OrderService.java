@@ -17,9 +17,9 @@ import team33.modulecore.domain.user.entity.User;
 import team33.modulecore.global.exception.BusinessLogicException;
 import team33.modulecore.global.exception.ExceptionCode;
 
-@Service
 @Transactional
 @RequiredArgsConstructor
+@Service
 public class OrderService {
 
     private final OrderRepository orderRepository;

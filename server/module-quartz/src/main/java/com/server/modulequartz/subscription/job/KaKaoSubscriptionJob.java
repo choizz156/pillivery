@@ -22,12 +22,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import server.team33.domain.order.entity.ItemOrder;
-import server.team33.domain.order.entity.Order;
-import server.team33.domain.order.service.ItemOrderService;
-import server.team33.domain.order.service.OrderService;
 import com.server.modulequartz.subscription.service.SubscriptionService;
-import server.team33.domain.user.entity.User;
+import team33.modulecore.domain.order.entity.ItemOrder;
+import team33.modulecore.domain.order.entity.Order;
+import team33.modulecore.domain.order.service.ItemOrderService;
+import team33.modulecore.domain.order.service.OrderService;
+import team33.modulecore.domain.user.entity.User;
 
 /**
  Job 클래스내에서 @Autowired 할 수 있도록 하기 위해서 사용함

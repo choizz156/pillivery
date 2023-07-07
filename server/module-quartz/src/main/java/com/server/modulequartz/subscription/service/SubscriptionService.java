@@ -19,6 +19,7 @@ import team33.modulecore.domain.order.entity.ItemOrder;
 import team33.modulecore.domain.order.entity.Order;
 import team33.modulecore.domain.order.service.ItemOrderService;
 import team33.modulecore.domain.order.service.OrderService;
+import team33.modulecore.domain.user.entity.User;
 
 
 @Slf4j

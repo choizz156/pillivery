@@ -8,7 +8,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.springframework.stereotype.Component;
-import server.team33.domain.order.entity.ItemOrder;
+import team33.modulecore.domain.order.entity.ItemOrder;
 
 @Slf4j
 @RequiredArgsConstructor

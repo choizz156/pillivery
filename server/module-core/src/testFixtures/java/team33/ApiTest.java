@@ -1,4 +1,4 @@
-package team33.modulecore;
+package team33;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +13,7 @@ import team33.modulecore.domain.user.repository.UserRepository;
 import team33.modulecore.domain.user.service.UserService;
 import team33.modulecore.global.auth.security.jwt.JwtTokenProvider;
 
-@ActiveProfiles({"test", "quartz"})
+@ActiveProfiles({"test"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class ApiTest {
 
