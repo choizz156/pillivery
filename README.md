@@ -71,7 +71,9 @@
 [정기 배송 구현에 scheduler 사용](https://velog.io/@choizz/%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EC%97%90%EC%84%9C-%EC%A0%95%EA%B8%B0-%EB%B0%B0%EC%86%A1-%EA%B5%AC%ED%98%84%EC%97%90-Scheduler-%EC%82%AC%EC%9A%A9)</br>
 [정기 배송 구현에 quartz 사용](https://velog.io/@choizz/%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EC%97%90%EC%84%9C-%EC%A0%95%EA%B8%B0-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84-Quartz.-v2)</br>
 [deep copy와 swallow copy](https://velog.io/@choizz/Java에서-deep-copy와-swallow-copy#swallow-copy얕은-복사)</br>
+
 ---
+
 ### 커뮤니케이션
 - 저는 클라이언트와 서버 둘 다와 관련 있는 JWT나 OAuth 같은 용어들을 당연히 프론트엔드 팀원들도 알고 있을 거로 생각하고 사용했습니다. 그런데, 프론트엔드 팀원들은 이런 용어들을 알지 못했습니다.
 - 제가 상대방도 당연히 알 것으로 생각했던 것들을 상대방을 모를 수도 있다는 것을 깨달았습니다. 그래서 상대방과 커뮤니케이션할 때는 최대한 상대방이 이해하기 쉬운 용어와 표현을 사용하는 것이 의사소통에 중요하다는 것을 알게 됐습니다.
