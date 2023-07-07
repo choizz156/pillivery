@@ -1,9 +1,10 @@
 package team33.modulecore.domain.user;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,16 +13,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import team33.ApiTest;
 import team33.UserAccount;
-import team33.modulecore.domain.user.dto.UserPatchDto;
-import team33.modulecore.domain.user.dto.UserPostDto;
-import team33.modulecore.domain.user.dto.UserPostOauthDto;
-import team33.modulecore.domain.user.entity.Address;
-import team33.modulecore.domain.user.entity.User;
-import team33.modulecore.domain.user.entity.UserRoles;
-import team33.modulecore.domain.user.repository.UserRepository;
-import team33.modulecore.domain.user.service.UserService;
-import team33.modulecore.global.auth.security.dto.LoginDto;
-import team33.modulecore.global.auth.security.jwt.JwtTokenProvider;
+import com.team33.modulecore.domain.user.dto.UserPatchDto;
+import com.team33.modulecore.domain.user.dto.UserPostDto;
+import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
+import com.team33.modulecore.domain.user.entity.Address;
+import com.team33.modulecore.domain.user.entity.User;
+import com.team33.modulecore.domain.user.entity.UserRoles;
+import com.team33.modulecore.domain.user.repository.UserRepository;
+import com.team33.modulecore.domain.user.service.UserService;
+import com.team33.modulecore.global.security.security.dto.LoginDto;
+import com.team33.modulecore.global.security.security.jwt.JwtTokenProvider;
 
 class UserApiTest extends ApiTest {
 
@@ -37,18 +38,20 @@ class UserApiTest extends ApiTest {
     void 회원가입() throws Exception {
         UserPostDto joinDto = join("test@gmail.com", "test1", "010-1111-1111");
 
+        //@formatter:off
         ExtractableResponse<Response> response = RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(joinDto)
+                .body(joinDto)
             .when()
-            .post("/users")
+                .post("/users")
             .then()
-            .log().all().extract();
+                .log().all().extract();
+        //@formatter:on
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         String data = response.jsonPath().get("data").toString();
-        Assertions.assertThat(data).isEqualTo("회원 가입 완료");
+        assertThat(data).isEqualTo("회원 가입 완료");
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -68,9 +71,9 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         String data = response.jsonPath().get("message").toString();
-        Assertions.assertThat(data).isEqualTo("이미 존재하는 닉네임입니다.");
+        assertThat(data).isEqualTo("이미 존재하는 닉네임입니다.");
 
     }
 
@@ -91,9 +94,9 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         String data = response.jsonPath().get("message").toString();
-        Assertions.assertThat(data).isEqualTo("이미 가입한 e-mail입니다.");
+        assertThat(data).isEqualTo("이미 가입한 e-mail입니다.");
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -112,9 +115,9 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         String data = response.jsonPath().get("message").toString();
-        Assertions.assertThat(data).isEqualTo("이미 존재하는 연락처입니다.");
+        assertThat(data).isEqualTo("이미 존재하는 연락처입니다.");
     }
 
     @DisplayName("oauth 로그인 시 추가 정보를 기입하면, 토큰이 발급됩니다.")
@@ -134,9 +137,9 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        Assertions.assertThat(response.header("Authorization")).isNotBlank();
-        Assertions.assertThat(response.body().asPrettyString()).isEqualTo("소셜 회원 추가 정보 기입 완료");
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Authorization")).isNotBlank();
+        assertThat(response.body().asPrettyString()).isEqualTo("소셜 회원 추가 정보 기입 완료");
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -154,9 +157,9 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
         String data = response.jsonPath().get("data").toString();
-        Assertions.assertThat(data).isEqualTo("USER_WITHDRAWAL");
+        assertThat(data).isEqualTo("USER_WITHDRAWAL");
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -211,9 +214,9 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         String data = response.jsonPath().get("message").toString();
-        Assertions.assertThat(data).isEqualTo("이미 존재하는 닉네임입니다.");
+        assertThat(data).isEqualTo("이미 존재하는 닉네임입니다.");
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -238,9 +241,9 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         String data = response.jsonPath().get("message").toString();
-        Assertions.assertThat(data).isEqualTo("이미 존재하는 연락처입니다.");
+        assertThat(data).isEqualTo("이미 존재하는 연락처입니다.");
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -321,8 +324,8 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Assertions.assertThat(response.header("Authorization")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.header("Authorization")).isNotBlank();
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -341,9 +344,9 @@ class UserApiTest extends ApiTest {
             .then()
             .log().all().extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
         String message = response.jsonPath().get("data").toString();
-        Assertions.assertThat(message).isEqualTo("로그아웃 완료");
+        assertThat(message).isEqualTo("로그아웃 완료");
     }
 
     private UserPostDto join(String email, String displayName, String phone) {

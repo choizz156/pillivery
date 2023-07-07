@@ -7,8 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
-import team33.modulecore.domain.user.dto.UserPostDto;
-import team33.modulecore.domain.user.service.UserService;
+import com.team33.modulecore.domain.user.dto.UserPostDto;
+import com.team33.modulecore.domain.user.service.UserService;
 
 public class UserAccountFactory implements WithSecurityContextFactory<UserAccount> {
 
