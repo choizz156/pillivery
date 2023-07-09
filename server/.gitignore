@@ -372,4 +372,7 @@ application-auth.yml
 application-local.yml
 application-quartz.yml
 application-test.yml
+application.yml
 
+*.jqwik-database
+settings.gradle
