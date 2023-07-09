@@ -1,4 +1,4 @@
-package team33;
+package com.team33;
 
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.service.UserService;

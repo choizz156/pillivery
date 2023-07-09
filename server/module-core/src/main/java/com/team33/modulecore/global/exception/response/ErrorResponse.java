@@ -26,18 +26,23 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse of(BindingResult bindingResult) {
-        return ErrorResponse.builder().customFieldErrors(CustomFieldError.of(bindingResult))
+        return ErrorResponse.builder()
+            .customFieldErrors(CustomFieldError.of(bindingResult))
             .build();
     }
 
     public static ErrorResponse of(ExceptionCode exceptionCode) {
-        return ErrorResponse.builder().status(exceptionCode.getCode())
-            .message(exceptionCode.getMessage()).build();
+        return ErrorResponse.builder()
+            .status(exceptionCode.getCode())
+            .message(exceptionCode.getMessage())
+            .build();
     }
 
     public static ErrorResponse of(HttpStatus httpStatus) {//저장되어 있는 문구
-        return ErrorResponse.builder().status(httpStatus.value())
-            .message(httpStatus.getReasonPhrase()).build();
+        return ErrorResponse.builder()
+            .status(httpStatus.value())
+            .message(httpStatus.getReasonPhrase())
+            .build();
     }
 
     public static ErrorResponse of(ConstraintViolationException e) {
@@ -50,7 +55,7 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse of(String message) { //직접 쓰는 문장
-        return ErrorResponse.builder().message(message).build();
+        return ErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value()).message(message).build();
     }
 
     @Getter
@@ -71,7 +76,8 @@ public class ErrorResponse {
             return fieldErrors.stream()
                 .map(error -> new CustomFieldError(error.getField(),
                     error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
-                    error.getDefaultMessage()))
+                    error.getDefaultMessage())
+                )
                 .collect(Collectors.toList());
         }
     }

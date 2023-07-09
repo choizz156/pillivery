@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,14 +51,14 @@ public class UserController {
 
     @PostMapping("/more-info")
     @ResponseStatus(HttpStatus.CREATED)
-    public void moreInfo(
+    public SingleResponseDto<String> moreInfo(
         @Valid @RequestBody UserPostOauthDto userDto,
         HttpServletResponse response
-    ) throws IOException {
+    ){
         User user = userService.addOAuthInfo(userDto);
         jwtTokenProvider.addTokenInResponse(response, user);
 
-        response.getWriter().write(OAUTH_JOIN_COMPLETE);
+        return new SingleResponseDto<>(OAUTH_JOIN_COMPLETE);
     }
 
     @PatchMapping

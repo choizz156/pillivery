@@ -38,14 +38,16 @@ public class ExceptionController {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse methodArgumentTypeMismatchExceptionHandler(
-        MethodArgumentNotValidException e) {
+        MethodArgumentNotValidException e
+    ) {
         return ErrorResponse.of(e.getBindingResult());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse missingServletRequestParameterExceptionHandler(
-        MissingServletRequestParameterException e) {
+        MissingServletRequestParameterException e
+    ) {
         return ErrorResponse.of(e.getMessage());
     }
 

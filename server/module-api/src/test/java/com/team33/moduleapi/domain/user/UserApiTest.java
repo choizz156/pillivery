@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import team33.ApiTest;
-import team33.UserAccount;
+import com.team33.ApiTest;
+import com.team33.UserAccount;
 
 class UserApiTest extends ApiTest {
 
@@ -129,17 +129,18 @@ class UserApiTest extends ApiTest {
         UserPostOauthDto dto = oauthJoin();
         ExtractableResponse<Response> response = RestAssured
             .given()
-            .log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(dto)
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(dto)
             .when()
-            .post("users/more-info")
+                .post("/users/more-info")
             .then()
-            .log().all().extract();
+                .log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Authorization")).isNotBlank();
-        assertThat(response.body().asPrettyString()).isEqualTo("소셜 회원 추가 정보 기입 완료");
+        assertThat(response.body().jsonPath().get("data").toString())
+            .hasToString("소셜 회원 추가 정보 기입 완료");
     }
 
     @UserAccount({"test", "010-0000-0000"})

@@ -10,7 +10,7 @@ import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.reposiroty.OrderRepository;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulequartz.ModuleQuartzApplication;
+import com.team33.ModuleQuartzApplication;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.ZonedDateTime;
@@ -23,7 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
-import team33.ApiTest;
+import com.team33.ApiTest;
 
 //TODO: 정확하게 알아보기위해서... 지워야한다.
 @ActiveProfiles("quartz")

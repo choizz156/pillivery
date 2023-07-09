@@ -65,6 +65,7 @@ project(':module-api') {
 
     dependencies {
         api project(':module-core')
+        api testFixtures(project(':module-core'))
     }
 }
 
@@ -75,7 +76,7 @@ project(':module-quartz') {
     dependencies {
         api project(':module-core')
         api project(':module-api')
-        api (testFixtures(project(':module-api')))
+        api testFixtures(project(':module-core'))
     }
 }
 
