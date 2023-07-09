@@ -12,6 +12,7 @@ buildscript {
 }
 
 subprojects {
+
     apply plugin: 'java-library'
     apply plugin: 'idea'
     apply plugin: 'org.springframework.boot'
@@ -27,13 +28,7 @@ subprojects {
         mavenCentral()
     }
 
-
-
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
         //lombok
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
@@ -49,7 +44,6 @@ subprojects {
         //fixture-monkey
         implementation 'com.navercorp.fixturemonkey:fixture-monkey:0.5.2'
         testImplementation('com.navercorp.fixturemonkey:fixture-monkey-mockito:0.5.2')
-
     }
 
     test {
@@ -58,11 +52,19 @@ subprojects {
 }
 
 project(':module-core') {
-    bootJar { enabled = true }
+    bootJar { enabled = false }
     jar { enabled = true }
 
+    dependencies {
+    }
+}
+
+project(':module-api') {
+    bootJar { enabled = true }
+    jar { enabled = false }
 
     dependencies {
+        api project(':module-core')
     }
 }
 
@@ -71,8 +73,9 @@ project(':module-quartz') {
     jar { enabled = false }
 
     dependencies {
-        implementation project(':module-core')
-        implementation(testFixtures(project(':module-core')))
+        api project(':module-core')
+        api project(':module-api')
+        api (testFixtures(project(':module-api')))
     }
 }
 

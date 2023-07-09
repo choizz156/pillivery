@@ -1,6 +1,7 @@
 package com.team33.modulecore.global.exception.controller;
 
 
+import com.team33.modulecore.global.exception.BusinessLogicException;
 import com.team33.modulecore.global.exception.response.ErrorResponse;
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import com.team33.modulecore.global.exception.BusinessLogicException;
-import com.team33.modulecore.global.exception.QuartzSchedulerException;
 
 @Slf4j
 @RestControllerAdvice
@@ -53,12 +52,6 @@ public class ExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
-        return ErrorResponse.of(e.getMessage());
-    }
-
-    @ExceptionHandler(QuartzSchedulerException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse quartzSchedulerExceptionHandler(QuartzSchedulerException e){
         return ErrorResponse.of(e.getMessage());
     }
 }

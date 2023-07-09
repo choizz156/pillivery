@@ -376,3 +376,4 @@ application.yml
 
 *.jqwik-database
 settings.gradle
+HELP.md

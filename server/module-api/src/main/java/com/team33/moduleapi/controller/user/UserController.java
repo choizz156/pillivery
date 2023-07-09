@@ -1,6 +1,13 @@
-package com.team33.modulecore.domain.user.controller;
+package com.team33.moduleapi.controller.user;
 
+import com.team33.modulecore.domain.user.dto.UserPatchDto;
+import com.team33.modulecore.domain.user.dto.UserPostDto;
+import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
+import com.team33.modulecore.domain.user.dto.UserResponse;
+import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.service.Logout;
+import com.team33.modulecore.domain.user.service.UserService;
+import com.team33.modulecore.global.response.SingleResponseDto;
 import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,13 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
-import com.team33.modulecore.domain.user.dto.UserResponse;
-import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.response.SingleResponseDto;
 
 
 @Slf4j
