@@ -374,6 +374,7 @@ application-quartz.yml
 application-test.yml
 application.yml
 application-prod1.yml
+application-prod.yml
 
 *.jqwik-database
 settings.gradle

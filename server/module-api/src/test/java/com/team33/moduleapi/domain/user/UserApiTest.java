@@ -16,6 +16,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ class UserApiTest extends ApiTest {
     private UserService userService;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @AfterEach
+    void tearDown() {
+            userRepository.deleteAll();
+    }
 
     @DisplayName("회원 가입")
     @Test
@@ -148,7 +154,7 @@ class UserApiTest extends ApiTest {
     @Test
     void 회원_탈퇴() throws Exception {
 
-        String token = super.getToken();
+        String token = getToken();
         ExtractableResponse<Response> response = RestAssured
             .given()
             .log().all()
@@ -168,7 +174,7 @@ class UserApiTest extends ApiTest {
     @Test
     void 회원_정보_수정() throws Exception {
 
-        String token = super.getToken();
+        String token = getToken();
         UserPatchDto userPatchDto = updateUser("test2", "010-1121-1111");
 
         ExtractableResponse<Response> response = RestAssured
@@ -201,7 +207,7 @@ class UserApiTest extends ApiTest {
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
         userService.join(postDto);
 
-        String token = super.getToken();
+        String token = getToken();
         UserPatchDto userPatchDto = updateUser("test22", "010-1111-1111");
 
         ExtractableResponse<Response> response = RestAssured
@@ -228,7 +234,7 @@ class UserApiTest extends ApiTest {
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
         userService.join(postDto);
 
-        String token = super.getToken();
+        String token = getToken();
         UserPatchDto userPatchDto = updateUser("test1", "010-1112-1111");
 
         ExtractableResponse<Response> response = RestAssured
@@ -251,7 +257,7 @@ class UserApiTest extends ApiTest {
     @DisplayName("회원 정보를 조회 (회원 가입을 통한 로그인일 경우 social false)")
     @Test
     void 회원_조회() throws Exception {
-        String token = super.getToken();
+        String token = getToken();
 
         ExtractableResponse<Response> response = RestAssured
             .given()
@@ -402,5 +408,10 @@ class UserApiTest extends ApiTest {
             .oauthId(oauthId)
             .roles(UserRoles.USER)
             .build();
+    }
+
+    private String getToken() {
+        User loginUser = userService.getLoginUser();
+        return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
     }
 }
