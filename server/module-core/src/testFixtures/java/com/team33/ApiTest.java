@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,13 +18,13 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles({"test", "auth"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ExtendWith(RestDocumentationExtension.class)
+@ExtendWith(RestDocumentationExtension.class)//rest-doc
 public abstract class ApiTest {
 
     @LocalServerPort
     private int port;
 
-    //rest-docs
+    //rest-docs assurd
     protected RequestSpecification spec;
 
 

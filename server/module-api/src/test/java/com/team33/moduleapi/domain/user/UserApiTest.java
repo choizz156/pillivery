@@ -59,7 +59,7 @@ class UserApiTest extends ApiTest {
             .log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(joinDto)
-            .filter(document("pillivery",
+            .filter(document("user-create",
                     preprocessRequest(modifyUris()
                         .scheme("http")
                         .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
@@ -95,20 +95,40 @@ class UserApiTest extends ApiTest {
 
         UserPostDto dto2 = join("teset2@gmail.com", "test", "010-1111-1111");
 
-        ExtractableResponse<Response> response = RestAssured
-            .given()
+        RestAssured
+            .given(super.spec)
             .log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(dto2)
-            .when()
-            .post("/users")
+            .filter(document("user-error1-dn",
+                    preprocessRequest(modifyUris()
+                        .scheme("http")
+                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+                        .removePort(), prettyPrint()
+                    ),
+                    preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("detailAddress").type(JsonFieldType.STRING).description("상세 주소"),
+                        fieldWithPath("city").type(JsonFieldType.STRING).description("도시"),
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                        fieldWithPath("phone").type(JsonFieldType.STRING).description("연락처"),
+                        fieldWithPath("realName").type(JsonFieldType.STRING).description("이름"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드"),
+                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("닉네임")
+                    ),
+                    responseFields(
+                        fieldWithPath("message").type(JsonFieldType.STRING)
+                            .description("이미 존재하는 닉네임입니다."),
+                        fieldWithPath("status").type(JsonFieldType.NUMBER).description("Bad Request")
+                    )
+                )
+            )
+            .when().post("/users")
             .then()
-            .log().all().extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        String data = response.jsonPath().get("message").toString();
-        assertThat(data).isEqualTo("이미 존재하는 닉네임입니다.");
-
+            .log().all()
+            .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
+            .assertThat().body(containsString("이미 존재하는 닉네임입니다."))
+            .extract();
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -118,19 +138,40 @@ class UserApiTest extends ApiTest {
 
         UserPostDto dto2 = join("test@test.com", "test112", "010-1111-1111");
 
-        ExtractableResponse<Response> response = RestAssured
-            .given()
-            .log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(dto2)
-            .when()
-            .post("/users")
+        RestAssured
+            .given(super.spec)
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(dto2)
+                .filter(document("user-error2-email",
+                    preprocessRequest(modifyUris()
+                        .scheme("http")
+                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+                        .removePort(), prettyPrint()
+                    ),
+                    preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("detailAddress").type(JsonFieldType.STRING).description("상세 주소"),
+                        fieldWithPath("city").type(JsonFieldType.STRING).description("도시"),
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                        fieldWithPath("phone").type(JsonFieldType.STRING).description("연락처"),
+                        fieldWithPath("realName").type(JsonFieldType.STRING).description("이름"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드"),
+                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("닉네임")
+                    ),
+                    responseFields(
+                        fieldWithPath("message").type(JsonFieldType.STRING)
+                            .description("이미 가입한 e-mail입니다."),
+                        fieldWithPath("status").type(JsonFieldType.NUMBER).description("Bad Request")
+                    )
+                )
+            )
+            .when().post("/users")
             .then()
-            .log().all().extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        String data = response.jsonPath().get("message").toString();
-        assertThat(data).isEqualTo("이미 가입한 e-mail입니다.");
+                .log().all()
+                .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
+                .assertThat().body(containsString("이미 가입한 e-mail입니다."))
+                .extract();
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -347,7 +388,7 @@ class UserApiTest extends ApiTest {
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
         userService.join(postDto);
 
-        LoginDto dto = LoginDto.builder().username("test@gmail.com").password("1234").build();
+        LoginDto dto = LoginDto.builder().username("test@gmail.com").password("sdfsdfe!1").build();
 
         ExtractableResponse<Response> response = RestAssured
             .given()
@@ -386,10 +427,10 @@ class UserApiTest extends ApiTest {
 
     private UserPostDto join(String email, String displayName, String phone) {
 
-        String password = "1234";
+        String password = "sdfsdfe!1";
         String city = "서울시 부평구 송도동";
         String detailAddress = "101 번지";
-        String realName = "sdfgsdf";
+        String realName = "홍길동";
 
         return UserPostDto.builder()
             .detailAddress(detailAddress)
@@ -428,7 +469,7 @@ class UserApiTest extends ApiTest {
     private User oauthUser() {
         String displayName = "test";
         String email = "test@test.com";
-        String password = "1234";
+        String password = "sdfsdf232!";
         String city = "서울";
         String detailAddress = "압구정동";
         String realName = "name";

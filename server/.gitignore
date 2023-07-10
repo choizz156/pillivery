@@ -372,10 +372,10 @@ application-auth.yml
 application-local.yml
 application-quartz.yml
 application-test.yml
-application.yml
 application-prod1.yml
 application-prod.yml
 
 *.jqwik-database
 settings.gradle
 HELP.md
+gradlew
