@@ -1,7 +1,18 @@
 package com.team33.moduleapi.domain.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
+import com.team33.ApiTest;
+import com.team33.UserAccount;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
@@ -22,8 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import com.team33.ApiTest;
-import com.team33.UserAccount;
+import org.springframework.restdocs.payload.JsonFieldType;
 
 class UserApiTest extends ApiTest {
 
@@ -36,7 +46,7 @@ class UserApiTest extends ApiTest {
 
     @AfterEach
     void tearDown() {
-            userRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @DisplayName("회원 가입")
@@ -44,20 +54,38 @@ class UserApiTest extends ApiTest {
     void 회원가입() throws Exception {
         UserPostDto joinDto = join("test@gmail.com", "test1", "010-1111-1111");
 
-        //@formatter:off
-        ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
+        RestAssured
+            .given(super.spec)
+            .log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(joinDto)
-            .when()
-                .post("/users")
+            .body(joinDto)
+            .filter(document("pillivery",
+                    preprocessRequest(modifyUris()
+                        .scheme("http")
+                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+                        .removePort(), prettyPrint()
+                    ),
+                    preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("detailAddress").type(JsonFieldType.STRING).description("상세 주소"),
+                        fieldWithPath("city").type(JsonFieldType.STRING).description("도시"),
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                        fieldWithPath("phone").type(JsonFieldType.STRING).description("연락처"),
+                        fieldWithPath("realName").type(JsonFieldType.STRING).description("이름"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드"),
+                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("닉네임")
+                    ),
+                    responseFields(
+                        fieldWithPath("data").type(JsonFieldType.STRING).description("회원 가입 완료")
+                    )
+                )
+            )
+            .when().post("/users")
             .then()
-                .log().all().extract();
-        //@formatter:on
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        String data = response.jsonPath().get("data").toString();
-        assertThat(data).isEqualTo("회원 가입 완료");
+            .log().all()
+            .assertThat().statusCode(HttpStatus.CREATED.value())
+            .assertThat().body(containsString("회원 가입 완료"))
+            .extract();
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -135,13 +163,13 @@ class UserApiTest extends ApiTest {
         UserPostOauthDto dto = oauthJoin();
         ExtractableResponse<Response> response = RestAssured
             .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(dto)
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(dto)
             .when()
-                .post("/users/more-info")
+            .post("/users/more-info")
             .then()
-                .log().all().extract();
+            .log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Authorization")).isNotBlank();
@@ -363,8 +391,14 @@ class UserApiTest extends ApiTest {
         String detailAddress = "101 번지";
         String realName = "sdfgsdf";
 
-        return UserPostDto.builder().detailAddress(detailAddress).city(city).email(email)
-            .phone(phone).realName(realName).password(password).displayName(displayName)
+        return UserPostDto.builder()
+            .detailAddress(detailAddress)
+            .city(city)
+            .email(email)
+            .phone(phone)
+            .realName(realName)
+            .password(password)
+            .displayName(displayName)
             .build();
     }
 
