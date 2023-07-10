@@ -1,0 +1,52 @@
+[[user-create]]
+=== 회원가입
+
+[[validation]]
+==== Validation
+|===
+| path | description
+
+| email
+| `이메일 형식을 지켜야합니다. ex)test@gmail.com`
+
+| password
+| `특수문자와 숫자를 포함한 8자리 이상이어야 합니다.`
+
+| realName
+| `공백이 있어서는 안됩니다.`
+
+| phone
+| `'010-xxxx-xxxx' 형식이어야 합니다.`
+|===
+
+
+==== HTTP Request
+include::{snippets}/user-create/http-request.adoc[]
+include::{snippets}/user-create/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-create/http-response.adoc[]
+include::{snippets}/user-create/response-fields.adoc[]
+
+
+=== 회원가입 예외
+
+==== 닉네임 중복
+
+==== HTTP Request
+include::{snippets}/user-error1-dn/http-request.adoc[]
+include::{snippets}/user-error1-dn/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-error1-dn/http-response.adoc[]
+include::{snippets}/user-error1-dn/response-fields.adoc[]
+
+
+==== 이메일 중복
+==== HTTP Request
+include::{snippets}/user-error2-email/http-request.adoc[]
+include::{snippets}/user-error2-email/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-error2-email/http-response.adoc[]
+include::{snippets}/user-error2-email/response-fields.adoc[]
