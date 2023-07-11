@@ -19,17 +19,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class QuartzConfig {
 
     private final DataSource dataSource;
-    private final ApplicationContext applicationContext;
     private final PlatformTransactionManager platformTransactionManager;
 
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
 
-        AutoWiringSpringBeanJobFactory autoWiringSpringBeanJobFactory = new AutoWiringSpringBeanJobFactory();
-
-        autoWiringSpringBeanJobFactory.setApplicationContext(applicationContext);
-        schedulerFactoryBean.setJobFactory(autoWiringSpringBeanJobFactory);
         schedulerFactoryBean.setDataSource(dataSource);
         schedulerFactoryBean.setOverwriteExistingJobs(true);
         schedulerFactoryBean.setAutoStartup(true);

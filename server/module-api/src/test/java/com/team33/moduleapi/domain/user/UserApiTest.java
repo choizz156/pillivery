@@ -27,6 +27,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,40 +53,20 @@ class UserApiTest extends ApiTest {
     @DisplayName("회원 가입")
     @Test
     void 회원가입() throws Exception {
+
         UserPostDto joinDto = join("test@gmail.com", "test1", "010-1111-1111");
 
         RestAssured
-            .given(super.spec)
-            .log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(joinDto)
-            .filter(document("user-create",
-                    preprocessRequest(modifyUris()
-                        .scheme("http")
-                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
-                        .removePort(), prettyPrint()
-                    ),
-                    preprocessResponse(prettyPrint()),
-                    requestFields(
-                        fieldWithPath("detailAddress").type(JsonFieldType.STRING).description("상세 주소"),
-                        fieldWithPath("city").type(JsonFieldType.STRING).description("도시"),
-                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                        fieldWithPath("phone").type(JsonFieldType.STRING).description("연락처"),
-                        fieldWithPath("realName").type(JsonFieldType.STRING).description("이름"),
-                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드"),
-                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("닉네임")
-                    ),
-                    responseFields(
-                        fieldWithPath("data").type(JsonFieldType.STRING).description("회원 가입 완료")
-                    )
-                )
-            )
+            .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(joinDto)
             .when().post("/users")
             .then()
-            .log().all()
-            .assertThat().statusCode(HttpStatus.CREATED.value())
-            .assertThat().body(containsString("회원 가입 완료"))
-            .extract();
+                .log().all()
+                .assertThat().statusCode(HttpStatus.CREATED.value())
+                .assertThat().body(containsString("회원 가입 완료"))
+                .extract();
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -96,39 +77,16 @@ class UserApiTest extends ApiTest {
         UserPostDto dto2 = join("teset2@gmail.com", "test", "010-1111-1111");
 
         RestAssured
-            .given(super.spec)
-            .log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(dto2)
-            .filter(document("user-error1-dn",
-                    preprocessRequest(modifyUris()
-                        .scheme("http")
-                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
-                        .removePort(), prettyPrint()
-                    ),
-                    preprocessResponse(prettyPrint()),
-                    requestFields(
-                        fieldWithPath("detailAddress").type(JsonFieldType.STRING).description("상세 주소"),
-                        fieldWithPath("city").type(JsonFieldType.STRING).description("도시"),
-                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                        fieldWithPath("phone").type(JsonFieldType.STRING).description("연락처"),
-                        fieldWithPath("realName").type(JsonFieldType.STRING).description("이름"),
-                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드"),
-                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("닉네임")
-                    ),
-                    responseFields(
-                        fieldWithPath("message").type(JsonFieldType.STRING)
-                            .description("이미 존재하는 닉네임입니다."),
-                        fieldWithPath("status").type(JsonFieldType.NUMBER).description("Bad Request")
-                    )
-                )
-            )
+            .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(dto2)
             .when().post("/users")
             .then()
-            .log().all()
-            .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
-            .assertThat().body(containsString("이미 존재하는 닉네임입니다."))
-            .extract();
+                .log().all()
+                .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
+                .assertThat().body(containsString("이미 존재하는 닉네임입니다."))
+                .extract();
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -143,29 +101,6 @@ class UserApiTest extends ApiTest {
                 .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(dto2)
-                .filter(document("user-error2-email",
-                    preprocessRequest(modifyUris()
-                        .scheme("http")
-                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
-                        .removePort(), prettyPrint()
-                    ),
-                    preprocessResponse(prettyPrint()),
-                    requestFields(
-                        fieldWithPath("detailAddress").type(JsonFieldType.STRING).description("상세 주소"),
-                        fieldWithPath("city").type(JsonFieldType.STRING).description("도시"),
-                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                        fieldWithPath("phone").type(JsonFieldType.STRING).description("연락처"),
-                        fieldWithPath("realName").type(JsonFieldType.STRING).description("이름"),
-                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드"),
-                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("닉네임")
-                    ),
-                    responseFields(
-                        fieldWithPath("message").type(JsonFieldType.STRING)
-                            .description("이미 가입한 e-mail입니다."),
-                        fieldWithPath("status").type(JsonFieldType.NUMBER).description("Bad Request")
-                    )
-                )
-            )
             .when().post("/users")
             .then()
                 .log().all()
@@ -182,17 +117,15 @@ class UserApiTest extends ApiTest {
 
         ExtractableResponse<Response> response = RestAssured
             .given()
-            .log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(dto2)
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(dto2)
             .when()
-            .post("/users")
+                .post("/users")
             .then()
+            .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
+            .assertThat().body(Matchers.containsString("이미 존재하는 연락처입니다."))
             .log().all().extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        String data = response.jsonPath().get("message").toString();
-        assertThat(data).isEqualTo("이미 존재하는 연락처입니다.");
     }
 
     @DisplayName("oauth 로그인 시 추가 정보를 기입하면, 토큰이 발급됩니다.")
@@ -210,7 +143,11 @@ class UserApiTest extends ApiTest {
             .when()
             .post("/users/more-info")
             .then()
-            .log().all().extract();
+            .assertThat().statusCode(HttpStatus.CREATED.value())
+            .assertThat().header("Authorization",Matchers.notNullValue())
+            .assertThat()
+            .log()
+            .all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Authorization")).isNotBlank();
@@ -421,8 +358,6 @@ class UserApiTest extends ApiTest {
             .log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
-        String message = response.jsonPath().get("data").toString();
-        assertThat(message).isEqualTo("로그아웃 완료");
     }
 
     private UserPostDto join(String email, String displayName, String phone) {

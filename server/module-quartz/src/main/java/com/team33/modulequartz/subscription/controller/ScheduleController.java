@@ -1,6 +1,7 @@
 package com.team33.modulequartz.subscription.controller;
 
 import com.team33.modulecore.domain.item.mapper.ItemMapper;
+import com.team33.modulecore.domain.order.dto.ItemOrderDto.SubResponse;
 import com.team33.modulecore.domain.order.entity.ItemOrder;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.mapper.ItemOrderMapper;
@@ -33,33 +34,34 @@ public class ScheduleController {
     private final ItemOrderMapper itemOrderMapper;
     private final ItemMapper itemMapper;
 
-    private static final String SUCCESS_SCHDULE = "스케쥴 구성 완료";
+    private static final String SUCCESS_SHCHDULE = "스케쥴 구성 완료";
 
 
     @ResponseStatus(HttpStatus.ACCEPTED)
     @GetMapping
-    public SingleResponseDto schedule(@RequestParam(name = "orderId") Long orderId) {
+    public SingleResponseDto<String> schedule(@RequestParam(name = "orderId") Long orderId) {
         Order order = orderService.findOrder(orderId);
         List<ItemOrder> itemOrders = order.getItemOrders();
 
         applySchedule(orderId, order, itemOrders);
 
-        return new SingleResponseDto(SUCCESS_SCHDULE);
+        return new SingleResponseDto(SUCCESS_SHCHDULE);
     }
 
     @PatchMapping("/change")
-    public SingleResponseDto changePeriod(
+    public SingleResponseDto<SubResponse> changePeriod(
         @RequestParam(name = "orderId") Long orderId,
         @RequestParam(name = "period") Integer period,
         @RequestParam(name = "itemOrderId") Long itemOrderId
     ) {
         ItemOrder itemOrder = subscriptionService.changePeriod(orderId, period, itemOrderId);
         return new SingleResponseDto<>(
-            itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));
+            itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper)
+        );
     }
 
     @PatchMapping("/delay")
-    public SingleResponseDto delay(
+    public SingleResponseDto<SubResponse> delay(
         @RequestParam(name = "orderId") Long orderId,
         @RequestParam(name = "delay") Integer delay,
         @RequestParam(name = "itemOrderId") Long itemOrderId

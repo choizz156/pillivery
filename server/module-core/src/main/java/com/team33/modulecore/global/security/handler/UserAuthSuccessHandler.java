@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 public class UserAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private static final String LOGIN_COMPLETE = "로그인 완료";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -30,8 +29,6 @@ public class UserAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         UserDetailsEntity principal = (UserDetailsEntity) authentication.getPrincipal();
         User user = principal.getUser();
         jwtTokenProvider.addTokenInResponse(response, user);
-
-        response.getWriter().write(LOGIN_COMPLETE);
     }
 }
 

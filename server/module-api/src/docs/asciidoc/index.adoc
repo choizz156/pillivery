@@ -13,5 +13,3 @@ endif::[]
 == User API
 
 include::api/user/user.adoc[]
-
-

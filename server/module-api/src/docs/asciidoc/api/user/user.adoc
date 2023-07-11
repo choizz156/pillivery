@@ -20,6 +20,7 @@
 |===
 
 
+
 ==== HTTP Request
 include::{snippets}/user-create/http-request.adoc[]
 include::{snippets}/user-create/request-fields.adoc[]
@@ -28,9 +29,35 @@ include::{snippets}/user-create/request-fields.adoc[]
 include::{snippets}/user-create/http-response.adoc[]
 include::{snippets}/user-create/response-fields.adoc[]
 
+---
 
 === 회원가입 예외
+[[Exception1]]
+==== 예외
+|===
+| path | description
 
+| email
+| `이메일은 유일해야 합니다.`
+
+| displayName
+| `닉네임은 유일해야 합니다.`
+
+| phone
+| `연락처는 유일해야 합니다.`
+
+|===
+---
+==== 이메일 중복
+==== HTTP Request
+include::{snippets}/user-error2-email/http-request.adoc[]
+include::{snippets}/user-error2-email/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-error2-email/http-response.adoc[]
+include::{snippets}/user-error2-email/response-fields.adoc[]
+
+---
 ==== 닉네임 중복
 
 ==== HTTP Request
@@ -41,12 +68,115 @@ include::{snippets}/user-error1-dn/request-fields.adoc[]
 include::{snippets}/user-error1-dn/http-response.adoc[]
 include::{snippets}/user-error1-dn/response-fields.adoc[]
 
-
-==== 이메일 중복
+---
+==== 연락처 중복
 ==== HTTP Request
-include::{snippets}/user-error2-email/http-request.adoc[]
-include::{snippets}/user-error2-email/request-fields.adoc[]
+include::{snippets}/user-error3-phone/http-request.adoc[]
+include::{snippets}/user-error3-phone/request-fields.adoc[]
 
 ==== HTTP Response
-include::{snippets}/user-error2-email/http-response.adoc[]
-include::{snippets}/user-error2-email/response-fields.adoc[]
+include::{snippets}/user-error3-phone/http-response.adoc[]
+include::{snippets}/user-error3-phone/response-fields.adoc[]
+
+
+---
+
+=== 로그인
+==== HTTP Request
+include::{snippets}/user-login/http-request.adoc[]
+include::{snippets}/user-login/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-login/http-response.adoc[]
+---
+=== 로그아웃
+==== HTTP Request
+include::{snippets}/user-logout/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-logout/http-response.adoc[]
+---
+=== 회원 정보 조회(일반)
+
+==== HTTP Request
+include::{snippets}/user-general/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-general/http-response.adoc[]
+include::{snippets}/user-general/response-fields.adoc[]
+---
+=== 회원 정보 조회(소셜)
+==== HTTP Request
+include::{snippets}/user-social/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-social/http-response.adoc[]
+include::{snippets}/user-social/response-fields.adoc[]
+---
+=== 회원 정보 수정
+==== 수정 불가 정보
+|===
+| path | description
+
+| email
+| `이메일은 수정할 수 없습니다.`
+
+| password(소셜 로그인)
+| `소셜 로그인의 경우 비밀번호는 수정할 수 없습니다.`
+
+|===
+---
+==== HTTP Request
+include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
+---
+[[Exception2]]
+=== 회원 정보 수정 예외
+|===
+| path | description
+
+| displayName
+| `닉네임은 유일해야 합니다.`
+
+| phone
+| `연락처는 유일해야 합니다.`
+|===
+---
+==== 닉네임 중복
+==== HTTP Request
+include::{snippets}/user-update-error1-dn/http-request.adoc[]
+include::{snippets}/user-update-error1-dn/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-update-error1-dn/http-response.adoc[]
+include::{snippets}/user-update-error1-dn/response-fields.adoc[]
+---
+==== 연락처 중복
+==== HTTP Request
+include::{snippets}/user-update-error2-phone/http-request.adoc[]
+include::{snippets}/user-update-error2-phone/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-update-error2-phone/http-response.adoc[]
+include::{snippets}/user-update-error2-phone/response-fields.adoc[]
+---
+=== 소셜 로그인 추가 정보
+==== HTTP Request
+include::{snippets}/user-more-info/http-request.adoc[]
+include::{snippets}/user-more-info/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-more-info/http-response.adoc[]
+include::{snippets}/user-more-info/response-fields.adoc[]
+---
+=== 회원 탈퇴
+==== HTTP Request
+include::{snippets}/user-withdrawal/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-withdrawal/http-response.adoc[]
+include::{snippets}/user-withdrawal/response-fields.adoc[]
