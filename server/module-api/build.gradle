@@ -17,12 +17,8 @@ dependencies {
     //db
     runtimeOnly 'com.h2database:h2'
 
-    //http클라이어트 디버깅
-    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-
     //restdocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:2.0.6.RELEASE'
 }
 
 ext { // 전역 변수

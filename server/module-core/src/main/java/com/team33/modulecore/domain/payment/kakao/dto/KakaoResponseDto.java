@@ -32,7 +32,7 @@ public class KakaoResponseDto {
         private int quantity;
 
         @Getter
-        private class Amount {
+        private static class Amount {
             private int total;
             private int tax_free;
             private int vat;

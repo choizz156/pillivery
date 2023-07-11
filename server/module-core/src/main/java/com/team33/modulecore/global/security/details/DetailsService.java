@@ -22,13 +22,11 @@ public class DetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
 
         Optional<User> userEntity = userRepository.findByEmail(username);
 
-        User user = userEntity.orElseThrow(
-            () -> new InternalAuthenticationServiceException("찾을 수 없는 회원입니다.")
-        );
+        User user = userEntity.orElseThrow(() -> new UsernameNotFoundException("Not Found User"));
         if (user.getUserStatus() == UserStatus.USER_WITHDRAWAL) {
             throw new AuthenticationServiceException("탈퇴한 회원입니다.");
         }

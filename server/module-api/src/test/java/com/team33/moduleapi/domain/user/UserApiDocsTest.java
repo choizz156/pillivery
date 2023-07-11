@@ -1,6 +1,10 @@
 package com.team33.moduleapi.domain.user;
 
+import static net.bytebuddy.matcher.ElementMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.isIn;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -25,6 +29,7 @@ import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -265,7 +270,7 @@ class UserApiDocsTest extends ApiTest {
     void 회원_탈퇴() throws Exception {
 
         String token = getToken();
-       RestAssured
+        RestAssured
             .given(super.spec)
             .log().all()
             .header("Authorization", token)
@@ -329,7 +334,8 @@ class UserApiDocsTest extends ApiTest {
                             .description("상세 주소"),
                         fieldWithPath("data.phone").type(JsonFieldType.STRING).description("연락처"),
                         fieldWithPath("data.displayName").type(JsonFieldType.STRING).description("닉네임"),
-                        fieldWithPath("data.social").type(JsonFieldType.BOOLEAN).description("소셜 로그인(false)"),
+                        fieldWithPath("data.social").type(JsonFieldType.BOOLEAN)
+                            .description("소셜 로그인(false)"),
                         fieldWithPath("data.updatedAt").type(JsonFieldType.STRING)
                             .description("최근 수정일"),
                         fieldWithPath("data.createAt").type(JsonFieldType.STRING).description("회원가입 일")
@@ -469,7 +475,8 @@ class UserApiDocsTest extends ApiTest {
                             .description("상세 주소"),
                         fieldWithPath("data.phone").type(JsonFieldType.STRING).description("연락처"),
                         fieldWithPath("data.displayName").type(JsonFieldType.STRING).description("닉네임"),
-                        fieldWithPath("data.social").type(JsonFieldType.BOOLEAN).description("소셜 로그인(false)"),
+                        fieldWithPath("data.social").type(JsonFieldType.BOOLEAN)
+                            .description("소셜 로그인(false)"),
                         fieldWithPath("data.updatedAt").type(JsonFieldType.STRING)
                             .description("최근 수정일"),
                         fieldWithPath("data.createAt").type(JsonFieldType.STRING).description("회원가입일")
@@ -516,7 +523,8 @@ class UserApiDocsTest extends ApiTest {
                             .description("상세 주소"),
                         fieldWithPath("data.phone").type(JsonFieldType.STRING).description("연락처"),
                         fieldWithPath("data.displayName").type(JsonFieldType.STRING).description("닉네임"),
-                        fieldWithPath("data.social").type(JsonFieldType.BOOLEAN).description("소셜 로그인(true)"),
+                        fieldWithPath("data.social").type(JsonFieldType.BOOLEAN)
+                            .description("소셜 로그인(true)"),
                         fieldWithPath("data.updatedAt").type(JsonFieldType.STRING)
                             .description("최근 수정일"),
                         fieldWithPath("data.createAt").type(JsonFieldType.STRING).description("회원가입일")
@@ -568,6 +576,85 @@ class UserApiDocsTest extends ApiTest {
             .assertThat().statusCode(HttpStatus.OK.value())
             .assertThat().header("Authorization", Matchers.notNullValue())
             .log().all().extract();
+    }
+
+    @DisplayName("비밀번호 오류로 인한 로그인 실패")
+    @Test
+    void 비밀번호_오류() throws Exception {
+        //given
+        UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
+        userService.join(postDto);
+
+        LoginDto dto = LoginDto.builder().username("test@gmail.com").password("sdfsd1").build();
+
+        ExtractableResponse<Response> response = RestAssured
+            .given(super.spec)
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(dto)
+            .filter(
+                document("user-login-error-pw",
+                    preprocessRequest(modifyUris().scheme("http")
+                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+                        .removePort(), prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("username").type(JsonFieldType.STRING).description("이메일"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("메시지")
+                    )
+                )
+            )
+            .when()
+            .post("/users/login")
+            .then()
+            .log().all().extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.body().jsonPath().get("message").toString()).isIn("Bad credential", "자격 증명에 실패하였습니다.");
+
+    }
+
+    @DisplayName("이메일 오류로 인한 로그인 실패")
+    @Test
+    void test5() throws Exception {
+        //given
+        UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
+        userService.join(postDto);
+
+        LoginDto dto = LoginDto.builder().username("te2st@gmail.com").password("sdfsdfe!1").build();
+
+        ExtractableResponse<Response> response = RestAssured
+            .given(super.spec)
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(dto)
+            .filter(
+                document("user-login-error-email",
+                    preprocessRequest(modifyUris().scheme("http")
+                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+                        .removePort(), prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("username").type(JsonFieldType.STRING).description("이메일"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("패스워드")
+                    ),
+                    responseFields(
+                        fieldWithPath("status").type(JsonFieldType.NUMBER).description("상태 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("메시지")
+                    )
+                )
+            )
+            .when()
+            .post("/users/login")
+            .then()
+            .log().all().extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.body().jsonPath().get("message").toString()).isIn("Bad credential", "자격 증명에 실패하였습니다.");
     }
 
     @UserAccount({"test", "010-0000-0000"})

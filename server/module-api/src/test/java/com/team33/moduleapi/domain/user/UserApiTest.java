@@ -2,14 +2,6 @@ package com.team33.moduleapi.domain.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 import com.team33.ApiTest;
 import com.team33.UserAccount;
@@ -34,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.JsonFieldType;
 
 class UserApiTest extends ApiTest {
 
@@ -58,15 +49,15 @@ class UserApiTest extends ApiTest {
 
         RestAssured
             .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(joinDto)
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(joinDto)
             .when().post("/users")
             .then()
-                .log().all()
-                .assertThat().statusCode(HttpStatus.CREATED.value())
-                .assertThat().body(containsString("회원 가입 완료"))
-                .extract();
+            .log().all()
+            .assertThat().statusCode(HttpStatus.CREATED.value())
+            .assertThat().body(containsString("회원 가입 완료"))
+            .extract();
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -78,35 +69,15 @@ class UserApiTest extends ApiTest {
 
         RestAssured
             .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(dto2)
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(dto2)
             .when().post("/users")
             .then()
-                .log().all()
-                .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
-                .assertThat().body(containsString("이미 존재하는 닉네임입니다."))
-                .extract();
-    }
-
-    @UserAccount({"test", "010-0000-0000"})
-    @DisplayName("회원 가입 시 이메일 중복의 경우 예외가 발생합니다.")
-    @Test
-    void 회원가입_이메일_중복() throws Exception {
-
-        UserPostDto dto2 = join("test@test.com", "test112", "010-1111-1111");
-
-        RestAssured
-            .given(super.spec)
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(dto2)
-            .when().post("/users")
-            .then()
-                .log().all()
-                .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
-                .assertThat().body(containsString("이미 가입한 e-mail입니다."))
-                .extract();
+            .log().all()
+            .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
+            .assertThat().body(containsString("이미 존재하는 닉네임입니다."))
+            .extract();
     }
 
     @UserAccount({"test", "010-0000-0000"})
@@ -115,17 +86,17 @@ class UserApiTest extends ApiTest {
     void 회원가입_연락처_중복() throws Exception {
         UserPostDto dto2 = join("test@gmail.com", "test112", "010-0000-0000");
 
-        ExtractableResponse<Response> response = RestAssured
+         RestAssured
             .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(dto2)
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(dto2)
             .when()
-                .post("/users")
+            .post("/users")
             .then()
+            .log().all()
             .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
-            .assertThat().body(Matchers.containsString("이미 존재하는 연락처입니다."))
-            .log().all().extract();
+            .assertThat().body(containsString("이미 존재하는 연락처입니다."));
     }
 
     @DisplayName("oauth 로그인 시 추가 정보를 기입하면, 토큰이 발급됩니다.")
@@ -144,7 +115,7 @@ class UserApiTest extends ApiTest {
             .post("/users/more-info")
             .then()
             .assertThat().statusCode(HttpStatus.CREATED.value())
-            .assertThat().header("Authorization",Matchers.notNullValue())
+            .assertThat().header("Authorization", Matchers.notNullValue())
             .assertThat()
             .log()
             .all().extract();
@@ -358,6 +329,48 @@ class UserApiTest extends ApiTest {
             .log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
+    }
+
+    @DisplayName("비밀번호 오류로 인한 로그인 실패")
+    @Test
+    void test4() throws Exception {
+        //given
+        UserPostDto postDto = join("test1@gmail.com", "test22", "010-1112-1111");
+        userService.join(postDto);
+
+        LoginDto dto = LoginDto.builder().username("test1@gmail.com").password("sdfsd1").build();
+
+        ExtractableResponse<Response> response = RestAssured
+            .given()
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(dto)
+            .when()
+            .post("/users/login")
+            .then()
+            .log().all()
+            .extract();
+        String message = response.body().jsonPath().get("message").toString();
+        assertThat(message).isIn("자격 증명에 실패하였습니다.","Bad requests");
+    }
+
+    @UserAccount({"test", "010-0000-0000"})
+    @DisplayName("회원 가입 시 이메일 중복의 경우 예외가 발생합니다.")
+    @Test
+    void 회원가입_이메일_중복() throws Exception {
+
+        UserPostDto dto2 = join("test@test.com", "test112", "010-1111-1111");
+
+        RestAssured
+            .given()
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(dto2)
+            .when().post("/users")
+            .then()
+            .log().all()
+            .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
+            .assertThat().body(containsString("이미 가입한 e-mail입니다."));
     }
 
     private UserPostDto join(String email, String displayName, String phone) {

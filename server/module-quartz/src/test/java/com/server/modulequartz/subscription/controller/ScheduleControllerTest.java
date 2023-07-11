@@ -1,40 +1,39 @@
 package com.server.modulequartz.subscription.controller;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.team33.ModuleApiApplication;
+import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
+import com.team33.ApiTest;
+import com.team33.ModuleQuartzApplication;
 import com.team33.modulecore.domain.item.entity.Item;
 import com.team33.modulecore.domain.order.entity.ItemOrder;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.reposiroty.OrderRepository;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
-import com.team33.ModuleQuartzApplication;
-import com.team33.modulequartz.config.AutoWiringSpringBeanJobFactory;
-import com.team33.modulequartz.config.QuartzConfig;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.hibernate.annotations.Filter;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
-import com.team33.ApiTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 //TODO: 정확하게 알아보기위해서... 지워야한다.
 @ActiveProfiles("quartz")
@@ -47,10 +46,13 @@ class ScheduleControllerTest extends ApiTest {
     @MockBean
     private OrderRepository orderRepository;
 
-    private final FixtureMonkey fixtureMonkey = FixtureMonkey.create();
+    private final FixtureMonkey fixtureMonkey = FixtureMonkey
+        .builder()
+        .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
+        .build();
 
     @DisplayName("요청 시 스케쥴러가 설정된다.")
-    @RepeatedTest(10)
+    @Test
     void test1() throws Exception {
         //given
         User user = fixtureMonkey.giveMeBuilder(User.class)
@@ -63,6 +65,7 @@ class ScheduleControllerTest extends ApiTest {
             .set("period", 30)
             .set("item", item)
             .sample();
+        System.out.println(itemOrder+"==================");
 
         Order order = fixtureMonkey.giveMeBuilder(Order.class)
             .set("user", user)
@@ -78,20 +81,27 @@ class ScheduleControllerTest extends ApiTest {
 
         Long orderId = order.getOrderId();
 
-        //when
         //@formatter:off
-        ExtractableResponse<Response> response =
-            given()
+            given(super.spec)
                 .log().all()
                 .param("orderId", orderId)
+                .filter(document("quartz",
+                        preprocessRequest(modifyUris()
+                            .scheme("http")
+                            .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+                            .removePort(), prettyPrint()
+                        ),
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(parameterWithName("orderId").description("주문 아이디")),
+                        responseFields(fieldWithPath("data").type(JsonFieldType.STRING).description("스케쥴 구성 완료"))
+                    )
+                )
             .when()
                 .get("/schedule")
             .then()
+                .assertThat().statusCode(HttpStatus.ACCEPTED.value())
+                .assertThat().body(containsString("스케쥴 구성 완료"))
                 .log().all().extract();
-        //@formatter:on
 
-        //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
-        assertThat(response.body().jsonPath().get("data").toString()).hasToString("스케쥴 구성 완료");
     }
 }

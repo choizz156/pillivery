@@ -39,6 +39,7 @@ public class UserService {
         makeCart(user);
 
         userRepository.save(user);
+        log.info("회원 가입 완료");
     }
 
     @Transactional
