@@ -86,7 +86,7 @@ class UserApiTest extends ApiTest {
     void 회원가입_연락처_중복() throws Exception {
         UserPostDto dto2 = join("test@gmail.com", "test112", "010-0000-0000");
 
-         RestAssured
+        RestAssured
             .given()
             .log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -351,7 +351,30 @@ class UserApiTest extends ApiTest {
             .log().all()
             .extract();
         String message = response.body().jsonPath().get("message").toString();
-        assertThat(message).isIn("자격 증명에 실패하였습니다.","Bad requests");
+        assertThat(message).isIn("자격 증명에 실패하였습니다.", "Bad credentials");
+    }
+
+    @DisplayName("이메일 오류로 인한 로그인 실패")
+    @Test
+    void test5() throws Exception {
+        //given
+        UserPostDto postDto = join("test1@gmail.com", "test22", "010-1112-1111");
+        userService.join(postDto);
+
+        LoginDto dto = LoginDto.builder().username("test31@gmail.com").password("sdfsdfe!1").build();
+
+        ExtractableResponse<Response> response = RestAssured
+            .given()
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(dto)
+            .when()
+            .post("/users/login")
+            .then()
+            .log().all()
+            .extract();
+        String message = response.body().jsonPath().get("message").toString();
+        assertThat(message).isIn("자격 증명에 실패하였습니다.", "Bad credentials");
     }
 
     @UserAccount({"test", "010-0000-0000"})

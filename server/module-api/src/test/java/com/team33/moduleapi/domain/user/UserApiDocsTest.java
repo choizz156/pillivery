@@ -1,10 +1,7 @@
 package com.team33.moduleapi.domain.user;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.isIn;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -29,7 +26,6 @@ import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -614,7 +610,8 @@ class UserApiDocsTest extends ApiTest {
             .log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-        assertThat(response.body().jsonPath().get("message").toString()).isIn("Bad credential", "자격 증명에 실패하였습니다.");
+        assertThat(response.body().jsonPath().get("message").toString())
+            .isIn("Bad credential", "자격 증명에 실패하였습니다.");
 
     }
 
@@ -654,7 +651,8 @@ class UserApiDocsTest extends ApiTest {
             .log().all().extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-        assertThat(response.body().jsonPath().get("message").toString()).isIn("Bad credential", "자격 증명에 실패하였습니다.");
+        assertThat(response.body().jsonPath().get("message").toString())
+            .isIn("Bad credential", "자격 증명에 실패하였습니다.");
     }
 
     @UserAccount({"test", "010-0000-0000"})
