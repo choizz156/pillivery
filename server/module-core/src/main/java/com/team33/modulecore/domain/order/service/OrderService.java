@@ -70,9 +70,8 @@ public class OrderService {
 
     public Order findVerifiedOrder(long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        Order findOrder = optionalOrder.orElseThrow(
+        return optionalOrder.orElseThrow(
             () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
-        return findOrder;
     }
 
 

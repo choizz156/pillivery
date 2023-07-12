@@ -12,7 +12,6 @@ buildscript {
 }
 
 subprojects {
-
     apply plugin: 'java-library'
     apply plugin: 'idea'
     apply plugin: 'org.springframework.boot'
@@ -41,13 +40,11 @@ subprojects {
 
         //api-test
         implementation 'io.rest-assured:rest-assured'
-
         //rest-docs
         testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:2.0.6.RELEASE'
 
         //fixture-monkey
-        implementation 'com.navercorp.fixturemonkey:fixture-monkey:0.5.2'
-        testImplementation('com.navercorp.fixturemonkey:fixture-monkey-mockito:0.5.2')
+        implementation 'com.navercorp.fixturemonkey:fixture-monkey:0.6.1'
     }
 
     test {
@@ -79,7 +76,6 @@ project(':module-quartz') {
 
     dependencies {
         api project(':module-core')
-        api project(':module-api')
         api testFixtures(project(':module-core'))
     }
 }

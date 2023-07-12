@@ -3,7 +3,7 @@ package com.team33;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = {"com.team33.modulecore", "com.team33.modulequartz"})
+@SpringBootApplication
 public class ModuleQuartzApplication {
 
     public static void main(String[] args) {

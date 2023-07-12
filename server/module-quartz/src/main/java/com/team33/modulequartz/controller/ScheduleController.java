@@ -1,4 +1,4 @@
-package com.team33.modulequartz.subscription.controller;
+package com.team33.modulequartz.controller;
 
 import com.team33.modulecore.domain.item.mapper.ItemMapper;
 import com.team33.modulecore.domain.order.dto.ItemOrderDto.SubResponse;
@@ -42,18 +42,19 @@ public class ScheduleController {
     public SingleResponseDto<String> schedule(@RequestParam(name = "orderId") Long orderId) {
         Order order = orderService.findOrder(orderId);
         List<ItemOrder> itemOrders = order.getItemOrders();
+        applySchedule(order, itemOrders);
 
-        applySchedule(orderId, order, itemOrders);
-
-        return new SingleResponseDto(SUCCESS_SHCHDULE);
+        return new SingleResponseDto<>(SUCCESS_SHCHDULE);
     }
 
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PatchMapping("/change")
     public SingleResponseDto<SubResponse> changePeriod(
         @RequestParam(name = "orderId") Long orderId,
         @RequestParam(name = "period") Integer period,
         @RequestParam(name = "itemOrderId") Long itemOrderId
     ) {
+        log.info("스케쥴 변화");
         ItemOrder itemOrder = subscriptionService.changePeriod(orderId, period, itemOrderId);
         return new SingleResponseDto<>(
             itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper)
@@ -81,15 +82,15 @@ public class ScheduleController {
     }
 
     private void applySchedule(
-        final Long orderId,
         final Order order,
         final List<ItemOrder> itemOrders
     ) {
         for (ItemOrder itemOrder : itemOrders) {
             ZonedDateTime nextDelivery = order.getCreatedAt().plusDays(itemOrder.getPeriod());
-            ItemOrder itemOrder1 = itemOrderService.updateDeliveryInfo(
-                orderId, order.getCreatedAt(), nextDelivery, itemOrder
-            );
+            log.error("{}", nextDelivery);
+            ItemOrder itemOrder1 =
+                itemOrderService.updateDeliveryInfo(order.getCreatedAt(), nextDelivery, itemOrder);
+            log.error("{}", itemOrder1.getItemOrderId());
             subscriptionService.startSchedule(order, itemOrder1);
         }
     }

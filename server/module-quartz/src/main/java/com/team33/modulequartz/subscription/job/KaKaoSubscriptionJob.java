@@ -86,7 +86,7 @@ public class KaKaoSubscriptionJob implements Job {
         ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         log.info("payment = {}", paymentDay);
         ZonedDateTime nextDelivery = paymentDay.plusDays(itemOrder.getPeriod());
-        itemOrderService.updateDeliveryInfo(orderId, paymentDay, nextDelivery, itemOrder);
+        itemOrderService.updateDeliveryInfo(paymentDay, nextDelivery, itemOrder);
     }
 
     private Order getNewOrder( Long orderId ){

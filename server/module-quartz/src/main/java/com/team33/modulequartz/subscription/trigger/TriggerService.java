@@ -15,7 +15,7 @@ import com.team33.modulecore.domain.order.entity.ItemOrder;
 public class TriggerService {
 
     public Trigger build(JobKey jobKey, ItemOrder itemOrder) {
-
+        log.info("trigger 설정");
         return newTrigger()
             .forJob(jobKey)
             .withSchedule(simpleSchedule()
