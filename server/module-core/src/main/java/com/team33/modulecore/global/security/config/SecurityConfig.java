@@ -1,14 +1,19 @@
 package com.team33.modulecore.global.security.config;
 
 
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.POST;
+
 import com.team33.modulecore.domain.user.service.Logout;
-import com.team33.modulecore.global.security.handler.UserOAuthSuccessHandler;
 import com.team33.modulecore.global.security.handler.UserAccessDeniedHandler;
 import com.team33.modulecore.global.security.handler.UserAuthFailureHandler;
 import com.team33.modulecore.global.security.handler.UserAuthenticationEntryPoint;
+import com.team33.modulecore.global.security.handler.UserOAuthSuccessHandler;
+import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,7 +21,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -29,6 +33,8 @@ public class SecurityConfig {
     private static final String WISHS_URL = "/wishes/**";
     private static final String ORDERS = "/orders/**";
     private static final String REVIEWS = "/reviews/**";
+    private static final String SCHEDULE_URL = "/schedule";
+    private static final String PAYMENTS_URL = "/payments/**";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -55,18 +61,22 @@ public class SecurityConfig {
 
             .and()
             .authorizeHttpRequests(authorize -> authorize
-                .antMatchers(HttpMethod.GET, USER_URL).hasRole("USER")
-                .antMatchers(HttpMethod.PATCH, USER_URL).hasRole("USER")
-                .antMatchers(HttpMethod.DELETE, USER_URL).hasRole("USER")
-                .antMatchers(HttpMethod.GET, CART_URL).hasRole("USER")
-                .antMatchers(HttpMethod.POST, CART_URL).hasRole("USER")
-                .antMatchers(HttpMethod.DELETE, CART_URL).hasRole("USER")
-                .antMatchers(HttpMethod.GET, WISHS_URL).hasRole("USER")
-                .antMatchers(HttpMethod.POST, WISHS_URL).hasRole("USER")
+                .antMatchers(GET, USER_URL).hasRole("USER")
+                .antMatchers(PATCH, USER_URL).hasRole("USER")
+                .antMatchers(DELETE, USER_URL).hasRole("USER")
+                .antMatchers(GET, CART_URL).hasRole("USER")
+                .antMatchers(POST, CART_URL).hasRole("USER")
+                .antMatchers(DELETE, CART_URL).hasRole("USER")
+                .antMatchers(GET, WISHS_URL).hasRole("USER")
+                .antMatchers(POST, WISHS_URL).hasRole("USER")
                 .antMatchers(WISHS_URL).hasRole("USER")
                 .antMatchers(ORDERS).hasRole("USER")
                 .antMatchers(REVIEWS).hasRole("USER")
-                .anyRequest().permitAll());
+                .antMatchers(PATCH, SCHEDULE_URL).hasRole("USER")
+                .antMatchers(DELETE, SCHEDULE_URL).hasRole("USER")
+                .antMatchers(GET, PAYMENTS_URL).hasRole("USER")
+                .anyRequest().permitAll()
+            );
 
         return http.build();
     }

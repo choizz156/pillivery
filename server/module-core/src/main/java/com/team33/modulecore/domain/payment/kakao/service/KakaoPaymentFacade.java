@@ -19,7 +19,7 @@ import com.team33.modulecore.global.exception.ExceptionCode;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoPaymentFacade implements PaymentTypeFacade {
+public class KakaoPaymentFacade implements PaymentFacade {
 
     private final PayRequest kakaoPayRequest;
     private final PayApprove kakaoPayApprove;

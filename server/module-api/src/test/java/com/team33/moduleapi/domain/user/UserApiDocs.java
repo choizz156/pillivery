@@ -35,7 +35,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-class UserApiDocsTest extends ApiTest {
+class UserApiDocs extends ApiTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -738,10 +738,5 @@ class UserApiDocsTest extends ApiTest {
             .oauthId(oauthId)
             .roles(UserRoles.USER)
             .build();
-    }
-
-    private String getToken() {
-        User loginUser = userService.getLoginUser();
-        return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
     }
 }
