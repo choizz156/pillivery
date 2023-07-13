@@ -1,4 +1,4 @@
-package com.team33.modulequartz.controller;
+package com.team33.modulequartz.subscription.controller;
 
 import com.team33.modulecore.domain.item.mapper.ItemMapper;
 import com.team33.modulecore.domain.order.dto.ItemOrderDto.SubResponse;
@@ -48,7 +48,7 @@ public class ScheduleController {
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PatchMapping("/change")
+    @PatchMapping
     public SingleResponseDto<SubResponse> changePeriod(
         @RequestParam(name = "orderId") Long orderId,
         @RequestParam(name = "period") Integer period,
@@ -61,30 +61,28 @@ public class ScheduleController {
         );
     }
 
-    @PatchMapping("/delay")
-    public SingleResponseDto<SubResponse> delay(
-        @RequestParam(name = "orderId") Long orderId,
-        @RequestParam(name = "delay") Integer delay,
-        @RequestParam(name = "itemOrderId") Long itemOrderId
-    ) {
-        ItemOrder itemOrder = subscriptionService.delayDelivery(orderId, delay, itemOrderId);
-        return new SingleResponseDto<>(
-            itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));
-    }
+//    @PatchMapping("/delay")
+//    public SingleResponseDto<SubResponse> delay(
+//        @RequestParam(name = "orderId") Long orderId,
+//        @RequestParam(name = "delay") Integer delay,
+//        @RequestParam(name = "itemOrderId") Long itemOrderId
+//    ) {
+//        ItemOrder itemOrder = subscriptionService.delayDelivery(orderId, delay, itemOrderId);
+//        return new SingleResponseDto<>(
+//            itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));
+//    }
 
-    @DeleteMapping("/cancel")
-    public ZonedDateTime delete(
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public SingleResponseDto<ZonedDateTime> delete(
         @RequestParam(name = "orderId") Long orderId,
         @RequestParam(name = "itemOrderId") Long itemOrderId
     ) {
         subscriptionService.cancelScheduler(orderId, itemOrderId);
-        return ZonedDateTime.now();
+        return new SingleResponseDto<>(ZonedDateTime.now());
     }
 
-    private void applySchedule(
-        final Order order,
-        final List<ItemOrder> itemOrders
-    ) {
+    private void applySchedule(final Order order, final List<ItemOrder> itemOrders) {
         for (ItemOrder itemOrder : itemOrders) {
             ZonedDateTime nextDelivery = order.getCreatedAt().plusDays(itemOrder.getPeriod());
             log.error("{}", nextDelivery);

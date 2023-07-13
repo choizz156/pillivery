@@ -7,6 +7,7 @@ import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
+import org.quartz.TriggerKey;
 import org.springframework.stereotype.Component;
 import com.team33.modulecore.domain.order.entity.ItemOrder;
 
@@ -22,6 +23,7 @@ public class TriggerService {
                 .withIntervalInMinutes(itemOrder.getPeriod())
                 .repeatForever()
             )
+            .withIdentity(new TriggerKey(jobKey.getName(),jobKey.getGroup()))
             .startAt(Date.from(itemOrder.getNextDelivery().toInstant()))
             .build();
     }
