@@ -1,12 +1,12 @@
-package com.team33.moduleapi.domain.user;
+package com.team33.moduleapi.controller.user;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
 
-import com.team33.ApiTest;
-import com.team33.UserAccount;
+import com.team33.moduleapi.controller.ApiTest;
+import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;

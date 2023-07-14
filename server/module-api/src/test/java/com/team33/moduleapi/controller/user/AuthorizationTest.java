@@ -1,13 +1,16 @@
-package com.team33.moduleapi.domain.user;
+package com.team33.moduleapi.controller.user;
 
 import static io.restassured.RestAssured.given;
 
-import com.team33.ApiTest;
-import com.team33.UserAccount;
+import com.team33.ModuleApiApplication;
+import com.team33.moduleapi.controller.ApiTest;
+import com.team33.moduleapi.controller.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
+@Import(ModuleApiApplication.class)
 class AuthorizationTest extends ApiTest {
 
     @DisplayName("user 권한이 없으면, 회원 정보를 조회할 수 없다.")
@@ -116,7 +119,7 @@ class AuthorizationTest extends ApiTest {
         given()
                 .log().all()
         .when()
-                .get("/payments/kakao/1")
+                .get("/payments/1")
         .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .log().all();

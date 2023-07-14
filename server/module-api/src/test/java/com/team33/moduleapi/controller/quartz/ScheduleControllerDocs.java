@@ -1,4 +1,4 @@
-package com.modulequartz.quartz;
+package com.team33.moduleapi.controller.quartz;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,12 +12,15 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.ApiTest;
-import com.team33.ModuleQuartzApplication;
+import com.team33.ModuleApiApplication;
+import com.team33.moduleapi.controller.ApiTest;
+import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.domain.item.entity.Item;
 import com.team33.modulecore.domain.order.entity.ItemOrder;
 import com.team33.modulecore.domain.order.entity.Order;
@@ -39,8 +42,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("quartz")
-@Import(ModuleQuartzApplication.class)
+@ActiveProfiles("quartztest")
+@Import(ModuleApiApplication.class)
 class ScheduleControllerDocs extends ApiTest {
 
     @MockBean(name = "orderService")
@@ -63,6 +66,7 @@ class ScheduleControllerDocs extends ApiTest {
     private final FixtureMonkey fixtureMonkey = FixtureMonkey
         .builder()
         .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
+        .defaultNotNull(true)
         .build();
 
     @BeforeEach
@@ -126,6 +130,9 @@ class ScheduleControllerDocs extends ApiTest {
                         .removePort(), prettyPrint()
                     ),
                     preprocessResponse(prettyPrint()),
+                    requestParameters(
+                        parameterWithName("orderId").description("주문 아이디")
+                    ),
                     responseFields(
                         fieldWithPath("data").type(JsonFieldType.STRING).description("스케쥴 구성 완료")
                     )
@@ -140,8 +147,10 @@ class ScheduleControllerDocs extends ApiTest {
     }
 
     @DisplayName("스케쥴을 수정할 수 있다.")
+    @UserAccount({"test", "010-0000-0000"})
     @Test
     void test2() throws Exception {
+        String token = super.getToken();
 
         ExtractableResponse<Response> response =
             given(super.spec)
@@ -149,6 +158,7 @@ class ScheduleControllerDocs extends ApiTest {
                 .param("period", 60)
                 .param("orderId", 1L)
                 .param("itemOrderId", 1L)
+                .header("Authorization", token)
                 .filter(document("quartz-change",
                         preprocessRequest(modifyUris()
                             .scheme("http")
@@ -156,6 +166,11 @@ class ScheduleControllerDocs extends ApiTest {
                             .removePort(), prettyPrint()
                         ),
                         preprocessResponse(prettyPrint()),
+                        requestParameters(
+                            parameterWithName("period").description("결제 주기"),
+                            parameterWithName("orderId").description("주문 아이디"),
+                            parameterWithName("itemOrderId").description("주문 아이템 아이디")
+                        ),
                         responseFields(
                             fieldWithPath("data.orderId").type(JsonFieldType.NUMBER)
                                 .description("주문 아이디"),
@@ -189,7 +204,7 @@ class ScheduleControllerDocs extends ApiTest {
                     )
                 )
                 .when()
-                .patch("/schedule/change")
+                .patch("/schedule")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.ACCEPTED.value())
@@ -209,28 +224,36 @@ class ScheduleControllerDocs extends ApiTest {
     }
 
     @DisplayName("스케쥴을 취소할 수 있다.")
+    @UserAccount({"test", "010-0000-0000"})
     @Test
     void test3() throws Exception {
+
+        String token = super.getToken();
 
         ExtractableResponse<Response> response =
             given(super.spec)
                 .log().all()
                 .param("orderId", 1L)
                 .param("itemOrderId", 1L)
-                .filter(document("quartz-change",
+                .header("Authorization", token)
+                .filter(document("quartz-cancel",
                         preprocessRequest(modifyUris()
                             .scheme("http")
                             .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
                             .removePort(), prettyPrint()
                         ),
                         preprocessResponse(prettyPrint()),
+                        requestParameters(
+                            parameterWithName("orderId").description("주문 아이디"),
+                            parameterWithName("itemOrderId").description("주문 아이템 아이디")
+                        ),
                         responseFields(
                             fieldWithPath("data").type(JsonFieldType.STRING).description("취소 일시")
                         )
                     )
                 )
                 .when()
-                .delete("/schedule/cancel")
+                .delete("/schedule")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.ACCEPTED.value())

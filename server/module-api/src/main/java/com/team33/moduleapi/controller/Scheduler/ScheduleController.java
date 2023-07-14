@@ -1,4 +1,4 @@
-package com.team33.modulequartz.subscription.controller;
+package com.team33.moduleapi.controller.Scheduler;
 
 import com.team33.modulecore.domain.item.mapper.ItemMapper;
 import com.team33.modulecore.domain.order.dto.ItemOrderDto.SubResponse;

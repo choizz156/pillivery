@@ -1,4 +1,4 @@
-package com.modulequartz.quartz;
+package com.team33.moduleapi.controller.quartz;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,9 +9,9 @@ import static org.mockito.BDDMockito.given;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.ApiTest;
-import com.team33.ModuleQuartzApplication;
-import com.team33.UserAccount;
+import com.team33.ModuleApiApplication;
+import com.team33.moduleapi.controller.ApiTest;
+import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.domain.item.entity.Item;
 import com.team33.modulecore.domain.order.entity.ItemOrder;
 import com.team33.modulecore.domain.order.entity.Order;
@@ -19,8 +19,6 @@ import com.team33.modulecore.domain.order.reposiroty.OrderRepository;
 import com.team33.modulecore.domain.order.service.ItemOrderService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.ZonedDateTime;
@@ -29,14 +27,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("quartz")
-@Import(ModuleQuartzApplication.class)
+@ActiveProfiles("quartztest")
+@Import(ModuleApiApplication.class)
 class ScheduleControllerTest extends ApiTest {
 
     @MockBean(name = "orderService")
@@ -125,7 +122,7 @@ class ScheduleControllerTest extends ApiTest {
     }
 
     @DisplayName("스케쥴을 수정할 수 있다.")
-    @UserAccount({"test","010-0000-0000"})
+    @UserAccount({"test", "010-0000-0000"})
     @Test
     void test2() throws Exception {
 

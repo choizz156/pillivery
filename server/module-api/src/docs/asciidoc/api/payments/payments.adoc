@@ -1,0 +1,71 @@
+
+=== 카카오 페이 API Docs
+- 카카오 페이 API 연동에 관한 정보는 아래 사이트를 참고해주세요.
+`https://developers.kakao.com/docs/latest/ko/kakaopay/common`
+
+---
+
+[[payments-request]]
+
+=== 결제 요청(단건, 정기(최초))
+==== 카카오 페이 요청 및 응답
+
+|===
+| 결제 요청  | URL
+
+| 요청
+| `https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#prepare-request`
+
+| 응답
+| https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#prepare-response`
+
+|===
+==== HTTP Request
+include::{snippets}/payments/http-request.adoc[]
+include::{snippets}/payments/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/payments/response-body.adoc[]
+
+---
+
+=== 결제 승인(단건, 정기(최초 시도))
+==== 카카오 페이 요청 및 응답
+
+|===
+| 결제 승인  | URL
+
+| 요청
+| `https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#prepare-requesthttps://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#approve-request`
+| 응답
+|`https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#approve-respons`
+
+|===
+==== HTTP Request
+include::{snippets}/payments-approve/http-request.adoc[]
+include::{snippets}/payments-approve/path-parameters.adoc[]
+include::{snippets}/payments-approve/request-parameters.adoc[]
+==== HTTP Response
+include::{snippets}/payments-approve/response-body.adoc[]
+
+---
+
+=== 결제 승인(정기 구독(2회차 이후))
+==== 카카오 페이 요청 및 응답
+|===
+| 정기 결제 승인(2회차 이후)  | URL
+
+| 요청
+| `https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#prepare-requesthttps://developerhttps://developers.kakao.com/docs/latest/ko/kakaopay/subscription#charge-request`
+| 응답
+|`https://developers.kakao.com/docs/latest/ko/kakaopay/subscription#charge-response`
+
+|===
+    내부 통신 API
+
+==== HTTP Request
+include::{snippets}/payments-approve-subs/http-request.adoc[]
+include::{snippets}/payments-approve-subs/path-parameters.adoc[]
+==== HTTP Response
+include::{snippets}/payments-approve-subs/response-body.adoc[]
+

@@ -9,7 +9,26 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 
+== Header
+|===
+| name | 설명
+
+| `Authorization`
+| API를 사용하기 위한 인증 키
+|===
+
 [[User-API]]
 == User API
 
 include::api/user/user.adoc[]
+
+[[Payment-API]]
+== Payment API
+
+include::api/payments/payments.adoc[]
+
+[[Scheduler-API]]
+== Scheduler API
+
+include::api/quartz/quartz.adoc[]
+

@@ -1,4 +1,4 @@
-package com.modulequartz.quartz;
+package com.team33.moduleapi.controller.quartz;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.quartz.JobBuilder.newJob;
@@ -6,13 +6,14 @@ import static org.quartz.JobKey.jobKey;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import com.team33.ApiTest;
-import com.team33.ModuleQuartzApplication;
+import com.team33.moduleapi.controller.ApiTest;
+import com.team33.ModuleApiApplication;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -23,9 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-
-@ActiveProfiles({"quartztest"})
-@Import(ModuleQuartzApplication.class)
+@ActiveProfiles("quartztest")
+@Import(ModuleApiApplication.class)
 class QuartzTest extends ApiTest {
 
     @Autowired
@@ -114,7 +114,7 @@ class QuartzTest extends ApiTest {
         jobDataMap.put("orderId", 1L);
         jobDataMap.put("itemOrder", "itemOrder");
 
-        return newJob(TestJob.class)
+        return newJob(Job.class)
             .withIdentity(jobKey.getName(), jobKey.getGroup())
             .storeDurably(true)
             .usingJobData(jobDataMap)

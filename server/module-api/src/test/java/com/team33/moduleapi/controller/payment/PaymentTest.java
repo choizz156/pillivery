@@ -1,4 +1,4 @@
-package com.team33.moduleapi.domain.payment;
+package com.team33.moduleapi.controller.payment;
 
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -7,14 +7,12 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.team33.modulecore.domain.order.entity.Order;
-import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto;
 import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Approve;
 import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Request;
 import com.team33.modulecore.domain.payment.kakao.service.KaKaoPayApprove;
@@ -23,11 +21,8 @@ import com.team33.modulecore.domain.payment.kakao.utils.ParameterProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
@@ -75,9 +70,7 @@ class PaymentTest {
     void payProveTest() throws Exception {
         //given
         Approve approve1 = fixtureMonkey.giveMeOne(Approve.class);
-
-        given(payApprove.approveOneTime(
-                anyString(), anyString(), anyLong()))
+        given(payApprove.approveOneTime(anyString(), anyString(), anyLong()))
             .willReturn(approve1);
 
         //when
@@ -92,9 +85,10 @@ class PaymentTest {
     @Test
     void subFirstRequest() throws Exception {
         //given
+        Request request1 = fixtureMonkey.giveMeOne(Request.class);
         Order order = fixtureMonkey.giveMeOne(Order.class);
         given(payRequest.requestSubscription(any(Order.class)))
-            .willReturn(Request.class.getDeclaredConstructor().newInstance());
+            .willReturn(request1);
 
         //when
         Request request = payRequest.requestSubscription(order);
@@ -110,8 +104,9 @@ class PaymentTest {
     @Test
     void subFirstApprove() throws Exception {
         //given
+        Approve approve1 = fixtureMonkey.giveMeOne(Approve.class);
         given(payApprove.approveFirstSubscription(anyString(), anyString(), anyLong()))
-            .willReturn(Approve.class.getDeclaredConstructor().newInstance());
+            .willReturn(approve1);
 
         //when
         Approve approve = payApprove.approveFirstSubscription("tid", "pgtoken", 1L);
@@ -125,9 +120,10 @@ class PaymentTest {
     @Test
     void subApprove() throws Exception {
         //given
+        Approve approve1 = fixtureMonkey.giveMeOne(Approve.class);
         Order order = fixtureMonkey.giveMeOne(Order.class);
         given(payApprove.approveSubscription(anyString(), any(Order.class)))
-            .willReturn(Approve.class.getDeclaredConstructor().newInstance());
+            .willReturn(approve1);
         //when
         Approve approve = payApprove.approveSubscription("sid", order);
 

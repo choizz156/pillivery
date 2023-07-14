@@ -1,4 +1,4 @@
-package com.team33.moduleapi.domain.user;
+package com.team33.moduleapi.controller.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -11,43 +11,27 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-import com.team33.ApiTest;
-import com.team33.UserAccount;
+import com.team33.moduleapi.controller.ApiTest;
+import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.Address;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.entity.UserRoles;
-import com.team33.modulecore.domain.user.repository.UserRepository;
-import com.team33.modulecore.domain.user.service.UserService;
 import com.team33.modulecore.global.security.dto.LoginDto;
-import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 class UserApiDocs extends ApiTest {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @AfterEach
-    void tearDown() {
-        userRepository.deleteAll();
-    }
 
     @DisplayName("회원 가입")
     @Test
@@ -611,7 +595,7 @@ class UserApiDocs extends ApiTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         assertThat(response.body().jsonPath().get("message").toString())
-            .isIn("Bad credential", "자격 증명에 실패하였습니다.");
+            .isIn("Bad credentials", "자격 증명에 실패하였습니다.");
 
     }
 
@@ -652,7 +636,7 @@ class UserApiDocs extends ApiTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         assertThat(response.body().jsonPath().get("message").toString())
-            .isIn("Bad credential", "자격 증명에 실패하였습니다.");
+            .isIn("Bad credentials", "자격 증명에 실패하였습니다.");
     }
 
     @UserAccount({"test", "010-0000-0000"})

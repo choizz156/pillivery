@@ -8,14 +8,13 @@ configurations {
 
 dependencies {
 
-    //spring
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     //db
     runtimeOnly 'com.h2database:h2'
+
+    //quartz
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
 
     //restdocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'

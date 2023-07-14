@@ -61,8 +61,8 @@ public class KakaoPaymentFacade implements PaymentFacade {
     @Override
     public Approve approveSubscription(final Long orderId) {
         Order order = findOrder(orderId);
-
         String sid = order.getSid();
+
         return kakaoPayApprove.approveSubscription(sid, order);
     }
 
@@ -73,8 +73,8 @@ public class KakaoPaymentFacade implements PaymentFacade {
         queryParam.add("orderId", String.valueOf(orderId));
 
         URI uri = UriComponentsBuilder.newInstance().scheme("http")
-            .host("localhost")
-            .port(9090)
+            .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+            .port(8080)
             .path("/schedule")
             .queryParams(queryParam).build().toUri();
 

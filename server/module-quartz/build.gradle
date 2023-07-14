@@ -1,47 +1,8 @@
-plugins {
-    id "org.asciidoctor.jvm.convert" version "3.3.2"
-}
-
-configurations {
-    asciidoctorExt
-}
 
 dependencies {
-    //spring
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
 
     //quartz
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
 
-    //restdocs
-    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-
-    //db
-    runtimeOnly 'com.h2database:h2'
-}
-ext { // 전역 변수
-    snippetsDir = file('build/generated-snippets')
 }
 
-test {
-    outputs.dir snippetsDir
-}
-
-asciidoctor {
-    inputs.dir snippetsDir
-    configurations 'asciidoctorExt'
-
-    sources {
-        include("**/index-batch.adoc")
-    }
-    baseDirFollowsSourceFile()
-    dependsOn test
-}
-
-bootJar{
-    dependsOn asciidoctor
-    from("${asciidoctor.outputDir}")
-    into 'static/docs'
-}

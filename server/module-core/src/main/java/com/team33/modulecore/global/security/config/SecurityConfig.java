@@ -34,13 +34,13 @@ public class SecurityConfig {
     private static final String ORDERS = "/orders/**";
     private static final String REVIEWS = "/reviews/**";
     private static final String SCHEDULE_URL = "/schedule";
-    private static final String PAYMENTS_URL = "/payments/**";
+    private static final String PAYMENTS_URL = "/payments/{orderId}";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.headers().frameOptions().sameOrigin()
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
 
             .formLogin().disable()
