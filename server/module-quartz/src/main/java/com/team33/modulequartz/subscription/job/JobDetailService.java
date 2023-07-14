@@ -23,6 +23,7 @@ public class JobDetailService {
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put("orderId", orderId);
         jobDataMap.put("itemOrder", itemOrder);
+        jobDataMap.put("retry", 0);
 
         return newJob(KaKaoSubscriptionJob.class)
             .withIdentity(jobKey.getName(), jobKey.getGroup())

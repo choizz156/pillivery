@@ -15,7 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.team33.modulecore.global.util.JsonMapper;
+import com.team33.modulecore.global.util.Mapper;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -50,7 +50,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private LoginDto getLoginDto(HttpServletRequest request) {
         try {
-            return JsonMapper.stringToObj(request,new LoginDto());
+            return Mapper.getInstance().readValue(request.getInputStream(), LoginDto.class);
         } catch (IOException e) {
             throw new AuthenticationServiceException(e.getMessage());
         }

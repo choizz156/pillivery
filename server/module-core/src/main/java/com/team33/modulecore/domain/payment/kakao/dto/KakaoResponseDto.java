@@ -8,14 +8,17 @@ import lombok.Getter;
 public class KakaoResponseDto {
 
     @Getter
-    public static class Request{
+    public static class Request {
+
         private String tid;
         private String next_redirect_pc_url;
-        private ZonedDateTime create_at = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        private ZonedDateTime createAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
     }
+
     @Getter
-    public static class Approve{
+    public static class Approve {
+
         private String aid;
         private String tid;
         private String cid;
@@ -33,6 +36,7 @@ public class KakaoResponseDto {
 
         @Getter
         private static class Amount {
+
             private int total;
             private int tax_free;
             private int vat;
