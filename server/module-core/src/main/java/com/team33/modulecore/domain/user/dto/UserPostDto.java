@@ -1,6 +1,7 @@
 package com.team33.modulecore.domain.user.dto;
 
 
+import com.team33.modulecore.domain.user.validation.NotSpace;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

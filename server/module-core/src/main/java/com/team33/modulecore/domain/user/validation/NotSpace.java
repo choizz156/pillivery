@@ -1,4 +1,4 @@
-package com.team33.modulecore.domain.user.dto;
+package com.team33.modulecore.domain.user.validation;
 
 
 import java.lang.annotation.ElementType;
