@@ -33,7 +33,7 @@
 |`MySQL 8`|
 |`JWT 0.11.5`|
 |`OAuth 2.0`|
- |`Quartz 2.3.0`|
+ |`Quartz 2.3.2`|
 
 ## 3. ERD
 
