@@ -1,4 +1,4 @@
-package com.team33.moduleapi.controller.user;
+package com.team33.moduleapi.docs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;

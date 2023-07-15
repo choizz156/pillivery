@@ -1,4 +1,4 @@
-package com.team33.moduleapi.controller.payment;
+package com.team33.moduleapi.docs;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
