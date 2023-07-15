@@ -1,8 +1,6 @@
 ## 1. 제작 기간 및 참여 인원
 - 제작 기간: 2022.11.09 ~ 2022.12.05
 - 참여 인원: 7명(FE: 4명, BE: 3명)
-
-
 #### 🖥 Front-end
 |도현수 (팀장)|방기현 (서기)|김세연|안지환|
 |:-:|:-:|:-:|:-:|
@@ -16,12 +14,13 @@
 |<img src="https://avatars.githubusercontent.com/u/107678471?v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/94853413?v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/106965005?v=4" width=150>|
 |[@zirryo](https://github.com/zirryo)|[@jisoo27](https://github.com/jisoo27)|[@choizz156](https://github.com/choizz156)|
 
+---
+
 ## 2. 기술 스택
 ### Front-end
   - JavaScript, React Create React App, Styled components, React query, axios, Node.js, npm, Redux toolkit
 
 ### Back-end
-
 
 |Back-end|
 |:------:|
@@ -33,11 +32,22 @@
 |`MySQL 8`|
 |`JWT 0.11.5`|
 |`OAuth 2.0`|
- |`Quartz 2.3.2`|
+|`Quartz 2.3.2`|
+
+---
 
 ## 3. ERD
 
 ![erd 수정](https://user-images.githubusercontent.com/106965005/228384360-5a59318c-74c4-4449-9717-f097a6903ee3.png)
+
+---
+## 4.프로젝트 모듈 구조
+- 멀티 모듈
+  - api, core, quartz의 모듈로 나누어 중복 코드를 방지하고 코드의 관리를 용이하게 했습니다. 
+
+![](https://github.com/choizz156/pillivery/blob/904ee15bce3430ef9ef0a4fab8e65b448748f9e2/image/%E1%84%86%E1%85%A9%E1%84%83%E1%85%B2%E1%86%AF%20%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%A5%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7.jpg)
+
+---
 
 ## 4. 내가 만든 기능
 #### 1) User 도메인 CRUD 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user)
