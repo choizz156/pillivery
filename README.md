@@ -77,10 +77,16 @@
 #### 3) 외부 결제 API 연동(카카오 페이) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment)
   - `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임합니다.
   - 결제 요청과 결제 승인에 `전략 패턴`을 활용했습니다.
-    
-![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)
 
-- 결제 요청 및 결제 승인 시퀀스 다이어그램
+  ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)
+  
+  - RestTemplate를 이용해 외부 API와 내부 API를 통신했습니다.
+    - 동기 방식을 사용하므로 요청이 많아질 시 응답 지연을 고려했습니다.
+    - Connection Pool을 설정하고, 연결 시간 타임 아웃과 응답 시간 타임 아웃 설정했습니다.
+    
+
+
+ #결제 요청 및 결제 승인 시퀀스 다이어그램
   
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%20%EC%8B%9C%ED%80%80%EC%8A%A4.jpg)
 
