@@ -27,7 +27,8 @@
 |`Java 11`|
 |`Spring Sercurity`|
 |`Spring boot 2.7.5`|
-|`Spring JPA`|
+|`Spring Data JPA`|
+|`Spring Rest Docs`|
 |`Gradle`|
 |`MySQL 8`|
 |`JWT 0.11.5`|
