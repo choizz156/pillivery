@@ -696,7 +696,7 @@ class UserApiDocs extends ApiTest {
 
     private UserPatchDto updateUser(String displayName, String phone) {
         String email = "test@test.com";
-        String password = "123123";
+        String password = "12311!adf3";
         String city = "수원";
         String detailAddress = "압구정";
         String realName = "dignem";

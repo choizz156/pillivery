@@ -423,7 +423,7 @@ class UserApiTest extends ApiTest {
 
     private UserPatchDto updateUser(String displayName, String phone) {
         String email = "test@test.com";
-        String password = "123123";
+        String password = "1231asd!!23";
         String city = "수원";
         String detailAddress = "압구정";
         String realName = "dignem";
