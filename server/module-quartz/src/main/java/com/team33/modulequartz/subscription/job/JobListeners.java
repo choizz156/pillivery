@@ -33,11 +33,12 @@ public class JobListeners implements JobListener {
     private final OrderService orderService;
     private final JobDetailService jobDetailService;
 
+    private static final String PAYMENT_JOB = "payment Job";
     private static final String RETRY = "retry";
 
     @Override
     public String getName() {
-        return "payment Job";
+        return PAYMENT_JOB;
     }
 
     /**
@@ -82,7 +83,6 @@ public class JobListeners implements JobListener {
         log.info("실행된 job의 jobkey = {}", key);
 
         retryOrDeleteIfJobException(context, jobException, key, jobDataMap, retryCount);
-
         updateSchedule(context, jobDataMap);
     }
 
