@@ -61,23 +61,27 @@
 ---
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
 - 회원가입 후 로그인하면 바로 토큰을 발급합니다.
+  
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
-- OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 토큰이 발급됩니다. 
 
-  - 리소스 서버에서 받은 리소스와 따로 추가한 정보는 애플리케이션 서버의 데이터베이스에서 저장합니다.
+- OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 토큰이 발급됩니다. 
+  - 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장합니다.
+    
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
-  - 추가 정보 기입을 완료한 후에는 OAuth 로그인 시 바로 토큰이 발급됩니다.
+
+  - 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 토큰이 발급됩니다.
   - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됩니다.
+    
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EC%B6%94%EA%B0%80%EC%A0%95%EB%B3%B4%20diagram.jpg)
 ---  
 #### 3) 외부 결제 API 연동(카카오 페이) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment)
-  - 결제 요청이 들어올 때, `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청을 구분하여 결제 요청 서비스에 위임합니다.
+  - `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임합니다.
   - 결제 요청과 결제 승인에 `전략 패턴`을 활용했습니다.
-
+    
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)
 
 - 결제 요청 및 결제 승인 시퀀스 다이어그램
-
+  
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%20%EC%8B%9C%ED%80%80%EC%8A%A4.jpg)
 
 ---
