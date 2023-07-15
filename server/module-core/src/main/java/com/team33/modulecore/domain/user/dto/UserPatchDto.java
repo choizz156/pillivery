@@ -2,6 +2,7 @@ package com.team33.modulecore.domain.user.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,20 +10,26 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UserPatchDto {
-    @NotBlank
-    @Email
+
+    @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
-    @NotBlank
+    @Pattern(
+        regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^+=-])(?=.*[0-9]).{8,25}$",
+        message = "비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상 입력해 주세요!"
+    )
     private String password;
-    @NotBlank
+    @NotBlank(message = "닉네임은 공백일 수 없습니다.")
     private String displayName;
     @NotBlank
     private String city;
     @NotBlank
     private String detailAddress;
-    @NotBlank
+    @NotSpace(message = "공백이 있어서는 안됩니다.")
     private String realName;
-    @NotBlank
+    @Pattern(
+        regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$",
+        message = "올바른 연락처 형식이 아닙니다."
+    )
     private String phone;
 
     @Builder

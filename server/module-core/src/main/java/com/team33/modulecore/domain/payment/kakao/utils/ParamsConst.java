@@ -11,7 +11,7 @@ public abstract class ParamsConst {
     protected static final String ONE_TIME_APPROVAL_URL = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kakao/approve";
     protected static final String SUBSCRIPTION_APPROVAL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kakao/subs/approve";
     protected static final String CANCEL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kakao/cancel";
-    protected static final String FAIL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kaka0/fail";
+    protected static final String FAIL_URI = "ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com/payments/kakao/fail";
     protected static final String ONE_TIME_CID = "TC0ONETIME";
     protected static final String SUBSCRIP_CID = "TCSUBSCRIP";
     protected static final String CID = "cid";
