@@ -10,6 +10,7 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.PersistJobDataAfterExecution;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -20,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 @Component
 @DisallowConcurrentExecution
+@PersistJobDataAfterExecution
 public class KaKaoSubscriptionJob implements Job {
 
     private final RestTemplate restTemplate;
