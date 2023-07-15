@@ -2,7 +2,6 @@ package com.team33.moduleapi.controller;
 
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
-import com.team33.ModuleApiApplication;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.domain.user.service.UserService;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,22 +43,21 @@ public abstract class ApiTest {
 
 
     @AfterEach
-    void tearDown() {
-        userRepository.deleteAll();
+    void tearDown(){
+    userRepository.deleteAll();
     }
-
 
     @BeforeEach
     void beforeEach(RestDocumentationContextProvider restDocumentation) {
-        RestAssured.port = port;
-        //rest-docs
-        this.spec = new RequestSpecBuilder()
-            .addFilter(documentationConfiguration(restDocumentation))
-            .build();
+    RestAssured.port=port;
+    //rest-docs
+    this.spec=new RequestSpecBuilder()
+    .addFilter(documentationConfiguration(restDocumentation))
+    .build();
     }
 
-    protected String getToken() {
-        User loginUser = userService.getLoginUser();
-        return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
+protected String getToken(){
+    User loginUser=userService.getLoginUser();
+    return"Bearer "+jwtTokenProvider.delegateAccessToken(loginUser);
     }
-}
+    }

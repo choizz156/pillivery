@@ -74,7 +74,7 @@ class PaymentApiDocs extends ApiTest {
                         )
                     )
             .when()
-                    .get("/payments/{orderId}")
+                    .post("/payments/{orderId}")
             .then()
                     .statusCode(HttpStatus.ACCEPTED.value())
                     .log().all().extract();

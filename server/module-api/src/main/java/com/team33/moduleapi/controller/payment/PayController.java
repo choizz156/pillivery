@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.StreamingHttpOutputMessage.Body;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +34,7 @@ public class PayController {
     private final PaymentFacade paymentFacade;
     private final ObjectMapper objectMapper;
 
-    @GetMapping("/{orderId}")
+    @PostMapping("/{orderId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public KakaoResponseDto.Request request(@PathVariable("orderId") Long orderId) {
         return ofNullable(paymentFacade.request(orderId))
