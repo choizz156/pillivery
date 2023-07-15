@@ -8,7 +8,7 @@
 |:-:|:-:|:-:|:-:|
 |<img src="https://avatars.githubusercontent.com/u/105625895?v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/102677317?s=400&u=d1fc15bf19c4d0fb775e7b0f58ce83bd91fbe72c&v=4" width=150>|<img src="https://avatars.githubusercontent.com/u/107875909?v=4" width=150>|<img src="https://cdn.discordapp.com/attachments/1035955628742553732/1049618694122262538/1.jpeg" width=150>|
 |[@dohyeons](https://github.com/dohyeons)|[@kihyeoon](https://github.com/kihyeoon)|[@uxolrv](https://github.com/uxolrv)|[@jihwanAn](https://github.com/jihwanAn)|
-<br /><br /><br />
+
 
 #### ⚙️ Back-end
 |김지효 (BE 팀장)|김지수|최민석|
@@ -17,17 +17,23 @@
 |[@zirryo](https://github.com/zirryo)|[@jisoo27](https://github.com/jisoo27)|[@choizz156](https://github.com/choizz156)|
 
 ## 2. 기술 스택
-|           Front-end           |`Back-end`|
-|:-----------------------------:|:------:|
-|          JavaScript           |`Java 11`|
-|             React             |`Spring Sercurity`|
-|       Create React App        |`Spring boot 2.7.5`|
-|       Styled components       |`Spring JPA`|
-|          React query          |`Gradle`|
-|             axios             |`MySQL 8`|
-|            Node.js            |`JWT 0.11.5`|
-|              npm              |`OAuth 2.0`|
-|     Redux toolkit             |`Quartz 2.3.0`|
+### Front-end
+  - JavaScript, React Create React App, Styled components, React query, axios, Node.js, npm, Redux toolkit
+
+### Back-end
+
+
+|Back-end|
+|:------:|
+|`Java 11`|
+|`Spring Sercurity`|
+|`Spring boot 2.7.5`|
+|`Spring JPA`|
+|`Gradle`|
+|`MySQL 8`|
+|`JWT 0.11.5`|
+|`OAuth 2.0`|
+ |`Quartz 2.3.0`|
 
 ## 3. ERD
 
@@ -36,15 +42,18 @@
 ## 4. 내가 만든 기능
 #### 1) User 도메인 CRUD 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user)
 - 회원가입, 정보 수정, 회원 탈퇴, 회원 정보 조회와 같은 User 도메인 api를 개발했습니다.
-- API path만 보더라도 해당 api의 용도를 명확하게 이해할 수 있도록 가독성을 고려했습니다.
 - Rest ApI 디자인 가이드 중  Resources, Http Methods, Status Code를 지키며 개발했습니다.
+  - 회원 정보 => `GET`
+  - 회원 가입 => `POST`
+  - 회원 정보 수정 => `PATCH`
+  - 회원 탈퇴 => `DELETE`
 ---
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
 - 회원가입 후 로그인하면 바로 토큰을 발급합니다.
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
 - OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 토큰이 발급됩니다. 
 
-  - 리소스 서버에서 받은 리소스와 따로 추가한 정보는 서버의 데이터베이스에서 저장합니다.
+  - 리소스 서버에서 받은 리소스와 따로 추가한 정보는 애플리케이션 서버의 데이터베이스에서 저장합니다.
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
   - 추가 정보 기입을 완료한 후에는 OAuth 로그인 시 바로 토큰이 발급됩니다.
   - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됩니다.
