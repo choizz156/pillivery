@@ -13,11 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPostDto {
 
+    @NotBlank
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
     @Pattern(
         regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^+=-])(?=.*\\d).{8,25}$",
-        message = "비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상 입력해 주세요!"
+        message = "비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상이어야 합니다."
     )
     private String password;
 

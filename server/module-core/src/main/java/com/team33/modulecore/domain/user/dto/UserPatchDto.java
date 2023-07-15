@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPatchDto {
 
+    @NotBlank
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
     @Pattern(
@@ -27,6 +28,7 @@ public class UserPatchDto {
     private String detailAddress;
     @NotSpace(message = "공백이 있어서는 안됩니다.")
     private String realName;
+
     @Pattern(
         regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$",
         message = "올바른 연락처 형식이 아닙니다."

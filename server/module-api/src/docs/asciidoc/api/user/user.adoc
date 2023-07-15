@@ -17,7 +17,40 @@
 
 | phone
 | `'010-xxxx-xxxx' 형식이어야 합니다.`
+
+| displayName, city, detailAddress
+| `공백이어서는 안됩니다.`
 |===
+
+==== 응답 예시
+
+    HTTP/1.1 400 Bad Request
+    Vary: Origin
+    Vary: Access-Control-Request-Method
+    Vary: Access-Control-Request-Headers
+    X-Content-Type-Options: nosniff
+    X-XSS-Protection: 1; mode=block
+    Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+    Pragma: no-cache
+    Expires: 0
+    X-Frame-Options: SAMEORIGIN
+    Content-Type: application/json
+    Transfer-Encoding: chunked
+    Date: Sat, 15 Jul 2023 05:14:59 GMT
+    Keep-Alive: timeout=60
+    Connection: keep-alive
+    Content-Length: 37
+    {
+        "status": 400,
+        "customFieldErrors": [
+                                {
+                                    "field": "email",
+                                    "rejectedValue": "1234567!",
+                                    "reason": "비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상이어야 합니다."
+                                }
+                            ]
+    }
+
 
 
 

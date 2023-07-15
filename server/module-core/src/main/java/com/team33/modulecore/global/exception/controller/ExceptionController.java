@@ -20,7 +20,7 @@ public class ExceptionController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-        return ErrorResponse.of(e.getBindingResult());
+        return ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getBindingResult());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -38,9 +38,9 @@ public class ExceptionController {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse methodArgumentTypeMismatchExceptionHandler(
-        MethodArgumentNotValidException e
+        MethodArgumentTypeMismatchException e
     ) {
-        return ErrorResponse.of(e.getBindingResult());
+        return ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)

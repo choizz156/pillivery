@@ -25,8 +25,9 @@ public class ErrorResponse {
         this.customFieldErrors = customFieldErrors;
     }
 
-    public static ErrorResponse of(BindingResult bindingResult) {
+    public static ErrorResponse of(HttpStatus httpStatus, BindingResult bindingResult) {
         return ErrorResponse.builder()
+            .status(httpStatus.value())
             .customFieldErrors(CustomFieldError.of(bindingResult))
             .build();
     }
@@ -38,10 +39,10 @@ public class ErrorResponse {
             .build();
     }
 
-    public static ErrorResponse of(HttpStatus httpStatus) {//저장되어 있는 문구
+    public static ErrorResponse of(HttpStatus httpStatus, String msg) {//저장되어 있는 문구
         return ErrorResponse.builder()
             .status(httpStatus.value())
-            .message(httpStatus.getReasonPhrase())
+            .message(msg)
             .build();
     }
 

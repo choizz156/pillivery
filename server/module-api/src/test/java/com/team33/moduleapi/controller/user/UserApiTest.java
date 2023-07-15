@@ -39,9 +39,8 @@ class UserApiTest extends ApiTest {
                     .post("/users")
             .then()
                     .log().all()
-                    .assertThat().statusCode(HttpStatus.CREATED.value())
-                    .assertThat().body(containsString("회원 가입 완료"))
-                    .extract();
+                    .statusCode(HttpStatus.CREATED.value())
+                    .body(containsString("회원 가입 완료"));
         //@formatter:on
     }
 
@@ -60,9 +59,8 @@ class UserApiTest extends ApiTest {
                 .post("/users")
         .then()
                 .log().all()
-                .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
-                .assertThat().body(containsString("이미 존재하는 닉네임입니다."))
-                .extract();
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body(containsString("이미 존재하는 닉네임입니다."));
         //@formatter:on
     }
 
@@ -81,8 +79,8 @@ class UserApiTest extends ApiTest {
                 .post("/users")
         .then()
                 .log().all()
-                .assertThat().statusCode(HttpStatus.BAD_REQUEST.value())
-                .assertThat().body(containsString("이미 존재하는 연락처입니다."));
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body(containsString("이미 존재하는 연락처입니다."));
         //@formatter:on
     }
 
@@ -105,8 +103,8 @@ class UserApiTest extends ApiTest {
                     .statusCode(HttpStatus.CREATED.value())
                     .header("Authorization", notNullValue())
                     .body(containsString("소셜 회원 추가 정보 기입 완료"))
-                .log()
-                    .all().extract();
+                    .log()
+                    .all();
         //@formatter:on
     }
 
