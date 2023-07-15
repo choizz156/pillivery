@@ -41,24 +41,36 @@
 ---
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
 - 회원가입 후 로그인하면 바로 토큰을 발급합니다.
+![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
 - OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 토큰이 발급됩니다. 
-  - 추가 정보 기입을 완료한 후에는 OAuth 로그인 시 바로 토큰이 발급됩니다.
-  - 리소스 서버에서 받은 리소스와 따로 추가한 정보는 서버의 데이터베이스에서 따로 관리합니다.
----  
-#### 3) 외부 결제 API 연동(카카오 페이, 토스 페이먼츠) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment)
-- 카카오 페이와 토스 페이먼츠, 두 결제 api와 저희 서버를 연동했습니다.
-    - 카카오 페이의 경우,
-      - 결제 요청이 들어올 때, `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청을 구분하여 결제 요청 서비스에 위임합니다.
-      - 결제 요청과 결제 승인에 `전략 패턴`을 활용했습니다.
 
-![image](https://github.com/choizz156/seb40_main_033/assets/106965005/8cf2c827-b900-4c21-aa5c-d009a2207cd8)
+  - 리소스 서버에서 받은 리소스와 따로 추가한 정보는 서버의 데이터베이스에서 저장합니다.
+![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
+  - 추가 정보 기입을 완료한 후에는 OAuth 로그인 시 바로 토큰이 발급됩니다.
+  - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됩니다.
+![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EC%B6%94%EA%B0%80%EC%A0%95%EB%B3%B4%20diagram.jpg)
+---  
+#### 3) 외부 결제 API 연동(카카오 페이) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment)
+  - 결제 요청이 들어올 때, `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청을 구분하여 결제 요청 서비스에 위임합니다.
+  - 결제 요청과 결제 승인에 `전략 패턴`을 활용했습니다.
+
+![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)
+
+- 결제 요청 및 결제 승인 시퀀스 다이어그램
+
+![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%20%EC%8B%9C%ED%80%80%EC%8A%A4.jpg)
 
 ---
   
 #### 4) 정기 구독(결제) 기능 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-quartz/src/main/java/com/team33/modulequartz/subscription)
 - 정기 구독 시 Quartz 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동합니다..
-    - job이 설정한 스케쥴에 실행되지 않을 시 `중복 실행 방지`(@DisallowConcurrentExecution).
-    - job 자체에서 `예외가 발생 시 바로 재실행` 조치(JobExecutionException).
+    - **멀티 모듈**을 구성하여 API 모듈과 스케쥴링 모듈을 분리했습니다.
+    - 정기 구독 구현 시 **Quartz 라이브러리**를 사용하여 특정 스케쥴러 조회를 가능하게 했습니다.
+    - 특정 날짜에 결제가 일어나도록 Trigger와 Job을 설정했습니다.
+    - 스케쥴러에서 설정한 스케쥴에 실행되지 않을 시 중복 실행을 방지했습니다.
+      
+![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EC%A0%95%EA%B8%B0%EA%B2%B0%EC%A0%9C%20%EC%8B%9C%ED%80%80%EC%8A%A4.jpg)
+
 ---
 #### 5) Exception 핸들링과 공통 Exception Response 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/exception)
 - `@RestControllerAdivce`를 이용하여 Exception을 핸들링하고, 공통적인 예외 Response 객체를 만들어 응답을 보냈습니다.
