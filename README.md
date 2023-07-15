@@ -99,6 +99,21 @@
 #### 5) Exception 핸들링과 공통 Exception Response 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/exception)
 - `@RestControllerAdivce`를 이용하여 Exception을 핸들링하고, 공통적인 예외 Response 객체를 만들어 응답을 보냈습니다.
 
+---
+#### 6) 단위 테스트 및 통합 테스트 작성
+
+- 프로젝트 개발 후 테스트 코드의 필요성을 인지하여 약 70개(Rest Docs를 위한 테스트 포함) 정도의 통합 테스트와 단위 테스트를 추가했습니다.
+
+![image](https://github.com/choizz156/pillivery/assets/106965005/a6e6c7c6-ee01-4e39-af68-9b894f6e39cd)
+
+
+---
+
+#### 7) Spring Rest Docs를 활용한 API 문서 작성
+
+- 테스트 코드 작성 후 Spring Rest Docs를 이용한 API 문서 작성을 통해 코드의 신뢰성을 보장했습니다.
+
+---
 
 ## 6. 회고
 ### 👉 기술 회고
