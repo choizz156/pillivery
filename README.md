@@ -111,7 +111,7 @@
 - 정적 팩토리 메서드를 통해 에러 응답 객체 생성 후 예외를 처리했습니다.
 
 ---
-#### 6) 단위 테스트 및 통합 테스트 작성 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/controller)
+#### 6) 단위 테스트(RestAssured) 및 통합 테스트 작성(Junit5) 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/controller)
 
 - 프로젝트 개발 후 테스트 코드의 필요성을 인지하여 약 70개(Rest Docs를 위한 테스트 포함) 정도의 통합 테스트와 단위 테스트를 추가했습니다.
 
