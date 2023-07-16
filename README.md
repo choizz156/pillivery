@@ -76,7 +76,7 @@
   - 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 Access Token이 발급됩니다.
   - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됩니다.
     
-![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EC%B6%94%EA%B0%80%EC%A0%95%EB%B3%B4%20diagram.jpg)
+![](https://github.com/choizz156/pillivery/blob/0fb84ed151e7ac9097764497d12ec676d4d81117/image/%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9%20diagram.jpg)
 ---  
 #### 3) 외부 결제 API 연동(카카오 페이) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment)
   - `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임합니다.
