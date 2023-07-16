@@ -120,7 +120,6 @@
 ---
 
 #### 7) Spring Rest Docs를 활용한 API 문서 작성 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/docs)
-- [API 문서](https://github.com/choizz156/pillivery/blob/61c2e946276afea6990f02fb1fdc590be60634e0/index.html)
 - 테스트 코드 작성 후 Spring Rest Docs를 이용한 API 문서 작성을 통해 코드의 신뢰성을 보장했습니다.
 
 ---
