@@ -58,22 +58,23 @@
 #### 1) User 도메인 CRUD 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user)
 - 회원가입, 정보 수정, 회원 탈퇴, 회원 정보 조회와 같은 User 도메인 api를 개발했습니다.
 - Rest ApI 디자인 가이드 중  Resources, Http Methods, Status Code를 지키며 개발했습니다.
-  - 회원 정보 => `GET`
-  - 회원 가입 => `POST`
-  - 회원 정보 수정 => `PATCH`
-  - 회원 탈퇴 => `DELETE`
+  - 회원 정보 => `GET` ~/users
+  - 회원 가입 => `POST` ~/users
+  - 회원 정보 수정 => `PATCH` ~/users
+  - 회원 탈퇴 => `DELETE` ~/users
 ---
+
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
-- 회원가입 후 로그인하면 바로 토큰을 발급합니다.
+- 회원가입 후 로그인하면 바로 Access Token을 발급합니다.
   
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
 
-- OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 토큰이 발급됩니다. 
+- OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 Access Token이 발급됩니다. 
   - 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장합니다.
     
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
 
-  - 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 토큰이 발급됩니다.
+  - 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 Access Token이 발급됩니다.
   - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됩니다.
     
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EC%B6%94%EA%B0%80%EC%A0%95%EB%B3%B4%20diagram.jpg)
@@ -107,7 +108,7 @@
 
 ---
 #### 5) Exception 핸들링과 공통 Exception Response 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/exception)
-- `@RestControllerAdivce`를 이용하여 Exception을 핸들링하고, 공통적인 예외 Response 객체를 만들어 응답을 보냈습니다.
+- 정적 팩토리 메서드를 통해 에러 응답 객체 생성 후 예외를 처리했습니다.
 
 ---
 #### 6) 단위 테스트 및 통합 테스트 작성 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/controller)
