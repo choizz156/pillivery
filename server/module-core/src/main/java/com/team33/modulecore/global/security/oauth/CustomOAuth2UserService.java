@@ -33,13 +33,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                                                         getUserNameAttributeName(userRequest),
                                                         oAuth2User.getAttributes()
         );
-        log.warn("{}", attributes.getEmail());
+        log.info("{}", attributes.getEmail());
         checkExistEmail(attributes);
 
+        User user = saveUser(attributes);
+        return UserDetailsEntity.builder().user(user).attributes(oAuth2User.getAttributes()).build();
+    }
+
+    private User saveUser(final OAuthAttributes attributes) {
         User user = attributes.toEntity();
         user.applyEncryptPassword("password");
         userRepository.save(user);
-        return UserDetailsEntity.builder().user(user).attributes(oAuth2User.getAttributes()).build();
+        return user;
     }
 
     private String getUserNameAttributeName(OAuth2UserRequest userRequest) {

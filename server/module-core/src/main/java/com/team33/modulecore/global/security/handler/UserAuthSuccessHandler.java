@@ -25,7 +25,7 @@ public class UserAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
     public void onAuthenticationSuccess(HttpServletRequest request,
         HttpServletResponse response,
         Authentication authentication
-    ) throws IOException {
+    ) {
         UserDetailsEntity principal = (UserDetailsEntity) authentication.getPrincipal();
         User user = principal.getUser();
         jwtTokenProvider.addTokenInResponse(response, user);
