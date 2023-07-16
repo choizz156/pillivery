@@ -18,22 +18,26 @@
 
 ## 2. 기술 스택
 ### Front-end
-  - JavaScript, React Create React App, Styled components, React query, axios, Node.js, npm, Redux toolkit
+  - JavaScript
+  -  React Create React App
+  -  Styled components
+  -  React query
+  -  axios
+  -  'Node.js
+  -  npm
+  -  Redux toolkit
 
 ### Back-end
-
-|Back-end|
-|:------:|
-|`Java 11`|
-|`Spring Sercurity`|
-|`Spring boot 2.7.5`|
-|`Spring Data JPA`|
-|`Spring Rest Docs`|
-|`Gradle`|
-|`MySQL 8`|
-|`JWT 0.11.5`|
-|`OAuth 2.0`|
-|`Quartz 2.3.2`|
+- `Java 11`
+- `Spring Sercurity`
+- `Spring boot 2.7.5`
+- `Spring Data JPA`
+- `Spring Rest Docs`
+- `Gradle`
+- `MySQL 8`
+- `JWT 0.11.5`
+- `OAuth 2.0`
+- `Quartz 2.3.2`
 
 ---
 
