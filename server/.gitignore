@@ -380,3 +380,5 @@ application-quartztest.yml
 settings.gradle
 HELP.md
 gradlew
+.gradle
+gradle/wrapper
