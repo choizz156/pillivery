@@ -16,7 +16,6 @@ import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
@@ -97,7 +96,7 @@ public class SubscriptionService {
     private boolean isPaymentDirectly(Order order, Integer period, ItemOrder itemOrder) {
         boolean noMargin = itemOrder.getPaymentDay()
             .plusDays(period)
-            .isBefore(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))); //바궈야진
+            .isBefore(ZonedDateTime.now(ZoneId.of("Asia/Seoul")));
 
         if (noMargin) {
             log.info("directly pay");
@@ -114,15 +113,17 @@ public class SubscriptionService {
     }
 
     private void deleteSchedule(final ItemOrder itemOrder, final User user) {
-            try {
-                scheduler.deleteJob(jobKey(
-                    user.getUserId() + itemOrder.getItem().getTitle(),
-                    String.valueOf(user.getUserId()))
-                );
-            } catch (SchedulerException e) {
-                JobExecutionException jobExecutionException = new JobExecutionException(e);
-                jobExecutionException.setRefireImmediately(true);
-            }
+        try {
+            scheduler.deleteJob(jobKey(
+                user.getUserId() + itemOrder.getItem().getTitle(),
+                String.valueOf(user.getUserId()))
+            );
+        } catch (SchedulerException e) {
+            log.error(
+                "스케쥴 삭제 실패 job => {},{}",
+                JobKey.jobKey("user.getUserId() + itemOrder.getItem().getTitle()")
+            );
+        }
     }
 
     private void extendPeriod(Order order, ItemOrder itemOrder) {
@@ -174,8 +175,7 @@ public class SubscriptionService {
             listenerManager.addTriggerListener(new TriggerListeners());
             scheduler.scheduleJob(jobDetail, lastTrigger);
         } catch (SchedulerException e) {
-            JobExecutionException jobExecutionException = new JobExecutionException(e);
-            jobExecutionException.setRefireImmediately(true);
+            log.error("스케쥴 등록 실패 job => {},{}", jobDetail.getKey().getName());
         }
     }
 }

@@ -24,7 +24,8 @@ public class TriggerService {
         log.info("trigger 설정");
         return newTrigger()
             .forJob(jobKey)
-            .withSchedule(calendarIntervalSchedule().withIntervalInDays(itemOrder.getPeriod())
+            .withSchedule(
+                calendarIntervalSchedule().withIntervalInDays(itemOrder.getPeriod())
             )
             .withIdentity(new TriggerKey(jobKey.getName(), jobKey.getGroup()))
             .startAt(Date.from(itemOrder.getNextDelivery().toInstant()))
@@ -32,11 +33,11 @@ public class TriggerService {
     }
 
     public Trigger retryTrigger() {
-        log.info("trigger 설정");
+        log.info("retry trigger 설정");
         return newTrigger()
             .withSchedule(simpleSchedule()
-                .withIntervalInMinutes(10)
-                .withRepeatCount(20*6)
+                .withIntervalInHours(24)
+                .withRepeatCount(3)
             )
             .startAt(futureDate(10, MINUTE))
             .withIdentity(new TriggerKey("retry"))

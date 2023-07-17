@@ -67,7 +67,8 @@ public class JobListeners implements JobListener {
     }
 
     /**
-     * job 실행 후 로직 2번 job 수행 실패 시 스케쥴을 취소합니다.
+     * job 실행 후 예외가 발생할 경우, - 첫 번째 예외 발생 시, 바로 job을 재실행한다. - 두 번째 예외 발생 시, 특정 시간을 간격으로 job을 재실행한다.
+     * 예외가 발생하지 않은 경우, 다음 job을 등록한다.
      *
      * @param context
      * @param jobException
@@ -150,20 +151,25 @@ public class JobListeners implements JobListener {
         if (jobException != null) {
             log.warn("job exception = {}", jobException.getMessage());
             retryImmediately(jobException, jobDataMap, retryCount);
-            retryEvery10Min(context, jobDataMap, retryCount);
-            if(retryCount > 110){
-                try {
-                    context.getScheduler().standby();
-                    throw new BusinessLogicException(ExceptionCode.PAYMENT_FAIL);
-                } catch (SchedulerException e) {
-                    JobExecutionException jobExecutionException = new JobExecutionException(e);
-                    jobExecutionException.setUnscheduleFiringTrigger(true);
-                }
+            retryIn24Hour(context, jobDataMap, retryCount);
+            cancelSchedule(context, retryCount);
+        }
+    }
+
+    private void cancelSchedule(final JobExecutionContext context, final int retryCount) {
+        if (retryCount >= 4) {
+            try {
+                JobKey key = context.getJobDetail().getKey();
+                context.getScheduler().deleteJob(key);
+                throw new BusinessLogicException(ExceptionCode.PAYMENT_FAIL);
+            } catch (SchedulerException e) {
+                JobExecutionException jobExecutionException = new JobExecutionException(e);
+                jobExecutionException.setUnscheduleFiringTrigger(true);
             }
         }
     }
 
-    private void retryEvery10Min(
+    private void retryIn24Hour(
         final JobExecutionContext context,
         final JobDataMap jobDataMap,
         int retryCount
