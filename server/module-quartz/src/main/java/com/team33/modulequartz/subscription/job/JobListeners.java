@@ -105,8 +105,7 @@ public class JobListeners implements JobListener {
             context.getScheduler().addJob(jobDetail, true);
             log.info("스케쥴 업데이트 완료");
         } catch (SchedulerException e) {
-            JobExecutionException jobExecutionException = new JobExecutionException(e);
-            jobExecutionException.setRefireImmediately(true);
+            log.error("스케쥴 업데이트 실패, 재시도 횟수 = {}");
         }
     }
 
@@ -158,13 +157,13 @@ public class JobListeners implements JobListener {
 
     private void cancelSchedule(final JobExecutionContext context, final int retryCount) {
         if (retryCount >= 4) {
+            log.warn("job 예외로 인한 스케쥴 취소");
             try {
                 JobKey key = context.getJobDetail().getKey();
                 context.getScheduler().deleteJob(key);
                 throw new BusinessLogicException(ExceptionCode.PAYMENT_FAIL);
             } catch (SchedulerException e) {
-                JobExecutionException jobExecutionException = new JobExecutionException(e);
-                jobExecutionException.setUnscheduleFiringTrigger(true);
+               log.error("스케쥴 삭제 실패, 재시도 횟수 = {}", retryCount );
             }
         }
     }
@@ -202,8 +201,7 @@ public class JobListeners implements JobListener {
                 trigger
             );
         } catch (SchedulerException e) {
-            JobExecutionException jobExecutionException = new JobExecutionException(e);
-            jobExecutionException.setRefireImmediately(true);
+            log.error("재시도 트리거 교체 실패");
         }
     }
 }
