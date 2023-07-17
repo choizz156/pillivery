@@ -7,7 +7,10 @@ import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.service.ItemOrderService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
+import com.team33.modulecore.global.exception.BusinessLogicException;
 import com.team33.modulequartz.subscription.job.JobDetailService;
+import com.team33.modulequartz.subscription.job.JobListeners;
+import com.team33.modulequartz.subscription.trigger.TriggerListeners;
 import com.team33.modulequartz.subscription.trigger.TriggerService;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
+import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -56,17 +60,17 @@ public class SubscriptionService {
         return getChangedItemOrder(order, itemOrder);
     }
 
-    @Transactional
-    public ItemOrder delayDelivery(Long orderId, Integer delay, Long itemOrderId) {
-        log.info("delay Delivery");
-        Order order = orderService.findOrder(orderId);
-        ItemOrder itemOrder =
-            itemOrderService.delayDelivery(
-                orderId, delay, findItemOrderInOrder(order, itemOrderId)
-            );
-        resetSchedule(order, itemOrder);
-        return itemOrder;
-    }
+//    @Transactional
+//    public ItemOrder delayDelivery(Long orderId, Integer delay, Long itemOrderId) {
+//        log.info("delay Delivery");
+//        Order order = orderService.findOrder(orderId);
+//        ItemOrder itemOrder =
+//            itemOrderService.delayDelivery(
+//                orderId, delay, findItemOrderInOrder(order, itemOrderId)
+//            );
+//        resetSchedule(order, itemOrder);
+//        return itemOrder;
+//    }
 
     @Transactional
     public void cancelScheduler(Long orderId, Long itemOrderId) {
@@ -84,7 +88,7 @@ public class SubscriptionService {
         var nextDelivery = paymentDay.plusDays(itemOrder.getPeriod());
         ItemOrder updatedItemOrder =
             itemOrderService.updateDeliveryInfo(paymentDay, nextDelivery, itemOrder);
-        log.error("{}",updatedItemOrder.getPaymentDay());
+        log.info("{}", updatedItemOrder.getPaymentDay());
         extendPeriod(order, updatedItemOrder);
 
         paymentDay.plusDays(itemOrder.getPeriod());
@@ -117,8 +121,7 @@ public class SubscriptionService {
                 String.valueOf(user.getUserId()))
             );
         } catch (SchedulerException e) {
-            JobExecutionException jobExecutionException = new JobExecutionException(e);
-            jobExecutionException.refireImmediately();
+            throw new BusinessLogicException(e.getMessage());
         }
     }
 
@@ -148,24 +151,30 @@ public class SubscriptionService {
     }
 
 
-    private void schedule(JobDetail payDay, Trigger lastTrigger) {
-        try {
-            scheduler.scheduleJob(payDay, lastTrigger);
-        } catch (SchedulerException e) {
-            JobExecutionException jobExecutionException = new JobExecutionException(e);
-            jobExecutionException.refireImmediately();
-        }
-    }
-
     private void applySchedule(Order order, ItemOrder itemOrder) {
         User user = order.getUser();
-        log.info("{} {}",order.getOrderId(),itemOrder.getItemOrderId());
+        log.info("{} {}", order.getOrderId(), itemOrder.getItemOrderId());
         JobKey jobkey = jobKey(
             user.getUserId() + itemOrder.getItem().getTitle(),
             String.valueOf(user.getUserId())
         );
+
         JobDetail payDay = jobDetail.build(jobkey, order.getOrderId(), itemOrder);
         Trigger lastTrigger = trigger.build(jobkey, itemOrder);
+
         schedule(payDay, lastTrigger);
+    }
+
+    private void schedule(JobDetail payDay, Trigger lastTrigger) {
+        try {
+            scheduler.scheduleJob(payDay, lastTrigger);
+            ListenerManager listenerManager = scheduler.getListenerManager();
+            listenerManager.addJobListener(
+                new JobListeners(trigger, itemOrderService, orderService, jobDetail)
+            );
+            listenerManager.addTriggerListener(new TriggerListeners());
+        } catch (SchedulerException e) {
+            throw new BusinessLogicException(e.getMessage());
+        }
     }
 }

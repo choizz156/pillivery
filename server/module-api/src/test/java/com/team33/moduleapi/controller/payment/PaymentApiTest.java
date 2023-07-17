@@ -1,4 +1,4 @@
-package com.team33.moduleapi.docs;
+package com.team33.moduleapi.controller.payment;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -108,9 +108,9 @@ class PaymentApiTest extends ApiTest {
             //@formatter:off
             given()
                     .log().all()
-                    .pathParam("orderId", 1)
+                    .queryParam("orderId", 1)
             .when()
-                    .get("/payments/subscription/{orderId}")
+                    .get("/payments/subscription")
             .then()
                     .statusCode(HttpStatus.ACCEPTED.value())
                     .log().all()

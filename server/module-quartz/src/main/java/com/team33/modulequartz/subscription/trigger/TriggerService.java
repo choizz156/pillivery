@@ -1,12 +1,16 @@
 package com.team33.modulequartz.subscription.trigger;
 
 import static org.quartz.CalendarIntervalScheduleBuilder.calendarIntervalSchedule;
+import static org.quartz.DateBuilder.IntervalUnit.HOUR;
+import static org.quartz.DateBuilder.IntervalUnit.MINUTE;
+import static org.quartz.DateBuilder.futureDate;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import com.team33.modulecore.domain.order.entity.ItemOrder;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
@@ -31,9 +35,11 @@ public class TriggerService {
         log.info("trigger 설정");
         return newTrigger()
             .withSchedule(simpleSchedule()
-                .withIntervalInHours(3)
-                .withRepeatCount(1)
+                .withIntervalInMinutes(10)
+                .withRepeatCount(24*6)
             )
+            .startAt(futureDate(10, MINUTE))
+            .withIdentity(new TriggerKey("retry"))
             .build();
     }
 }

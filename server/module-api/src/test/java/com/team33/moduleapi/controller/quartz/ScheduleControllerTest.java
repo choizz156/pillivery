@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("quartztest")
 @Import(ModuleApiApplication.class)
 class ScheduleControllerTest extends ApiTest {
 
@@ -118,7 +117,6 @@ class ScheduleControllerTest extends ApiTest {
                 .assertThat().body(containsString("스케쥴 구성 완료"))
                 .log().all();
         //@formatter:on
-
     }
 
     @DisplayName("스케쥴을 수정할 수 있다.")

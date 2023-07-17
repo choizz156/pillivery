@@ -8,7 +8,6 @@ import com.team33.modulecore.domain.order.service.ItemOrderService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.global.exception.BusinessLogicException;
-import com.team33.modulecore.global.exception.ExceptionCode;
 import com.team33.modulequartz.subscription.trigger.TriggerService;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -78,11 +77,11 @@ public class JobListeners implements JobListener {
         final JobExecutionException jobException
     ) {
         JobKey key = context.getJobDetail().getKey();
-        JobDataMap jobDataMap = context.getMergedJobDataMap();
+        JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         int retryCount = (int) jobDataMap.get(RETRY);
         log.info("실행된 job의 jobkey = {}", key);
 
-        retryOrDeleteIfJobException(context, jobException, key, jobDataMap, retryCount);
+        retryOrDeleteIfJobException(context, jobException, jobDataMap, retryCount);
         updateSchedule(context, jobDataMap);
     }
 
@@ -90,6 +89,7 @@ public class JobListeners implements JobListener {
         final JobExecutionContext context,
         final JobDataMap jobDataMap
     ) {
+        log.info("새로운 job 업데이트");
         ItemOrder itemOrder = (ItemOrder) jobDataMap.get("itemOrder");
         Long orderId = (Long) jobDataMap.get("orderId");
 
@@ -121,7 +121,7 @@ public class JobListeners implements JobListener {
         User user = newOrder.getUser();
         JobKey jobkey =
             jobKey(user.getUserId() + itemOrder.getItem().getTitle(),
-                         String.valueOf(user.getUserId())
+                String.valueOf(user.getUserId())
             );
         return jobDetailService.build(jobkey, newOrder.getOrderId(), newItemOrder);
     }
@@ -142,7 +142,6 @@ public class JobListeners implements JobListener {
     private void retryOrDeleteIfJobException(
         final JobExecutionContext context,
         final JobExecutionException jobException,
-        final JobKey key,
         final JobDataMap jobDataMap,
         final int retryCount
     ) {
@@ -150,29 +149,6 @@ public class JobListeners implements JobListener {
             log.warn("job exception = {}", jobException.getMessage());
             retryImmediately(jobException, jobDataMap, retryCount);
             retryIn3Hours(context, jobDataMap, retryCount);
-            deleteJob(context, jobException, key, retryCount);
-        }
-    }
-
-    private void deleteJob(
-        final JobExecutionContext context,
-        final JobExecutionException jobException,
-        final JobKey key,
-        final int retryCount
-    ) {
-        if (retryCount == 2) {
-            log.error("스케쥴링 취소 = {}", key);
-            jobException.setUnscheduleAllTriggers(true);
-            deleteSchedule(context, key);
-        }
-    }
-
-    private void deleteSchedule(final JobExecutionContext context, final JobKey key) {
-        try {
-            context.getScheduler().deleteJob(key);
-            throw new BusinessLogicException(ExceptionCode.SCHEDULE_CANCEL);
-        } catch (SchedulerException e) {
-            throw new BusinessLogicException(e.getMessage());
         }
     }
 
@@ -182,17 +158,10 @@ public class JobListeners implements JobListener {
         int retryCount
     ) {
         if (retryCount == 1) {
+            log.warn("두 번째 시도");
             jobDataMap.put(RETRY, ++retryCount);
             Trigger trigger = triggerService.retryTrigger();
             reschedule(context, trigger);
-        }
-    }
-
-    private void reschedule(final JobExecutionContext context, final Trigger trigger) {
-        try {
-            context.getScheduler().rescheduleJob(new TriggerKey("lazy retry"), trigger);
-        } catch (SchedulerException e) {
-            throw new BusinessLogicException(e.getMessage());
         }
     }
 
@@ -202,9 +171,21 @@ public class JobListeners implements JobListener {
         int retryCount
     ) {
         if (retryCount == 0) {
+            log.warn("최초 재시도");
             jobDataMap.put(RETRY, ++retryCount);
-            jobException.refireImmediately();
+            jobException.setRefireImmediately(true);
         }
     }
 
+    private void reschedule(final JobExecutionContext context, final Trigger trigger) {
+        try {
+            log.warn("재시도 스케쥴 설정");
+            context.getScheduler().rescheduleJob(
+                new TriggerKey(trigger.getJobKey().getName(), trigger.getJobKey().getGroup()),
+                trigger
+            );
+        } catch (SchedulerException e) {
+            throw new BusinessLogicException(e.getMessage());
+        }
+    }
 }

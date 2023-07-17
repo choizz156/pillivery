@@ -1,4 +1,4 @@
-package com.team33.moduleapi.controller.payment;
+package com.team33.moduleapi.docs;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -146,20 +146,20 @@ class PaymentApiDocs extends ApiTest {
             //@formatter:off
             given(super.spec)
                         .log().all()
-                        .pathParam("orderId", 1)
+                        .queryParam("orderId", 1)
                         .filter(
                             document("payments-approve-subs",
                                 preprocessRequest(modifyUris().scheme("http")
                                     .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
                                     .removePort(), prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                pathParameters(
+                                requestParameters(
                                     parameterWithName("orderId").description("주문 아이디")
                                 )
                             )
                         )
                 .when()
-                        .get("/payments/subscription/{orderId}")
+                        .get("/payments/subscription")
                 .then()
                         .statusCode(HttpStatus.ACCEPTED.value())
                         .log().all()

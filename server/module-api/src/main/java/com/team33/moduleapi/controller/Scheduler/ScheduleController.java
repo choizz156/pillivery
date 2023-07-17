@@ -85,10 +85,10 @@ public class ScheduleController {
     private void applySchedule(final Order order, final List<ItemOrder> itemOrders) {
         for (ItemOrder itemOrder : itemOrders) {
             ZonedDateTime nextDelivery = order.getCreatedAt().plusDays(itemOrder.getPeriod());
-            log.error("{}", nextDelivery);
+            log.info("{}", nextDelivery);
             ItemOrder itemOrder1 =
                 itemOrderService.updateDeliveryInfo(order.getCreatedAt(), nextDelivery, itemOrder);
-            log.error("{}", itemOrder1.getItemOrderId());
+            log.info("{}", itemOrder1.getItemOrderId());
             subscriptionService.startSchedule(order, itemOrder1);
         }
     }

@@ -52,12 +52,12 @@ public class PayController {
     }
 
     //    @CrossOrigin(origins = "pillivery.s3-website.ap-northeast-2.amazonaws.com")
-    @GetMapping("/subscription/{orderId}")
+    @GetMapping("/subscription")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public KakaoResponseDto.Approve subscription(@PathVariable Long orderId)
+    public KakaoResponseDto.Approve subscription(@RequestParam Long orderId)
         throws JobExecutionException {
         return ofNullable(paymentFacade.approveSubscription(orderId))
-            .orElseThrow(JobExecutionException::new);
+            .orElseThrow(() -> new JobExecutionException(ExceptionCode.PAYMENT_FAIL.getMessage()));
     }
 
     @GetMapping("/kakao/cancel")
