@@ -40,13 +40,18 @@
 - `Quartz 2.3.2`
 
 ---
+## 3. Git Flow
+![image](https://github.com/choizz156/pillivery/assets/106965005/f3e2acfd-5f46-4378-828d-6b923e4c029c)
 
-## 3. ERD
+
+
+
+## 4. ERD
 
 ![erd 수정](https://user-images.githubusercontent.com/106965005/228384360-5a59318c-74c4-4449-9717-f097a6903ee3.png)
 
 ---
-## 4.프로젝트 모듈 구조
+## 5.프로젝트 모듈 구조
   - api와 domain, quartz-scheduler로가 각각 독립적인 프로젝트 단위여야한다고 생각을 했습니다.
   - 그래서 단일 프로젝트 안에서 api, core, quartz의 모듈로 나누어 중복될 수 있는 코드를 방지하고 코드의 관리를 용이하게 했습니다. 
 
@@ -54,7 +59,7 @@
 
 ---
 
-## 5. 내가 만든 기능
+## 6. 내가 만든 기능
 #### 1) User 도메인 CRUD 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user)
 - 회원가입, 정보 수정, 회원 탈퇴, 회원 정보 조회와 같은 User 도메인 api를 개발했습니다.
 - Rest ApI 디자인 가이드 중  Resources, Http Methods, Status Code를 지키며 개발했습니다.
@@ -209,7 +214,7 @@
 
 ---
 
-## 6. 회고
+## 7. 회고
 ### 👉 기술 회고
 [꼭 JWT를 써야 했을까?](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-JWT%EB%A5%BC-%EA%BC%AD-%EC%8D%A8%EC%95%BC%EB%90%90%EC%9D%84%EA%B9%8C)</br>
 [무엇인가 잘못된 유저 객체 가지고 오기](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80-%EC%9E%98%EB%AA%BB%EB%90%9C-%EA%B2%83-%EA%B0%99%EC%9D%80-User-%EA%B0%9D%EC%B2%B4-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0)</br>
