@@ -110,7 +110,7 @@ class PaymentApiTest extends ApiTest {
                     .log().all()
                     .queryParam("orderId", 1)
             .when()
-                    .get("/payments/subscription")
+                    .get("/payments/kakao/subscription")
             .then()
                     .statusCode(HttpStatus.ACCEPTED.value())
                     .log().all()

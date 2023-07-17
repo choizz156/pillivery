@@ -52,7 +52,7 @@ public class PayController {
     }
 
     //    @CrossOrigin(origins = "pillivery.s3-website.ap-northeast-2.amazonaws.com")
-    @GetMapping("/subscription")
+    @GetMapping("/kakao/subscription")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public KakaoResponseDto.Approve subscription(@RequestParam Long orderId)
         throws JobExecutionException {

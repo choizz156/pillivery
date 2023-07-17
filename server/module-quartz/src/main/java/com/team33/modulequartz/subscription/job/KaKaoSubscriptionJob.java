@@ -51,7 +51,7 @@ public class KaKaoSubscriptionJob implements Job {
         URI uri = UriComponentsBuilder.newInstance()
             .scheme("http").host("ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com")
             .port(8080)
-            .path("/payments/subscription")
+            .path("/payments/kakao/subscription")
             .queryParams(parameters)
             .build().toUri();
 

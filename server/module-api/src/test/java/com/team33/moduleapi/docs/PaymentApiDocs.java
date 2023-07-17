@@ -159,7 +159,7 @@ class PaymentApiDocs extends ApiTest {
                             )
                         )
                 .when()
-                        .get("/payments/subscription")
+                        .get("/payments/kakao/subscription")
                 .then()
                         .statusCode(HttpStatus.ACCEPTED.value())
                         .log().all()
