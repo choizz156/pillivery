@@ -115,7 +115,7 @@
 
 ---
 #### 5) Exception 핸들링과 공통 Exception Response 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/exception)
-- 정적 팩토리 메서드를 통해 에러 응답 객체 생성 후 예외를 처리했습니다.
+- **정적 팩토리 메서드**를 통해 에러 응답 객체 생성 후 예외를 처리했습니다.
   - 각 예외마다 객체 생성에 필요한 파라미터가 다르기 때문에, 정적 팩토리 메서드와 빌더를 사용하여 필요한 매개변수를 받아 객체를 생성하게 했습니다. 
 ```java
 {
@@ -126,13 +126,16 @@
                               "rejectedValue": "1234567!",
                               "reason": "비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상이어야 합니다."
                           }
-                        ]
+                      ]
 }
 ```
 ---
 #### 6) 단위 테스트(RestAssured) 및 통합 테스트 작성(Junit5) 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/controller)
 
-- 프로젝트 개발 후 테스트 코드의 필요성을 인지하여 약 70개(Rest Docs를 위한 테스트 포함) 정도의 통합 테스트와 단위 테스트를 추가했습니다.
+- 프로젝트 개발 후 테스트 코드의 필요성을 인지하여 약 70개(Rest Docs를 위한 테스트 포함) 정도의 인수 테스트와 단위 테스트를 추가했습니다.
+  - Junit5를 통해 기본적인 단위 테스트를 진행했습니다.
+  - @SpringBootTest와 사용하기에 RestAssured의 가독성을 높여준다고 생각하여 인수 테스트에 RestAssured를 사용했습니다.
+  
 
 ![image](https://github.com/choizz156/pillivery/assets/106965005/a6e6c7c6-ee01-4e39-af68-9b894f6e39cd)
 
@@ -141,6 +144,7 @@
 
 #### 7) Spring Rest Docs를 활용한 API 문서 작성 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/docs)
 - 테스트 코드 작성 후 Spring Rest Docs를 이용한 API 문서 작성을 통해 코드의 신뢰성을 보장했습니다.
+- swagger는 문서 작성을 위해 프러덕션 코드에 침투하는 코드가 많고, 테스트 없이도 생성이 가능하기 때문에 코드의 신뢰성이 상대적으로 떨어진다고 생각합니다. 
 
 ---
 
