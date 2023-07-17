@@ -144,7 +144,66 @@
 
 #### 7) Spring Rest Docs를 활용한 API 문서 작성 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/docs)
 - 테스트 코드 작성 후 Spring Rest Docs를 이용한 API 문서 작성을 통해 코드의 신뢰성을 보장했습니다.
-- swagger는 문서 작성을 위해 프러덕션 코드에 침투하는 코드가 많고, 테스트 없이도 생성이 가능하기 때문에 코드의 신뢰성이 상대적으로 떨어진다고 생각합니다. 
+- swagger는 문서 작성을 위해 프러덕션 코드에 침투하는 코드가 많고, 테스트 없이도 생성이 가능하기 때문에 코드의 신뢰성이 상대적으로 떨어진다고 생각합니다.
+  ![image](https://github.com/choizz156/pillivery/assets/106965005/1d8cf440-66db-4577-a79a-edd49b52d09f)
+
+---
+
+## 📌 트러블 슈팅 및 개선
+
+<details>
+<summary>1. @Schduled를 문제를 해결한 Quartz</summary>
+<div markdown="1">
+
+#### (1) **트러블 및 트러블의 원인**
+
+- Spring의 @Scheduled을 이용하여 스케쥴링을 시도했지만, 몇 가지 문제가 있었습니다.
+
+#### a. 구독 주기 변경 문제
+
+- 유저가 구독 주기 변경 시, 첫 정기 결제일을 기준으로 주기를 변경해야 했습니다.
+- @Scheduled를 사용하여 런타임 환경에서 구독 주기를 변경하려면, 기존 스케쥴을 null로 변경 후 변경 시점을 기준으로 새로운 스케쥴을 다시 할당해야 했습니다.
+- 이렇게 되면, 첫 정기 결제일을 기준으로 구독 주기 변경이 불가능했습니다.
+
+#### b. 특정 스케쥴러 조회 문제
+
+- 만약 유저가 본인의 정기 구독 주기를 변경하거나 구독을 취소한다면, 애플리케이션에서 그 유저에 할당된 스케쥴러를 조회 후 처리해야합니다.
+- @Scheduled 사용 시 특정 스케쥴러를 조회하는 방법이 없었습니다.
+
+#### (2) **해결 방법**
+- Spring Batch를 학습하기엔 주어진 시간에 비해 학습 비용이 크다고 생각하여 Quartz를 선택했습니다.
+- `Quartz`의 Trigger API 사용함으로써 런타임 환경에서 첫 정기 구독일을 기준으로 구독 주기를 변경시킬 수 있었습니다.
+- `Quartz` JobKey API를 사용함으로써 특정 스케쥴러 조회가 가능했습니다.
+
+</div>
+</details>
+
+<details>
+<summary>2. Jpa에서 동일한 엔티티 참조 에러</summary>
+<div markdown="1">
+
+#### (1) **문제 상황**
+
+- Quartz를 사용하여 정기 결제 Job을 구현할 때, 첫 번째 정기 결제 때 사용된 order 객체의 정보들을 그대로 복사해서 다음 정기 결제 때 사용해야 했습니다.
+- 처음에 첫 결제 때 사용한 order 엔티티를 가지고 와서 그대로 사용하려 했지만 에러가 발생했습니다.
+    - `(org.hibernate.HibernateException: Found shared references to a collection)`
+
+#### (2) **문제의 원인**
+
+- `swallow copy`를 함으로써 원본 엔티티와 복사한 엔티티가 **Heap에서 동일한 주솟값**을 참조했습니다.
+- 하지만, 하이버네이트에서 이미 영속화된 엔티티와 동일한 주솟값을 가지는 엔티티를 또 다시 영속화할 수 없었습니다.
+
+#### (3) **해결 방법**
+
+- order 엔티티에 deep copy를 위한 생성자를 추가하여 `deep copy` 했습니다.
+
+#### (4) **알게된 점**
+
+- Java에서 copy에 관한 개념에 대해 학습했습니다.
+- JPA에서 동일한 엔티티는 영속화 할 수 없다는 것을 알게 됐습니다.
+
+</div>
+</details>
 
 ---
 
