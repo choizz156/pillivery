@@ -155,9 +155,9 @@ class ScheduleControllerDocs extends ApiTest {
         ExtractableResponse<Response> response =
             given(super.spec)
                 .log().all()
-                .param("period", 60)
-                .param("orderId", 1L)
-                .param("itemOrderId", 1L)
+                .queryParam("period", 60)
+                .queryParam("orderId", 1L)
+                .queryParam("itemOrderId", 1L)
                 .header("Authorization", token)
                 .filter(document("quartz-change",
                         preprocessRequest(modifyUris()
@@ -233,8 +233,8 @@ class ScheduleControllerDocs extends ApiTest {
         ExtractableResponse<Response> response =
             given(super.spec)
                 .log().all()
-                .param("orderId", 1L)
-                .param("itemOrderId", 1L)
+                .queryParam("orderId", 1L)
+                .queryParam("itemOrderId", 1L)
                 .header("Authorization", token)
                 .filter(document("quartz-cancel",
                         preprocessRequest(modifyUris()

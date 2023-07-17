@@ -8,6 +8,7 @@ import com.team33.modulecore.domain.order.service.ItemOrderService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.global.exception.BusinessLogicException;
+import com.team33.modulecore.global.exception.ExceptionCode;
 import com.team33.modulequartz.subscription.trigger.TriggerService;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -149,17 +150,26 @@ public class JobListeners implements JobListener {
         if (jobException != null) {
             log.warn("job exception = {}", jobException.getMessage());
             retryImmediately(jobException, jobDataMap, retryCount);
-            retryIn3Hours(context, jobDataMap, retryCount);
+            retryEvery10Min(context, jobDataMap, retryCount);
+            if(retryCount > 110){
+                try {
+                    context.getScheduler().standby();
+                    throw new BusinessLogicException(ExceptionCode.PAYMENT_FAIL);
+                } catch (SchedulerException e) {
+                    JobExecutionException jobExecutionException = new JobExecutionException(e);
+                    jobExecutionException.setUnscheduleFiringTrigger(true);
+                }
+            }
         }
     }
 
-    private void retryIn3Hours(
+    private void retryEvery10Min(
         final JobExecutionContext context,
         final JobDataMap jobDataMap,
         int retryCount
     ) {
         if (retryCount == 1) {
-            log.warn("두 번째 시도");
+            log.warn("재시도");
             jobDataMap.put(RETRY, ++retryCount);
             Trigger trigger = triggerService.retryTrigger();
             reschedule(context, trigger);

@@ -120,7 +120,8 @@ public class SubscriptionService {
                     String.valueOf(user.getUserId()))
                 );
             } catch (SchedulerException e) {
-                throw new RuntimeException(e);
+                JobExecutionException jobExecutionException = new JobExecutionException(e);
+                jobExecutionException.setRefireImmediately(true);
             }
     }
 

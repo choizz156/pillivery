@@ -36,7 +36,7 @@ public class TriggerService {
         return newTrigger()
             .withSchedule(simpleSchedule()
                 .withIntervalInMinutes(10)
-                .withRepeatCount(24*6)
+                .withRepeatCount(20*6)
             )
             .startAt(futureDate(10, MINUTE))
             .withIdentity(new TriggerKey("retry"))

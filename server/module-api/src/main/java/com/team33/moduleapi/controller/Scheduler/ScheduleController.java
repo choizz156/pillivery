@@ -72,8 +72,8 @@ public class ScheduleController {
 //            itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));
 //    }
 
-    @DeleteMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @DeleteMapping
     public SingleResponseDto<ZonedDateTime> delete(
         @RequestParam(name = "orderId") Long orderId,
         @RequestParam(name = "itemOrderId") Long itemOrderId
