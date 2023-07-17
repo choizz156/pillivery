@@ -148,8 +148,7 @@
   ![image](https://github.com/choizz156/pillivery/assets/106965005/1d8cf440-66db-4577-a79a-edd49b52d09f)
 
 ---
-
-## 📌 트러블 슈팅 및 개선
+### 📌 트러블 슈팅 및 개선
 
 <details>
 <summary>1. @Schduled를 문제를 해결한 Quartz</summary>
