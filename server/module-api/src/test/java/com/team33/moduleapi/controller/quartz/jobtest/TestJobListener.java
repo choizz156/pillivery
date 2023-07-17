@@ -16,10 +16,8 @@ import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.JobListener;
 import org.quartz.PersistJobDataAfterExecution;
-import org.quartz.ScheduleBuilder;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 
 @Slf4j
@@ -27,7 +25,6 @@ import org.quartz.TriggerKey;
 @PersistJobDataAfterExecution
 public class TestJobListener implements JobListener {
 
-    private final TriggerService triggerService;
 
     @Override
     public String getName() {
@@ -85,7 +82,7 @@ public class TestJobListener implements JobListener {
                     .withIntervalInSeconds(1)
                     .withRepeatCount(7)
                 )
-                .withIdentity(new TriggerKey("test2","test2"))
+                .withIdentity(new TriggerKey("test2", "test2"))
                 .build();
 
             reschedule(context, trigger);
@@ -95,13 +92,16 @@ public class TestJobListener implements JobListener {
     private void reschedule(final JobExecutionContext context, final Trigger trigger) {
         try {
             log.warn("재시도 스케쥴 설정");
-            log.warn("{}",context.getScheduler().getTrigger(TriggerKey.triggerKey("test1", "test1")));
+            log.warn("{}",
+                context.getScheduler().getTrigger(TriggerKey.triggerKey("test1", "test1")));
             context.getScheduler().rescheduleJob(TriggerKey.triggerKey("test1", "test1"), trigger);
-            log.warn("{}",context.getScheduler().getTrigger(TriggerKey.triggerKey("test1", "test1")));
+            log.warn("{}",
+                context.getScheduler().getTrigger(TriggerKey.triggerKey("test1", "test1")));
             log.warn("설정 완료");
             log.warn("{}", context.getScheduler().getTrigger(trigger.getKey()));
         } catch (SchedulerException e) {
-            throw new BusinessLogicException(e.getMessage());
+            JobExecutionException jobExecutionException = new JobExecutionException(e);
+            jobExecutionException.setRefireImmediately(true);
         }
     }
 
@@ -135,7 +135,8 @@ public class TestJobListener implements JobListener {
             context.getScheduler().deleteJob(key);
             throw new BusinessLogicException(ExceptionCode.SCHEDULE_CANCEL);
         } catch (SchedulerException e) {
-            throw new BusinessLogicException(e.getMessage());
+            JobExecutionException jobExecutionException = new JobExecutionException(e);
+            jobExecutionException.setRefireImmediately(true);
         }
     }
 }

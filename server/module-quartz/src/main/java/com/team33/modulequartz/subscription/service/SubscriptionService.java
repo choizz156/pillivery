@@ -7,7 +7,6 @@ import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.service.ItemOrderService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.global.exception.BusinessLogicException;
 import com.team33.modulequartz.subscription.job.JobDetailService;
 import com.team33.modulequartz.subscription.job.JobListeners;
 import com.team33.modulequartz.subscription.trigger.TriggerListeners;
@@ -34,7 +33,7 @@ public class SubscriptionService {
 
     private final Scheduler scheduler;
     private final TriggerService trigger;
-    private final JobDetailService jobDetail;
+    private final JobDetailService jobDetailService;
     private final OrderService orderService;
     private final ItemOrderService itemOrderService;
 
@@ -115,14 +114,14 @@ public class SubscriptionService {
     }
 
     private void deleteSchedule(final ItemOrder itemOrder, final User user) {
-        try {
-            scheduler.deleteJob(jobKey(
-                user.getUserId() + itemOrder.getItem().getTitle(),
-                String.valueOf(user.getUserId()))
-            );
-        } catch (SchedulerException e) {
-            throw new BusinessLogicException(e.getMessage());
-        }
+            try {
+                scheduler.deleteJob(jobKey(
+                    user.getUserId() + itemOrder.getItem().getTitle(),
+                    String.valueOf(user.getUserId()))
+                );
+            } catch (SchedulerException e) {
+                throw new RuntimeException(e);
+            }
     }
 
     private void extendPeriod(Order order, ItemOrder itemOrder) {
@@ -159,22 +158,23 @@ public class SubscriptionService {
             String.valueOf(user.getUserId())
         );
 
-        JobDetail payDay = jobDetail.build(jobkey, order.getOrderId(), itemOrder);
+        JobDetail payDay = jobDetailService.build(jobkey, order.getOrderId(), itemOrder);
         Trigger lastTrigger = trigger.build(jobkey, itemOrder);
 
         schedule(payDay, lastTrigger);
     }
 
-    private void schedule(JobDetail payDay, Trigger lastTrigger) {
+    private void schedule(JobDetail jobDetail, Trigger lastTrigger) {
         try {
-            scheduler.scheduleJob(payDay, lastTrigger);
             ListenerManager listenerManager = scheduler.getListenerManager();
             listenerManager.addJobListener(
-                new JobListeners(trigger, itemOrderService, orderService, jobDetail)
+                new JobListeners(trigger, itemOrderService, orderService, jobDetailService)
             );
             listenerManager.addTriggerListener(new TriggerListeners());
+            scheduler.scheduleJob(jobDetail, lastTrigger);
         } catch (SchedulerException e) {
-            throw new BusinessLogicException(e.getMessage());
+            JobExecutionException jobExecutionException = new JobExecutionException(e);
+            jobExecutionException.setRefireImmediately(true);
         }
     }
 }

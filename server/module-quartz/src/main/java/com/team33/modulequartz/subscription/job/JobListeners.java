@@ -103,7 +103,8 @@ public class JobListeners implements JobListener {
             context.getScheduler().addJob(jobDetail, true);
             log.info("스케쥴 업데이트 완료");
         } catch (SchedulerException e) {
-            throw new BusinessLogicException(e.getMessage());
+            JobExecutionException jobExecutionException = new JobExecutionException(e);
+            jobExecutionException.setRefireImmediately(true);
         }
     }
 
@@ -185,7 +186,8 @@ public class JobListeners implements JobListener {
                 trigger
             );
         } catch (SchedulerException e) {
-            throw new BusinessLogicException(e.getMessage());
+            JobExecutionException jobExecutionException = new JobExecutionException(e);
+            jobExecutionException.setRefireImmediately(true);
         }
     }
 }

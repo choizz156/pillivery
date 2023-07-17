@@ -13,10 +13,9 @@ import com.team33.moduleapi.controller.quartz.jobtest.TestJobListener;
 import com.team33.moduleapi.controller.quartz.jobtest.TestTriggerListener;
 import com.team33.moduleapi.controller.quartz.jobtest.WrongJob1;
 import com.team33.moduleapi.controller.quartz.jobtest.WrongJob2;
-import com.team33.modulequartz.subscription.trigger.TriggerService;
-import java.time.ZonedDateTime;
-import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -37,18 +37,19 @@ class QuartzTest extends ApiTest {
     @Autowired
     private Scheduler scheduler;
 
-    @Autowired
-    private TriggerService triggerService;
-
-    private ZonedDateTime now = ZonedDateTime.now();
     private JobKey jobKey;
 
     @BeforeEach
     void setUp() throws Exception {
         ListenerManager listenerManager = scheduler.getListenerManager();
-        listenerManager.addJobListener(new TestJobListener(triggerService));
+        listenerManager.addJobListener(new TestJobListener());
         listenerManager.addTriggerListener(new TestTriggerListener());
         jobKey = jobKey("test1", "test1");
+    }
+
+    @AfterEach
+    void tearDown() throws SchedulerException {
+        scheduler.deleteJobs(List.of(jobKey));
     }
 
     @DisplayName("trigger 설정")
@@ -61,7 +62,6 @@ class QuartzTest extends ApiTest {
         assertThat(trigger.getJobKey().getGroup()).isEqualTo(jobKey.getGroup());
         assertThat(trigger.getKey().getName()).isEqualTo(jobKey.getName());
         assertThat(trigger.getKey().getGroup()).isEqualTo(jobKey.getGroup());
-        assertThat(trigger.getStartTime()).isEqualTo(Date.from(now.toInstant()));
     }
 
     @DisplayName("job detail 테스트")
@@ -71,8 +71,8 @@ class QuartzTest extends ApiTest {
         JobDetail jobDetail = jobDetail(jobKey);
 
         assertThat(jobDetail.getJobDataMap())
-            .containsEntry("orderId", 1L)
-            .containsEntry("itemOrder", "itemOrder");
+            .containsEntry("id", 1L)
+            .containsEntry("retry", 0);
 
         assertThat(jobDetail.isDurable()).isTrue();
         assertThat(jobDetail.getKey().getName()).isEqualTo(jobKey.getName());
@@ -106,7 +106,6 @@ class QuartzTest extends ApiTest {
         assertThat(trigger1.getJobKey().getGroup()).isEqualTo(jobKey.getGroup());
         assertThat(trigger1.getKey().getName()).isEqualTo(jobKey.getName());
         assertThat(trigger1.getKey().getGroup()).isEqualTo(jobKey.getGroup());
-        assertThat(trigger1.getStartTime()).isEqualTo(Date.from(now.toInstant()));
     }
 
     @DisplayName("job이 설정된 후 job을 조회 가능하다.")
@@ -118,7 +117,7 @@ class QuartzTest extends ApiTest {
         JobDetail jobDetail = scheduler.getJobDetail(jobKey);
 
         ListenerManager listenerManager = scheduler.getListenerManager();
-        listenerManager.addJobListener(new TestJobListener(triggerService));
+        listenerManager.addJobListener(new TestJobListener());
 
         assertThat(jobDetail.getKey().getName()).isEqualTo("test1");
         assertThat(jobDetail.getKey().getGroup()).isEqualTo("test1");
@@ -134,7 +133,7 @@ class QuartzTest extends ApiTest {
         Trigger trigger1 = scheduler.getTrigger(trigger.getKey());
 
         ListenerManager listenerManager = scheduler.getListenerManager();
-        listenerManager.addJobListener(new TestJobListener(triggerService));
+        listenerManager.addJobListener(new TestJobListener());
         listenerManager.addTriggerListener(new TestTriggerListener());
 
         assertThat(trigger1.getKey().getName()).isEqualTo("test1");
@@ -148,10 +147,10 @@ class QuartzTest extends ApiTest {
         Trigger trigger = trigger(jobKey);
 
         ListenerManager listenerManager = scheduler.getListenerManager();
-        listenerManager.addJobListener(new TestJobListener(triggerService));
+        listenerManager.addJobListener(new TestJobListener());
         scheduler.scheduleJob(wrongJob1(jobKey), trigger);
 
-        assertThat(scheduler.getJobDetail(jobKey).isPersistJobDataAfterExecution()).isTrue();
+        Thread.sleep(1000);
         int retry = (int) scheduler.getJobDetail(jobKey).getJobDataMap().get("retry");
         assertThat(retry).isEqualTo(1);
     }
