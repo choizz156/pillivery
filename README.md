@@ -65,51 +65,70 @@
 ---
 
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
-- 회원가입 후 로그인하면 바로 Access Token을 발급합니다.
+- 회원가입 후 로그인 시 Access Token을 발급합니다.
   
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
 
 - OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 Access Token이 발급됩니다. 
   - 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장합니다.
+  - 리소스 서버에서 데이터베이스로의 저장이 실패할 경우, 예외를 던집니다.
     
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
 
   - 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 Access Token이 발급됩니다.
+  - 추가 정보를 기입하지 않을 경우 토큰이 발급되지 않습니다.
   - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됩니다.
     
 ![](https://github.com/choizz156/pillivery/blob/0fb84ed151e7ac9097764497d12ec676d4d81117/image/%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9%20diagram.jpg)
 ---  
 #### 3) 외부 결제 API 연동(카카오 페이) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment)
   - `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임합니다.
-  - 결제 요청과 결제 승인에 `전략 패턴`을 활용했습니다.
+     - 파사드 객체에서 단건 결제인지, 정기 결제인지를 구분하는 역할을 합니다.   
+  - 결제 요청과 결제 승인에 `전략 패턴`을 활용하여 변경이 생겼을 경우 클라이언트 코드의 변경을 최소화했습니다.
 
   ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)
   
-  - RestTemplate를 이용해 외부 API와 내부 API를 통신했습니다.
+  - RestTemplate을 이용해 외부 API와 통신했습니다.
     - 동기 방식을 사용하므로 요청이 많아질 시 응답 지연을 고려했습니다.
-    - Connection Pool을 설정하고, 연결 시간 타임 아웃과 응답 시간 타임 아웃 설정했습니다.
-    
-
+    - Connection Pool을 설정하고, 연결 시간 타임아웃과 응답 시간 타임아웃 설정해 유저들에게 결과를 빠르게 피드백하도록 했습니다.
 
  #결제 요청 및 결제 승인 시퀀스 다이어그램
-  
+
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%20%EC%8B%9C%ED%80%80%EC%8A%A4.jpg)
+  - 결제 요청 및 승인이 실패할 경우, 카카오페이 서버에서 제가 결제 요청 입력한 지정한 URL로 리다이렉트 합니다.
+  - 리다이렉트 후 에러 정보를 클라이언트에게 보냅니다.
+
 
 ---
   
 #### 4) 정기 구독(결제) 기능 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-quartz/src/main/java/com/team33/modulequartz/subscription)
-- 정기 구독 시 Quartz 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동합니다..
-    - **멀티 모듈**을 구성하여 API 모듈과 스케쥴링 모듈을 분리했습니다.
-    - 정기 구독 구현 시 **Quartz 라이브러리**를 사용하여 특정 스케쥴러 조회를 가능하게 했습니다.
-    - 특정 날짜에 결제가 일어나도록 Trigger와 Job을 설정했습니다.
+- 정기 구독 시 **Quartz** 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동합니다.
+    - 멀티 모듈을 활용하여 스케쥴링 시스템을 독립적인 모듈로 두었습니다.
+    - Jobkey API와 TriggerKey API를 활용하여 특정 job과 trigger를 조회, 취소, 변경 가능합니다.
     - 스케쥴러에서 설정한 스케쥴에 실행되지 않을 시 중복 실행을 방지했습니다.
+- 만약, job 수행 시 예외가 발생할 경우,
+  - 첫 번째 예외 : 경우 바로 job 재시도.
+  - 두 번째 예외 : 3일 동안 24시간 간격으로 job을 재시도.
+  - 그 후에도 예외가 발생한다면 job을 취소하고 런타임 예외를 던집니다.
       
 ![](https://github.com/choizz156/pillivery/blob/6db8979f27cc751349ffd8bf51600cb30a1c9398/image/%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%B5%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6%20%E1%84%89%E1%85%B5%E1%84%8F%E1%85%AF%E1%86%AB%E1%84%89%E1%85%B3%202.jpg)
 
 ---
 #### 5) Exception 핸들링과 공통 Exception Response 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/exception)
 - 정적 팩토리 메서드를 통해 에러 응답 객체 생성 후 예외를 처리했습니다.
-
+  - 각 예외마다 객체 생성에 필요한 파라미터가 다르기 때문에, 정적 팩토리 메서드와 빌더를 사용하여 필요한 매개변수를 받아 객체를 생성하게 했습니다. 
+```java
+{
+  "status": 400,
+  "customFieldErrors": [
+                          {
+                              "field": "email",
+                              "rejectedValue": "1234567!",
+                              "reason": "비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상이어야 합니다."
+                          }
+                        ]
+}
+```
 ---
 #### 6) 단위 테스트(RestAssured) 및 통합 테스트 작성(Junit5) 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/controller)
 
