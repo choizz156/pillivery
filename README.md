@@ -44,8 +44,6 @@
 ![image](https://github.com/choizz156/pillivery/assets/106965005/f3e2acfd-5f46-4378-828d-6b923e4c029c)
 
 
-
-
 ## 4. ERD
 
 ![erd 수정](https://user-images.githubusercontent.com/106965005/228384360-5a59318c-74c4-4449-9717-f097a6903ee3.png)
@@ -61,28 +59,31 @@
 
 ## 6. 내가 만든 기능
 #### 1) User 도메인 CRUD 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user)
-- 회원가입, 정보 수정, 회원 탈퇴, 회원 정보 조회와 같은 User 도메인 api를 개발했습니다.
+- 회원가입, 정보 수정, 회원 탈퇴, 회원 정보 조회와 같은 User 도메인 API를 개발했습니다.
 - Rest ApI 디자인 가이드 중  Resources, Http Methods, Status Code를 지키며 개발했습니다.
-  - 회원 정보 => `GET` ~/users
-  - 회원 가입 => `POST` ~/users
-  - 회원 정보 수정 => `PATCH` ~/users
-  - 회원 탈퇴 => `DELETE` ~/users
+  - 회원 정보 조회 => `GET` `200`
+  - 회원 가입 => `POST` `201`
+  - 회원 정보 수정 => `PATCH` `201`
+  - 회원 탈퇴 => `DELETE` `200`
 ---
 
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
-- 회원가입 후 로그인 시 Access Token을 발급합니다.
+- 회원가입 후 로그인 시 Access Token을 발급합니다.</br>
+⛔️ 인증에 실패할 경우, 예외를 던집니다.
   
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
 
 - OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 Access Token이 발급됩니다. 
-  - 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장합니다.
-  - 리소스 서버에서 데이터베이스로의 저장이 실패할 경우, 예외를 던집니다.
+- 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장합니다.</br>
+⛔️ 리소스 서버에서 데이터베이스로의 저장이 실패할 경우, 예외를 던집니다.
     
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
 
+
   - 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 Access Token이 발급됩니다.
   - 추가 정보를 기입하지 않을 경우 토큰이 발급되지 않습니다.
-  - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됩니다.
+  - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됩니다.</br>
+  ⛔️ 추가 정보 기입에 실패할 경우 예외를 던지고 Access Token은 발급되지 않습니다.
     
 ![](https://github.com/choizz156/pillivery/blob/0fb84ed151e7ac9097764497d12ec676d4d81117/image/%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9%20diagram.jpg)
 ---  
@@ -100,21 +101,22 @@
  #결제 요청 및 결제 승인 시퀀스 다이어그램
 
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%20%EC%8B%9C%ED%80%80%EC%8A%A4.jpg)
-  - 결제 요청 및 승인이 실패할 경우, 카카오페이 서버에서 제가 결제 요청 입력한 지정한 URL로 리다이렉트 합니다.
-  - 리다이렉트 후 에러 정보를 클라이언트에게 보냅니다.
+  ⛔️ 결제 요청 및 승인이 실패할 경우, 카카오페이 서버에서 제가 결제 요청 입력한 지정한 URL로 리다이렉트 합니다.</br>
+  ⛔️ 리다이렉트 후 에러 정보를 클라이언트에게 보냅니다.
 
 
 ---
   
 #### 4) 정기 구독(결제) 기능 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-quartz/src/main/java/com/team33/modulequartz/subscription)
 - 정기 구독 시 **Quartz** 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동합니다.
-    - 멀티 모듈을 활용하여 스케쥴링 시스템을 독립적인 모듈로 두었습니다.
+    - **멀티 모듈**을 활용하여 스케쥴링 시스템을 독립적인 모듈로 두었습니다.
     - Jobkey API와 TriggerKey API를 활용하여 특정 job과 trigger를 조회, 취소, 변경 가능합니다.
     - 스케쥴러에서 설정한 스케쥴에 실행되지 않을 시 중복 실행을 방지했습니다.
-- 만약, job 수행 시 예외가 발생할 경우,
-  - 첫 번째 예외 : 경우 바로 job 재시도.
-  - 두 번째 예외 : 3일 동안 24시간 간격으로 job을 재시도.
-  - 그 후에도 예외가 발생한다면 job을 취소하고 런타임 예외를 던집니다.
+      
+⛔️ 만약, job 수행 시 예외가 발생할 경우,
+  - 첫 번째 에러 : 경우 바로 job 재시도.
+  - 두 번째 에러 : 3일 동안 24시간 간격으로 job을 재시도.
+  - 그 후에도 예외가 발생한다면 job을 취소하고 로그로 기록합니다.
       
 ![](https://github.com/choizz156/pillivery/blob/6db8979f27cc751349ffd8bf51600cb30a1c9398/image/%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%B5%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6%20%E1%84%89%E1%85%B5%E1%84%8F%E1%85%AF%E1%86%AB%E1%84%89%E1%85%B3%202.jpg)
 
@@ -137,9 +139,10 @@
 ---
 #### 6) 단위 테스트(RestAssured) 및 통합 테스트 작성(Junit5) 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/controller)
 
-- 프로젝트 개발 후 테스트 코드의 필요성을 인지하여 약 70개(Rest Docs를 위한 테스트 포함) 정도의 인수 테스트와 단위 테스트를 추가했습니다.
-  - Junit5를 통해 기본적인 단위 테스트를 진행했습니다.
-  - @SpringBootTest와 사용하기에 RestAssured의 가독성을 높여준다고 생각하여 인수 테스트에 RestAssured를 사용했습니다.
+- 프로젝트 개발 후 테스트 코드의 필요성을 인지하여 통합 테스트를 약 70개(Rest Docs를 위한 테스트 포함) 작성하였습니다. (일부 단위테스트 포함)
+    - Junit5를 사용해 단위 테스트를 진행했습니다.
+    - mokito를 사용해 외부 API에 독립적인 테스트 환경을 마련했습니다.
+    - @SpringBootTest와 사용하기에 RestAssured가 가독성이 좋다고 생각해 인수 테스트에 RestAssured를 사용했습니다.
   
 
 ![image](https://github.com/choizz156/pillivery/assets/106965005/a6e6c7c6-ee01-4e39-af68-9b894f6e39cd)
@@ -148,8 +151,9 @@
 ---
 
 #### 7) Spring Rest Docs를 활용한 API 문서 작성 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/docs)
-- 테스트 코드 작성 후 Spring Rest Docs를 이용한 API 문서 작성을 통해 코드의 신뢰성을 보장했습니다.
-- swagger는 문서 작성을 위해 프러덕션 코드에 침투하는 코드가 많고, 테스트 없이도 생성이 가능하기 때문에 코드의 신뢰성이 상대적으로 떨어진다고 생각합니다.
+- 테스트 코드 작성 후 Spring Rest Docs를 이용한 API 문서를 작성했습니다.
+    - 테스트 코드를 작성해야 문서가 작성되기 때문에 코드의 신뢰성을 보장할 수 있습니다.
+    - swagger와 다르게 프로덕션 코드에 문서 작성을 위한 코드가 침투하지 않은 점이 장점이라고 생각했습니다.
   ![image](https://github.com/choizz156/pillivery/assets/106965005/1d8cf440-66db-4577-a79a-edd49b52d09f)
 
 ---
