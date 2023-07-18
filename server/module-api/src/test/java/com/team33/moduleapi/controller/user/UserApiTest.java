@@ -121,7 +121,7 @@ class UserApiTest extends ApiTest {
             .when()
                     .delete("/users")
             .then()
-                    .statusCode(HttpStatus.ACCEPTED.value())
+                    .statusCode(HttpStatus.OK.value())
                     .body(containsString("USER_WITHDRAWAL"))
                     .log().all();
         //@formatter:on
@@ -143,7 +143,7 @@ class UserApiTest extends ApiTest {
             .when()
                      .patch("/users")
             .then()
-                    .statusCode(HttpStatus.ACCEPTED.value())
+                    .statusCode(HttpStatus.OK.value())
                     .body(containsString(userPatchDto.getEmail()))
                     .body(containsString(userPatchDto.getEmail()))
                     .body(containsString(userPatchDto.getCity()))
@@ -313,7 +313,7 @@ class UserApiTest extends ApiTest {
         .when()
                 .post("/users/logout")
         .then()
-                .statusCode(HttpStatus.ACCEPTED.value())
+                .statusCode(HttpStatus.OK.value())
                 .log().all().extract();
         //@formatter:on
     }

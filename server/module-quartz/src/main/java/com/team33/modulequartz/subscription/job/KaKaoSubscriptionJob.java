@@ -2,6 +2,7 @@ package com.team33.modulequartz.subscription.job;
 
 
 import com.team33.modulecore.domain.order.entity.ItemOrder;
+import com.team33.modulecore.global.exception.ExceptionCode;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +39,13 @@ public class KaKaoSubscriptionJob implements Job {
         Long orderId = (Long) mergedJobDataMap.get("orderId");
         log.info("start orderId = {}", orderId);
 
-        connectKaKaoPay(orderId);
+        if (connectKaKaoPay(orderId) == null) {
+            throw new JobExecutionException(ExceptionCode.PAYMENT_FAIL.getMessage());
+        }
     }
 
 
-    private void connectKaKaoPay(Long orderId) {
+    private String connectKaKaoPay(Long orderId) {
 
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 
@@ -55,7 +58,7 @@ public class KaKaoSubscriptionJob implements Job {
             .queryParams(parameters)
             .build().toUri();
 
-        restTemplate.getForObject(uri, String.class);
+        return restTemplate.postForObject(uri, null, String.class);
     }
 
 }

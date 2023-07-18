@@ -138,7 +138,7 @@ class ScheduleControllerTest extends ApiTest {
                     .patch("/schedule")
             .then()
                     .log().all()
-                    .statusCode(HttpStatus.ACCEPTED.value())
+                    .statusCode(HttpStatus.OK.value())
                     .extract();
             //@formatter:on
 
@@ -173,7 +173,7 @@ class ScheduleControllerTest extends ApiTest {
                     .delete("/schedule")
             .then()
                     .log().all()
-                    .statusCode(HttpStatus.ACCEPTED.value())
+                    .statusCode(HttpStatus.OK.value())
                     .extract();
             //@formatter:on
 

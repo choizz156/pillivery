@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,7 +48,6 @@ public class ScheduleController {
         return new SingleResponseDto<>(SUCCESS_SHCHDULE);
     }
 
-    @ResponseStatus(HttpStatus.ACCEPTED)
     @PatchMapping
     public SingleResponseDto<SubResponse> changePeriod(
         @RequestParam(name = "orderId") Long orderId,
@@ -72,7 +72,6 @@ public class ScheduleController {
 //            itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));
 //    }
 
-    @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping
     public SingleResponseDto<ZonedDateTime> delete(
         @RequestParam(name = "orderId") Long orderId,

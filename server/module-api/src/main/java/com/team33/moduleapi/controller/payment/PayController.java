@@ -10,18 +10,15 @@ import com.team33.modulecore.domain.payment.kakao.service.PaymentFacade;
 import com.team33.modulecore.global.exception.BusinessLogicException;
 import com.team33.modulecore.global.exception.ExceptionCode;
 import com.team33.modulecore.global.util.Mapper;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.quartz.JobExecutionException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.StreamingHttpOutputMessage.Body;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,14 +32,12 @@ public class PayController {
     private final ObjectMapper objectMapper;
 
     @PostMapping("/{orderId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public KakaoResponseDto.Request request(@PathVariable("orderId") Long orderId) {
         return ofNullable(paymentFacade.request(orderId))
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.PAYMENT_FAIL));
     }
 
     @GetMapping("/approve/{orderId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public KakaoResponseDto.Approve approve(
         @RequestParam("pg_token") String pgToken,
         @PathVariable("orderId") Long orderId
@@ -52,18 +47,15 @@ public class PayController {
     }
 
     //    @CrossOrigin(origins = "pillivery.s3-website.ap-northeast-2.amazonaws.com")
-    @GetMapping("/kakao/subscription")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public KakaoResponseDto.Approve subscription(@RequestParam Long orderId)
-        throws JobExecutionException {
-        return ofNullable(paymentFacade.approveSubscription(orderId))
-            .orElseThrow(() -> new JobExecutionException(ExceptionCode.PAYMENT_FAIL.getMessage()));
+    @PostMapping("/kakao/subscription")
+    public KakaoResponseDto.Approve subscription(@RequestParam Long orderId) {
+        return paymentFacade.approveSubscription(orderId);
     }
 
     @GetMapping("/kakao/cancel")
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public FailResponse cancel(@RequestBody String cancel) throws JsonProcessingException {
-      return Mapper.getInstance().readValue(cancel, FailResponse.class);
+        return Mapper.getInstance().readValue(cancel, FailResponse.class);
     }
 
     @GetMapping("/kakao/fail")

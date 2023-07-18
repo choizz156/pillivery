@@ -62,7 +62,6 @@ public class UserController {
     }
 
     @PatchMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public SingleResponseDto<UserResponse> updateInfo(@Valid @RequestBody UserPatchDto userDto) {
         User user = userService.updateUser(userDto);
         return new SingleResponseDto<>(UserResponse.of(user));
@@ -75,14 +74,12 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public SingleResponseDto<String> handleLogout(HttpServletRequest request) {
         logout.doLogout(request);
         return new SingleResponseDto<>(LOGOUT_COMPLETE);
     }
 
     @DeleteMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public SingleResponseDto<String> deleteUser(HttpServletRequest request) {
         User user = userService.deleteUser();
         logout.doLogout(request);

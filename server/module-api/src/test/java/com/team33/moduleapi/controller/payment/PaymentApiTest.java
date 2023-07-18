@@ -54,7 +54,7 @@ class PaymentApiTest extends ApiTest {
             .when()
                     .post("/payments/{orderId}")
             .then()
-                    .statusCode(HttpStatus.ACCEPTED.value())
+                    .statusCode(HttpStatus.OK.value())
                     .log().all().extract();
         //@formatter:on
 
@@ -84,7 +84,7 @@ class PaymentApiTest extends ApiTest {
             .when()
                     .get("/payments/approve/{orderId}")
             .then()
-                    .statusCode(HttpStatus.ACCEPTED.value())
+                    .statusCode(HttpStatus.OK.value())
                     .log().all()
                     .extract();
             //@formatter:on
@@ -110,9 +110,9 @@ class PaymentApiTest extends ApiTest {
                     .log().all()
                     .queryParam("orderId", 1)
             .when()
-                    .get("/payments/kakao/subscription")
+                    .post("/payments/kakao/subscription")
             .then()
-                    .statusCode(HttpStatus.ACCEPTED.value())
+                    .statusCode(HttpStatus.OK.value())
                     .log().all()
                     .extract();
             //@formatter:on

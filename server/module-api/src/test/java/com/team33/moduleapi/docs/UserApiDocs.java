@@ -270,7 +270,7 @@ class UserApiDocs extends ApiTest {
             .when()
             .delete("/users")
             .then()
-            .assertThat().statusCode(HttpStatus.ACCEPTED.value())
+            .assertThat().statusCode(HttpStatus.OK.value())
             .assertThat().body(Matchers.containsString("USER_WITHDRAWAL"))
             .log().all().extract();
 
@@ -325,7 +325,7 @@ class UserApiDocs extends ApiTest {
             .when()
             .patch("/users")
             .then()
-            .assertThat().statusCode(HttpStatus.ACCEPTED.value())
+            .assertThat().statusCode(HttpStatus.OK.value())
             .assertThat().body(containsString(userPatchDto.getEmail()))
             .assertThat().body(containsString(userPatchDto.getCity()))
             .assertThat().body(containsString(userPatchDto.getRealName()))
@@ -660,7 +660,7 @@ class UserApiDocs extends ApiTest {
             .when()
             .post("/users/logout")
             .then()
-            .assertThat().statusCode(HttpStatus.ACCEPTED.value())
+            .assertThat().statusCode(HttpStatus.OK.value())
             .log().all().extract();
     }
 

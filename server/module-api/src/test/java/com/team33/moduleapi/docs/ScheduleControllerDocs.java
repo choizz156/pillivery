@@ -207,7 +207,7 @@ class ScheduleControllerDocs extends ApiTest {
                 .patch("/schedule")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.ACCEPTED.value())
+                .statusCode(HttpStatus.OK.value())
                 .extract();
 
         String year = response.jsonPath().get("data.nextDelivery").toString().substring(0, 4);
@@ -256,7 +256,7 @@ class ScheduleControllerDocs extends ApiTest {
                 .delete("/schedule")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.ACCEPTED.value())
+                .statusCode(HttpStatus.OK.value())
                 .extract();
 
         String year = response.jsonPath().get("data").toString().substring(0, 4);
