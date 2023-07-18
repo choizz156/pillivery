@@ -58,7 +58,8 @@
 ---
 
 ## 6. 내가 만든 기능
-#### 1) User 도메인 CRUD 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user)
+#### 1) User 도메인 CRUD 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user) 📌[api 모듈](https://github.com/choizz156/pillivery/blob/main/server/module-api/src/main/java/com/team33/moduleapi/controller/user/UserController.java)
+
 - 회원가입, 정보 수정, 회원 탈퇴, 회원 정보 조회와 같은 User 도메인 API를 개발했습니다.
 - Rest ApI 디자인 가이드 중  Resources, Http Methods, Status Code를 지키며 개발했습니다.
   - 회원 정보 조회 => `GET` `200`
@@ -67,7 +68,7 @@
   - 회원 탈퇴 => `DELETE` `200`
 ---
 
-#### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
+#### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
 - 회원가입 후 로그인 시 Access Token을 발급합니다.</br>
 ⛔️ 인증에 실패할 경우, 예외를 던집니다.
   
@@ -87,7 +88,7 @@
     
 ![](https://github.com/choizz156/pillivery/blob/0fb84ed151e7ac9097764497d12ec676d4d81117/image/%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9%20diagram.jpg)
 ---  
-#### 3) 외부 결제 API 연동(카카오 페이) 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment)
+#### 3) 외부 결제 API 연동(카카오 페이) 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment) 📌[api 모듈](https://github.com/choizz156/pillivery/blob/main/server/module-api/src/main/java/com/team33/moduleapi/controller/payment/PayController.java)
   - `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임합니다.
      - 파사드 객체에서 단건 결제인지, 정기 결제인지를 구분하는 역할을 합니다.   
   - 결제 요청과 결제 승인에 `전략 패턴`을 활용하여 변경이 생겼을 경우 클라이언트 코드의 변경을 최소화했습니다.
@@ -107,7 +108,7 @@
 
 ---
   
-#### 4) 정기 구독(결제) 기능 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-quartz/src/main/java/com/team33/modulequartz/subscription)
+#### 4) 정기 구독(결제) 기능 구현 📌[quartz 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-quartz/src/main/java/com/team33/modulequartz/subscription)📌[api 모듈](https://github.com/choizz156/pillivery/blob/main/server/module-api/src/main/java/com/team33/moduleapi/controller/Scheduler/ScheduleController.java)
 - 정기 구독 시 **Quartz** 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동합니다.
     - **멀티 모듈**을 활용하여 스케쥴링 시스템을 독립적인 모듈로 두었습니다.
     - Jobkey API와 TriggerKey API를 활용하여 특정 job과 trigger를 조회, 취소, 변경 가능합니다.
@@ -121,7 +122,7 @@
 ![](https://github.com/choizz156/pillivery/blob/6db8979f27cc751349ffd8bf51600cb30a1c9398/image/%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%B5%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6%20%E1%84%89%E1%85%B5%E1%84%8F%E1%85%AF%E1%86%AB%E1%84%89%E1%85%B3%202.jpg)
 
 ---
-#### 5) Exception 핸들링과 공통 Exception Response 구현 📌[디렉토리 이동](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/exception)
+#### 5) Exception 핸들링과 공통 Exception Response 구현 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/exception)
 - **정적 팩토리 메서드**를 통해 에러 응답 객체 생성 후 예외를 처리했습니다.
   - 각 예외마다 객체 생성에 필요한 파라미터가 다르기 때문에, 정적 팩토리 메서드와 빌더를 사용하여 필요한 매개변수를 받아 객체를 생성하게 했습니다. 
 ```java
@@ -137,7 +138,7 @@
 }
 ```
 ---
-#### 6) 단위 테스트(RestAssured) 및 통합 테스트 작성(Junit5) 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/controller)
+#### 6) 단위 테스트(RestAssured) 및 통합 테스트 작성(Junit5) 📌[api 모듈](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/controller)
 
 - 프로젝트 개발 후 테스트 코드의 필요성을 인지하여 통합 테스트를 약 70개(Rest Docs를 위한 테스트 포함) 작성하였습니다. (일부 단위테스트 포함)
     - Junit5를 사용해 단위 테스트를 진행했습니다.
@@ -150,7 +151,7 @@
 
 ---
 
-#### 7) Spring Rest Docs를 활용한 API 문서 작성 📌[디렉토리 이동](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/docs)
+#### 7) Spring Rest Docs를 활용한 API 문서 작성 📌[api 모듈](https://github.com/choizz156/pillivery/tree/main/server/module-api/src/test/java/com/team33/moduleapi/docs)
 - 테스트 코드 작성 후 Spring Rest Docs를 이용한 API 문서를 작성했습니다.
     - 테스트 코드를 작성해야 문서가 작성되기 때문에 코드의 신뢰성을 보장할 수 있습니다.
     - swagger와 다르게 프로덕션 코드에 문서 작성을 위한 코드가 침투하지 않은 점이 장점이라고 생각했습니다.
