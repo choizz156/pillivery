@@ -42,6 +42,7 @@
 ---
 ## 3. Git Flow
 - 서로가 맡은 기능을 완료한 뒤, dev 브랜치에 merge를 하고 최종적으로 main 브랜치에 merge하는 전략을 사용했습니다.
+   - 잦은 시행착오를 겪으며 git에 대한 학습을 할 수 있었습니다.   
 ![image](https://github.com/choizz156/pillivery/assets/106965005/f3e2acfd-5f46-4378-828d-6b923e4c029c)
 
 
