@@ -1,11 +1,11 @@
-package com.team33.moduleapi.docs;
+package com.team33.moduleapi.restdocs;
 
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -14,22 +14,20 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.ModuleApiApplication;
-import com.team33.moduleapi.controller.ApiTest;
 import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.domain.item.entity.Item;
 import com.team33.modulecore.domain.order.entity.ItemOrder;
 import com.team33.modulecore.domain.order.entity.Order;
-import com.team33.modulecore.domain.order.reposiroty.OrderRepository;
+import com.team33.modulecore.domain.order.repository.OrderRepository;
 import com.team33.modulecore.domain.order.service.ItemOrderService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
+import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,14 +35,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("quartztest")
-@Import(ModuleApiApplication.class)
-class ScheduleControllerDocs extends ApiTest {
+
+class ScheduleControllerDocs extends WebRestDocsSupport {
 
     @MockBean(name = "orderService")
     private OrderService orderService;
@@ -54,7 +49,6 @@ class ScheduleControllerDocs extends ApiTest {
 
     @MockBean
     private ItemOrderService itemOrderService;
-
 
     private User user;
     private Order order;
@@ -79,7 +73,7 @@ class ScheduleControllerDocs extends ApiTest {
             .set("itemId", 1L)
             .set("title", "testItem").sample();
 
-        now = ZonedDateTime.now();
+        now = ZonedDateTime.of(2023, 1, 1, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
         itemOrder = fixtureMonkey.giveMeBuilder(ItemOrder.class)
             .set("itemOrderId", 1L)
@@ -120,46 +114,52 @@ class ScheduleControllerDocs extends ApiTest {
 
         Long orderId = order.getOrderId();
 
-        given(super.spec)
-            .log().all()
-            .param("orderId", orderId)
-            .filter(document("quartz-setting",
-                    preprocessRequest(modifyUris()
-                        .scheme("http")
-                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
-                        .removePort(), prettyPrint()
-                    ),
-                    preprocessResponse(prettyPrint()),
-                    requestParameters(
-                        parameterWithName("orderId").description("주문 아이디")
-                    ),
-                    responseFields(
-                        fieldWithPath("data").type(JsonFieldType.STRING).description("스케쥴 구성 완료")
-                    )
-                )
-            )
+        //@formatter:off
+        super.webSpec
+                        .param("orderId", orderId)
             .when()
-            .get("/schedule")
+                        .get("/schedule")
             .then()
-            .assertThat().statusCode(HttpStatus.ACCEPTED.value())
-            .assertThat().body(containsString("스케쥴 구성 완료"))
-            .log().all();
+                        .statusCode(HttpStatus.ACCEPTED.value())
+                        .body(containsString("스케쥴 구성 완료"))
+                        .assertThat()
+                        .apply(document("quartz-setting",
+                            preprocessRequest(modifyUris()
+                                .scheme("http")
+                                .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+                                .removePort(), prettyPrint()
+                            ),
+                            preprocessResponse(prettyPrint()),
+                            requestParameters(
+                                parameterWithName("orderId").description("주문 아이디")
+                            ),
+                            responseFields(
+                                fieldWithPath("data").type(JsonFieldType.STRING).description("스케쥴 구성 완료")
+                            ))
+                        );
+            //@formatter:on
     }
+
 
     @DisplayName("스케쥴을 수정할 수 있다.")
     @UserAccount({"test", "010-0000-0000"})
     @Test
     void test2() throws Exception {
+
         String token = super.getToken();
 
-        ExtractableResponse<Response> response =
-            given(super.spec)
-                .log().all()
+        ExtractableResponse<MockMvcResponse> response =
+            super.webSpec
                 .queryParam("period", 60)
                 .queryParam("orderId", 1L)
                 .queryParam("itemOrderId", 1L)
                 .header("Authorization", token)
-                .filter(document("quartz-change",
+                .when()
+                .patch("/schedule")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .apply(document("quartz-change",
                         preprocessRequest(modifyUris()
                             .scheme("http")
                             .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
@@ -203,16 +203,11 @@ class ScheduleControllerDocs extends ApiTest {
                         )
                     )
                 )
-                .when()
-                .patch("/schedule")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
 
         String year = response.jsonPath().get("data.nextDelivery").toString().substring(0, 4);
         String month = response.jsonPath().get("data.nextDelivery").toString().substring(6, 7);
-        String day = response.jsonPath().get("data.nextDelivery").toString().substring(8, 10);
+        String day = response.jsonPath().get("data.nextDelivery").toString().substring(9, 10);
 
         assertThat(year).isEqualTo(String.valueOf(itemOrder.getPaymentDay().getYear()));
         assertThat(month).isEqualTo(
@@ -230,38 +225,35 @@ class ScheduleControllerDocs extends ApiTest {
 
         String token = super.getToken();
 
-        ExtractableResponse<Response> response =
-            given(super.spec)
-                .log().all()
-                .queryParam("orderId", 1L)
-                .queryParam("itemOrderId", 1L)
-                .header("Authorization", token)
-                .filter(document("quartz-cancel",
-                        preprocessRequest(modifyUris()
-                            .scheme("http")
-                            .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
-                            .removePort(), prettyPrint()
-                        ),
-                        preprocessResponse(prettyPrint()),
-                        requestParameters(
-                            parameterWithName("orderId").description("주문 아이디"),
-                            parameterWithName("itemOrderId").description("주문 아이템 아이디")
-                        ),
-                        responseFields(
-                            fieldWithPath("data").type(JsonFieldType.STRING).description("취소 일시")
-                        )
+        ExtractableResponse<MockMvcResponse> response = super.webSpec
+            .queryParam("orderId", 1L)
+            .queryParam("itemOrderId", 1L)
+            .header("Authorization", token)
+            .when()
+            .delete("/schedule")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .apply(document("quartz-cancel",
+                    preprocessRequest(modifyUris()
+                        .scheme("http")
+                        .host("pillivery.s3-website.ap-northeast-2.amazonaws.com")
+                        .removePort(), prettyPrint()
+                    ),
+                    preprocessResponse(prettyPrint()),
+                    requestParameters(
+                        parameterWithName("orderId").description("주문 아이디"),
+                        parameterWithName("itemOrderId").description("주문 아이템 아이디")
+                    ),
+                    responseFields(
+                        fieldWithPath("data").type(JsonFieldType.STRING).description("취소 일시")
                     )
                 )
-                .when()
-                .delete("/schedule")
-                .then()
-                .log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+            )
+            .extract();
 
         String year = response.jsonPath().get("data").toString().substring(0, 4);
         String month = response.jsonPath().get("data").toString().substring(6, 7);
-        String day = response.jsonPath().get("data").toString().substring(8, 10);
+        String day = response.jsonPath().get("data").toString().substring(9, 10);
 
         assertThat(year).isEqualTo(String.valueOf(ZonedDateTime.now().getYear()));
         assertThat(month).isEqualTo(String.valueOf(ZonedDateTime.now().getMonth().getValue()));
