@@ -1,4 +1,4 @@
-package com.team33.modulecore.domain.order.reposiroty;
+package com.team33.modulecore.domain.order.repository;
 
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.team33.modulecore.domain.order.reposiroty;
+package com.team33.modulecore.domain.order.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

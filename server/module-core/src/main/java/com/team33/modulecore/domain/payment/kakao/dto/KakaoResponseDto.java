@@ -2,9 +2,12 @@ package com.team33.modulecore.domain.payment.kakao.dto;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
 
+@Data
 public class KakaoResponseDto {
 
     @Getter

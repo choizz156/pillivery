@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PayController {
 
     private final PaymentFacade paymentFacade;
-    private final ObjectMapper objectMapper;
 
     @PostMapping("/{orderId}")
     public KakaoResponseDto.Request request(@PathVariable("orderId") Long orderId) {
@@ -61,6 +60,6 @@ public class PayController {
     @GetMapping("/kakao/fail")
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public FailResponse fail(@RequestBody String fail) throws JsonProcessingException {
-        return objectMapper.readValue(fail, FailResponse.class);
+        return Mapper.getInstance().readValue(fail, FailResponse.class);
     }
 }

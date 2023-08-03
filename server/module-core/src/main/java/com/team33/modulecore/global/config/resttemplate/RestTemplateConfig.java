@@ -1,7 +1,8 @@
 package com.team33.modulecore.global.config.resttemplate;
 
-import lombok.RequiredArgsConstructor;
+
 import org.apache.http.client.HttpClient;
+import lombok.RequiredArgsConstructor;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +17,10 @@ public class RestTemplateConfig {
     HttpClient httpClient() {
         return HttpClientBuilder.create()
             .setMaxConnTotal(100)
-            .setMaxConnPerRoute(5)  
+            .setMaxConnPerRoute(5)
             .build();
     }
+
     @Bean
     HttpComponentsClientHttpRequestFactory factory(HttpClient httpClient) {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -28,6 +30,7 @@ public class RestTemplateConfig {
 
         return factory;
     }
+
     @Bean
     public RestTemplate payRestTemplate(HttpComponentsClientHttpRequestFactory factory) {
         RestTemplate restTemplate = new RestTemplate(factory);

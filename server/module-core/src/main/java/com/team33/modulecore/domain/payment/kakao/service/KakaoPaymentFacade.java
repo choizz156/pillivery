@@ -10,7 +10,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.team33.modulecore.domain.order.entity.Order;
-import com.team33.modulecore.domain.order.reposiroty.OrderRepository;
+import com.team33.modulecore.domain.order.repository.OrderRepository;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Approve;
 import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Request;
