@@ -19,8 +19,26 @@ dependencies {
     //quartz
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
 
+    //junit5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+
+    //fixture-monkey
+    implementation 'com.navercorp.fixturemonkey:fixture-monkey:0.6.1'
+
     //restdocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+
+    //rest-assured-mockmvc
+    testImplementation 'io.rest-assured:spring-mock-mvc:4.5.1'
+
+    //restassured
+    testImplementation 'io.rest-assured:rest-assured-all'
+
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
 ext { // 전역 변수
@@ -29,6 +47,10 @@ ext { // 전역 변수
 
 test {
     outputs.dir snippetsDir
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
 }
 
 asciidoctor {
@@ -42,7 +64,7 @@ asciidoctor {
     dependsOn test //작업순서 test -> asciidoctor
 }
 
-bootJar{
+bootJar {
     dependsOn asciidoctor
     from("${asciidoctor.outputDir}")
     into 'static/docs'
