@@ -1,7 +1,7 @@
-package com.team33.modulecore.global.config;
+package com.team33.modulecore.global.config.datasource;
 
-import static org.springframework.orm.jpa.vendor.Database.MYSQL;
 
+import java.util.Properties;
 import javax.sql.DataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -16,9 +16,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 
 @EnableJpaRepositories(
-    basePackages = "com.team33.modulecore.domain",
     entityManagerFactoryRef = "mainEntityManager",
-    transactionManagerRef = "mainTransactionManager"
+    transactionManagerRef = "mainTransactionManager",
+    basePackages = "com.team33.modulecore"
 )
 @Configuration
 public class MainSourceConfig {
@@ -34,13 +34,27 @@ public class MainSourceConfig {
     @Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean mainEntityManager() {
+
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(mainDataSource());
-        em.setPackagesToScan("com.team33.modulecore.domain");
+        em.setPackagesToScan("com.team33.modulecore");
+        em.setJpaProperties(getJpaProperties());
+
         HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
-        jpaVendorAdapter.setDatabase(MYSQL);
+        jpaVendorAdapter.setGenerateDdl(true);
         em.setJpaVendorAdapter(jpaVendorAdapter);
         return em;
+    }
+
+    private Properties getJpaProperties() {
+        return new Properties() {
+            {
+                setProperty("hibernate.hbm2ddl.auto", "create");
+                setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+                setProperty("hibernate.show_sql", "true");
+                setProperty("hibernate.format_sql", "true");
+            }
+        };
     }
 
     @Bean
