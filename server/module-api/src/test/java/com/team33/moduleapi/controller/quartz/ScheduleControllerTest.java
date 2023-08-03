@@ -1,7 +1,7 @@
 package com.team33.moduleapi.controller.quartz;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -9,18 +9,18 @@ import static org.mockito.BDDMockito.given;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.ModuleApiApplication;
 import com.team33.moduleapi.controller.ApiTest;
 import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.domain.item.entity.Item;
 import com.team33.modulecore.domain.order.entity.ItemOrder;
 import com.team33.modulecore.domain.order.entity.Order;
-import com.team33.modulecore.domain.order.reposiroty.OrderRepository;
+import com.team33.modulecore.domain.order.repository.OrderRepository;
 import com.team33.modulecore.domain.order.service.ItemOrderService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,11 +28,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
 
-@Import(ModuleApiApplication.class)
+
 class ScheduleControllerTest extends ApiTest {
 
     @MockBean(name = "orderService")
@@ -43,6 +41,7 @@ class ScheduleControllerTest extends ApiTest {
 
     @MockBean
     private ItemOrderService itemOrderService;
+
 
     private User user;
     private Order order;
@@ -66,7 +65,7 @@ class ScheduleControllerTest extends ApiTest {
             .set("itemId", 1L)
             .set("title", "testItem").sample();
 
-        now = ZonedDateTime.now();
+        now = ZonedDateTime.of(2023, 1, 1, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
         itemOrder = fixtureMonkey.giveMeBuilder(ItemOrder.class)
             .set("itemOrderId", 1L)
@@ -113,13 +112,13 @@ class ScheduleControllerTest extends ApiTest {
         .when()
                 .get("/schedule")
         .then()
-                .assertThat().statusCode(HttpStatus.ACCEPTED.value())
-                .assertThat().body(containsString("스케쥴 구성 완료"))
+                .statusCode(HttpStatus.ACCEPTED.value())
+                .body(containsString("스케쥴 구성 완료"))
                 .log().all();
         //@formatter:on
     }
 
-    @DisplayName("스케쥴을 수정할 수 있다.")
+    @DisplayName("스케쥴을 수정할 수 있다.(30 -> 60)")
     @UserAccount({"test", "010-0000-0000"})
     @Test
     void test2() throws Exception {
@@ -144,7 +143,11 @@ class ScheduleControllerTest extends ApiTest {
 
         String year = response.jsonPath().get("data.nextDelivery").toString().substring(0, 4);
         String month = response.jsonPath().get("data.nextDelivery").toString().substring(6, 7);
-        String day = response.jsonPath().get("data.nextDelivery").toString().substring(8, 10);
+        String day = response.jsonPath().get("data.nextDelivery").toString().substring(9, 10);
+
+        System.out.println(year);
+        System.out.println(month);
+        System.out.println(day);
 
         assertThat(year).isEqualTo(String.valueOf(itemOrder.getPaymentDay().getYear()));
         assertThat(month).isEqualTo(
@@ -179,7 +182,7 @@ class ScheduleControllerTest extends ApiTest {
 
         String year = response.jsonPath().get("data").toString().substring(0, 4);
         String month = response.jsonPath().get("data").toString().substring(6, 7);
-        String day = response.jsonPath().get("data").toString().substring(8, 10);
+        String day = response.jsonPath().get("data").toString().substring(9, 10);
 
         assertThat(year).isEqualTo(String.valueOf(ZonedDateTime.now().getYear()));
         assertThat(month).isEqualTo(String.valueOf(ZonedDateTime.now().getMonth().getValue()));

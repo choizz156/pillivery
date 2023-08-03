@@ -25,12 +25,14 @@ public class CustomFilterConfigurer extends
     public void configure(HttpSecurity builder) {
         AuthenticationManager authenticationManager =
             builder.getSharedObject(AuthenticationManager.class);
+
         JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(authenticationManager);
         jwtLoginFilter.setFilterProcessesUrl("/users/login");
 
         jwtLoginFilter.setAuthenticationFailureHandler(new UserAuthFailureHandler());
         jwtLoginFilter.setAuthenticationSuccessHandler(
-            new UserAuthSuccessHandler(jwtTokenProvider));
+            new UserAuthSuccessHandler(jwtTokenProvider)
+        );
 
         JwtVerificationFilter jwtVerificationFilter =
             new JwtVerificationFilter(jwtTokenProvider, logout);

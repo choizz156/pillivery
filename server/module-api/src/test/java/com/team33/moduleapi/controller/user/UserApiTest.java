@@ -1,7 +1,7 @@
 package com.team33.moduleapi.controller.user;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+
 class UserApiTest extends ApiTest {
 
     @DisplayName("회원 가입")
@@ -32,12 +33,12 @@ class UserApiTest extends ApiTest {
 
         //@formatter:off
         given()
-                    .log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(joinDto)
-            .when()
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(joinDto)
+        .when()
                     .post("/users")
-            .then()
+        .then()
                     .log().all()
                     .statusCode(HttpStatus.CREATED.value())
                     .body(containsString("회원 가입 완료"));
@@ -50,9 +51,9 @@ class UserApiTest extends ApiTest {
     void 회원가입_닉네임_중복() throws Exception {
 
         UserPostDto dto2 = join("teset2@gmail.com", "test", "010-1111-1111");
+
         //@formatter:off
         given()
-                .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(dto2)
         .when()
@@ -63,6 +64,7 @@ class UserApiTest extends ApiTest {
                 .body(containsString("이미 존재하는 닉네임입니다."));
         //@formatter:on
     }
+
 
     @UserAccount({"test", "010-0000-0000"})
     @DisplayName("회원 가입 시 연락처가 중복될 경우 예외 처리 ")
@@ -208,6 +210,7 @@ class UserApiTest extends ApiTest {
     @DisplayName("회원 정보를 조회 (회원 가입을 통한 로그인일 경우 social false)")
     @Test
     void 회원_조회() throws Exception {
+
         String token = getToken();
 
         //@formatter:off
@@ -219,7 +222,8 @@ class UserApiTest extends ApiTest {
                     .get("/users")
             .then()
                     .statusCode(HttpStatus.OK.value())
-                    .log().all().extract();
+                    .log().all()
+                .extract();
             //@formatter:on
 
         //then
@@ -291,7 +295,7 @@ class UserApiTest extends ApiTest {
                     .post("/users/login")
             .then()
                     .statusCode(HttpStatus.OK.value())
-                    .assertThat().header("Authorization", notNullValue())
+                    .header("Authorization", notNullValue())
                     .log().all().extract();
         //@formatter:on
 

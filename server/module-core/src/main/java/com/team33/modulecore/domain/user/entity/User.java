@@ -1,8 +1,11 @@
 package com.team33.modulecore.domain.user.entity;
 
+import com.team33.modulecore.domain.audit.BaseEntity;
+import com.team33.modulecore.domain.cart.entity.Cart;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
+import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.wish.entity.Wish;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +26,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.team33.modulecore.domain.audit.BaseEntity;
-import com.team33.modulecore.domain.cart.entity.Cart;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 
 
 @Slf4j
@@ -38,21 +38,30 @@ public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+
     @Column(updatable = false)
     private String email;
+
     @Column(length = 20)
     private String displayName;
+
     private String password;
+
     @Embedded
     private Address address;
+
     @Column(name = "REAL_NAME")
     private String realName;
+
     @Column(unique = true)
     private String phone;
+
     @Column(name = "OAUTH_ID")
     private String oauthId;
+
     @Enumerated(EnumType.STRING)
     private UserRoles roles;
+
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 

@@ -6,7 +6,6 @@ import static org.quartz.JobKey.jobKey;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import com.team33.ModuleApiApplication;
 import com.team33.moduleapi.controller.ApiTest;
 import com.team33.moduleapi.controller.quartz.jobtest.TestJob1;
 import com.team33.moduleapi.controller.quartz.jobtest.TestJobListener;
@@ -29,9 +28,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 
-@Import(ModuleApiApplication.class)
 class QuartzTest extends ApiTest {
 
     @Autowired
@@ -101,7 +98,6 @@ class QuartzTest extends ApiTest {
         assertThat(jobDetail1.getKey().getName()).isEqualTo(jobKey.getName());
         assertThat(jobDetail1.getKey().getName()).isEqualTo(jobKey.getName());
         assertThat(jobDetail1.getKey().getGroup()).isEqualTo(jobKey.getGroup());
-
         assertThat(trigger1.getJobKey().getName()).isEqualTo(jobKey.getName());
         assertThat(trigger1.getJobKey().getGroup()).isEqualTo(jobKey.getGroup());
         assertThat(trigger1.getKey().getName()).isEqualTo(jobKey.getName());

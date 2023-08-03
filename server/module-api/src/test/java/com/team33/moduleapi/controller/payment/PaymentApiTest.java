@@ -1,70 +1,67 @@
 package com.team33.moduleapi.controller.payment;
 
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.moduleapi.controller.ApiTest;
-import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.domain.payment.kakao.dto.FailResponse;
 import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Approve;
 import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Request;
 import com.team33.modulecore.domain.payment.kakao.service.KakaoPaymentFacade;
-import com.team33.modulecore.global.util.Mapper;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.test.context.support.WithMockUser;
 
-class PaymentApiTest extends ApiTest {
+class PaymentApiTest {
 
-    @MockBean
-    private KakaoPaymentFacade paymentFacade;
+    private MockMvcRequestSpecification given;
+
+    private final KakaoPaymentFacade paymentFacade = mock(KakaoPaymentFacade.class);
 
     private final FixtureMonkey fixtureMonkey = FixtureMonkey.builder()
         .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
         .defaultNotNull(true)
         .build();
 
+    @BeforeEach
+    void setUp() {
+        given = RestAssuredMockMvc.given()
+            .mockMvc(standaloneSetup(new PayController(paymentFacade)).build())
+            .log().all();
+    }
+
     @DisplayName("카카오 단건, 정기 결제 요청 테스트")
-    @UserAccount({"test", "010-0000-0000"})
+    @WithMockUser
     @Test
     void test1() throws Exception {
+        //given
         Request request = fixtureMonkey.giveMeBuilder(Request.class)
-            .set("tid", "test tid")
+            .set("tid", "testTid")
             .set("next_redirect_pc_url", "url")
             .sample();
 
-        String token = getToken();
-
         given(paymentFacade.request(anyLong())).willReturn(request);
 
-        ExtractableResponse<Response> response =
-            //@formatter:off
-            given()
-                    .log().all()
-                    .header("Authorization", token)
-                    .pathParam("orderId",1)
+        //@formatter:off
+            given
             .when()
-                    .post("/payments/{orderId}")
+                    .post("/payments/{orderId}",1)
             .then()
                     .statusCode(HttpStatus.OK.value())
-                    .log().all().extract();
+                    .expect(jsonPath("$.tid").value("testTid"))
+                    .expect(jsonPath("$.next_redirect_pc_url").value("url"))
+                    .expect(jsonPath("$.createAt").isNotEmpty())
+                    .log().all();
         //@formatter:on
-
-        String tid = response.jsonPath().get("tid").toString();
-        String next_redirect_pc_url = response.jsonPath().get("next_redirect_pc_url").toString();
-        String createAt = response.jsonPath().get("createAt").toString();
-
-        assertThat(tid).isNotNull();
-        assertThat(next_redirect_pc_url).isNotNull();
-        assertThat(createAt).isNotNull();
     }
 
     @DisplayName("카카오 단건, 정기 결제 승인(최초 시도) 테스트")
@@ -72,28 +69,19 @@ class PaymentApiTest extends ApiTest {
     void test2() throws Exception {
         Approve approve = fixtureMonkey.giveMeOne(Approve.class);
 
-        given(paymentFacade.approve(anyString(), anyLong()))
-            .willReturn(approve);
+        given(paymentFacade.approve(anyString(), anyLong())).willReturn(approve);
 
         //@formatter:off
-        ExtractableResponse<Response> response =
-            given()
-                    .log().all()
-                    .pathParam("orderId",1)
+            given
                     .param("pg_token", "pgtoken")
             .when()
-                    .get("/payments/approve/{orderId}")
+                    .get("/payments/approve/{orderId}",1)
             .then()
-                    .statusCode(HttpStatus.OK.value())
                     .log().all()
-                    .extract();
+                    .statusCode(HttpStatus.OK.value())
+                    .expect(jsonPath("$.aid").isNotEmpty())
+                    .expect(jsonPath("$.approved_at").isNotEmpty());
             //@formatter:on
-
-        String aid = response.jsonPath().get("aid").toString();
-        String approvedAt = response.jsonPath().get("approved_at").toString();
-
-        assertThat(aid).isNotNull();
-        assertThat(approvedAt).isNotNull();
     }
 
     @DisplayName("정기 결제 승인(두 번째 이후) 테스트")
@@ -104,21 +92,16 @@ class PaymentApiTest extends ApiTest {
         given(paymentFacade.approveSubscription(anyLong()))
             .willReturn(approve);
 
-        ExtractableResponse<Response> response =
-            //@formatter:off
-            given()
-                    .log().all()
+        //@formatter:off
+            given
                     .queryParam("orderId", 1)
             .when()
                     .post("/payments/kakao/subscription")
             .then()
                     .statusCode(HttpStatus.OK.value())
-                    .log().all()
-                    .extract();
+                    .expect(jsonPath("$.approved_at").isNotEmpty())
+                    .log().all();
             //@formatter:on
-
-        String approvedAt = response.jsonPath().get("approved_at").toString();
-        assertThat(approvedAt).isNotNull();
     }
 
     @DisplayName("결제 승인 취소")
@@ -129,27 +112,17 @@ class PaymentApiTest extends ApiTest {
             .set("code", -780)
             .set("msg", "approval failure!").sample();
 
-        String error = Mapper.getInstance().writeValueAsString(failResponse);
-
-        ExtractableResponse<Response> response =
-            //@formatter:off
-            given()
-                .log().all()
-                .body(error)
-                .when()
-                .get("/payments/kakao/cancel")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .log().all()
-                .extract();
+        //@formatter:off
+            given
+                    .body(failResponse)
+            .when()
+                    .get("/payments/kakao/cancel")
+            .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .expect(jsonPath("$.code").value(-780))
+                    .expect(jsonPath("$.msg").value("approval failure!"))
+                    .log().all();
         //@formatter:on
-
-        int code = response.jsonPath().get("code");
-        String msg = response.jsonPath().get("msg").toString();
-
-        assertThat(code).isEqualTo(failResponse.getCode());
-        assertThat(msg).isEqualTo(failResponse.getMsg());
-
     }
 
     @DisplayName("정기 결제 승인 실패")
@@ -160,25 +133,16 @@ class PaymentApiTest extends ApiTest {
             .set("code", -780)
             .set("msg", "approval failure!").sample();
 
-        String error = Mapper.getInstance().writeValueAsString(failResponse);
-
-        ExtractableResponse<Response> response =
-            //@formatter:off
-            given()
-                .log().all()
-                .body(error)
-                .when()
-                .get("/payments/kakao/fail")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .log().all()
-                .extract();
+        //@formatter:off
+            given
+                    .body(failResponse)
+            .when()
+                    .get("/payments/kakao/fail")
+            .then()
+                     .statusCode(HttpStatus.BAD_REQUEST.value())
+                     .expect(jsonPath("$.code").value(-780))
+                     .expect(jsonPath("$.msg").value("approval failure!"))
+                     .log().all();
         //@formatter:on
-
-        int code = response.jsonPath().get("code");
-        String msg = response.jsonPath().get("msg").toString();
-
-        assertThat(code).isEqualTo(failResponse.getCode());
-        assertThat(msg).isEqualTo(failResponse.getMsg());
     }
 }

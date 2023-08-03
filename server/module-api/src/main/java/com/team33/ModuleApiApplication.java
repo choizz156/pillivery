@@ -2,10 +2,14 @@ package com.team33;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
 
 
-@SpringBootApplication(scanBasePackages = {"com.team33.moduleapi","com.team33.modulequartz", "com.team33.modulecore"})
+@SpringBootApplication(scanBasePackages = {
+                                            "com.team33.moduleapi",
+                                            "com.team33.modulequartz",
+                                            "com.team33.modulecore"
+                                            }
+                      )
 public class ModuleApiApplication {
 
     public static void main(String[] args) {
