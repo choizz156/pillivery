@@ -27,13 +27,14 @@ public class JwtTokenProvider {
     @Value("${jwt.access-token-expiration-minutes}")
     private int accessTokenExpirationMinutes;
 
-    @Getter
-    @Value("${jwt.refresh-token-expiration-minutes}")
-    private int refreshTokenExpirationMinutes;
     private final SecretKey secretKey;
 
-    public String createAccessToken(Map<String, Object> claims, String subject, Date expiration,
-        Key key) {
+    public String createAccessToken(
+        Map<String, Object> claims,
+        String subject,
+        Date expiration,
+        Key key
+    ) {
         return Jwts.builder()
             .setClaims(claims)
             .setSubject(subject)
@@ -60,7 +61,7 @@ public class JwtTokenProvider {
             .parseClaimsJws(jws);
     }
 
-    public void addTokenInResponse(HttpServletResponse response, User user){
+    public void addTokenInResponse(HttpServletResponse response, User user) {
         String accessToken = delegateAccessToken(user);
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("userId", String.valueOf(user.getUserId()));
