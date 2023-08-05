@@ -34,7 +34,6 @@ public class MainSourceConfig {
     @Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean mainEntityManager() {
-
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(mainDataSource());
         em.setPackagesToScan("com.team33.modulecore");
@@ -47,14 +46,15 @@ public class MainSourceConfig {
     }
 
     private Properties getJpaProperties() {
-        return new Properties() {
-            {
-                setProperty("hibernate.hbm2ddl.auto", "create");
-                setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
-                setProperty("hibernate.show_sql", "true");
-                setProperty("hibernate.format_sql", "true");
-            }
-        };
+
+        Properties properties = new Properties();
+
+        properties.setProperty("hibernate.hbm2ddl.auto", "");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+        properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.format_sql", "true");
+
+        return properties;
     }
 
     @Bean

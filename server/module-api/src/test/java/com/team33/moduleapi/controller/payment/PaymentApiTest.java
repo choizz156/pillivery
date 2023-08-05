@@ -87,7 +87,10 @@ class PaymentApiTest {
     @DisplayName("정기 결제 승인(두 번째 이후) 테스트")
     @Test
     void test3() throws Exception {
-        Approve approve = fixtureMonkey.giveMeOne(Approve.class);
+        Approve approve = fixtureMonkey
+            .giveMeBuilder(Approve.class)
+            .set("approved_at", "test_approve")
+            .sample();
 
         given(paymentFacade.approveSubscription(anyLong()))
             .willReturn(approve);

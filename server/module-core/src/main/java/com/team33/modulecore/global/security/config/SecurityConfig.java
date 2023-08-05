@@ -14,6 +14,7 @@ import com.team33.modulecore.global.security.handler.UserOAuthSuccessHandler;
 import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,8 +23,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@EnableWebSecurity
 @RequiredArgsConstructor
+@EnableWebSecurity
+@Configuration
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
