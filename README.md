@@ -37,8 +37,10 @@
 
 ---
 ## 5.프로젝트 모듈 구조
-  - api와 domain, quartz-scheduler로가 각각 독립적인 프로젝트 단위여야한다 판단.
-  - 단일 프로젝트 안에서 api, core, quartz의 모듈로 나누어 중복될 수 있는 코드를 방지하고 코드의 관리를 용이하게 함. 
+  - api와 domain, quartz-scheduler로가 각각 독립적인 프로젝트로 판단.
+  - 단일 프로젝트 안에서 api, core, quartz의 모듈 분리.
+    - 중복될 수 있는 코드를 방지
+    - 코드 관리 고려
 
 ![](https://github.com/choizz156/pillivery/blob/904ee15bce3430ef9ef0a4fab8e65b448748f9e2/image/%E1%84%86%E1%85%A9%E1%84%83%E1%85%B2%E1%86%AF%20%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%A5%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7.jpg)
 
@@ -47,9 +49,9 @@
 ## 6. 내가 만든 기능
 #### 1) User 도메인 CRUD 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user) 📌[api 모듈](https://github.com/choizz156/pillivery/blob/main/server/module-api/src/main/java/com/team33/moduleapi/controller/user/UserController.java)
 
-- 회원가입, 정보 수정, 회원 탈퇴, 회원 정보 조회와 같은 User 도메인 API를 개발.
-- Rest ApI 디자인 가이드 중  Resources, Http Methods, Status Code를 지키며 개발.
-- 
+- User 도메인 API 개발.
+- Rest API 디자인 가이드 중 Resources, Http Methods, Status Code 고려.
+  
 ---
 
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
@@ -58,7 +60,7 @@
   
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
 
-- OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 Access Token이 발급. 
+- OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 Access Token을 발급. 
 - 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장.</br>
 ⛔️ 리소스 서버에서 데이터베이스로의 저장이 실패할 경우, 예외를 던짐.
     
