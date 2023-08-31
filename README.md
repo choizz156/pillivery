@@ -51,8 +51,8 @@
 
 - User 도메인 API 개발.
 - Rest API 디자인 가이드 중 Resources, Http Methods, Status Code 고려.
-  
----
+
+
 
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
 - 회원가입 후 로그인 시 Access Token을 발급.</br>
