@@ -40,7 +40,7 @@
   - api와 domain, quartz-scheduler로가 각각 독립적인 프로젝트로 판단.
   - 단일 프로젝트 안에서 api, core, quartz의 모듈 분리.
     - 중복될 수 있는 코드를 방지
-    - 코드 관리 고려
+  
 
 ![](https://github.com/choizz156/pillivery/blob/904ee15bce3430ef9ef0a4fab8e65b448748f9e2/image/%E1%84%86%E1%85%A9%E1%84%83%E1%85%B2%E1%86%AF%20%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%A5%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7.jpg)
 
@@ -56,7 +56,7 @@
 
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
 - 회원가입 후 로그인 시 Access Token을 발급.</br>
-⛔️ 인증에 실패할 경우, 예외를 던집니다.
+⛔️ 인증에 실패할 경우, 예외 처리.
   
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
 
