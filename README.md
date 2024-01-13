@@ -56,6 +56,7 @@
 
 #### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
 - 회원가입 후 로그인 시 Access Token을 발급.</br>
+- refresh token을 활용한 token 관리.</br>
 ⛔️ 인증에 실패할 경우, 예외 처리.
   
 ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
