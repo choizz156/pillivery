@@ -9,7 +9,7 @@ import com.team33.modulecore.domain.talk.service.TalkCommentService;
 import com.team33.modulecore.domain.talk.service.TalkService;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.response.SingleResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

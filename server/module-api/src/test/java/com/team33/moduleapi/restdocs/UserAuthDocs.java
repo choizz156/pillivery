@@ -11,14 +11,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
-import com.team33.moduleapi.restdocs.WebRestDocsSupport;
-import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
-import com.team33.modulecore.domain.user.entity.Address;
-import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.domain.user.entity.UserRoles;
-import com.team33.modulecore.global.security.dto.LoginDto;
+import com.team33.moduleapi.security.dto.LoginDto;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ExtractableResponse;

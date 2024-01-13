@@ -5,9 +5,8 @@ import static org.quartz.DateBuilder.futureDate;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import com.team33.modulecore.global.exception.BusinessLogicException;
-import com.team33.modulecore.global.exception.ExceptionCode;
-import com.team33.modulequartz.subscription.trigger.TriggerService;
+import com.team33.moduleapi.exception.BusinessLogicException;
+import com.team33.moduleapi.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;

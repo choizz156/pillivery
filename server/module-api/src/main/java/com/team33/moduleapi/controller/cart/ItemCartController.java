@@ -9,7 +9,7 @@ import com.team33.modulecore.domain.cart.service.ItemCartService;
 import com.team33.modulecore.domain.item.mapper.ItemMapper;
 import com.team33.modulecore.domain.item.service.ItemService;
 import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.response.SingleResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;

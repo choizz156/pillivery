@@ -5,7 +5,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
+import com.team33.moduleapi.security.jwt.JwtTokenProvider;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;

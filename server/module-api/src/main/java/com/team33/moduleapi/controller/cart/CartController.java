@@ -6,7 +6,7 @@ import com.team33.modulecore.domain.cart.mapper.ItemCartMapper;
 import com.team33.modulecore.domain.cart.service.CartService;
 import com.team33.modulecore.domain.cart.service.ItemCartService;
 import com.team33.modulecore.domain.item.mapper.ItemMapper;
-import com.team33.modulecore.global.response.SingleResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -3,7 +3,7 @@ package com.team33.moduleapi.controller;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.security.jwt.JwtTokenProvider;
+import com.team33.moduleapi.security.jwt.JwtTokenProvider;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

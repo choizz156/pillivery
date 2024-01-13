@@ -13,7 +13,7 @@ import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.Address;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.entity.UserRoles;
-import com.team33.modulecore.global.security.dto.LoginDto;
+import com.team33.moduleapi.security.dto.LoginDto;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
