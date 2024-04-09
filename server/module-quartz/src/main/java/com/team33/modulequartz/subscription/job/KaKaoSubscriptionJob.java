@@ -1,7 +1,7 @@
 package com.team33.modulequartz.subscription.job;
 
 
-import com.team33.modulecore.domain.order.entity.ItemOrder;
+import com.team33.modulecore.domain.order.entity.OrderItem;
 import com.team33.modulecore.global.exception.ExceptionCode;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +32,9 @@ public class KaKaoSubscriptionJob implements Job {
 
         JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
 
-        ItemOrder itemOrder = (ItemOrder) mergedJobDataMap.get("itemOrder");
-        log.info("start itemOrderId = {}", itemOrder.getItemOrderId());
-        log.info("itemOrder title = {}", itemOrder.getItem().getTitle());
+        OrderItem orderItem = (OrderItem) mergedJobDataMap.get("itemOrder");
+        log.info("start itemOrderId = {}", orderItem.getItemOrderId());
+        log.info("itemOrder title = {}", orderItem.getItem().getTitle());
 
         Long orderId = (Long) mergedJobDataMap.get("orderId");
         log.info("start orderId = {}", orderId);

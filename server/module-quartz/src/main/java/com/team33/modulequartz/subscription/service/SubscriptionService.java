@@ -2,9 +2,9 @@ package com.team33.modulequartz.subscription.service;
 
 import static org.quartz.JobKey.jobKey;
 
-import com.team33.modulecore.domain.order.entity.ItemOrder;
+import com.team33.modulecore.domain.order.entity.OrderItem;
 import com.team33.modulecore.domain.order.entity.Order;
-import com.team33.modulecore.domain.order.service.ItemOrderService;
+import com.team33.modulecore.domain.order.service.OrderItemService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulequartz.subscription.job.JobDetailService;
@@ -34,28 +34,28 @@ public class SubscriptionService {
     private final TriggerService trigger;
     private final JobDetailService jobDetailService;
     private final OrderService orderService;
-    private final ItemOrderService itemOrderService;
+    private final OrderItemService orderItemService;
 
 
-    public void startSchedule(Order order, ItemOrder itemOrder) {
-        applySchedule(order, itemOrder);
+    public void startSchedule(Order order, OrderItem orderItem) {
+        applySchedule(order, orderItem);
         log.info("orderId = {}, itemOrderId ={} ==> 스케쥴 설정완료", order.getOrderId());
     }
 
     @Transactional
-    public ItemOrder changePeriod(Long orderId, Integer period, Long itemOrderId) {
+    public OrderItem changePeriod(Long orderId, Integer period, Long itemOrderId) {
 
         Order order = orderService.findOrder(orderId);
-        ItemOrder itemOrder = findItemOrderInOrder(order, itemOrderId);
+        OrderItem orderItem = findItemOrderInOrder(order, itemOrderId);
 
-        itemOrderService.setItemPeriod(period, itemOrder);
-        log.info("기존 아이템 결제 주기 ={}", itemOrder.getPeriod());
+        orderItemService.setItemPeriod(period, orderItem);
+        log.info("기존 아이템 결제 주기 ={}", orderItem.getPeriod());
 
-        if (isPaymentDirectly(order, period, itemOrder)) {
-            itemOrder.getPaymentDay().plusDays(itemOrder.getPeriod());
-            return itemOrder;
+        if (isPaymentDirectly(order, period, orderItem)) {
+            orderItem.getPaymentDay().plusDays(orderItem.getPeriod());
+            return orderItem;
         }
-        return getChangedItemOrder(order, itemOrder);
+        return getChangedItemOrder(order, orderItem);
     }
 
 //    @Transactional
@@ -74,48 +74,48 @@ public class SubscriptionService {
     public void cancelScheduler(Long orderId, Long itemOrderId) {
         log.info("cancelScheduler");
         Order order = orderService.findOrder(orderId);
-        ItemOrder itemOrder = getItemOrder(itemOrderId);
+        OrderItem orderItem = getItemOrder(itemOrderId);
 
-        deleteSchedule(order, itemOrder);
-        itemOrderService.cancelItemOrder(orderId, itemOrder);
-        log.info("canceled item title = {}", itemOrder.getItem().getTitle());
+        deleteSchedule(order, orderItem);
+        orderItemService.cancelItemOrder(orderId, orderItem);
+        log.info("canceled item title = {}", orderItem.getItem().getTitle());
     }
 
-    private ItemOrder getChangedItemOrder(final Order order, final ItemOrder itemOrder) {
-        var paymentDay = itemOrder.getPaymentDay();
-        var nextDelivery = paymentDay.plusDays(itemOrder.getPeriod());
-        ItemOrder updatedItemOrder =
-            itemOrderService.updateDeliveryInfo(paymentDay, nextDelivery, itemOrder);
-        log.info("{}", updatedItemOrder.getPaymentDay());
-        extendPeriod(order, updatedItemOrder);
+    private OrderItem getChangedItemOrder(final Order order, final OrderItem orderItem) {
+        var paymentDay = orderItem.getPaymentDay();
+        var nextDelivery = paymentDay.plusDays(orderItem.getPeriod());
+        OrderItem updatedOrderItem =
+            orderItemService.updateDeliveryInfo(paymentDay, nextDelivery, orderItem);
+        log.info("{}", updatedOrderItem.getPaymentDay());
+        extendPeriod(order, updatedOrderItem);
 
-        paymentDay.plusDays(itemOrder.getPeriod());
-        return updatedItemOrder;
+        paymentDay.plusDays(orderItem.getPeriod());
+        return updatedOrderItem;
     }
 
-    private boolean isPaymentDirectly(Order order, Integer period, ItemOrder itemOrder) {
-        boolean noMargin = itemOrder.getPaymentDay()
+    private boolean isPaymentDirectly(Order order, Integer period, OrderItem orderItem) {
+        boolean noMargin = orderItem.getPaymentDay()
             .plusDays(period)
             .isBefore(ZonedDateTime.now(ZoneId.of("Asia/Seoul")));
 
         if (noMargin) {
             log.info("directly pay");
-            resetSchedule(order, itemOrder);
+            resetSchedule(order, orderItem);
             return true;
         }
         return false;
     }
 
-    private void deleteSchedule(Order order, ItemOrder itemOrder) {
+    private void deleteSchedule(Order order, OrderItem orderItem) {
         log.info("delete schedule");
         User user = getUser(order.getOrderId());
-        deleteSchedule(itemOrder, user);
+        deleteSchedule(orderItem, user);
     }
 
-    private void deleteSchedule(final ItemOrder itemOrder, final User user) {
+    private void deleteSchedule(final OrderItem orderItem, final User user) {
         try {
             scheduler.deleteJob(jobKey(
-                user.getUserId() + itemOrder.getItem().getTitle(),
+                user.getUserId() + orderItem.getItem().getTitle(),
                 String.valueOf(user.getUserId()))
             );
         } catch (SchedulerException e) {
@@ -126,18 +126,18 @@ public class SubscriptionService {
         }
     }
 
-    private void extendPeriod(Order order, ItemOrder itemOrder) {
-        log.warn("extendPeriod = {}", itemOrder.getPeriod());
-        resetSchedule(order, itemOrder);
+    private void extendPeriod(Order order, OrderItem orderItem) {
+        log.warn("extendPeriod = {}", orderItem.getPeriod());
+        resetSchedule(order, orderItem);
     }
 
-    private void resetSchedule(Order order, ItemOrder itemOrder) {
-        deleteSchedule(order, itemOrder);
-        startSchedule(order, itemOrder);
+    private void resetSchedule(Order order, OrderItem orderItem) {
+        deleteSchedule(order, orderItem);
+        startSchedule(order, orderItem);
     }
 
-    private ItemOrder getItemOrder(Long itemOrderId) {
-        return itemOrderService.findItemOrder(itemOrderId);
+    private OrderItem getItemOrder(Long itemOrderId) {
+        return orderItemService.findItemOrder(itemOrderId);
     }
 
     public User getUser(Long orderId) {
@@ -145,23 +145,23 @@ public class SubscriptionService {
         return order.getUser();
     }
 
-    private ItemOrder findItemOrderInOrder(Order order, Long itemOrderId) {
-        ItemOrder itemOrder = getItemOrder(itemOrderId);
-        int i = order.getItemOrders().indexOf(itemOrder);
-        return order.getItemOrders().get(i);
+    private OrderItem findItemOrderInOrder(Order order, Long itemOrderId) {
+        OrderItem orderItem = getItemOrder(itemOrderId);
+        int i = order.getOrderItems().indexOf(orderItem);
+        return order.getOrderItems().get(i);
     }
 
 
-    private void applySchedule(Order order, ItemOrder itemOrder) {
+    private void applySchedule(Order order, OrderItem orderItem) {
         User user = order.getUser();
-        log.info("{} {}", order.getOrderId(), itemOrder.getItemOrderId());
+        log.info("{} {}", order.getOrderId(), orderItem.getItemOrderId());
         JobKey jobkey = jobKey(
-            user.getUserId() + itemOrder.getItem().getTitle(),
+            user.getUserId() + orderItem.getItem().getTitle(),
             String.valueOf(user.getUserId())
         );
 
-        JobDetail payDay = jobDetailService.build(jobkey, order.getOrderId(), itemOrder);
-        Trigger lastTrigger = trigger.build(jobkey, itemOrder);
+        JobDetail payDay = jobDetailService.build(jobkey, order.getOrderId(), orderItem);
+        Trigger lastTrigger = trigger.build(jobkey, orderItem);
 
         schedule(payDay, lastTrigger);
     }
@@ -170,7 +170,7 @@ public class SubscriptionService {
         try {
             ListenerManager listenerManager = scheduler.getListenerManager();
             listenerManager.addJobListener(
-                new JobListeners(trigger, itemOrderService, orderService, jobDetailService)
+                new JobListeners(trigger, orderItemService, orderService, jobDetailService)
             );
             listenerManager.addTriggerListener(new TriggerListeners());
             scheduler.scheduleJob(jobDetail, lastTrigger);

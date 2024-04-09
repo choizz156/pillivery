@@ -33,46 +33,33 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long itemId;
 
-    @Column
     private String title;
 
-    @Column
     private String content;
 
-    @Column
     private String thumbnail;
 
-    @Column
     private String descriptionImage;
 
-    @Column
     private String expiration;
 
-    @Column
     private int discountPrice;
 
-    @Column
     private int price;
 
-    @Column
     private int discountRate;
 
-    @Column
     private int view;
 
-    @Column
     private int sales;
 
-    @Column
     private int capacity;
 
-
-    @Column
     private int servingSize;
 
-
-    @Column
     private int totalWishes;
+
+    private double starAvg;
 
 
     @Enumerated(value = EnumType.STRING)
@@ -87,17 +74,6 @@ public class Item {
     private List<Category> categories = new ArrayList<>();
 
 
-
-    public void addCategories(Category category) {
-        categories.add(category);
-        category.setItem(this);
-    }
-
-
-    @Column
-    private double starAvg;
-
-
     @OneToMany(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Review> reviews = new ArrayList<>();
 
@@ -109,5 +85,14 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<NutritionFact> nutritionFacts = new ArrayList<>();
 
+
+    public void addCategories(Category category) {
+        categories.add(category);
+        category.setItem(this);
+    }
+
+    public void plusSales(int sales){
+        this.sales = sales;
+    }
 
 }

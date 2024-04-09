@@ -1,10 +1,14 @@
 package com.team33.modulecore.domain.order.entity;
 
 
+import com.team33.modulecore.domain.audit.BaseEntity;
+import com.team33.modulecore.domain.order.dto.OrderDto.Post;
+import com.team33.modulecore.domain.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,19 +19,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.team33.modulecore.domain.audit.BaseEntity;
-import com.team33.modulecore.domain.user.entity.User;
-import org.springframework.lang.Nullable;
 
-@Getter
 @Setter
+@Getter
 @Entity(name = "ORDERS")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Order extends BaseEntity {
 
     @Id
@@ -38,38 +38,28 @@ public class Order extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private String address;
-
-    private String detailAddress;
-
-    @Column(nullable = false)
     private String phone;
 
     @Column(nullable = false)
     private boolean subscription;
+    @Embedded
+    private Address address;
 
-    @Setter
-    private Integer totalItems; // 주문에 포함된 아이템 종류
+    private int totalItems; // 주문에 포함된 아이템 종류
 
-    @Setter
-    private Integer totalPrice;
-
-    @Setter
-    private Integer totalDiscountPrice;
-
-    @Setter
-    private Integer expectPrice; // 실제 결제 금액 (정가 - 할인가)
+    @Embedded
+    private Price price;
 
     private String sid;
 
     private String tid;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
-    private List<ItemOrder> itemOrders = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.ORDER_REQUEST;
@@ -85,22 +75,81 @@ public class Order extends BaseEntity {
         this.tid = tid;
     }
 
-    public Order( Order origin ){
+    public Order(Order origin) {
 
         this.name = origin.getName();
-        this.address = origin.getAddress();
-        this.detailAddress = origin.getDetailAddress();
+        this.address = new Address(origin.getAddress().getAddress(),
+            origin.getAddress().getDetailAddress());
         this.phone = origin.getPhone();
         this.subscription = origin.isSubscription();
         this.totalItems = origin.getTotalItems();
-        this.totalPrice = origin.getTotalPrice();
-        this.totalDiscountPrice = origin.getTotalDiscountPrice();
-        this.expectPrice = origin.getExpectPrice();
+        this.price = new Price(price.getTotalPrice(), price.getTotalDiscountPrice(),
+            price.getExpectPrice());
         this.user = origin.getUser();
-        this.itemOrders = origin.getItemOrders();
+        this.orderItems = origin.getOrderItems();
         this.orderStatus = OrderStatus.ORDER_SUBSCRIBE;
         this.totalQuantity = origin.getTotalQuantity();
         this.sid = origin.getSid();
         this.tid = origin.getTid();
     }
+
+    @Builder
+    private Order(
+        String name,
+        Address address,
+        String phone,
+        boolean subscription,
+        int totalItems,
+        User user,
+        List<OrderItem> orderItems,
+        OrderStatus orderStatus,
+        int totalQuantity
+    ) {
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.subscription = subscription;
+        this.totalItems = totalItems;
+        this.user = user;
+        this.orderItems = orderItems;
+        this.orderStatus = orderStatus;
+        this.totalQuantity = totalQuantity;
+    }
+
+    public static Order create(List<OrderItem> orderItems, Post dto, User user) {
+        Order order = Order.builder()
+            .address(new Address(dto.getAddress(), dto.getDetailAddress()))
+            .name(dto.getRealName())
+            .phone(dto.getPhoneNumber())
+            .subscription(dto.isSubscription())
+            .user(user)
+            .orderItems(orderItems)
+            .totalItems(orderItems.size())
+            .build();
+        order.calculatePrice(order.getOrderItems());
+        return order;
+    }
+
+    private void calculatePrice(List<OrderItem> orderItems) {
+       this.price = new Price(orderItems);
+    }
+
+
+    private void countQuantity() { // 주문의 담긴 상품의 총량을 구하는 메서드
+
+        if (this.orderItems == null) {
+            this.totalQuantity = 0;
+            return;
+        }
+
+        int totalquantity = 0;
+
+        for (OrderItem orderItem : orderItems) {
+            int quantity = orderItem.getQuantity();
+            totalquantity += quantity;
+        }
+
+       this.totalQuantity = totalquantity;
+    }
+
 }

@@ -93,7 +93,7 @@ public class ParameterProvider extends ParamsConst {
     private PaymentParams getRequestParamsInfo(Order order) {
         String itemName = getItemName(order);
 
-        return PaymentParams.builder().totalAmount(order.getTotalPrice())
+        return PaymentParams.builder().totalAmount(order.getPrice().getTotalPrice())
             .quantity(order.getTotalQuantity())
             .itemName(itemName)
             .orderId(order.getOrderId())
@@ -111,6 +111,6 @@ public class ParameterProvider extends ParamsConst {
     }
 
     private String getTitle(final Order order) {
-        return order.getItemOrders().get(NAME_INDEX).getItem().getTitle();
+        return order.getOrderItems().get(NAME_INDEX).getItem().getTitle();
     }
 }

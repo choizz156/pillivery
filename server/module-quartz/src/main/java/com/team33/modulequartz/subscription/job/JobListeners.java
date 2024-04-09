@@ -2,9 +2,9 @@ package com.team33.modulequartz.subscription.job;
 
 import static org.quartz.JobKey.jobKey;
 
-import com.team33.modulecore.domain.order.entity.ItemOrder;
+import com.team33.modulecore.domain.order.entity.OrderItem;
 import com.team33.modulecore.domain.order.entity.Order;
-import com.team33.modulecore.domain.order.service.ItemOrderService;
+import com.team33.modulecore.domain.order.service.OrderItemService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.global.exception.BusinessLogicException;
@@ -29,7 +29,7 @@ import org.quartz.TriggerKey;
 public class JobListeners implements JobListener {
 
     private final TriggerService triggerService;
-    private final ItemOrderService itemOrderService;
+    private final OrderItemService orderItemService;
     private final OrderService orderService;
     private final JobDetailService jobDetailService;
 
@@ -92,11 +92,11 @@ public class JobListeners implements JobListener {
         final JobDataMap jobDataMap
     ) {
         log.info("새로운 job 업데이트");
-        ItemOrder itemOrder = (ItemOrder) jobDataMap.get("itemOrder");
+        OrderItem orderItem = (OrderItem) jobDataMap.get("itemOrder");
         Long orderId = (Long) jobDataMap.get("orderId");
 
-        ItemOrder newItemOrder = updateDeliveryDate(itemOrder);
-        JobDetail jobDetail = newJob(newItemOrder, orderId);
+        OrderItem newOrderItem = updateDeliveryDate(orderItem);
+        JobDetail jobDetail = newJob(newOrderItem, orderId);
         replaceJob(context, jobDetail);
     }
 
@@ -109,23 +109,23 @@ public class JobListeners implements JobListener {
         }
     }
 
-    private JobDetail newJob(final ItemOrder itemOrder, final Long orderId) {
+    private JobDetail newJob(final OrderItem orderItem, final Long orderId) {
         Order newOrder = getOrder(orderId);
-        ItemOrder newItemOrder = itemOrderService.itemOrderCopy(orderId, newOrder, itemOrder);
-        return updateJobDetails(itemOrder, newOrder, newItemOrder);
+        OrderItem newOrderItem = orderItemService.itemOrderCopy(orderId, newOrder, orderItem);
+        return updateJobDetails(orderItem, newOrder, newOrderItem);
     }
 
     private JobDetail updateJobDetails(
-        ItemOrder itemOrder,
+        OrderItem orderItem,
         Order newOrder,
-        ItemOrder newItemOrder
+        OrderItem newOrderItem
     ) {
         User user = newOrder.getUser();
         JobKey jobkey =
-            jobKey(user.getUserId() + itemOrder.getItem().getTitle(),
+            jobKey(user.getUserId() + orderItem.getItem().getTitle(),
                 String.valueOf(user.getUserId())
             );
-        return jobDetailService.build(jobkey, newOrder.getOrderId(), newItemOrder);
+        return jobDetailService.build(jobkey, newOrder.getOrderId(), newOrderItem);
     }
 
     private Order getOrder(Long orderId) {
@@ -134,11 +134,11 @@ public class JobListeners implements JobListener {
         return orderService.deepCopy(order);
     }
 
-    private ItemOrder updateDeliveryDate(final ItemOrder itemOrder) {
+    private OrderItem updateDeliveryDate(final OrderItem orderItem) {
         ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         log.info("payment = {}", paymentDay);
-        ZonedDateTime nextDelivery = paymentDay.plusDays(itemOrder.getPeriod());
-        return itemOrderService.updateDeliveryInfo(paymentDay, nextDelivery, itemOrder);
+        ZonedDateTime nextDelivery = paymentDay.plusDays(orderItem.getPeriod());
+        return orderItemService.updateDeliveryInfo(paymentDay, nextDelivery, orderItem);
     }
 
     private void retryOrDeleteIfJobException(

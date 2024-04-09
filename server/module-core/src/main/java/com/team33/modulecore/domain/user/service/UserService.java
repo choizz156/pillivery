@@ -1,6 +1,14 @@
 package com.team33.modulecore.domain.user.service;
 
+import com.team33.modulecore.domain.cart.entity.Cart;
+import com.team33.modulecore.domain.cart.repository.CartRepository;
+import com.team33.modulecore.domain.user.dto.UserPatchDto;
+import com.team33.modulecore.domain.user.dto.UserPostDto;
+import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
+import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
+import com.team33.modulecore.global.exception.BusinessLogicException;
+import com.team33.modulecore.global.exception.ExceptionCode;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,14 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.team33.modulecore.domain.cart.entity.Cart;
-import com.team33.modulecore.domain.cart.repository.CartRepository;
-import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
-import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.global.exception.BusinessLogicException;
-import com.team33.modulecore.global.exception.ExceptionCode;
 
 
 @Slf4j

@@ -4,6 +4,8 @@ package com.team33.modulecore.domain.item.service;
 import com.team33.modulecore.domain.item.entity.Brand;
 import com.team33.modulecore.domain.item.entity.Item;
 import com.team33.modulecore.domain.item.repository.ItemRepository;
+import com.team33.modulecore.global.exception.BusinessLogicException;
+import com.team33.modulecore.global.exception.ExceptionCode;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,7 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class ItemService {
@@ -32,10 +36,10 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
+    @Transactional(readOnly = true)
     public Item findVerifiedItem(long itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
-        Item findItem = item.orElseThrow(() -> new RuntimeException());
-        return findItem;
+       return item.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
     }
 
     public Page<Item> findItems(String categoryName, int page, int size, String sort) {

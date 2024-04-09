@@ -1,5 +1,8 @@
 package com.team33.modulecore.domain.order.entity;
 
+import com.team33.modulecore.domain.audit.BaseEntity;
+import com.team33.modulecore.domain.item.entity.Item;
+import com.team33.modulecore.domain.order.dto.OrderDto.Post;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,50 +11,52 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import com.team33.modulecore.domain.audit.BaseEntity;
-import com.team33.modulecore.domain.item.entity.Item;
 
 @Getter
 @Setter
-@Entity(name = "ITEM_ORDERS")
+@Entity(name = "order_item")
 @NoArgsConstructor
-@AllArgsConstructor
-public class ItemOrder extends BaseEntity {
+public class OrderItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long itemOrderId;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private int quantity;
 
-    @Column
     @ColumnDefault("0")
-    private Integer period;
+    private int period;
 
     @Column(nullable = false)
     private boolean subscription;
 
-    @Column(name = "NEXT_DELIVERY")
     private ZonedDateTime nextDelivery;
 
-    @Column(name = "PAYMENT_DAY")
     private ZonedDateTime paymentDay;
 
     @ManyToOne
-    @JoinColumn(name="ITEM_ID")
+    @JoinColumn(name = "item_id")
     private Item item;
 
     @ManyToOne
-    @JoinColumn(name = "ORDER_ID")
+    @JoinColumn(name = "order_id")
     private Order order;
 
-    public ItemOrder( ItemOrder origin){
+    @Builder
+    private OrderItem(int quantity, int period, boolean subscription, Item item) {
+        this.quantity = quantity;
+        this.period = period;
+        this.subscription = subscription;
+        this.item = item;
+    }
+
+    public OrderItem(OrderItem origin) {
         this.quantity = origin.getQuantity();
         this.period = origin.getPeriod();
         this.subscription = origin.isSubscription();
@@ -59,6 +64,19 @@ public class ItemOrder extends BaseEntity {
         this.paymentDay = origin.getPaymentDay();
         this.item = origin.getItem();
         this.order = origin.getOrder();
+    }
+
+    public static OrderItem createWithoutOrder(Item item, Post dto) {
+        return OrderItem.builder()
+            .item(item)
+            .quantity(dto.getQuantity())
+            .period(dto.getPeriod())
+            .subscription(dto.isSubscription())
+            .build();
+    }
+
+    public void addOrder(Order order) {
+        this.order = order;
     }
 
 }

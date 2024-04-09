@@ -2,7 +2,6 @@ package com.team33.modulecore.domain.user.entity;
 
 import com.team33.modulecore.domain.audit.BaseEntity;
 import com.team33.modulecore.domain.cart.entity.Cart;
-import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
@@ -71,8 +70,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Wish> wishList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Order> orders = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Order> orders = new ArrayList<>();
 
     @Builder
     private User(final Long userId, String email,

@@ -12,10 +12,10 @@ import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntr
 import com.team33.moduleapi.controller.ApiTest;
 import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.domain.item.entity.Item;
-import com.team33.modulecore.domain.order.entity.ItemOrder;
+import com.team33.modulecore.domain.order.entity.OrderItem;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.repository.OrderRepository;
-import com.team33.modulecore.domain.order.service.ItemOrderService;
+import com.team33.modulecore.domain.order.service.OrderItemService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.entity.User;
 import io.restassured.response.ExtractableResponse;
@@ -40,12 +40,12 @@ class ScheduleControllerTest extends ApiTest {
     private OrderRepository orderRepository;
 
     @MockBean
-    private ItemOrderService itemOrderService;
+    private OrderItemService orderItemService;
 
 
     private User user;
     private Order order;
-    private ItemOrder itemOrder;
+    private OrderItem orderItem;
     private Item item;
     private ZonedDateTime now;
 
@@ -67,7 +67,7 @@ class ScheduleControllerTest extends ApiTest {
 
         now = ZonedDateTime.of(2023, 1, 1, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
-        itemOrder = fixtureMonkey.giveMeBuilder(ItemOrder.class)
+        orderItem = fixtureMonkey.giveMeBuilder(OrderItem.class)
             .set("itemOrderId", 1L)
             .set("period", 30)
             .set("paymentDay", now)
@@ -82,22 +82,22 @@ class ScheduleControllerTest extends ApiTest {
             .set("createdAt", now)
             .sample();
 
-        order.setItemOrders(List.of(itemOrder));
-        itemOrder.setOrder(order);
+        order.setOrderItems(List.of(orderItem));
+        orderItem.setOrder(order);
 
         given(orderService.findOrder(anyLong()))
             .willReturn(order);
         given(orderRepository.findById(anyLong()))
             .willReturn(Optional.ofNullable(order));
-        given(itemOrderService.findItemOrder(anyLong()))
-            .willReturn(itemOrder);
+        given(orderItemService.findItemOrder(anyLong()))
+            .willReturn(orderItem);
 
         //다음 배송일 업데이트
-        itemOrder.setNextDelivery(itemOrder.getPaymentDay().plusDays(60));
-        itemOrder.setPaymentDay(itemOrder.getPaymentDay().plusDays(60));
+        orderItem.setNextDelivery(orderItem.getPaymentDay().plusDays(60));
+        orderItem.setPaymentDay(orderItem.getPaymentDay().plusDays(60));
 
-        given(itemOrderService.updateDeliveryInfo(any(), any(), any(ItemOrder.class)))
-            .willReturn(itemOrder);
+        given(orderItemService.updateDeliveryInfo(any(), any(), any(OrderItem.class)))
+            .willReturn(orderItem);
     }
 
     @DisplayName("요청 시 스케쥴러가 설정된다.")
@@ -149,12 +149,12 @@ class ScheduleControllerTest extends ApiTest {
         System.out.println(month);
         System.out.println(day);
 
-        assertThat(year).isEqualTo(String.valueOf(itemOrder.getPaymentDay().getYear()));
+        assertThat(year).isEqualTo(String.valueOf(orderItem.getPaymentDay().getYear()));
         assertThat(month).isEqualTo(
-            String.valueOf(itemOrder.getPaymentDay().getMonth().getValue())
+            String.valueOf(orderItem.getPaymentDay().getMonth().getValue())
         );
         assertThat(day).isEqualTo(
-            String.valueOf(itemOrder.getPaymentDay().getDayOfMonth())
+            String.valueOf(orderItem.getPaymentDay().getDayOfMonth())
         );
     }
 

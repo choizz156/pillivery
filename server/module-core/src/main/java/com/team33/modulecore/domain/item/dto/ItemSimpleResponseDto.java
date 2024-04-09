@@ -1,15 +1,13 @@
 package com.team33.modulecore.domain.item.dto;
 
 import com.team33.modulecore.domain.item.entity.Brand;
-import lombok.AllArgsConstructor;
+import com.team33.modulecore.domain.item.entity.Item;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ItemSimpleResponseDto {
 
     private long itemId;
@@ -20,4 +18,38 @@ public class ItemSimpleResponseDto {
     private int price;
     private int discountRate;
     private int disCountPrice;
+
+    @Builder
+    public ItemSimpleResponseDto(
+        long itemId,
+        Brand brand,
+        String thumbnail,
+        String title,
+        int capacity,
+        int price,
+        int discountRate,
+        int disCountPrice
+    ) {
+        this.itemId = itemId;
+        this.brand = brand;
+        this.thumbnail = thumbnail;
+        this.title = title;
+        this.capacity = capacity;
+        this.price = price;
+        this.discountRate = discountRate;
+        this.disCountPrice = disCountPrice;
+    }
+
+    public static ItemSimpleResponseDto of(Item item) {
+        return ItemSimpleResponseDto.builder()
+            .itemId(item.getItemId())
+            .brand(item.getBrand())
+            .thumbnail(item.getThumbnail())
+            .title(item.getTitle())
+            .capacity(item.getCapacity())
+            .price(item.getPrice())
+            .discountRate(item.getDiscountRate())
+            .disCountPrice(item.getDiscountPrice()).
+            build();
+    }
 }

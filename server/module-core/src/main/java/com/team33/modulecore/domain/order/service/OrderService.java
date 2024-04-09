@@ -1,11 +1,13 @@
 package com.team33.modulecore.domain.order.service;
 
-import com.team33.modulecore.domain.order.entity.ItemOrder;
+import com.team33.modulecore.domain.order.dto.OrderDto.Post;
 import com.team33.modulecore.domain.order.entity.Order;
+import com.team33.modulecore.domain.order.entity.OrderItem;
 import com.team33.modulecore.domain.order.entity.OrderStatus;
-import com.team33.modulecore.domain.order.repository.ItemOrderRepository;
+import com.team33.modulecore.domain.order.repository.OrderItemRepository;
 import com.team33.modulecore.domain.order.repository.OrderRepository;
 import com.team33.modulecore.domain.user.entity.User;
+import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.global.exception.BusinessLogicException;
 import com.team33.modulecore.global.exception.ExceptionCode;
 import java.util.List;
@@ -23,47 +25,53 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ItemOrderRepository itemOrderRepository;
-    private final ItemOrderService itemOrderService;
+    private final OrderItemRepository orderItemRepository;
+    private final OrderItemService orderItemService;
+    private final UserRepository userRepository;
 
-    public Order callOrder(List<ItemOrder> itemOrders, User user) {
+    public Order callOrder(List<OrderItem> orderItems, User user) {
         Order order = new Order();
-        order.setItemOrders(itemOrders);
-        order.setName(user.getRealName());
-        order.setAddress(user.getAddress().getCity());
-        order.setDetailAddress(user.getAddress().getDetailAddress());
-        order.setPhone(user.getPhone());
-        order.setSubscription(itemOrders.get(0).isSubscription());
-        order.setTotalItems(itemOrders.size());
-        order.setTotalPrice(itemOrderService.countTotalPrice(itemOrders));
-        order.setTotalDiscountPrice(itemOrderService.countDiscountTotalPrice(itemOrders));
-        order.setExpectPrice(order.getTotalPrice() - order.getTotalDiscountPrice());
-        order.setUser(user);
-        order.setOrderStatus(OrderStatus.ORDER_REQUEST);
-        order.setTotalQuantity(itemOrderService.countQuantity(itemOrders));
+//        order.setItemOrders(orderItems);
+//        order.setName(user.getRealName());
+//        order.setAddress(user.getAddress().getCity());
+//        order.setDetailAddress(user.getAddress().getDetailAddress());
+//        order.setPhone(user.getPhone());
+//        order.setSubscription(orderItems.get(0).isSubscription());
+//        order.setTotalItems(orderItems.size());
+//        order.setTotalPrice(orderItemService.countTotalPrice(orderItems));
+//        order.setTotalDiscountPrice(orderItemService.countDiscountTotalPrice(orderItems));
+//        order.setExpectPrice(order.getTotalPrice() - order.getTotalDiscountPrice());
+//        order.setUser(user);
+//        order.setOrderStatus(OrderStatus.ORDER_REQUEST);
+//        order.setTotalQuantity(orderItemService.countQuantity(orderItems));
+//
+//        for (OrderItem orderItem : orderItems) {
+//            orderItem.setOrder(order);
+//            orderItemService.plusSales(orderItem); // 판매량 누적
+//            orderItemRepository.save(orderItem);
+//        }
+//
+//        orderRepository.save(order);
+        return order;
+    }
 
-        for (ItemOrder itemOrder : itemOrders) {
-            itemOrder.setOrder(order);
-            itemOrderService.plusSales(itemOrder); // 판매량 누적
-            itemOrderRepository.save(itemOrder);
-        }
-
+    public Order callOrder(List<OrderItem> orderItems, Post dto, long userId) {
+        Order order = createOrder(orderItems, dto, userId);
         orderRepository.save(order);
         return order;
     }
 
+
     public Order createOrder(Order order) {
-        System.out.println("=-=============");
         return orderRepository.save(order);
     }
 
     public void cancelOrder(long orderId) {
         Order findOrder = findOrder(orderId);
         findOrder.setOrderStatus(OrderStatus.ORDER_CANCEL);
-        itemOrderService.minusSales(findOrder.getItemOrders()); // 주문 취소 -> 판매량 집계에서 제외
+        orderItemService.minusSales(findOrder.getOrderItems()); // 주문 취소 -> 판매량 집계에서 제외
         orderRepository.save(findOrder);
     }
-
     public Order findOrder(long orderId) {
         return findVerifiedOrder(orderId);
     }
@@ -98,8 +106,8 @@ public class OrderService {
         return findAllSubs;
     }
 
-    public Page<ItemOrder> findAllSubs(User user, int page) {
-        Page<ItemOrder> findAllSubs = itemOrderRepository.findAllSubs(
+    public Page<OrderItem> findAllSubs(User user, int page) {
+        Page<OrderItem> findAllSubs = orderItemRepository.findAllSubs(
             PageRequest.of(page, 6, Sort.by("itemOrderId").descending()),
             OrderStatus.ORDER_SUBSCRIBE, user.getUserId());
 
@@ -130,5 +138,18 @@ public class OrderService {
         Order newOrder = new Order(order);
         orderRepository.save(newOrder);
         return newOrder;
+    }
+
+    private Order createOrder(List<OrderItem> orderItems, Post dto, long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        Order order = Order.create(orderItems, dto, user);
+
+        order.getOrderItems().forEach(oi -> {
+            oi.addOrder(order);
+            oi.getItem().plusSales(oi.getItem().getSales() + oi.getQuantity());
+            orderItemRepository.save(oi);
+        });
+        return order;
     }
 }

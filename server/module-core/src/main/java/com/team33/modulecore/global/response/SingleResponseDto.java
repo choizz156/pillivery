@@ -1,4 +1,4 @@
-package com.team33.moduleapi.response;
+package com.team33.modulecore.global.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

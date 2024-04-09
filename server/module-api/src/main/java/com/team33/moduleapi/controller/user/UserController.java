@@ -1,6 +1,5 @@
 package com.team33.moduleapi.controller.user;
 
-import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.security.jwt.JwtTokenProvider;
 import com.team33.moduleapi.security.jwt.Logout;
 import com.team33.moduleapi.security.refreshtoken.ResponseTokenService;
@@ -10,6 +9,7 @@ import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.dto.UserResponse;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.service.UserService;
+import com.team33.modulecore.global.response.SingleResponseDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
