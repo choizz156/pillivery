@@ -30,7 +30,7 @@ public class OrderItemService {
     private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
-    public List<OrderItem> createOrderItem(Post dto) {
+    public List<OrderItem> getOrderItemList(Post dto) {
         Item item = getItem(dto);
         OrderItem orderItem = OrderItem.createWithoutOrder(item, dto);
         return getOrderItems(orderItem);

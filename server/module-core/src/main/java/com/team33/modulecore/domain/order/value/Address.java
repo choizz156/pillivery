@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Address {
     @Column(nullable = false)
-    private String address;
+    private String city;
     private String detailAddress;
 
     @Builder
-    public Address(String address, String detailAddress) {
-        this.address = address;
+    public Address(String city, String detailAddress) {
+        this.city = city;
         this.detailAddress = detailAddress;
     }
 }

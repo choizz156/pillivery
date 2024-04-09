@@ -46,8 +46,9 @@ public class OrderController {
         @PathVariable long userId,
         @RequestBody @Valid OrderDto.Post orderPostDto
     ) {
-        List<OrderItem> orderItems = orderItemService.createOrderItem(orderPostDto);
+        List<OrderItem> orderItems = orderItemService.getOrderItemList(orderPostDto);
         Order order = orderService.callOrder(orderItems, orderPostDto, userId);
+        orderService.creatOrderItem(order);
 
         return new SingleResponseDto<>(OrderDetailResponse.of(order));
     }

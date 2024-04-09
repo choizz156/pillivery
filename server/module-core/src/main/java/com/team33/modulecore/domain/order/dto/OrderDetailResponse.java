@@ -65,7 +65,7 @@ public class OrderDetailResponse {
 
     public static OrderDetailResponse of(Order order) {
         return OrderDetailResponse.builder()
-            .address(order.getAddress().getAddress())
+            .address(order.getAddress().getCity())
             .detailAddress(order.getAddress().getDetailAddress())
             .orderId(order.getOrderId())
             .name(order.getName())

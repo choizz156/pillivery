@@ -2,6 +2,7 @@ package com.team33.modulecore.domain.user.entity;
 
 import com.team33.modulecore.domain.audit.BaseEntity;
 import com.team33.modulecore.domain.cart.entity.Cart;
+import com.team33.modulecore.domain.order.value.Address;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;

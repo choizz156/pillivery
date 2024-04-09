@@ -2,6 +2,7 @@ package com.team33.modulecore.domain.order.value;
 
 import com.team33.modulecore.domain.order.entity.OrderItem;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Price {
 
+    @Column(nullable = false)
     private int totalPrice;
 
     private int totalDiscountPrice;
@@ -25,7 +27,7 @@ public class Price {
         this.expectPrice = expectPrice;
     }
 
-    public Price (List<OrderItem> orderItems){
+    public Price(List<OrderItem> orderItems) {
         int totalPrice = countTotalPrice(orderItems);
         int totalDiscountPrice = countDiscountTotalPrice(orderItems);
 
@@ -40,15 +42,7 @@ public class Price {
             return 0;
         }
 
-        int totalPrice = 0;
-
-        for (OrderItem orderItem : orderItems) {
-            int quantity = orderItem.getQuantity();
-            int price = orderItem.getItem().getPrice();
-            totalPrice += (quantity * price);
-        }
-
-        return totalPrice;
+        return orderItems.stream().mapToInt(oi -> oi.getQuantity() * oi.getItem().getPrice()).sum();
     }
 
     private int countDiscountTotalPrice(List<OrderItem> orderItems) {
@@ -57,15 +51,8 @@ public class Price {
             return 0;
         }
 
-        int totalDiscountPrice = 0;
-
-        for (OrderItem orderItem : orderItems) {
-            int quantity = orderItem.getQuantity();
-            int price = orderItem.getItem().getPrice();
-            int discountRate = orderItem.getItem().getDiscountRate();
-            totalDiscountPrice += (quantity * price * discountRate / 100);
-        }
-
-        return totalDiscountPrice;
+        return orderItems.stream().mapToInt(
+            oi -> oi.getQuantity() * oi.getItem().getPrice() * oi.getItem().getDiscountRate()/100
+        ).sum();
     }
 }

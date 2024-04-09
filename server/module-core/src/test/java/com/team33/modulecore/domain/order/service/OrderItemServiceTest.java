@@ -40,11 +40,11 @@ class OrderItemServiceTest {
         .build();
 
     @Transactional
-    @DisplayName("orderitem을 생성할 수 있다.")
+    @DisplayName("단품 구매 시 orderItem 정보를 생성할 수 있다.")
     @Test
     void orderItem_생성() throws Exception {
         //given
-        Item item1 = fixtureMonkey.giveMeBuilder(Item.class)
+        Item item = fixtureMonkey.giveMeBuilder(Item.class)
             .set("itemId", null)
             .set("wishList", new ArrayList<>())
             .set("categories", new ArrayList<>())
@@ -53,14 +53,24 @@ class OrderItemServiceTest {
             .set("nutritionFacts", new ArrayList<>())
             .sample();
 
-        Item save = itemRepository.save(item1);
-        Post sample = fixtureMonkey.giveMeBuilder(Post.class).set("itemId", save.getItemId()).sample();
+        Item entityItem = itemRepository.save(item);
+        Post post = fixtureMonkey.giveMeBuilder(Post.class)
+            .set("itemId", entityItem.getItemId())
+            .set("subscription", false)
+            .sample();
 
         //when
-        List<OrderItem> orderItem = orderItemService.createOrderItem(sample);
+        List<OrderItem> orderItems = orderItemService.getOrderItemList(post);
+        
         //then
-        assertThat(orderItem).hasSize(1);
-    }
+        OrderItem orderItem = orderItems.get(0);
 
+        assertThat(orderItems).hasSize(1);
+        assertThat(orderItem.getItem()).isEqualTo(item);
+        assertThat(post.getItemId()).isEqualTo(entityItem.getItemId());
+        assertThat(post.getQuantity()).isEqualTo(orderItem.getQuantity());
+        assertThat(post.getPeriod()).isEqualTo(orderItem.getPeriod());
+        assertThat(post.isSubscription()).isFalse();
+    }
 
 }

@@ -28,7 +28,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Entity(name = "ORDERS")
+@Entity(name = "orders")
 @NoArgsConstructor
 public class Order extends BaseEntity {
 
@@ -80,7 +80,7 @@ public class Order extends BaseEntity {
     public Order(Order origin) {
 
         this.name = origin.getName();
-        this.address = new Address(origin.getAddress().getAddress(),
+        this.address = new Address(origin.getAddress().getCity(),
             origin.getAddress().getDetailAddress());
         this.phone = origin.getPhone();
         this.subscription = origin.isSubscription();

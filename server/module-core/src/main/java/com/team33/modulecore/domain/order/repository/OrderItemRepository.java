@@ -9,7 +9,7 @@ import com.team33.modulecore.domain.order.entity.OrderStatus;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
-    @Query("select io from OrderItem io join ORDERS o on io.order.orderId = o.orderId " +
+    @Query("select io from OrderItem io join orders o on io.order.orderId = o.orderId " +
             "and o.orderStatus = :orderStatus and o.user.userId = :userId and io.subscription = true")
     Page<OrderItem> findAllSubs(Pageable pageable, OrderStatus orderStatus, long userId);
 }

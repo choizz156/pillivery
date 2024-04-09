@@ -72,6 +72,7 @@ public class OrderService {
         orderItemService.minusSales(findOrder.getOrderItems()); // 주문 취소 -> 판매량 집계에서 제외
         orderRepository.save(findOrder);
     }
+
     public Order findOrder(long orderId) {
         return findVerifiedOrder(orderId);
     }
@@ -140,16 +141,25 @@ public class OrderService {
         return newOrder;
     }
 
+    public void creatOrderItem(Order order) {
+        order.getOrderItems().forEach(oi -> {
+            saveOrderItem(order, oi);
+        });
+    }
+
+    private void saveOrderItem(Order order, OrderItem oi) {
+        oi.addOrder(order);
+        pulusSalesOfItem(oi);
+        orderItemRepository.save(oi);
+    }
+
+    private void pulusSalesOfItem(OrderItem oi) {
+        oi.getItem().plusSales(oi.getItem().getSales() + oi.getQuantity());
+    }
+
     private Order createOrder(List<OrderItem> orderItems, Post dto, long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-        Order order = Order.create(orderItems, dto, user);
-
-        order.getOrderItems().forEach(oi -> {
-            oi.addOrder(order);
-            oi.getItem().plusSales(oi.getItem().getSales() + oi.getQuantity());
-            orderItemRepository.save(oi);
-        });
-        return order;
+        return Order.create(orderItems, dto, user);
     }
 }
