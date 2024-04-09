@@ -28,6 +28,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "ITEM_ID")
     private Item item;
@@ -36,7 +37,4 @@ public class Category {
     @Column
     private String categoryName;
 
-    public void setItem(Item item) {
-        this.item = item;
-    }
 }

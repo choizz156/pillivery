@@ -49,7 +49,7 @@ public class OrderItemDto {
 
         public static SimpleResponse of(OrderItem orderItem) {
             return SimpleResponse.builder()
-                .itemOrderId(orderItem.getItemOrderId())
+                .itemOrderId(orderItem.getOrderItemId())
                 .quantity(orderItem.getQuantity())
                 .period(orderItem.getPeriod())
                 .subscription(orderItem.isSubscription())

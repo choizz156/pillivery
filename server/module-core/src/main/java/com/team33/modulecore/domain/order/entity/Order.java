@@ -3,6 +3,8 @@ package com.team33.modulecore.domain.order.entity;
 
 import com.team33.modulecore.domain.audit.BaseEntity;
 import com.team33.modulecore.domain.order.dto.OrderDto.Post;
+import com.team33.modulecore.domain.order.value.Address;
+import com.team33.modulecore.domain.order.value.Price;
 import com.team33.modulecore.domain.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;

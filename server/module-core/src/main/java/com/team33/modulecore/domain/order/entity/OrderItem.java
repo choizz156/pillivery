@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,13 +20,14 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
-@Entity(name = "order_item")
+@Table(name = "order_item")
+@Entity
 @NoArgsConstructor
 public class OrderItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemOrderId;
+    private Long orderItemId;
 
     @Column(nullable = false)
     private int quantity;

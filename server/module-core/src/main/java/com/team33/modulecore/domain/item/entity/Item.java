@@ -17,14 +17,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 public class Item {
 
@@ -91,7 +95,7 @@ public class Item {
         category.setItem(this);
     }
 
-    public void plusSales(int sales){
+    public void plusSales(int sales) {
         this.sales = sales;
     }
 

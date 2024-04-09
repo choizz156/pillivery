@@ -1,14 +1,14 @@
-package com.team33.modulecore.domain.order.entity;
+package com.team33.modulecore.domain.order.value;
 
+import com.team33.modulecore.domain.order.entity.OrderItem;
 import java.util.List;
 import javax.persistence.Embeddable;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Embeddable
 public class Price {
 

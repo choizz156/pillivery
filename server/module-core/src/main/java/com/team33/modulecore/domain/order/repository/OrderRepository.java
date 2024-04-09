@@ -19,7 +19,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             Pageable pageable, User user, boolean subscription, OrderStatus orderStatus1, OrderStatus orderStatus2
     );
 
-    @Query("Select distinct o from ORDERS o join ITEM_ORDERS io on o.orderId = io.order.orderId " +
+    @Query("Select distinct o from ORDERS o join OrderItem io on o.orderId = io.order.orderId " +
             "where io.item.itemId = :itemId and o.user.userId = :userId and o.orderStatus not in :status")
     List<Order> findByItemAndUser(@Param("itemId") long itemId, @Param("userId") long userId, @Param("status") OrderStatus status);
 

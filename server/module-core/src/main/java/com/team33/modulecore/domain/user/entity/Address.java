@@ -1,11 +1,13 @@
 package com.team33.modulecore.domain.user.entity;
 
 import javax.persistence.Embeddable;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@Builder
 @Embeddable
 public class Address {
 
