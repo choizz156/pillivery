@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -50,13 +51,11 @@ public class User extends BaseEntity {
     @Embedded
     private Address address;
 
-    @Column(name = "REAL_NAME")
     private String realName;
 
     @Column(unique = true)
     private String phone;
 
-    @Column(name = "OAUTH_ID")
     private String oauthId;
 
     @Enumerated(EnumType.STRING)
@@ -65,7 +64,8 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @OneToOne
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

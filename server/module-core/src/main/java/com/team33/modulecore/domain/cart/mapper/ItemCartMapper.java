@@ -23,7 +23,7 @@
 //                .quantity(itemCartPostDto.getQuantity())
 //                .period(itemCartPostDto.getPeriod() == null ? 0 : itemCartPostDto.getPeriod())
 //                .buyNow(true)
-//                .subscription(itemCartPostDto.isSubscription())
+//                .subscription(itemCartPostDto.subscription())
 //                .cart(user.getCart())
 //                .item(itemService.findVerifiedItem(itemId))
 //                .build();
@@ -35,7 +35,7 @@
 //                .quantity(itemCart.getQuantity())
 //                .period(itemCart.getPeriod())
 //                .buyNow(itemCart.isBuyNow())
-//                .subscription(itemCart.isSubscription())
+//                .subscription(itemCart.subscription())
 //                .item(itemMapper.itemToItemSimpleResponseDto(itemCart.getItem()))
 //                .createdAt(itemCart.getCreatedAt())
 //                .updatedAt(itemCart.getUpdatedAt())

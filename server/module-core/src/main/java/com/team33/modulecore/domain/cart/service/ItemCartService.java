@@ -1,7 +1,12 @@
 package com.team33.modulecore.domain.cart.service;
 
 
+import com.team33.modulecore.domain.cart.entity.Cart;
+import com.team33.modulecore.domain.cart.entity.ItemCart;
+import com.team33.modulecore.domain.cart.repository.CartRepository;
 import com.team33.modulecore.domain.cart.repository.ItemCartRepository;
+import com.team33.modulecore.domain.user.entity.User;
+import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.global.exception.BusinessLogicException;
 import com.team33.modulecore.global.exception.ExceptionCode;
 import java.util.List;
@@ -9,8 +14,6 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.team33.modulecore.domain.cart.entity.Cart;
-import com.team33.modulecore.domain.cart.entity.ItemCart;
 
 @Service
 @Transactional
@@ -18,10 +21,13 @@ import com.team33.modulecore.domain.cart.entity.ItemCart;
 public class ItemCartService {
 
     private final ItemCartRepository itemCartRepository;
+    private final CartRepository cartRepository;
+    private final UserRepository userRepository;
+
     public ItemCart addItemCart(ItemCart itemCart) {
         ItemCart findItemCart = checkItemCart(itemCart);
 
-        if(findItemCart == null) {
+        if (findItemCart == null) {
             createItemCart(itemCart); // 상품이 장바구니에 없는 경우 장바구니에 추가
             return itemCart;
         } else {
@@ -36,8 +42,8 @@ public class ItemCartService {
     }
 
     public ItemCart checkItemCart(ItemCart itemCart) { // 장바구니에 특정 아이템이 이미 담겨있는지 확인
-        return itemCartRepository.findByCartAndItemAndSubscription(
-                itemCart.getCart(), itemCart.getItem(), itemCart.isSubscription());
+        return itemCartRepository.findByCartAndItemAndOrderItemInfoSubscription(
+            itemCart.getCart(), itemCart.getItem(), itemCart.getSubscription());
     }
 
     public ItemCart findItemCart(long itemCartId) {
@@ -52,41 +58,64 @@ public class ItemCartService {
         return itemCart;
     }
 
-    public ItemCart periodItemCart(long itemCartId, int period) { // 정기 구독 주기 변경
-        ItemCart itemCart = findVerifiedItemCart(itemCartId);
-        itemCart.setPeriod(period);
-        return itemCartRepository.save(itemCart);
-    }
-
     public ItemCart excludeItemCart(long itemCartId, boolean buyNow) { // 아이템 체크 및 해제
         ItemCart itemCart = findVerifiedItemCart(itemCartId);
         itemCart.setBuyNow(buyNow);
         return itemCartRepository.save(itemCart);
     }
 
-    public long deleteItemCart(long itemCartId) { // 장바구니 항목 삭제
-        ItemCart itemCart = findVerifiedItemCart(itemCartId);
-        long cartId = itemCart.getCart().getCartId(); // 장바구니 리프레시를 위해 카트 정보 확인
-        itemCartRepository.delete(itemCart);
-
-        return cartId;
-    }
+//    public long deleteItemCart(long itemCartId) { // 장바구니 항목 삭제
+//        ItemCart itemCart = findVerifiedItemCart(itemCartId);
+//        long cartId = itemCart.getCart().getCartId(); // 장바구니 리프레시를 위해 카트 정보 확인
+//        itemCartRepository.delete(itemCart);
+//        return cartId;
+//    }
 
     public List<ItemCart> findItemCarts(Cart cart, boolean subscription) { // 장바구니 목록 조회
-        return itemCartRepository.findAllByCartAndSubscription(cart, subscription);
+        return itemCartRepository.findAllByCartAndOrderItemInfoSubscription(cart, subscription);
         // subscription - true 정기구독, false 일반
     }
 
-    public List<ItemCart> findItemCarts(Cart cart, boolean subscription, boolean buyNow) { // 금액 합계, 주문
-        return itemCartRepository.findAllByCartAndSubscriptionAndBuyNow(cart, subscription, buyNow);
+    public List<ItemCart> findItemCarts(Cart cart, boolean subscription,
+        boolean buyNow) { // 금액 합계, 주문
+        return itemCartRepository.findAllByCartAndOrderItemInfoSubscriptionAndBuyNow(cart, subscription, buyNow);
         // subscription - true 정기구독, false 일반
         // buyNow - true 체크박스 활성화, false 체크박스 비활성화
+    }
+
+    public List<ItemCart> findItemCarts(long userId, boolean subscription) {
+        User user = getUser(userId);
+        Cart cart = getCart(user);
+        return getItemCarts(subscription, cart);
     }
 
     public ItemCart findVerifiedItemCart(long itemCartId) {
         Optional<ItemCart> optionalItemCart = itemCartRepository.findById(itemCartId);
         ItemCart findItemCart = optionalItemCart.orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.ITEMCART_NOT_FOUND));
+            new BusinessLogicException(ExceptionCode.ITEMCART_NOT_FOUND));
         return findItemCart;
     }
+
+    private Cart getCart(User user) {
+        return cartRepository.findById(user.getCart().getCartId())
+            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
+    }
+
+    private User getUser(long userId) {
+        return userRepository.findById(userId).orElseThrow(
+            () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)
+        );
+    }
+
+    private List<ItemCart> getItemCarts(boolean subscription, Cart cart) {
+        List<ItemCart> itemCarts =
+            itemCartRepository.findAllByCartAndOrderItemInfoSubscriptionAndBuyNow(cart, subscription, true);
+
+        if (itemCarts.isEmpty()) {
+            throw new BusinessLogicException(ExceptionCode.ITEMCART_NOT_FOUND);
+        }
+        return itemCarts;
+    }
+
+
 }

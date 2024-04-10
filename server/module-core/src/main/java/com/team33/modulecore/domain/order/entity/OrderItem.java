@@ -2,9 +2,9 @@ package com.team33.modulecore.domain.order.entity;
 
 import com.team33.modulecore.domain.audit.BaseEntity;
 import com.team33.modulecore.domain.item.entity.Item;
-import com.team33.modulecore.domain.order.dto.OrderDto.Post;
+import com.team33.modulecore.domain.order.value.OrderItemInfo;
 import java.time.ZonedDateTime;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,7 +16,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -29,14 +28,8 @@ public class OrderItem extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
 
-    @Column(nullable = false)
-    private int quantity;
-
-    @ColumnDefault("0")
-    private int period;
-
-    @Column(nullable = false)
-    private boolean subscription;
+    @Embedded
+    private OrderItemInfo orderItemInfo;
 
     private ZonedDateTime nextDelivery;
 
@@ -52,28 +45,28 @@ public class OrderItem extends BaseEntity {
 
     @Builder
     private OrderItem(int quantity, int period, boolean subscription, Item item) {
-        this.quantity = quantity;
-        this.period = period;
-        this.subscription = subscription;
+        this.orderItemInfo = new OrderItemInfo(quantity, period, subscription);
         this.item = item;
     }
 
     public OrderItem(OrderItem origin) {
-        this.quantity = origin.getQuantity();
-        this.period = origin.getPeriod();
-        this.subscription = origin.isSubscription();
+        this.orderItemInfo = new OrderItemInfo(
+            origin.getOrderItemInfo().getQuantity(),
+            origin.getOrderItemInfo().getPeriod(),
+            origin.getOrderItemInfo().isSubscription()
+        );
         this.nextDelivery = origin.getNextDelivery();
         this.paymentDay = origin.getPaymentDay();
         this.item = origin.getItem();
         this.order = origin.getOrder();
     }
 
-    public static OrderItem createWithoutOrder(Item item, Post dto) {
+    public static OrderItem createWithoutOrder(Item item, OrderItemInfo orderItemInfo) {
         return OrderItem.builder()
             .item(item)
-            .quantity(dto.getQuantity())
-            .period(dto.getPeriod())
-            .subscription(dto.isSubscription())
+            .quantity(orderItemInfo.getQuantity())
+            .period(orderItemInfo.getPeriod())
+            .subscription(orderItemInfo.isSubscription())
             .build();
     }
 
@@ -81,4 +74,23 @@ public class OrderItem extends BaseEntity {
         this.order = order;
     }
 
+    public void addPeriod(int period){
+        this.orderItemInfo.addPeriod(period);
+    }
+
+    public void cancelSubscription(){
+        this.orderItemInfo.cancelSubscription();
+    }
+
+    public int getQuantity(){
+        return orderItemInfo.getQuantity();
+    }
+
+    public int getPeriod(){
+        return orderItemInfo.getPeriod();
+    }
+
+    public boolean isSubscription(){
+        return orderItemInfo.isSubscription();
+    }
 }

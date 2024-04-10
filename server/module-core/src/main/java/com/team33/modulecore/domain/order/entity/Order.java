@@ -2,7 +2,6 @@ package com.team33.modulecore.domain.order.entity;
 
 
 import com.team33.modulecore.domain.audit.BaseEntity;
-import com.team33.modulecore.domain.order.dto.OrderDto.Post;
 import com.team33.modulecore.domain.order.value.Address;
 import com.team33.modulecore.domain.order.value.Price;
 import com.team33.modulecore.domain.user.entity.User;
@@ -42,8 +41,9 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "subscription")
     private boolean subscription;
+
     @Embedded
     private Address address;
 
@@ -118,16 +118,17 @@ public class Order extends BaseEntity {
         this.totalQuantity = totalQuantity;
     }
 
-    public static Order create(List<OrderItem> orderItems, Post dto, User user) {
+    public static Order create(List<OrderItem> orderItems, boolean subscription, User user) {
         Order order = Order.builder()
-            .address(new Address(dto.getAddress(), dto.getDetailAddress()))
-            .name(dto.getRealName())
-            .phone(dto.getPhoneNumber())
-            .subscription(dto.isSubscription())
+            .address(new Address(user.getAddress().getCity(), user.getAddress().getDetailAddress()))
+            .name(user.getRealName())
+            .phone(user.getPhone())
+            .subscription(subscription)
             .user(user)
             .orderItems(orderItems)
             .totalItems(orderItems.size())
             .build();
+
         order.calculatePrice(order.getOrderItems());
         return order;
     }
@@ -147,7 +148,7 @@ public class Order extends BaseEntity {
         int totalquantity = 0;
 
         for (OrderItem orderItem : orderItems) {
-            int quantity = orderItem.getQuantity();
+            int quantity = orderItem.getOrderItemInfo().getQuantity();
             totalquantity += quantity;
         }
 

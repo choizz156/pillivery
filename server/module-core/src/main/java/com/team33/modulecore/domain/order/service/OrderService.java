@@ -1,6 +1,5 @@
 package com.team33.modulecore.domain.order.service;
 
-import com.team33.modulecore.domain.order.dto.OrderDto.Post;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.entity.OrderItem;
 import com.team33.modulecore.domain.order.entity.OrderStatus;
@@ -29,34 +28,8 @@ public class OrderService {
     private final OrderItemService orderItemService;
     private final UserRepository userRepository;
 
-    public Order callOrder(List<OrderItem> orderItems, User user) {
-        Order order = new Order();
-//        order.setItemOrders(orderItems);
-//        order.setName(user.getRealName());
-//        order.setAddress(user.getAddress().getCity());
-//        order.setDetailAddress(user.getAddress().getDetailAddress());
-//        order.setPhone(user.getPhone());
-//        order.setSubscription(orderItems.get(0).isSubscription());
-//        order.setTotalItems(orderItems.size());
-//        order.setTotalPrice(orderItemService.countTotalPrice(orderItems));
-//        order.setTotalDiscountPrice(orderItemService.countDiscountTotalPrice(orderItems));
-//        order.setExpectPrice(order.getTotalPrice() - order.getTotalDiscountPrice());
-//        order.setUser(user);
-//        order.setOrderStatus(OrderStatus.ORDER_REQUEST);
-//        order.setTotalQuantity(orderItemService.countQuantity(orderItems));
-//
-//        for (OrderItem orderItem : orderItems) {
-//            orderItem.setOrder(order);
-//            orderItemService.plusSales(orderItem); // 판매량 누적
-//            orderItemRepository.save(orderItem);
-//        }
-//
-//        orderRepository.save(order);
-        return order;
-    }
-
-    public Order callOrder(List<OrderItem> orderItems, Post dto, long userId) {
-        Order order = createOrder(orderItems, dto, userId);
+    public Order callOrder(List<OrderItem> orderItems, boolean subscription, long userId) {
+        Order order = createOrder(orderItems, subscription, userId);
         orderRepository.save(order);
         return order;
     }
@@ -157,9 +130,9 @@ public class OrderService {
         oi.getItem().plusSales(oi.getItem().getSales() + oi.getQuantity());
     }
 
-    private Order createOrder(List<OrderItem> orderItems, Post dto, long userId) {
+    private Order createOrder(List<OrderItem> orderItems, boolean subscription, long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-        return Order.create(orderItems, dto, user);
+        return Order.create(orderItems, subscription, user);
     }
 }

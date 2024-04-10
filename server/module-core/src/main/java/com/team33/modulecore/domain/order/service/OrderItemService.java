@@ -1,11 +1,13 @@
 package com.team33.modulecore.domain.order.service;
 
 
+import com.team33.modulecore.domain.cart.entity.ItemCart;
+import com.team33.modulecore.domain.cart.repository.ItemCartRepository;
 import com.team33.modulecore.domain.item.entity.Item;
 import com.team33.modulecore.domain.item.repository.ItemRepository;
-import com.team33.modulecore.domain.order.dto.OrderDto.Post;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.entity.OrderItem;
+import com.team33.modulecore.domain.order.value.OrderItemInfo;
 import com.team33.modulecore.domain.order.repository.OrderItemRepository;
 import com.team33.modulecore.domain.order.repository.OrderRepository;
 import com.team33.modulecore.global.exception.BusinessLogicException;
@@ -25,15 +27,33 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderItemService {
 
+    private final ItemCartRepository itemCartRepository;
     private final OrderItemRepository orderItemRepository;
     private final ItemRepository itemRepository;
     private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
-    public List<OrderItem> getOrderItemList(Post dto) {
-        Item item = getItem(dto);
-        OrderItem orderItem = OrderItem.createWithoutOrder(item, dto);
+    public List<OrderItem> getOrderItemSingle(long itemId, OrderItemInfo orderItemInfo) {
+        Item item = getItem(itemId);
+        OrderItem orderItem = OrderItem.createWithoutOrder(item, orderItemInfo);
         return getOrderItems(orderItem);
+    }
+
+    public List<OrderItem> getOrderItemList(List<ItemCart> itemCarts) {
+        List<OrderItem> orderItemList = new ArrayList<>();
+        itemCarts.forEach(itemCart -> {
+            createOrderItem(itemCart, orderItemList);
+            itemCartRepository.deleteById(itemCart.getItemCartId());
+        });
+        return orderItemList;
+    }
+
+    private void createOrderItem(ItemCart itemCart, List<OrderItem> orderItemList) {
+        OrderItem orderItem = OrderItem.createWithoutOrder(
+            itemCart.getItem(),
+            itemCart.getOrderItemInfo()
+        );
+        orderItemList.add(orderItem);
     }
 
     public OrderItem findItemOrder(long itemOrderId) {
@@ -44,14 +64,14 @@ public class OrderItemService {
         return orderItem;
     }
 
-    public OrderItem changeSubQuantity(long itemOrderId, int upDown) {
-        OrderItem orderItem = findItemOrder(itemOrderId);
-
-        orderItem.setQuantity(orderItem.getQuantity() + upDown);
-        orderItemRepository.save(orderItem);
-
-        return orderItem;
-    }
+//    public OrderItem changeSubQuantity(long itemOrderId, int upDown) {
+//        OrderItem orderItem = findItemOrder(itemOrderId);
+//
+//        orderItem.setQuantity(orderItem.getQuantity() + upDown);
+//        orderItemRepository.save(orderItem);
+//
+//        return orderItem;
+//    }
 
 
     public void minusSales(List<OrderItem> orderItems) { // 주문 취소할 경우 아이템 판매량에서 제외
@@ -69,8 +89,8 @@ public class OrderItemService {
 //        itemRepository.save(orderItem.getItem());
     }
 
-    public void setItemPeriod(Integer period, OrderItem orderItem) {
-        orderItem.setPeriod(period);
+    public void setItemPeriod(int period, OrderItem orderItem) {
+        orderItem.addPeriod(period);
         log.error("주기변경 = {}", orderItem.getPeriod());
     }
 
@@ -115,7 +135,7 @@ public class OrderItemService {
         Optional<Order> order = orderRepository.findById(orderId);
         if (order.isPresent()) {
             OrderItem orderInOrderItem = getItemOrder(orderItem, order);
-            orderInOrderItem.setSubscription(false);
+            orderInOrderItem.cancelSubscription();
             log.warn("is subsucription = {}", orderInOrderItem.isSubscription());
         }
     }
@@ -126,8 +146,8 @@ public class OrderItemService {
         return orderItems;
     }
 
-    private Item getItem(Post dto) {
-        Optional<Item> optionalItem = itemRepository.findById(dto.getItemId());
+    private Item getItem(long id) {
+        Optional<Item> optionalItem = itemRepository.findById(id);
         return optionalItem.orElseThrow(
             () -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND)
         );

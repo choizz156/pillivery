@@ -8,6 +8,7 @@ import com.team33.modulecore.domain.item.entity.Item;
 import com.team33.modulecore.domain.item.repository.ItemRepository;
 import com.team33.modulecore.domain.order.dto.OrderDto.Post;
 import com.team33.modulecore.domain.order.entity.OrderItem;
+import com.team33.modulecore.domain.order.value.OrderItemInfo;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -59,9 +60,12 @@ class OrderItemServiceTest {
             .set("subscription", false)
             .sample();
 
+        OrderItemInfo orderItemInfo = OrderItemInfo.of(post);
+
         //when
-        List<OrderItem> orderItems = orderItemService.getOrderItemList(post);
-        
+        List<OrderItem> orderItems =
+            orderItemService.getOrderItemSingle(entityItem.getItemId(), orderItemInfo);
+
         //then
         OrderItem orderItem = orderItems.get(0);
 

@@ -4,13 +4,11 @@ import com.team33.modulecore.domain.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,32 +26,27 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
 
-    @Column
     @Setter
     private Integer totalItems;
 
-    @Column
     @Setter
     private Integer totalPrice;
 
-    @Column
     @Setter
     private Integer totalDiscountPrice;
-
-    @Column
+    
     @Setter
     private Integer subTotalItems;
 
-    @Column
     @Setter
     private Integer subTotalPrice;
 
-    @Column
     @Setter
     private Integer subTotalDiscountPrice;
-
-    @OneToOne
-    private User user;
+//
+//    @OneToOne
+//    private User user;
+    
     @OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST)
     List<ItemCart> itemCarts = new ArrayList<>();
 
@@ -66,8 +59,24 @@ public class Cart {
     // 회원 한 명이 하나의 장바구니를 가지므로 회원당 1회만 장바구니 생성
     public static Cart createCart(User user) {
         Cart cart = new Cart();
-        cart.user = user;
+//        cart.user = user;
         user.addCart(cart);
         return cart;
+    }
+
+    public void changeSubTotalPrice(int totalPrice) {
+        this.subTotalPrice = totalPrice;
+    }
+
+    public void changeSubTotalItems(int totalItems) {
+        this.subTotalItems = totalItems;
+    }
+
+    public void changeTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void changeTotalItems(int totalItems) {
+        this.totalItems = totalItems;
     }
 }

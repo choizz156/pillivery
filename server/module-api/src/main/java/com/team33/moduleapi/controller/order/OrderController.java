@@ -1,12 +1,14 @@
 package com.team33.moduleapi.controller.order;
 
 
+import com.team33.modulecore.domain.cart.entity.ItemCart;
 import com.team33.modulecore.domain.cart.service.CartService;
 import com.team33.modulecore.domain.cart.service.ItemCartService;
 import com.team33.modulecore.domain.order.dto.OrderDetailResponse;
 import com.team33.modulecore.domain.order.dto.OrderDto;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.entity.OrderItem;
+import com.team33.modulecore.domain.order.value.OrderItemInfo;
 import com.team33.modulecore.domain.order.service.OrderItemService;
 import com.team33.modulecore.domain.order.service.OrderService;
 import com.team33.modulecore.domain.user.service.UserService;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,30 +49,29 @@ public class OrderController {
         @PathVariable long userId,
         @RequestBody @Valid OrderDto.Post orderPostDto
     ) {
-        List<OrderItem> orderItems = orderItemService.getOrderItemList(orderPostDto);
-        Order order = orderService.callOrder(orderItems, orderPostDto, userId);
+        OrderItemInfo orderItemInfo = OrderItemInfo.of(orderPostDto);
+        List<OrderItem> orderItems =
+            orderItemService.getOrderItemSingle(orderPostDto.getItemId(), orderItemInfo);
+        Order order = orderService.callOrder(orderItems, orderPostDto.isSubscription(), userId);
         orderService.creatOrderItem(order);
 
         return new SingleResponseDto<>(OrderDetailResponse.of(order));
     }
 
-//    @PostMapping// 장바구니에서 주문요청을 하는 경우
-//    public ResponseEntity postOrder(
-//        @RequestParam(value = "subscription", defaultValue = "false") boolean subscription) {
-//
-//        User user = userService.getLoginUser();
-//
-//        List<OrderItem> orderItems = itemOrderMapper.itemCartsToItemOrders(
-//            itemCartService.findItemCarts(user.getCart(), subscription, true), itemCartService);
-//
-//        cartService.refreshCart(user.getCart().getCartId(), subscription);
-//
-//        Order order = orderService.callOrder(orderItems, user);
-//
-//        return new ResponseEntity<>(new SingleResponseDto<>(
-//            orderMapper.orderToOrderDetailResponseDto(order, itemMapper, itemOrderMapper)),
-//            HttpStatus.OK);
-//    }
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{userId}/cart")// 장바구니에서 주문요청을 하는 경우
+    public SingleResponseDto postOrderInCart(
+        @RequestParam(value = "subscription") boolean subscription,
+        @PathVariable long userId
+    ) {
+        List<ItemCart> itemCarts = itemCartService.findItemCarts(userId, subscription);
+        List<OrderItem> orderItems = orderItemService.getOrderItemList(itemCarts);
+        cartService.refreshCart(itemCarts, subscription);
+
+        Order order = orderService.callOrder(orderItems, subscription, userId);
+
+        return new SingleResponseDto<>(OrderDetailResponse.of(order));
+    }
 //
 //    @GetMapping // 로그인 한 유저의 일반 / 정기 주문 목록 불러오기
 //    public ResponseEntity getOrders(
