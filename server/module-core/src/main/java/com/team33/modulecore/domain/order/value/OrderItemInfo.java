@@ -1,6 +1,5 @@
 package com.team33.modulecore.domain.order.value;
 
-import com.team33.modulecore.domain.order.dto.OrderDto.Post;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.Builder;
@@ -29,11 +28,11 @@ public class OrderItemInfo {
         this.subscription = subscription;
     }
 
-    public static OrderItemInfo of(Post dto) {
+    public static OrderItemInfo of(int quantity, boolean subscription, int period) {
         return OrderItemInfo.builder()
-            .subscription(dto.isSubscription())
-            .period(dto.getPeriod())
-            .quantity(dto.getQuantity())
+            .subscription(subscription)
+            .period(period)
+            .quantity(quantity)
             .build();
     }
 

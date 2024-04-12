@@ -1,6 +1,6 @@
-package com.team33.modulecore.domain.order.dto;
+package com.team33.moduleapi.controller.order.dto;
 
-import com.team33.modulecore.domain.order.dto.OrderItemDto.SimpleResponse;
+import com.team33.moduleapi.controller.order.dto.OrderItemDto.SimpleResponse;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.entity.OrderStatus;
 import com.team33.modulecore.global.response.MultiResponseDto;

@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User extends BaseEntity {
 
     @Id
@@ -46,11 +46,13 @@ public class User extends BaseEntity {
     @Column(length = 20)
     private String displayName;
 
+    @Column(nullable = false)
     private String password;
 
     @Embedded
     private Address address;
 
+    @Column(nullable = false)
     private String realName;
 
     @Column(unique = true)

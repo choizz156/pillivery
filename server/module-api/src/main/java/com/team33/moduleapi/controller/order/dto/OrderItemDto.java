@@ -1,4 +1,4 @@
-package com.team33.modulecore.domain.order.dto;
+package com.team33.moduleapi.controller.order.dto;
 
 import com.team33.modulecore.domain.item.dto.ItemSimpleResponseDto;
 import com.team33.modulecore.domain.order.entity.OrderItem;

@@ -1,16 +1,16 @@
 package com.team33.moduleapi.controller.order;
 
 
+import com.team33.moduleapi.controller.order.dto.OrderDetailResponse;
+import com.team33.moduleapi.controller.order.dto.OrderPostDto;
 import com.team33.modulecore.domain.cart.entity.ItemCart;
 import com.team33.modulecore.domain.cart.service.CartService;
 import com.team33.modulecore.domain.cart.service.ItemCartService;
-import com.team33.modulecore.domain.order.dto.OrderDetailResponse;
-import com.team33.modulecore.domain.order.dto.OrderDto;
 import com.team33.modulecore.domain.order.entity.Order;
 import com.team33.modulecore.domain.order.entity.OrderItem;
-import com.team33.modulecore.domain.order.value.OrderItemInfo;
 import com.team33.modulecore.domain.order.service.OrderItemService;
 import com.team33.modulecore.domain.order.service.OrderService;
+import com.team33.modulecore.domain.order.value.OrderItemInfo;
 import com.team33.modulecore.domain.user.service.UserService;
 import com.team33.modulecore.global.response.SingleResponseDto;
 import java.util.List;
@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @Validated
-@CrossOrigin
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/orders")
@@ -47,9 +45,14 @@ public class OrderController {
     @PostMapping("/{userId}/single")
     public SingleResponseDto postSingleOrder(
         @PathVariable long userId,
-        @RequestBody @Valid OrderDto.Post orderPostDto
+        @RequestBody @Valid OrderPostDto orderPostDto
     ) {
-        OrderItemInfo orderItemInfo = OrderItemInfo.of(orderPostDto);
+        OrderItemInfo orderItemInfo = OrderItemInfo.of(
+            orderPostDto.getQuantity(),
+            orderPostDto.isSubscription(),
+            orderPostDto.getPeriod()
+        );
+
         List<OrderItem> orderItems =
             orderItemService.getOrderItemSingle(orderPostDto.getItemId(), orderItemInfo);
         Order order = orderService.callOrder(orderItems, orderPostDto.isSubscription(), userId);
