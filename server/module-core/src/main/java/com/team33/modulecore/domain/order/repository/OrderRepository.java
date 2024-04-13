@@ -20,7 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     );
 
     @Query("Select distinct o from orders o join OrderItem io on o.orderId = io.order.orderId " +
-            "where io.item.itemId = :itemId and o.user.userId = :userId and o.orderStatus not in :status")
+            "where io.item.itemId = :itemId and o.user.id = :userId and o.orderStatus not in :status")
     List<Order> findByItemAndUser(@Param("itemId") long itemId, @Param("userId") long userId, @Param("status") OrderStatus status);
 
     Page<Order> findAllByUserAndOrderStatus(Pageable pageable, User user, OrderStatus orderStatus);

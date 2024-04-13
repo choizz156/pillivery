@@ -56,7 +56,7 @@ public class ReviewService {
 
     public long findReviewWriter(long reviewId) { // 작성자만 수정, 삭제를 할 수 있도록 리뷰의 작성자 찾기
         Review review = findVerifiedReview(reviewId);
-        return review.getUser().getUserId();
+        return review.getUser().getId();
     }
 
     public Review updateReview(Review review) {

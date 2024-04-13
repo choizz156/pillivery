@@ -15,7 +15,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,7 +37,7 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
     @Column(updatable = false)
     private String email;
@@ -49,14 +48,14 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Embedded
-    private Address address;
-
     @Column(nullable = false)
     private String realName;
 
     @Column(unique = true)
     private String phone;
+
+    @Embedded
+    private Address address;
 
     private String oauthId;
 
@@ -70,14 +69,14 @@ public class User extends BaseEntity {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wish> wishList = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private List<Order> orders = new ArrayList<>();
 
     @Builder
-    private User(final Long userId, String email,
+    private User(final Long id, String email,
         String displayName,
         String password,
         Address address,
@@ -87,7 +86,7 @@ public class User extends BaseEntity {
         UserStatus userStatus,
         String oauthId
     ) {
-        this.userId = userId;
+        this.id = id;
         this.email = email;
         this.displayName = displayName;
         this.password = password;

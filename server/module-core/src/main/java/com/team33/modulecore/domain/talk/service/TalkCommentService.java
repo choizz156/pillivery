@@ -57,7 +57,7 @@ public class TalkCommentService {
     public long findTalkCommentWriter(long talkCommentId) {
         TalkComment talkComment = findVerifiedTalkComment(talkCommentId);
 
-        return talkComment.getUser().getUserId();
+        return talkComment.getUser().getId();
     }
 
     public TalkComment findVerifiedTalkComment(long talkCommnetId) {

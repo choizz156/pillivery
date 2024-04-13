@@ -73,7 +73,7 @@ public class UserOAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
     ) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("access_token", "Bearer " + tokens.get(0));
-        queryParams.add("userId", String.valueOf(principalDetails.getUser().getUserId()));
+        queryParams.add("userId", String.valueOf(principalDetails.getUser().getId()));
 
         return queryParams;
     }
@@ -81,7 +81,7 @@ public class UserOAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
     private URI createInfoURI(UserDetailsEntity principalDetails) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("email", principalDetails.getUsername());
-        queryParams.add("userId", String.valueOf(principalDetails.getUser().getUserId()));
+        queryParams.add("userId", String.valueOf(principalDetails.getUser().getId()));
         log.info("{}", queryParams);
 
         return UriComponentsBuilder.newInstance().scheme("http")

@@ -39,7 +39,7 @@ public class OrderItemService {
         return getOrderItems(orderItem);
     }
 
-    public List<OrderItem> getOrderItemList(List<ItemCart> itemCarts) {
+    public List<OrderItem> getOrderItemsInCart(List<ItemCart> itemCarts) {
         List<OrderItem> orderItemList = new ArrayList<>();
         itemCarts.forEach(itemCart -> {
             createOrderItem(itemCart, orderItemList);

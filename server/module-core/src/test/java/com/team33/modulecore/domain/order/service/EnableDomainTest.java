@@ -1,5 +1,7 @@
 package com.team33.modulecore.domain.order.service;
 
+import com.team33.modulecore.domain.cart.repository.CartRepository;
+import com.team33.modulecore.domain.cart.repository.ItemCartRepository;
 import com.team33.modulecore.domain.item.repository.ItemRepository;
 import com.team33.modulecore.domain.order.repository.OrderItemRepository;
 import com.team33.modulecore.domain.order.repository.OrderRepository;
@@ -24,6 +26,8 @@ import org.springframework.test.context.ContextConfiguration;
     OrderRepository.class,
     OrderItemService.class,
     ItemRepository.class,
+    ItemCartRepository.class,
+    CartRepository.class,
     OrderService.class,
     OrderItemService.class
 })

@@ -83,7 +83,7 @@ public class OrderService {
     public Page<OrderItem> findAllSubs(User user, int page) {
         Page<OrderItem> findAllSubs = orderItemRepository.findAllSubs(
             PageRequest.of(page, 6, Sort.by("itemOrderId").descending()),
-            OrderStatus.ORDER_SUBSCRIBE, user.getUserId());
+            OrderStatus.ORDER_SUBSCRIBE, user.getId());
 
         return findAllSubs;
     }

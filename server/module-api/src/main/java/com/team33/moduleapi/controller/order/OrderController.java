@@ -68,7 +68,7 @@ public class OrderController {
         @PathVariable long userId
     ) {
         List<ItemCart> itemCarts = itemCartService.findItemCarts(userId, subscription);
-        List<OrderItem> orderItems = orderItemService.getOrderItemList(itemCarts);
+        List<OrderItem> orderItems = orderItemService.getOrderItemsInCart(itemCarts);
         cartService.refreshCart(itemCarts, subscription);
 
         Order order = orderService.callOrder(orderItems, subscription, userId);

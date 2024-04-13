@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 
-class OrderServiceTest extends ServiceTest{
+class OrderServiceTest extends ServiceTest {
 
     @Transactional
     @DisplayName("단건 order 객체를 생성할 수 있다.")
@@ -29,7 +29,7 @@ class OrderServiceTest extends ServiceTest{
         User user = getUser();
 
         //when
-        Order order = orderService.callOrder(orderItemSingle, false, user.getUserId());
+        Order order = orderService.callOrder(orderItemSingle, false, user.getId());
         Price price = new Price(orderItemSingle);
 
         //then

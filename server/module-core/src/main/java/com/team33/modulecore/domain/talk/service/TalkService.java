@@ -68,7 +68,7 @@ public class TalkService {
     public long findTalkWriter(long talkId) { // 작성자만 수정, 삭제를 할 수 있도록 작성자 찾기
         Talk talk = findVerifiedTalk(talkId);
 
-        return talk.getUser().getUserId();
+        return talk.getUser().getId();
     }
 
     public Talk findVerifiedTalk(long talkId) {

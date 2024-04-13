@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,6 +45,14 @@ public class ItemCart extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
+
+    @Builder
+    public ItemCart(OrderItemInfo orderItemInfo, boolean buyNow, Cart cart, Item item) {
+        this.orderItemInfo = orderItemInfo;
+        this.buyNow = buyNow;
+        this.cart = cart;
+        this.item = item;
+    }
 
     public void addCart(Cart cart) {
         this.cart = cart;

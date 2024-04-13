@@ -115,8 +115,8 @@ public class SubscriptionService {
     private void deleteSchedule(final OrderItem orderItem, final User user) {
         try {
             scheduler.deleteJob(jobKey(
-                user.getUserId() + orderItem.getItem().getTitle(),
-                String.valueOf(user.getUserId()))
+                user.getId() + orderItem.getItem().getTitle(),
+                String.valueOf(user.getId()))
             );
         } catch (SchedulerException e) {
             log.error(
@@ -156,8 +156,8 @@ public class SubscriptionService {
         User user = order.getUser();
         log.info("{} {}", order.getOrderId(), orderItem.getItemOrderId());
         JobKey jobkey = jobKey(
-            user.getUserId() + orderItem.getItem().getTitle(),
-            String.valueOf(user.getUserId())
+            user.getId() + orderItem.getItem().getTitle(),
+            String.valueOf(user.getId())
         );
 
         JobDetail payDay = jobDetailService.build(jobkey, order.getOrderId(), orderItem);

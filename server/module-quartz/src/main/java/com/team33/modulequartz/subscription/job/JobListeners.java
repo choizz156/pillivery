@@ -122,8 +122,8 @@ public class JobListeners implements JobListener {
     ) {
         User user = newOrder.getUser();
         JobKey jobkey =
-            jobKey(user.getUserId() + orderItem.getItem().getTitle(),
-                String.valueOf(user.getUserId())
+            jobKey(user.getId() + orderItem.getItem().getTitle(),
+                String.valueOf(user.getId())
             );
         return jobDetailService.build(jobkey, newOrder.getOrderId(), newOrderItem);
     }
