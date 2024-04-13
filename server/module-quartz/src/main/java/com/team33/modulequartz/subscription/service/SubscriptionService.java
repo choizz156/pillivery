@@ -154,7 +154,7 @@ public class SubscriptionService {
 
     private void applySchedule(Order order, OrderItem orderItem) {
         User user = order.getUser();
-        log.info("{} {}", order.getOrderId(), orderItem.getItemOrderId());
+        log.info("{} {}", order.getOrderId(), orderItem.getOrderItemId());
         JobKey jobkey = jobKey(
             user.getId() + orderItem.getItem().getTitle(),
             String.valueOf(user.getId())
