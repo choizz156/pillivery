@@ -1,0 +1,36 @@
+package com.team33.modulecore.domain.order.service;
+
+import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
+import com.team33.modulecore.domain.item.repository.ItemRepository;
+import com.team33.modulecore.domain.order.repository.OrderRepository;
+import com.team33.modulecore.domain.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+
+@EnableDomainTest
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+public abstract class ServiceTest {
+
+    final FixtureMonkey fixtureMonkey = FixtureMonkey
+        .builder()
+        .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
+        .defaultNotNull(true)
+        .build();
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
+
+    @Autowired
+    OrderService orderService;
+
+    @Autowired
+    ItemRepository itemRepository;
+
+    @Autowired
+    OrderItemService orderItemService;
+}

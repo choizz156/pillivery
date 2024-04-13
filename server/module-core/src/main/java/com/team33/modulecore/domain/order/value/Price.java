@@ -5,10 +5,12 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor
 @Embeddable
 public class Price {

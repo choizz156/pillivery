@@ -70,7 +70,7 @@ public class OrderDetailResponse {
             .orderId(order.getOrderId())
             .name(order.getName())
             .phone(order.getPhone())
-            .totalItems(order.getTotalItems())
+            .totalItems(order.getTotalItem())
             .totalPrice(order.getPrice().getTotalPrice())
             .totalDiscountPrice(order.getPrice().getTotalDiscountPrice())
             .expectPrice(order.getPrice().getExpectPrice())

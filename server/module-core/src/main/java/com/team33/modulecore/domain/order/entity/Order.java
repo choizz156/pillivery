@@ -47,7 +47,7 @@ public class Order extends BaseEntity {
     @Embedded
     private Address address;
 
-    private int totalItems; // 주문에 포함된 아이템 종류
+    private int totalItem; // 주문에 포함된 아이템 종류
 
     @Embedded
     private Price price;
@@ -84,7 +84,7 @@ public class Order extends BaseEntity {
             origin.getAddress().getDetailAddress());
         this.phone = origin.getPhone();
         this.subscription = origin.isSubscription();
-        this.totalItems = origin.getTotalItems();
+        this.totalItem = origin.getTotalItem();
         this.price = new Price(price.getTotalPrice(), price.getTotalDiscountPrice(),
             price.getExpectPrice());
         this.user = origin.getUser();
@@ -101,7 +101,7 @@ public class Order extends BaseEntity {
         Address address,
         String phone,
         boolean subscription,
-        int totalItems,
+        int totalItem,
         User user,
         List<OrderItem> orderItems,
         OrderStatus orderStatus,
@@ -111,7 +111,7 @@ public class Order extends BaseEntity {
         this.address = address;
         this.phone = phone;
         this.subscription = subscription;
-        this.totalItems = totalItems;
+        this.totalItem = totalItem;
         this.user = user;
         this.orderItems = orderItems;
         this.orderStatus = orderStatus;
@@ -125,8 +125,9 @@ public class Order extends BaseEntity {
             .phone(user.getPhone())
             .subscription(subscription)
             .user(user)
+            .orderStatus(OrderStatus.ORDER_COMPLETE)
             .orderItems(orderItems)
-            .totalItems(orderItems.size())
+            .totalItem(orderItems.size())
             .build();
 
         order.calculatePrice(order.getOrderItems());

@@ -18,8 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class OrderService {
 
