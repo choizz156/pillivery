@@ -1,8 +1,10 @@
 package com.team33.moduleapi.controller.user;
 
+
 import com.team33.moduleapi.security.jwt.JwtTokenProvider;
 import com.team33.moduleapi.security.jwt.Logout;
 import com.team33.moduleapi.security.refreshtoken.ResponseTokenService;
+import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
@@ -44,8 +46,10 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SingleResponseDto<String> singUpUser(@Valid @RequestBody UserPostDto userDto) {
-        userService.join(userDto);
+    public SingleResponseDto<String> singUpUser(@Valid @RequestBody UserPostDto userPostDto) {
+
+        UserServiceDto userServiceDto = UserServiceDto.to(userPostDto);
+        userService.join(userServiceDto);
         return new SingleResponseDto<>(JOIN_COMPLETE);
     }
 

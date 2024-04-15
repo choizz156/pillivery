@@ -2,8 +2,8 @@ package com.team33.modulecore.domain.user.service;
 
 import com.team33.modulecore.domain.cart.entity.Cart;
 import com.team33.modulecore.domain.cart.repository.CartRepository;
+import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -30,16 +30,14 @@ public class UserService {
     private final CartRepository cartRepository;
 
     @Transactional
-    public void join(UserPostDto userDto) {
-        duplicationVerifier.checkUserInfo(userDto);
+    public void join(UserServiceDto userServiceDto) {
+        duplicationVerifier.checkUserInfo(userServiceDto);
 
-        User user = User.createUser(userDto);
-        String encryptedPwd = encryptPassword(userDto.getPassword());
-        user.applyEncryptPassword(encryptedPwd);
+        String encryptedPassword = encryptPassword(userServiceDto.getPassword());
+        User user = User.createUser(userServiceDto, encryptedPassword);
         makeCart(user);
 
         userRepository.save(user);
-        log.info("회원 가입 완료");
     }
 
     @Transactional

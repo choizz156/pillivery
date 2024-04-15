@@ -1,5 +1,6 @@
 package com.team33.moduleapi.controller;
 
+import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,8 @@ public class UserAccountFactory implements WithSecurityContextFactory<UserAccoun
     @Override
     public SecurityContext createSecurityContext(UserAccount annotation) {
         UserPostDto dto = getUserDto(annotation);
-        userService.join(dto);
+        UserServiceDto userServiceDto = UserServiceDto.to(dto);
+        userService.join(userServiceDto);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(dto.getEmail());
         UsernamePasswordAuthenticationToken authToken =

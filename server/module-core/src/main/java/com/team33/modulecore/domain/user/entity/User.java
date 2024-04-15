@@ -3,8 +3,8 @@ package com.team33.modulecore.domain.user.entity;
 import com.team33.modulecore.domain.audit.BaseEntity;
 import com.team33.modulecore.domain.cart.entity.Cart;
 import com.team33.modulecore.domain.order.value.Address;
+import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.wish.entity.Wish;
 import java.util.ArrayList;
@@ -98,12 +98,11 @@ public class User extends BaseEntity {
         this.oauthId = oauthId;
     }
 
-    public static User createUser(UserPostDto userDto) {
-        Address address = new Address(userDto.getCity(), userDto.getDetailAddress());
+    public static User createUser(UserServiceDto userDto, String encryptedPassword) {
         return User.builder().email(userDto.getEmail())
             .displayName(userDto.getDisplayName())
-            .password(userDto.getPassword())
-            .address(address)
+            .address(userDto.getAddress())
+            .password(encryptedPassword)
             .realName(userDto.getRealName())
             .phone(userDto.getPhone())
             .roles(UserRoles.USER)

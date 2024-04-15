@@ -1,12 +1,12 @@
 package com.team33.modulecore.domain.user.service;
 
+import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.global.exception.BusinessLogicException;
@@ -19,10 +19,10 @@ public class DuplicationVerifier {
 
     private final UserRepository userRepository;
 
-    public void checkUserInfo(UserPostDto userDto) {
-        checkExistEmail(userDto.getEmail());
-        checkExistDisplayName(userDto.getDisplayName());
-        checkExistPhoneNum(userDto.getPhone());
+    public void checkUserInfo(UserServiceDto user) {
+        checkExistEmail(user.getEmail());
+        checkExistDisplayName(user.getDisplayName());
+        checkExistPhoneNum(user.getPhone());
     }
 
     public void checkOauthAdditionalInfo(UserPostOauthDto userDto) {

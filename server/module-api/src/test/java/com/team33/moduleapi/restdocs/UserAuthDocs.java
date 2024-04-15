@@ -11,6 +11,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
+import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.moduleapi.security.dto.LoginDto;
 import io.restassured.RestAssured;
@@ -41,7 +42,8 @@ class UserAuthDocs extends WebRestDocsSupport {
 
 
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
-        userService.join(postDto);
+        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        userService.join(userServiceDto);
 
         LoginDto dto = LoginDto.builder().username("test@gmail.com").password("sdfsdfe!1").build();
 
@@ -74,7 +76,8 @@ class UserAuthDocs extends WebRestDocsSupport {
         //given
 
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
-        userService.join(postDto);
+        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        userService.join(userServiceDto);
 
         LoginDto dto = LoginDto.builder().username("test@gmail.com").password("sdfsd1").build();
 
@@ -114,7 +117,8 @@ class UserAuthDocs extends WebRestDocsSupport {
     void test5() throws Exception {
         //given
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
-        userService.join(postDto);
+        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        userService.join(userServiceDto);
 
         LoginDto dto = LoginDto.builder().username("te2st@gmail.com").password("sdfsdfe!1").build();
 

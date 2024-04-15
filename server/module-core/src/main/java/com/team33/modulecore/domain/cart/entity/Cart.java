@@ -43,10 +43,7 @@ public class Cart {
 
     @Setter
     private Integer subTotalDiscountPrice;
-//
-//    @OneToOne
-//    private User user;
-    
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST)
     List<ItemCart> itemCarts = new ArrayList<>();
 
@@ -59,7 +56,6 @@ public class Cart {
     // 회원 한 명이 하나의 장바구니를 가지므로 회원당 1회만 장바구니 생성
     public static Cart createCart(User user) {
         Cart cart = new Cart();
-//        cart.user = user;
         user.addCart(cart);
         return cart;
     }

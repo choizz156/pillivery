@@ -7,13 +7,14 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import com.team33.moduleapi.controller.ApiTest;
 import com.team33.moduleapi.controller.UserAccount;
+import com.team33.moduleapi.security.dto.LoginDto;
+import com.team33.modulecore.domain.order.value.Address;
+import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
-import com.team33.modulecore.domain.user.entity.Address;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.entity.UserRoles;
-import com.team33.moduleapi.security.dto.LoginDto;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
@@ -161,7 +162,8 @@ class UserApiTest extends ApiTest {
     void 정보_수정_닉네임_중복_예외() throws Exception {
 
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
-        userService.join(postDto);
+        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        userService.join(userServiceDto);
 
         String token = getToken();
         UserPatchDto userPatchDto = updateUser("test22", "010-1111-1111");
@@ -186,7 +188,8 @@ class UserApiTest extends ApiTest {
     void 정보_수정_연락처_중복_예외() throws Exception {
 
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
-        userService.join(postDto);
+        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        userService.join(userServiceDto);
 
         String token = getToken();
         UserPatchDto userPatchDto = updateUser("test1", "010-1112-1111");
@@ -281,7 +284,8 @@ class UserApiTest extends ApiTest {
     @Test
     void 로그인() throws Exception {
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
-        userService.join(postDto);
+        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        userService.join(userServiceDto);
 
         LoginDto dto = LoginDto.builder().username("test@gmail.com").password("sdfsdfe!1").build();
 
@@ -327,7 +331,8 @@ class UserApiTest extends ApiTest {
     void test4() throws Exception {
         //given
         UserPostDto postDto = join("test1@gmail.com", "test22", "010-1112-1111");
-        userService.join(postDto);
+        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        userService.join(userServiceDto);
 
         LoginDto dto = LoginDto.builder().username("test1@gmail.com").password("sdfsd1").build();
 
@@ -353,7 +358,8 @@ class UserApiTest extends ApiTest {
     void test5() throws Exception {
         //given
         UserPostDto postDto = join("test1@gmail.com", "test22", "010-1112-1111");
-        userService.join(postDto);
+        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        userService.join(userServiceDto);
 
         LoginDto dto = LoginDto.builder().username("test31@gmail.com").password("sdfsdfe!1")
             .build();
