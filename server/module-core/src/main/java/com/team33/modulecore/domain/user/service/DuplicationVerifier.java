@@ -1,20 +1,18 @@
 package com.team33.modulecore.domain.user.service;
 
 import com.team33.modulecore.domain.user.UserServiceDto;
-import com.team33.modulecore.domain.user.repository.UserRepository;
-import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.User;
+import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.global.exception.BusinessLogicException;
 import com.team33.modulecore.global.exception.ExceptionCode;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-@Component
 public class DuplicationVerifier {
 
     private final UserRepository userRepository;

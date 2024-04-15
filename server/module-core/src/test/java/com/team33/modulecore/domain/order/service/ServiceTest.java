@@ -2,6 +2,7 @@ package com.team33.modulecore.domain.order.service;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
+import com.team33.modulecore.domain.EnableDomainTest;
 import com.team33.modulecore.domain.cart.repository.CartRepository;
 import com.team33.modulecore.domain.cart.repository.ItemCartRepository;
 import com.team33.modulecore.domain.item.repository.ItemRepository;

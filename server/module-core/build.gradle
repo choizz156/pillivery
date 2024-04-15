@@ -33,5 +33,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14")
+    implementation 'org.springframework.security:spring-security-crypto'
 }
-

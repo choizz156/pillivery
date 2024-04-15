@@ -1,11 +1,9 @@
-package com.team33.modulecore.domain.order.service;
+package com.team33.modulecore.domain;
 
-import com.team33.modulecore.domain.cart.repository.CartRepository;
-import com.team33.modulecore.domain.cart.repository.ItemCartRepository;
-import com.team33.modulecore.domain.item.repository.ItemRepository;
-import com.team33.modulecore.domain.order.repository.OrderItemRepository;
-import com.team33.modulecore.domain.order.repository.OrderRepository;
 import com.team33.modulecore.domain.user.repository.UserRepository;
+import com.team33.modulecore.domain.user.service.DuplicationVerifier;
+import com.team33.modulecore.domain.user.service.UserService;
+import com.team33.modulecore.global.config.PasswordConfig;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,17 +20,12 @@ import org.springframework.test.context.ContextConfiguration;
 @EnableAutoConfiguration
 @ContextConfiguration(classes = {
     UserRepository.class,
-    OrderItemRepository.class,
-    OrderRepository.class,
-    OrderItemService.class,
-    ItemRepository.class,
-    ItemCartRepository.class,
-    CartRepository.class,
-    OrderService.class,
-    OrderItemService.class
+    UserService.class,
+    PasswordConfig.class,
+    DuplicationVerifier.class
 })
 @EnableJpaRepositories(basePackages = "com.team33.modulecore.domain")
 @EntityScan("com.team33.modulecore.domain")
-public @interface EnableDomainTest {
+public @interface EnableUserTest {
 
 }
