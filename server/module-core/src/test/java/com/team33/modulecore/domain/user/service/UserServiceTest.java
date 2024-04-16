@@ -30,6 +30,9 @@ class UserServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private DuplicationVerifier duplicationVerifier;
+
 
     @DisplayName("회원가입을 할 수 있다.")
     @Test

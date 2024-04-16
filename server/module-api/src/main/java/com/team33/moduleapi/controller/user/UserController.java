@@ -5,6 +5,7 @@ import com.team33.moduleapi.security.jwt.JwtTokenProvider;
 import com.team33.moduleapi.security.jwt.Logout;
 import com.team33.moduleapi.security.refreshtoken.ResponseTokenService;
 import com.team33.modulecore.domain.user.UserServiceDto;
+import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.User;
@@ -53,7 +54,8 @@ public class UserController {
         @Valid @RequestBody UserPostOauthDto userDto,
         HttpServletResponse response
     ) {
-        User user = userService.addOAuthInfo(userDto);
+        OAuthUserServiceDto oAuthUserServiceDto = OAuthUserServiceDto.to(userDto);
+        User user = userService.addOAuthInfo(oAuthUserServiceDto);
         responseTokenService.delegateToken(response, user);
 
         return new SingleResponseDto<>(OAUTH_JOIN_COMPLETE);

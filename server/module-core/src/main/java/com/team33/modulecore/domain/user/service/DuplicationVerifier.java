@@ -1,8 +1,8 @@
 package com.team33.modulecore.domain.user.service;
 
 import com.team33.modulecore.domain.user.UserServiceDto;
+import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.global.exception.BusinessLogicException;
@@ -10,9 +10,11 @@ import com.team33.modulecore.global.exception.ExceptionCode;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Slf4j
+@Component
 public class DuplicationVerifier {
 
     private final UserRepository userRepository;
@@ -23,7 +25,7 @@ public class DuplicationVerifier {
         checkExistPhoneNum(user.getPhone());
     }
 
-    public void checkOauthAdditionalInfo(UserPostOauthDto userDto) {
+    public void checkOauthAdditionalInfo(OAuthUserServiceDto userDto) {
         checkExistDisplayName(userDto.getDisplayName());
         checkExistPhoneNum(userDto.getPhone());
     }

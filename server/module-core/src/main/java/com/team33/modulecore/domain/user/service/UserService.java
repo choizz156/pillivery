@@ -3,8 +3,8 @@ package com.team33.modulecore.domain.user.service;
 import com.team33.modulecore.domain.cart.entity.Cart;
 import com.team33.modulecore.domain.cart.repository.CartRepository;
 import com.team33.modulecore.domain.user.UserServiceDto;
+import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.global.exception.BusinessLogicException;
@@ -60,18 +60,9 @@ public class UserService {
     }
 
     @Transactional
-    public User addOAuthInfo(UserPostOauthDto userDto) {
-
+    public User addOAuthInfo(OAuthUserServiceDto userDto) {
         duplicationVerifier.checkOauthAdditionalInfo(userDto);
-
-        Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
-        if (optionalUser.isPresent()) {
-            makeCart(optionalUser.get());
-            optionalUser.get().addAdditionalOauthUserInfo(userDto);
-            return optionalUser.get();
-        }
-
-        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        return addOauthUserInfo(userDto);
     }
 
     public User getLoginUser() {
@@ -81,7 +72,8 @@ public class UserService {
             .getPrincipal();
 
         Optional<User> userOptional = userRepository.findByEmail(principal);
-        return userOptional.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        return userOptional.orElseThrow(
+        () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     private void makeCart(User user) {
@@ -91,5 +83,17 @@ public class UserService {
 
     private String encryptPassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    private User addOauthUserInfo(OAuthUserServiceDto userDto) {
+        Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            makeCart(user);
+            user.addAdditionalOauthUserInfo(userDto);
+            return user;
+        }
+
+        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
     }
 }

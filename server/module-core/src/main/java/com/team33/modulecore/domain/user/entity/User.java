@@ -4,8 +4,8 @@ import com.team33.modulecore.domain.audit.BaseEntity;
 import com.team33.modulecore.domain.cart.entity.Cart;
 import com.team33.modulecore.domain.order.value.Address;
 import com.team33.modulecore.domain.user.UserServiceDto;
+import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.wish.entity.Wish;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,8 +118,8 @@ public class User extends BaseEntity {
         this.cart = cart;
     }
 
-    public void addAdditionalOauthUserInfo(UserPostOauthDto userDto) {
-        this.address = new Address(userDto.getCity(), userDto.getDetailAddress());
+    public void addAdditionalOauthUserInfo(OAuthUserServiceDto userDto) {
+        this.address = userDto.getAddress();
         this.displayName = userDto.getDisplayName();
         this.phone = userDto.getPhone();
     }
