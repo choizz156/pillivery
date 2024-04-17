@@ -4,8 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team33.modulecore.domain.EnableUserTest;
 import com.team33.modulecore.domain.user.UserServiceDto;
+import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
+import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.User;
+import com.team33.modulecore.domain.user.entity.UserRoles;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class UserServiceTest {
-
     @Autowired
     private UserRepository userRepository;
 
@@ -56,6 +58,24 @@ class UserServiceTest {
         assertThat(user.getAddress().getDetailAddress()).isEqualTo( "101 번지");
     }
 
+    @DisplayName("소셜로그인 시 추가 정보를 기입하면 회원정보가 업데이트된다.")
+    @Test
+    void 추가_정보_기입() throws Exception {
+        //given
+        User user = User.builder().realName("testset").email("test@gmail.com").roles(UserRoles.USER).build();
+        userRepository.save(user);
+        OAuthUserServiceDto oAuthUserServiceDto = OAuthUserServiceDto.to(oauthJoin());
+
+        //when
+        User result = userService.addOAuthInfo(oAuthUserServiceDto);
+
+        //then
+        assertThat(result.getEmail()).isEqualTo("test@gmail.com");
+        assertThat(result.getAddress()).isEqualTo(oAuthUserServiceDto.getAddress());
+        assertThat(result.getDisplayName()).isEqualTo(oAuthUserServiceDto.getDisplayName());
+        assertThat(result.getPhone()).isEqualTo(oAuthUserServiceDto.getPhone());
+    }
+
     private UserPostDto join(String email, String displayName, String phone) {
 
         String password = "sdfsdfe!1";
@@ -70,6 +90,23 @@ class UserServiceTest {
             .phone(phone)
             .realName(realName)
             .password(password)
+            .displayName(displayName)
+            .build();
+    }
+
+    private UserPostOauthDto oauthJoin() {
+
+        String email = "test@gmail.com";
+        String displayName = "test2";
+        String city = "서울";
+        String detailAddress = "압구정동";
+        String phone = "010-3333-333";
+
+        return UserPostOauthDto.builder()
+            .phone(phone)
+            .detailAddress(detailAddress)
+            .city(city)
+            .email(email)
             .displayName(displayName)
             .build();
     }
