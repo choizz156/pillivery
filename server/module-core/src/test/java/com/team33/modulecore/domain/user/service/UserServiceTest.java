@@ -9,6 +9,7 @@ import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.entity.UserRoles;
+import com.team33.modulecore.domain.user.entity.UserStatus;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -40,8 +41,7 @@ class UserServiceTest {
     @Test
     void 회원가입() throws Exception {
         //given
-        UserPostDto postDto = join("test1@gmail.com", "test22", "010-1112-1111");
-        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
+        UserServiceDto userServiceDto = getUserServiceDto();
 
         //when
         userService.join(userServiceDto);
@@ -74,6 +74,37 @@ class UserServiceTest {
         assertThat(result.getAddress()).isEqualTo(oAuthUserServiceDto.getAddress());
         assertThat(result.getDisplayName()).isEqualTo(oAuthUserServiceDto.getDisplayName());
         assertThat(result.getPhone()).isEqualTo(oAuthUserServiceDto.getPhone());
+    }
+
+    @DisplayName("회원 탈퇴시 회원 상태가 withdrawal로 변경된다.")
+    @Test
+    void 회원_탈퇴() throws Exception {
+        //given
+        UserServiceDto userServiceDto = getUserServiceDto();
+        long userId = userService.join(userServiceDto);
+        //when
+        User user = userService.deleteUser(userId);
+        //then
+        assertThat(user.getUserStatus()).isEqualTo(UserStatus.USER_WITHDRAWAL);
+    }
+
+    @DisplayName("회원 정보를 조회할 수 있다.")
+    @Test
+    void 회원_정보_조회() throws Exception {
+        //given
+        UserServiceDto userServiceDto = getUserServiceDto();
+        long userId = userService.join(userServiceDto);
+
+        //when
+        User loginUser1 = userService.getLoginUser1(userId);
+        //then
+        User userOptional = userRepository.findById(userId).orElse(null);
+        assertThat(loginUser1).isEqualTo(userOptional);
+    }
+
+    private UserServiceDto getUserServiceDto() {
+        UserPostDto postDto = join("test1@gmail.com", "test22", "010-1112-1111");
+        return UserServiceDto.to(postDto);
     }
 
     private UserPostDto join(String email, String displayName, String phone) {
