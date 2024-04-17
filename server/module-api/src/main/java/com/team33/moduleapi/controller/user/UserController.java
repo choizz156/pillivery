@@ -14,12 +14,14 @@ import com.team33.modulecore.domain.user.dto.UserServicePatchDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.service.UserService;
 import com.team33.modulecore.global.response.SingleResponseDto;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,11 +49,11 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SingleResponseDto<String> singUpUser(@Valid @RequestBody UserPostDto userPostDto) {
+    public SingleResponseDto<Long> singUpUser(@Valid @RequestBody UserPostDto userPostDto) {
 
         UserServiceDto userServiceDto = UserServiceDto.to(userPostDto);
-        userService.join(userServiceDto);
-        return new SingleResponseDto<>(JOIN_COMPLETE);
+        long userId = userService.join(userServiceDto);
+        return new SingleResponseDto<>(userId);
     }
 
     @PostMapping("/more-info")
@@ -77,24 +79,24 @@ public class UserController {
         return new SingleResponseDto<>(UserResponse.of(user));
     }
 
-    @GetMapping
-    public SingleResponseDto<UserResponse> getUserInfo() {
-        User loginUser = userService.getLoginUser();
+    @GetMapping("/{userId}")
+    public SingleResponseDto<UserResponse> getUserInfo(@PathVariable long userId) {
+        User loginUser = userService.getLoginUser1(userId);
         return new SingleResponseDto<>(UserResponse.of(loginUser));
     }
-//
-//    @PostMapping("/logout")
-//    public SingleResponseDto<String> handleLogout(HttpServletRequest request) {
-//        logout.doLogout(request);
-//        return new SingleResponseDto<>(LOGOUT_COMPLETE);
-//    }
-//
-//    @DeleteMapping
-//    public SingleResponseDto<String> deleteUser(HttpServletRequest request) {
-//        User user = userService.deleteUser();
-//        logout.doLogout(request);
-//        return new SingleResponseDto<>(user.getUserStatus().name());
-//    }
+
+    @PostMapping("/logout")
+    public SingleResponseDto<String> handleLogout(HttpServletRequest request) {
+        logout.doLogout(request);
+        return new SingleResponseDto<>(LOGOUT_COMPLETE);
+    }
+
+    @DeleteMapping("/{userId}")
+    public SingleResponseDto<String> deleteUser(@PathVariable long userId, HttpServletRequest request) {
+        User user = userService.deleteUser(userId);
+        logout.doLogout(request);
+        return new SingleResponseDto<>(user.getUserStatus().name());
+    }
 }
 
 

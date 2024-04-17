@@ -29,22 +29,16 @@ public class UserService {
     private final DuplicationVerifier duplicationVerifier;
     private final CartRepository cartRepository;
 
-    public void join(UserServiceDto userServiceDto) {
+    public long join(UserServiceDto userServiceDto) {
         duplicationVerifier.checkUserInfo(userServiceDto);
 
         String encryptedPassword = encryptPassword(userServiceDto.getPassword());
         User user = User.createUser(userServiceDto, encryptedPassword);
         makeCart(user);
 
-        userRepository.save(user);
+        return userRepository.save(user).getId();
     }
 
-//    @Transactional
-//    public User deleteUser() {
-//        User loginUser = getLoginUser();
-//        loginUser.withdrawal();
-//        return loginUser;
-//    }
 
     public User updateUser(UserServicePatchDto userDto, long userId) {
         duplicationVerifier.checkDuplicationOnUpdate(userDto,userId);
@@ -55,6 +49,16 @@ public class UserService {
             user.updateUserInfo(userDto);
             String encodedPwd = passwordEncoder.encode(userDto.getPassword());
             user.applyEncryptPassword(encodedPwd);
+            return user;
+        }
+        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+    }
+
+    public User deleteUser(long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            user.withdrawal();
             return user;
         }
         throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
@@ -72,6 +76,12 @@ public class UserService {
             .getPrincipal();
 
         Optional<User> userOptional = userRepository.findByEmail(principal);
+        return userOptional.orElseThrow(
+            () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+    }
+
+    public User getLoginUser1(long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
         return userOptional.orElseThrow(
             () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }

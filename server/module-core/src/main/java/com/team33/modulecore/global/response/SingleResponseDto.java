@@ -1,10 +1,15 @@
 package com.team33.modulecore.global.response;
 
-import lombok.AllArgsConstructor;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class SingleResponseDto<T> {
-    private T data;
+    private final T data;
+    private final ZonedDateTime createTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+
+    public SingleResponseDto(T data) {
+        this.data = data;
+    }
 }
