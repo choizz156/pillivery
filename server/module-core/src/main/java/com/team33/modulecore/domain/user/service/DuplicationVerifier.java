@@ -2,7 +2,7 @@ package com.team33.modulecore.domain.user.service;
 
 import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.domain.user.dto.UserPatchDto;
+import com.team33.modulecore.domain.user.dto.UserServicePatchDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.global.exception.BusinessLogicException;
@@ -30,33 +30,33 @@ public class DuplicationVerifier {
         checkExistPhoneNum(userDto.getPhone());
     }
 
-    public void checkDuplicationOnUpdate(UserPatchDto userDto) {
-        Optional<User> loginUser = userRepository.findByEmail(userDto.getEmail());
+    public void checkDuplicationOnUpdate(UserServicePatchDto dto, long userId) {
+        Optional<User> loginUser = userRepository.findById(userId);
         if (loginUser.isPresent()) {
-            checkExistPhoneOnUpdate(loginUser.get(), userDto);
-            checkExistDisplayNameOnUpdate(loginUser.get(), userDto);
+            checkExistPhoneOnUpdate(loginUser.get(), dto);
+            checkExistDisplayNameOnUpdate(loginUser.get(), dto);
         }
     }
 
-    private void checkExistPhoneOnUpdate(User loginUser, UserPatchDto userDto) {
+    private void checkExistPhoneOnUpdate(User loginUser, UserServicePatchDto userDto) {
         if (isTheSameMyPhone(loginUser, userDto)) {
             return;
         }
         checkExistPhoneNum(userDto.getPhone());
     }
 
-    private void checkExistDisplayNameOnUpdate(User loginUser, UserPatchDto userDto) {
+    private void checkExistDisplayNameOnUpdate(User loginUser, UserServicePatchDto userDto) {
         if (isTheSameMyDisplayName(loginUser, userDto)) {
             return;
         }
         checkExistDisplayName(userDto.getDisplayName());
     }
 
-    private boolean isTheSameMyDisplayName(User loginUser, UserPatchDto userDto) {
+    private boolean isTheSameMyDisplayName(User loginUser, UserServicePatchDto userDto) {
         return loginUser.getDisplayName().equals(userDto.getDisplayName());
     }
 
-    private boolean isTheSameMyPhone(User loginUser, UserPatchDto userDto) {
+    private boolean isTheSameMyPhone(User loginUser, UserServicePatchDto userDto) {
         return loginUser.getPhone().equals(userDto.getPhone());
     }
 

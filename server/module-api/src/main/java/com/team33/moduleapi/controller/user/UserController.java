@@ -6,8 +6,11 @@ import com.team33.moduleapi.security.jwt.Logout;
 import com.team33.moduleapi.security.refreshtoken.ResponseTokenService;
 import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
+import com.team33.modulecore.domain.user.dto.UserPatchDto;
 import com.team33.modulecore.domain.user.dto.UserPostDto;
 import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
+import com.team33.modulecore.domain.user.dto.UserResponse;
+import com.team33.modulecore.domain.user.dto.UserServicePatchDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.service.UserService;
 import com.team33.modulecore.global.response.SingleResponseDto;
@@ -17,6 +20,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,17 +67,21 @@ public class UserController {
         return new SingleResponseDto<>(OAUTH_JOIN_COMPLETE);
     }
 
-//    @PatchMapping
-//    public SingleResponseDto<UserResponse> updateInfo(@Valid @RequestBody UserPatchDto userDto) {
-//        User user = userService.updateUser(userDto);
-//        return new SingleResponseDto<>(UserResponse.of(user));
-//    }
-//
-//    @GetMapping
-//    public SingleResponseDto<UserResponse> getUserInfo() {
-//        User loginUser = userService.getLoginUser();
-//        return new SingleResponseDto<>(UserResponse.of(loginUser));
-//    }
+    @PatchMapping("/{userId}")
+    public SingleResponseDto<UserResponse> updateInfo(
+        @Valid @RequestBody UserPatchDto userDto,
+        @PathVariable long userId
+    ) {
+        UserServicePatchDto userServicePatchDto = UserServicePatchDto.to(userDto);
+        User user = userService.updateUser(userServicePatchDto, userId);
+        return new SingleResponseDto<>(UserResponse.of(user));
+    }
+
+    @GetMapping
+    public SingleResponseDto<UserResponse> getUserInfo() {
+        User loginUser = userService.getLoginUser();
+        return new SingleResponseDto<>(UserResponse.of(loginUser));
+    }
 //
 //    @PostMapping("/logout")
 //    public SingleResponseDto<String> handleLogout(HttpServletRequest request) {

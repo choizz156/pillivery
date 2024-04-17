@@ -5,7 +5,7 @@ import com.team33.modulecore.domain.cart.entity.Cart;
 import com.team33.modulecore.domain.order.value.Address;
 import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.domain.user.dto.UserPatchDto;
+import com.team33.modulecore.domain.user.dto.UserServicePatchDto;
 import com.team33.modulecore.domain.wish.entity.Wish;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +45,8 @@ public class User extends BaseEntity {
     @Column(length = 20)
     private String displayName;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     private String realName;
 
     @Column(unique = true)
@@ -124,8 +122,8 @@ public class User extends BaseEntity {
         this.phone = userDto.getPhone();
     }
 
-    public void updateUserInfo(UserPatchDto userDto) {
-        this.address = new Address(userDto.getCity(), userDto.getDetailAddress());
+    public void updateUserInfo(UserServicePatchDto userDto) {
+        this.address = userDto.getAddress();
         this.displayName = userDto.getDisplayName();
         this.phone = userDto.getPhone();
         this.realName = userDto.getRealName();

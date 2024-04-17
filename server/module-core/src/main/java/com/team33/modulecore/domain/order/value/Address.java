@@ -1,6 +1,5 @@
 package com.team33.modulecore.domain.order.value;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 public class Address {
-    @Column(nullable = false)
     private String city;
     private String detailAddress;
 

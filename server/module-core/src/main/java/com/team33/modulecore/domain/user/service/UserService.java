@@ -4,7 +4,7 @@ import com.team33.modulecore.domain.cart.entity.Cart;
 import com.team33.modulecore.domain.cart.repository.CartRepository;
 import com.team33.modulecore.domain.user.UserServiceDto;
 import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.domain.user.dto.UserPatchDto;
+import com.team33.modulecore.domain.user.dto.UserServicePatchDto;
 import com.team33.modulecore.domain.user.entity.User;
 import com.team33.modulecore.domain.user.repository.UserRepository;
 import com.team33.modulecore.global.exception.BusinessLogicException;
@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
 @Transactional
+@Service
 public class UserService {
 
     private final UserRepository userRepository;
@@ -29,7 +29,6 @@ public class UserService {
     private final DuplicationVerifier duplicationVerifier;
     private final CartRepository cartRepository;
 
-    @Transactional
     public void join(UserServiceDto userServiceDto) {
         duplicationVerifier.checkUserInfo(userServiceDto);
 
@@ -40,26 +39,27 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Transactional
-    public User deleteUser() {
-        User loginUser = getLoginUser();
-        loginUser.withdrawal();
-        return loginUser;
+//    @Transactional
+//    public User deleteUser() {
+//        User loginUser = getLoginUser();
+//        loginUser.withdrawal();
+//        return loginUser;
+//    }
+
+    public User updateUser(UserServicePatchDto userDto, long userId) {
+        duplicationVerifier.checkDuplicationOnUpdate(userDto,userId);
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.updateUserInfo(userDto);
+            String encodedPwd = passwordEncoder.encode(userDto.getPassword());
+            user.applyEncryptPassword(encodedPwd);
+            return user;
+        }
+        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
     }
 
-    @Transactional
-    public User updateUser(UserPatchDto userDto) {
-        duplicationVerifier.checkDuplicationOnUpdate(userDto);
-
-        User loginUser = getLoginUser();
-        loginUser.updateUserInfo(userDto);
-        String encodedPwd = passwordEncoder.encode(userDto.getPassword());
-        loginUser.applyEncryptPassword(encodedPwd);
-
-        return loginUser;
-    }
-
-    @Transactional
     public User addOAuthInfo(OAuthUserServiceDto userDto) {
         duplicationVerifier.checkOauthAdditionalInfo(userDto);
         return addOauthUserInfo(userDto);
@@ -73,7 +73,7 @@ public class UserService {
 
         Optional<User> userOptional = userRepository.findByEmail(principal);
         return userOptional.orElseThrow(
-        () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+            () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
     private void makeCart(User user) {
