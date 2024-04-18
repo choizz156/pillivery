@@ -1,6 +1,6 @@
 package com.team33.modulecore.order.domain;
 
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.orderitem.domain.OrderItem;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

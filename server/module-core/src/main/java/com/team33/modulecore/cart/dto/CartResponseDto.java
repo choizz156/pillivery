@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.team33.modulecore.itemcart.dto.ItemCartDto.Response;
-import com.team33.modulecore.common.dto.MultiResponseDto;
+import com.team33.modulecore.common.MultiResponseDto;
 
 @Getter
 @Setter

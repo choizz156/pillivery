@@ -13,7 +13,7 @@ import com.team33.modulecore.user.dto.UserResponse;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.application.UserService;
-import com.team33.modulecore.common.dto.SingleResponseDto;
+import com.team33.modulecore.common.SingleResponseDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;

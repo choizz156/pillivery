@@ -1,6 +1,6 @@
-package com.team33.modulecore.order.repository;
+package com.team33.modulecore.orderitem.repository;
 
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

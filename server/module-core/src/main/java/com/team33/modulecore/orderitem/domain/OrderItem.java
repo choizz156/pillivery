@@ -1,7 +1,8 @@
-package com.team33.modulecore.order.domain;
+package com.team33.modulecore.orderitem.domain;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.order.domain.Order;
 import java.time.ZonedDateTime;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;

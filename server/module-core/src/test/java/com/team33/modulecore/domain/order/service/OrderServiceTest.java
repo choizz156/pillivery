@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.domain.OrderItemInfo;
+import com.team33.modulecore.orderitem.domain.OrderItemInfo;
 import com.team33.modulecore.order.domain.Price;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;

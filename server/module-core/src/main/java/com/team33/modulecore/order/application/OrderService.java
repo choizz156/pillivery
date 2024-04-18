@@ -1,10 +1,11 @@
 package com.team33.modulecore.order.application;
 
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.repository.OrderItemRepository;
+import com.team33.modulecore.orderitem.repository.OrderItemRepository;
 import com.team33.modulecore.order.repository.OrderRepository;
+import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.repository.UserRepository;
 import com.team33.modulecore.exception.BusinessLogicException;

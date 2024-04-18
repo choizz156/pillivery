@@ -8,7 +8,7 @@ import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.item.repository.ItemRepository;
 import com.team33.modulecore.order.repository.OrderRepository;
 import com.team33.modulecore.user.repository.UserRepository;
-import com.team33.modulecore.order.application.OrderItemService;
+import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

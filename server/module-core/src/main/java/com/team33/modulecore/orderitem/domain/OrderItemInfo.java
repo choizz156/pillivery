@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.domain;
+package com.team33.modulecore.orderitem.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

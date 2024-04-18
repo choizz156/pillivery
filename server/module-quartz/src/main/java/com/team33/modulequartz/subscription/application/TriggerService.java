@@ -6,7 +6,7 @@ import static org.quartz.DateBuilder.futureDate;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.orderitem.domain.OrderItem;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;

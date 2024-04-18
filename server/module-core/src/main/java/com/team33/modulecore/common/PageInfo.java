@@ -1,4 +1,4 @@
-package com.team33.modulecore.common.dto;
+package com.team33.modulecore.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

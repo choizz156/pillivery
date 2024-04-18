@@ -2,9 +2,9 @@ package com.team33.modulequartz.subscription.application;
 
 import static org.quartz.JobKey.jobKey;
 
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.application.OrderItemService;
+import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulequartz.subscription.infra.JobListeners;

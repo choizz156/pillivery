@@ -1,9 +1,8 @@
 package com.team33.modulecore.order.dto;
 
-import com.team33.modulecore.order.dto.OrderItemDto.SimpleResponse;
+import com.team33.modulecore.common.MultiResponseDto;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.common.dto.MultiResponseDto;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -22,7 +21,7 @@ public class OrderDetailResponse {
     private int totalDiscountPrice;
     private int expectPrice;
     private boolean subscription;
-    private MultiResponseDto<SimpleResponse> itemOrders; // 페이지네이션 X
+    private MultiResponseDto<OrderSimpleResponse> itemOrders;
     private OrderStatus orderStatus;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
@@ -40,7 +39,7 @@ public class OrderDetailResponse {
         int totalDiscountPrice,
         int expectPrice,
         boolean subscription,
-        MultiResponseDto<SimpleResponse> itemOrders,
+        MultiResponseDto<OrderSimpleResponse> itemOrders,
         OrderStatus orderStatus,
         ZonedDateTime createdAt,
         ZonedDateTime updatedAt,
@@ -76,7 +75,7 @@ public class OrderDetailResponse {
             .expectPrice(order.getPrice().getExpectPrice())
             .subscription(order.isSubscription())
             .itemOrders(new MultiResponseDto<>(
-                order.getOrderItems().stream().map(SimpleResponse::of).collect(Collectors.toList()))
+                order.getOrderItems().stream().map(OrderSimpleResponse::of).collect(Collectors.toList()))
             )
             .orderStatus(order.getOrderStatus())
             .createdAt(order.getCreatedAt())

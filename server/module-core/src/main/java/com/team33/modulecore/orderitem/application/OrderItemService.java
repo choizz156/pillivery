@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.application;
+package com.team33.modulecore.orderitem.application;
 
 
 import com.team33.modulecore.itemcart.domain.ItemCart;
@@ -6,9 +6,9 @@ import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.item.repository.ItemRepository;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.domain.OrderItem;
-import com.team33.modulecore.order.domain.OrderItemInfo;
-import com.team33.modulecore.order.repository.OrderItemRepository;
+import com.team33.modulecore.orderitem.domain.OrderItem;
+import com.team33.modulecore.orderitem.domain.OrderItemInfo;
+import com.team33.modulecore.orderitem.repository.OrderItemRepository;
 import com.team33.modulecore.order.repository.OrderRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
