@@ -1,8 +1,8 @@
-package com.team33.moduleapi.controller.user;
+package com.team33.moduleapi.ui.user;
 
 
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.moduleapi.security.infra.Logout;
+import com.team33.moduleapi.security.application.Logout;
 import com.team33.moduleapi.security.application.ResponseTokenService;
 import com.team33.modulecore.user.dto.UserServiceDto;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;

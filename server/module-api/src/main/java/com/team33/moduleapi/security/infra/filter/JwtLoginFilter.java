@@ -1,4 +1,4 @@
-package com.team33.moduleapi.security.filter;
+package com.team33.moduleapi.security.infra.filter;
 
 
 import com.team33.moduleapi.security.dto.LoginDto;

@@ -14,7 +14,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.moduleapi.controller.payment.PayController;
+import com.team33.moduleapi.ui.payment.PayController;
 import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Approve;
 import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Request;
 import com.team33.modulecore.payment.kakao.application.KakaoPaymentFacade;

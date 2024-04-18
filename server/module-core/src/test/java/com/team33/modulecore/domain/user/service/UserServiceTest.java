@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class UserServiceTest {
+
     @Autowired
     private UserRepository userRepository;
 

@@ -6,12 +6,12 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 
-import com.team33.moduleapi.security.handler.UserAccessDeniedHandler;
-import com.team33.moduleapi.security.handler.UserAuthFailureHandler;
-import com.team33.moduleapi.security.handler.UserAuthenticationEntryPoint;
-import com.team33.moduleapi.security.handler.UserOAuthSuccessHandler;
+import com.team33.moduleapi.security.infra.handler.UserAccessDeniedHandler;
+import com.team33.moduleapi.security.infra.handler.UserAuthFailureHandler;
+import com.team33.moduleapi.security.infra.handler.UserAuthenticationEntryPoint;
+import com.team33.moduleapi.security.infra.handler.UserOAuthSuccessHandler;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.moduleapi.security.infra.Logout;
+import com.team33.moduleapi.security.application.Logout;
 import com.team33.moduleapi.security.repository.RefreshTokenRepository;
 import com.team33.moduleapi.security.application.ResponseTokenService;
 import lombok.RequiredArgsConstructor;

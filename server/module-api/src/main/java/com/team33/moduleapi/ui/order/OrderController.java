@@ -1,4 +1,4 @@
-package com.team33.moduleapi.controller.order;
+package com.team33.moduleapi.ui.order;
 
 
 import com.team33.modulecore.order.dto.OrderDetailResponse;

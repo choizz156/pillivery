@@ -97,6 +97,7 @@ public class User extends BaseEntity {
     }
 
     public static User createUser(UserServiceDto userDto, String encryptedPassword) {
+
         return User.builder().email(userDto.getEmail())
             .displayName(userDto.getDisplayName())
             .address(userDto.getAddress())

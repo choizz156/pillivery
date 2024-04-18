@@ -33,8 +33,8 @@ import org.springframework.test.context.ContextConfiguration;
     OrderService.class,
     OrderItemService.class
 })
-@EnableJpaRepositories(basePackages = "com.team33.modulecore.domain")
-@EntityScan("com.team33.modulecore.domain")
+@EnableJpaRepositories(basePackages = "com.team33.modulecore")
+@EntityScan("com.team33.modulecore")
 public @interface EnableDomainTest {
 
 }

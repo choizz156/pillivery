@@ -1,4 +1,4 @@
-package com.team33.moduleapi.controller.payment;
+package com.team33.moduleapi.ui.payment;
 
 import static java.util.Optional.ofNullable;
 

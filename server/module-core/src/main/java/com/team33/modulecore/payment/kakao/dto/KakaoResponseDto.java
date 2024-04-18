@@ -2,7 +2,6 @@ package com.team33.modulecore.payment.kakao.dto;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 

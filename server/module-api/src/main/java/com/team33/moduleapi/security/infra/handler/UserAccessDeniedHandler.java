@@ -1,7 +1,5 @@
-package com.team33.moduleapi.security.handler;
+package com.team33.moduleapi.security.infra.handler;
 
-
-import static com.team33.moduleapi.security.handler.ErrorResponser.errorToJson;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -19,6 +17,6 @@ public class UserAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle( HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException ) throws IOException, ServletException{
         log.error("권한 없는 사용자");
-        errorToJson(response, accessDeniedException, HttpStatus.FORBIDDEN);
+        ErrorResponser.errorToJson(response, accessDeniedException, HttpStatus.FORBIDDEN);
     }
 }

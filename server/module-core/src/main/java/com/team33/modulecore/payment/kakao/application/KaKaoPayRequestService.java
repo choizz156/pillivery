@@ -12,7 +12,7 @@ import com.team33.modulecore.payment.kakao.infra.ParameterProvider;
 
 @RequiredArgsConstructor
 @Service
-public class KaKaoPayRequest extends KaKaoHeader implements PayRequest {
+public class KaKaoPayRequestService extends KaKaoHeader implements PayRequest {
 
     private final ParameterProvider parameterProvider;
     private final RestTemplate restTemplate;

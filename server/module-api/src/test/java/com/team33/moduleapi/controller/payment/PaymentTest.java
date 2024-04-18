@@ -15,8 +15,8 @@ import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntr
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Approve;
 import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Request;
-import com.team33.modulecore.payment.kakao.application.KaKaoPayApprove;
-import com.team33.modulecore.payment.kakao.application.KaKaoPayRequest;
+import com.team33.modulecore.payment.kakao.application.KaKaoPayApproveService;
+import com.team33.modulecore.payment.kakao.application.KaKaoPayRequestService;
 import com.team33.modulecore.payment.kakao.infra.ParameterProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,10 +30,10 @@ import org.springframework.web.client.RestTemplate;
 class PaymentTest {
 
     @InjectMocks
-    private KaKaoPayRequest payRequest;
+    private KaKaoPayRequestService payRequest;
 
     @InjectMocks
-    private KaKaoPayApprove payApprove;
+    private KaKaoPayApproveService payApprove;
 
     @Mock
     private ParameterProvider parameterProvider;

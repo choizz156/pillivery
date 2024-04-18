@@ -24,8 +24,8 @@ import org.springframework.test.context.ContextConfiguration;
     PasswordConfig.class,
     DuplicationVerifier.class
 })
-@EnableJpaRepositories(basePackages = "com.team33.modulecore.domain")
-@EntityScan("com.team33.modulecore.domain")
+@EnableJpaRepositories(basePackages = "com.team33.modulecore")
+@EntityScan("com.team33.modulecore")
 public @interface EnableUserTest {
 
 }

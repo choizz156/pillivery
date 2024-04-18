@@ -19,27 +19,24 @@ public class DuplicationVerifier {
 
     private final UserRepository userRepository;
 
-    public void checkUserInfo(UserServiceDto user) {
-        checkExistEmail(user.getEmail());
-        checkExistDisplayName(user.getDisplayName());
-        checkExistPhoneNum(user.getPhone());
+    public void checkUserInfo(UserServiceDto dto) {
+        checkExistEmail(dto.getEmail());
+        checkExistDisplayName(dto.getDisplayName());
+        checkExistPhoneNum(dto.getPhone());
     }
 
-    public void checkOauthAdditionalInfo(OAuthUserServiceDto userDto) {
-        checkExistDisplayName(userDto.getDisplayName());
-        checkExistPhoneNum(userDto.getPhone());
+    public void checkOauthAdditionalInfo(OAuthUserServiceDto dto) {
+        checkExistDisplayName(dto.getDisplayName());
+        checkExistPhoneNum(dto.getPhone());
     }
 
-    public void checkDuplicationOnUpdate(UserServicePatchDto dto, long userId) {
-        Optional<User> loginUser = userRepository.findById(userId);
-        if (loginUser.isPresent()) {
-            checkExistPhoneOnUpdate(loginUser.get(), dto);
-            checkExistDisplayNameOnUpdate(loginUser.get(), dto);
-        }
+    public void checkDuplicationOnUpdate(UserServicePatchDto dto, User user) {
+            checkExistPhoneOnUpdate(user, dto);
+            checkExistDisplayNameOnUpdate(user, dto);
     }
 
-    private void checkExistPhoneOnUpdate(User loginUser, UserServicePatchDto userDto) {
-        if (isTheSameMyPhone(loginUser, userDto)) {
+    private void checkExistPhoneOnUpdate(User user, UserServicePatchDto userDto) {
+        if (isTheSameMyPhone(user, userDto)) {
             return;
         }
         checkExistPhoneNum(userDto.getPhone());

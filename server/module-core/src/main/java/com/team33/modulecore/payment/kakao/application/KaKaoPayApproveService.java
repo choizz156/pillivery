@@ -12,7 +12,7 @@ import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto;
 
 @RequiredArgsConstructor
 @Service
-public class KaKaoPayApprove extends KaKaoHeader implements PayApprove {
+public class KaKaoPayApproveService extends KaKaoHeader implements PayApprove {
 
     private final ParameterProvider parameterProvider;
     private final RestTemplate restTemplate;

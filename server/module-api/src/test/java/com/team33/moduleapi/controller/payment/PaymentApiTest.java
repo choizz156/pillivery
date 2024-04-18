@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
+import com.team33.moduleapi.ui.payment.PayController;
 import com.team33.modulecore.payment.kakao.dto.FailResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Approve;
 import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Request;
