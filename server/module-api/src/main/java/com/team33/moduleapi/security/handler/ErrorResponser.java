@@ -1,7 +1,7 @@
 package com.team33.moduleapi.security.handler;
 
-import com.team33.moduleapi.exception.response.ErrorResponse;
-import com.team33.modulecore.global.util.Mapper;
+import com.team33.moduleapi.exception.dto.ErrorResponse;
+import com.team33.modulecore.utils.Mapper;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;

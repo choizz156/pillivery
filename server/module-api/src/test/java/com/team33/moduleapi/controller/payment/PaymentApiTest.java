@@ -9,10 +9,10 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.modulecore.domain.payment.kakao.dto.FailResponse;
-import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Approve;
-import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Request;
-import com.team33.modulecore.domain.payment.kakao.service.KakaoPaymentFacade;
+import com.team33.modulecore.payment.kakao.dto.FailResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Approve;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Request;
+import com.team33.modulecore.payment.kakao.application.KakaoPaymentFacade;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 import org.junit.jupiter.api.BeforeEach;

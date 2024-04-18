@@ -1,7 +1,7 @@
 package com.team33.moduleapi.security.handler;
 
 
-import com.team33.moduleapi.security.refreshtoken.ResponseTokenService;
+import com.team33.moduleapi.security.application.ResponseTokenService;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

@@ -2,22 +2,16 @@ package com.team33.moduleapi.controller.payment;
 
 import static java.util.Optional.ofNullable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.team33.modulecore.domain.payment.kakao.dto.FailResponse;
-import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto;
-import com.team33.modulecore.domain.payment.kakao.service.PaymentFacade;
-import com.team33.moduleapi.exception.BusinessLogicException;
-import com.team33.moduleapi.exception.ExceptionCode;
-import com.team33.modulecore.global.util.Mapper;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.payment.kakao.application.PaymentFacade;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -49,15 +43,15 @@ public class PayController {
         return paymentFacade.approveSubscription(orderId);
     }
 
-    @GetMapping("/kakao/cancel")
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public FailResponse cancel(@RequestBody String cancel) throws JsonProcessingException {
-        return Mapper.getInstance().readValue(cancel, FailResponse.class);
-    }
-
-    @GetMapping("/kakao/fail")
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public FailResponse fail(@RequestBody String fail) throws JsonProcessingException {
-        return Mapper.getInstance().readValue(fail, FailResponse.class);
-    }
+//    @GetMapping("/kakao/cancel")
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public FailResponse cancel(@RequestBody String cancel) throws JsonProcessingException {
+//        return Mapper.getInstance().readValue(cancel, FailResponse.class);
+//    }
+//
+//    @GetMapping("/kakao/fail")
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public FailResponse fail(@RequestBody String fail) throws JsonProcessingException {
+//        return Mapper.getInstance().readValue(fail, FailResponse.class);
+//    }
 }

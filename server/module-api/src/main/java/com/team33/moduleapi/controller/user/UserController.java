@@ -1,19 +1,19 @@
 package com.team33.moduleapi.controller.user;
 
 
-import com.team33.moduleapi.security.jwt.JwtTokenProvider;
-import com.team33.moduleapi.security.jwt.Logout;
-import com.team33.moduleapi.security.refreshtoken.ResponseTokenService;
-import com.team33.modulecore.domain.user.UserServiceDto;
-import com.team33.modulecore.domain.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
-import com.team33.modulecore.domain.user.dto.UserResponse;
-import com.team33.modulecore.domain.user.dto.UserServicePatchDto;
-import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.response.SingleResponseDto;
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.moduleapi.security.infra.Logout;
+import com.team33.moduleapi.security.application.ResponseTokenService;
+import com.team33.modulecore.user.dto.UserServiceDto;
+import com.team33.modulecore.user.dto.OAuthUserServiceDto;
+import com.team33.modulecore.user.dto.UserPatchDto;
+import com.team33.modulecore.user.dto.UserPostDto;
+import com.team33.modulecore.user.dto.UserPostOauthDto;
+import com.team33.modulecore.user.dto.UserResponse;
+import com.team33.modulecore.user.dto.UserServicePatchDto;
+import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.application.UserService;
+import com.team33.modulecore.common.dto.SingleResponseDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;

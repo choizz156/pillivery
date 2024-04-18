@@ -2,10 +2,10 @@ package com.team33.moduleapi.restdocs;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
-import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.domain.user.repository.UserRepository;
-import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.moduleapi.security.jwt.JwtTokenProvider;
+import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.repository.UserRepository;
+import com.team33.modulecore.user.application.UserService;
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
 import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;

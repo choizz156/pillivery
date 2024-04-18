@@ -1,9 +1,9 @@
 package com.team33.modulecore.domain;
 
-import com.team33.modulecore.domain.user.repository.UserRepository;
-import com.team33.modulecore.domain.user.service.DuplicationVerifier;
-import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.config.PasswordConfig;
+import com.team33.modulecore.user.repository.UserRepository;
+import com.team33.modulecore.user.application.DuplicationVerifier;
+import com.team33.modulecore.user.application.UserService;
+import com.team33.modulecore.config.PasswordConfig;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

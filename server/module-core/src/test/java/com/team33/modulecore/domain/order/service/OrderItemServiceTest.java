@@ -2,12 +2,12 @@ package com.team33.modulecore.domain.order.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.team33.modulecore.domain.cart.entity.Cart;
-import com.team33.modulecore.domain.cart.entity.ItemCart;
-import com.team33.modulecore.domain.item.entity.Item;
-import com.team33.modulecore.domain.order.entity.OrderItem;
-import com.team33.modulecore.domain.order.value.OrderItemInfo;
-import com.team33.modulecore.domain.user.entity.User;
+import com.team33.modulecore.cart.domain.Cart;
+import com.team33.modulecore.itemcart.domain.ItemCart;
+import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.OrderItemInfo;
+import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

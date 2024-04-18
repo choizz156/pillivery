@@ -1,8 +1,8 @@
 package com.team33.moduleapi.exception.controller;
 
 
-import com.team33.moduleapi.exception.BusinessLogicException;
-import com.team33.moduleapi.exception.response.ErrorResponse;
+import com.team33.moduleapi.exception.dto.ErrorResponse;
+import com.team33.modulecore.exception.BusinessLogicException;
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import com.team33.moduleapi.controller.ApiTest;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
+import com.team33.modulecore.user.dto.UserPostDto;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;

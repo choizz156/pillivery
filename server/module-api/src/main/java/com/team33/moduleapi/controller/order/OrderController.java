@@ -1,18 +1,18 @@
 package com.team33.moduleapi.controller.order;
 
 
-import com.team33.moduleapi.controller.order.dto.OrderDetailResponse;
-import com.team33.moduleapi.controller.order.dto.OrderPostDto;
-import com.team33.modulecore.domain.cart.entity.ItemCart;
-import com.team33.modulecore.domain.cart.service.CartService;
-import com.team33.modulecore.domain.cart.service.ItemCartService;
-import com.team33.modulecore.domain.order.entity.Order;
-import com.team33.modulecore.domain.order.entity.OrderItem;
-import com.team33.modulecore.domain.order.service.OrderItemService;
-import com.team33.modulecore.domain.order.service.OrderService;
-import com.team33.modulecore.domain.order.value.OrderItemInfo;
-import com.team33.modulecore.domain.user.service.UserService;
-import com.team33.modulecore.global.response.SingleResponseDto;
+import com.team33.modulecore.order.dto.OrderDetailResponse;
+import com.team33.modulecore.order.dto.OrderPostDto;
+import com.team33.modulecore.itemcart.domain.ItemCart;
+import com.team33.modulecore.cart.application.CartService;
+import com.team33.modulecore.itemcart.application.ItemCartService;
+import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.application.OrderItemService;
+import com.team33.modulecore.order.application.OrderService;
+import com.team33.modulecore.order.domain.OrderItemInfo;
+import com.team33.modulecore.user.application.UserService;
+import com.team33.modulecore.common.dto.SingleResponseDto;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;

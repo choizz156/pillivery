@@ -1,9 +1,9 @@
 package com.team33.moduleapi.security.handler;
 
 
-import com.team33.moduleapi.security.details.UserDetailsEntity;
-import com.team33.moduleapi.security.refreshtoken.ResponseTokenService;
-import com.team33.modulecore.domain.user.entity.User;
+import com.team33.moduleapi.security.domain.UserDetailsEntity;
+import com.team33.moduleapi.security.application.ResponseTokenService;
+import com.team33.modulecore.user.domain.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

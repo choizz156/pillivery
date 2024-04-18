@@ -15,11 +15,10 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.team33.moduleapi.controller.payment.PayController;
-import com.team33.moduleapi.restdocs.MockRestDocsSupport;
-import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Approve;
-import com.team33.modulecore.domain.payment.kakao.dto.KakaoResponseDto.Request;
-import com.team33.modulecore.domain.payment.kakao.service.KakaoPaymentFacade;
-import com.team33.modulecore.domain.payment.kakao.service.PaymentFacade;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Approve;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Request;
+import com.team33.modulecore.payment.kakao.application.KakaoPaymentFacade;
+import com.team33.modulecore.payment.kakao.application.PaymentFacade;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.response.ExtractableResponse;
 import org.junit.jupiter.api.DisplayName;

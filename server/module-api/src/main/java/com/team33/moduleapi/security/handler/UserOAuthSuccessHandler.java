@@ -1,10 +1,10 @@
 package com.team33.moduleapi.security.handler;
 
 
-import com.team33.moduleapi.security.details.UserDetailsEntity;
-import com.team33.moduleapi.security.jwt.JwtTokenProvider;
-import com.team33.moduleapi.security.refreshtoken.RefreshTokenRepository;
-import com.team33.modulecore.domain.user.entity.User;
+import com.team33.moduleapi.security.domain.UserDetailsEntity;
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.moduleapi.security.repository.RefreshTokenRepository;
+import com.team33.modulecore.user.domain.User;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;

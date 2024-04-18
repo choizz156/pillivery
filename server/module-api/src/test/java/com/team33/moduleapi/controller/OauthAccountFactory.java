@@ -1,9 +1,9 @@
 package com.team33.moduleapi.controller;
 
 import com.team33.modulecore.domain.user.entity.Address;
-import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.domain.user.entity.UserRoles;
-import com.team33.modulecore.domain.user.repository.UserRepository;
+import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.UserRoles;
+import com.team33.modulecore.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;

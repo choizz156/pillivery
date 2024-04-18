@@ -15,7 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.team33.modulecore.global.util.Mapper;
+import com.team33.modulecore.utils.Mapper;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -1,8 +1,8 @@
 package com.team33.moduleapi.controller;
 
-import com.team33.modulecore.domain.user.UserServiceDto;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
-import com.team33.modulecore.domain.user.service.UserService;
+import com.team33.modulecore.user.dto.UserServiceDto;
+import com.team33.modulecore.user.dto.UserPostDto;
+import com.team33.modulecore.user.application.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;

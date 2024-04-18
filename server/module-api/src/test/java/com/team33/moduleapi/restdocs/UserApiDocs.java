@@ -13,13 +13,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 
 import com.team33.moduleapi.controller.OAuthAccount;
 import com.team33.moduleapi.controller.UserAccount;
-import com.team33.modulecore.domain.order.value.Address;
-import com.team33.modulecore.domain.user.UserServiceDto;
-import com.team33.modulecore.domain.user.dto.UserPatchDto;
-import com.team33.modulecore.domain.user.dto.UserPostDto;
-import com.team33.modulecore.domain.user.dto.UserPostOauthDto;
-import com.team33.modulecore.domain.user.entity.User;
-import com.team33.modulecore.domain.user.entity.UserRoles;
+import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.dto.UserServiceDto;
+import com.team33.modulecore.user.dto.UserPatchDto;
+import com.team33.modulecore.user.dto.UserPostDto;
+import com.team33.modulecore.user.dto.UserPostOauthDto;
+import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.UserRoles;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.response.ExtractableResponse;
 import org.assertj.core.api.SoftAssertions;

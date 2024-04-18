@@ -3,9 +3,9 @@ package com.team33.moduleapi.security.filter;
 
 import com.team33.moduleapi.exception.BusinessLogicException;
 import com.team33.moduleapi.exception.ExceptionCode;
-import com.team33.moduleapi.security.refreshtoken.ResponseTokenService;
-import com.team33.moduleapi.security.jwt.Logout;
-import com.team33.moduleapi.security.jwt.JwtTokenProvider;
+import com.team33.moduleapi.security.application.ResponseTokenService;
+import com.team33.moduleapi.security.infra.Logout;
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
