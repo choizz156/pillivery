@@ -1,6 +1,6 @@
 package com.team33.modulecore.user.application;
 
-import com.team33.modulecore.user.dto.UserServiceDto;
+import com.team33.modulecore.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.domain.User;
@@ -19,7 +19,7 @@ public class DuplicationVerifier {
 
     private final UserRepository userRepository;
 
-    public void checkUserInfo(UserServiceDto dto) {
+    public void checkUserInfo(UserServicePostDto dto) {
         checkExistEmail(dto.getEmail());
         checkExistDisplayName(dto.getDisplayName());
         checkExistPhoneNum(dto.getPhone());

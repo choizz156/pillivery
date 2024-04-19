@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class UserServiceDto {
+public class UserServicePostDto {
 
     private String email;
     private String displayName;
@@ -16,7 +16,7 @@ public class UserServiceDto {
     private Address address;
 
     @Builder
-    private UserServiceDto(
+    private UserServicePostDto(
         String email,
         String displayName,
         String password,
@@ -32,9 +32,9 @@ public class UserServiceDto {
         this.address = address;
     }
 
-    public static UserServiceDto to(UserPostDto userDto) {
+    public static UserServicePostDto to(UserPostDto userDto) {
         Address address = new Address(userDto.getCity(), userDto.getDetailAddress());
-        return UserServiceDto.builder().email(userDto.getEmail())
+        return UserServicePostDto.builder().email(userDto.getEmail())
             .displayName(userDto.getDisplayName())
             .address(address)
             .password(userDto.getPassword())

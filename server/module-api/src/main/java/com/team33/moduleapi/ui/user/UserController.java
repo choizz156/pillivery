@@ -4,7 +4,7 @@ package com.team33.moduleapi.ui.user;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
 import com.team33.moduleapi.security.application.Logout;
 import com.team33.moduleapi.security.application.ResponseTokenService;
-import com.team33.modulecore.user.dto.UserServiceDto;
+import com.team33.modulecore.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserPatchDto;
 import com.team33.modulecore.user.dto.UserPostDto;
@@ -50,8 +50,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public SingleResponseDto<Long> singUpUser(@Valid @RequestBody UserPostDto userPostDto) {
 
-        UserServiceDto userServiceDto = UserServiceDto.to(userPostDto);
-        long userId = userService.join(userServiceDto);
+        UserServicePostDto userServicePostDto = UserServicePostDto.to(userPostDto);
+        long userId = userService.join(userServicePostDto);
         return new SingleResponseDto<>(userId);
     }
 

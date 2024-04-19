@@ -6,8 +6,8 @@ import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.user.dto.UserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
+import com.team33.modulecore.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +29,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final DuplicationVerifier duplicationVerifier;
 
-    public long join(UserServiceDto userServiceDto) {
-        duplicationVerifier.checkUserInfo(userServiceDto);
+    public long join(UserServicePostDto userServicePostDto) {
+        duplicationVerifier.checkUserInfo(userServicePostDto);
 
-        String encryptedPassword = encryptPassword(userServiceDto.getPassword());
-        User user = User.createUser(userServiceDto, encryptedPassword);
+        String encryptedPassword = encryptPassword(userServicePostDto.getPassword());
+        User user = User.createUser(userServicePostDto, encryptedPassword);
         makeCart(user);
 
         return userRepository.save(user).getId();

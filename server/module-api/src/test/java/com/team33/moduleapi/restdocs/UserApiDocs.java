@@ -14,7 +14,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import com.team33.moduleapi.controller.OAuthAccount;
 import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.order.domain.Address;
-import com.team33.modulecore.user.dto.UserServiceDto;
+import com.team33.modulecore.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.dto.UserPatchDto;
 import com.team33.modulecore.user.dto.UserPostDto;
 import com.team33.modulecore.user.dto.UserPostOauthDto;
@@ -320,8 +320,8 @@ class UserApiDocs extends WebRestDocsSupport {
     void 정보_수정_닉네임_중복_예외() throws Exception {
 
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
-        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
-        userService.join(userServiceDto);
+        UserServicePostDto userServicePostDto = UserServicePostDto.to(postDto);
+        userService.join(userServicePostDto);
 
         String token = getToken();
         UserPatchDto userPatchDto = updateUser("test22", "010-1111-1111");
@@ -367,8 +367,8 @@ class UserApiDocs extends WebRestDocsSupport {
     void 정보_수정_연락처_중복_예외() throws Exception {
 
         UserPostDto postDto = join("test@gmail.com", "test22", "010-1112-1111");
-        UserServiceDto userServiceDto = UserServiceDto.to(postDto);
-        userService.join(userServiceDto);
+        UserServicePostDto userServicePostDto = UserServicePostDto.to(postDto);
+        userService.join(userServicePostDto);
 
         String token = getToken();
         UserPatchDto userPatchDto = updateUser("test1", "010-1112-1111");

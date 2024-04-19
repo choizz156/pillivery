@@ -1,8 +1,10 @@
 package com.team33.modulecore.domain.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.team33.modulecore.domain.EnableUserTest;
+import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.order.domain.Address;
 import com.team33.modulecore.user.application.DuplicationVerifier;
 import com.team33.modulecore.user.application.UserService;
@@ -13,12 +15,16 @@ import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserPatchDto;
 import com.team33.modulecore.user.dto.UserPostDto;
 import com.team33.modulecore.user.dto.UserPostOauthDto;
-import com.team33.modulecore.user.dto.UserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
+import com.team33.modulecore.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.repository.UserRepository;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -47,10 +53,10 @@ class UserServiceTest {
     @Test
     void 회원가입() throws Exception {
         //given
-        UserServiceDto userServiceDto = getUserServiceDto();
+        UserServicePostDto userServicePostDto = getUserServiceDto();
 
         //when
-        userService.join(userServiceDto);
+        userService.join(userServicePostDto);
         List<User> users = userRepository.findAll();
 
         //then
@@ -62,6 +68,31 @@ class UserServiceTest {
         assertThat(user.getAddress().getCity()).isEqualTo("서울시 부평구 송도동");
         assertThat(user.getRealName()).isEqualTo("홍길동");
         assertThat(user.getAddress().getDetailAddress()).isEqualTo("101 번지");
+    }
+
+    private static Stream<Arguments> provideDuplicateUserInfoOnJoin() {
+        UserPostDto duplicateEmail = join("test@test.com", "test", "010-0000-0000");
+        UserPostDto duplicateDisplayName = join("test1@test1.com", "test1", "010-0000-0000");
+        UserPostDto duplicatePhone = join("test2@test.com", "test2", "010-0000-0001");
+
+        return Stream.of(
+            Arguments.arguments(UserServicePostDto.to(duplicateEmail)),
+            Arguments.arguments(UserServicePostDto.to(duplicateDisplayName)),
+            Arguments.arguments(UserServicePostDto.to(duplicatePhone))
+        );
+    }
+
+    @DisplayName("이메일, 닉네임, 전화번호가 중복될 시 예외를 던진다.")
+    @ParameterizedTest
+    @MethodSource("provideDuplicateUserInfoOnJoin")
+    void 회원_가입_중복_예외(UserServicePostDto userPostDto) throws Exception {
+        //given
+        UserPostDto test1 = join("test@test.com", "test1", "010-0000-0001");
+        UserServicePostDto userServicePostDto = UserServicePostDto.to(test1);
+        userService.join(userServicePostDto);
+        //then
+        assertThatThrownBy(() -> userService.join(userPostDto))
+            .isInstanceOf(BusinessLogicException.class);
     }
 
     @DisplayName("소셜로그인 시 추가 정보를 기입하면 회원정보가 업데이트된다.")
@@ -83,12 +114,52 @@ class UserServiceTest {
         assertThat(result.getPhone()).isEqualTo(oAuthUserServiceDto.getPhone());
     }
 
+    private static Stream<Arguments> provideDuplicateUserInfoOnOauth() {
+        UserPostOauthDto duplicatePhone = UserPostOauthDto.builder()
+            .city("서울")
+            .detailAddress("한국아파트")
+            .email("test5@test.com")
+            .displayName("test")
+            .phone("010-0000-0000")
+            .build();
+
+        UserPostOauthDto duplicateDisplayName =
+            UserPostOauthDto.builder()
+                .city("서울")
+                .detailAddress("한국아파트")
+                .email("test4@test.com")
+                .displayName("test1")
+                .phone("010-0000-0001")
+                .build();
+
+        return Stream.of(
+            Arguments.arguments(duplicatePhone),
+            Arguments.arguments(duplicateDisplayName)
+        );
+    }
+
+    @DisplayName("소셜 회원 주가정보 기입시 전화번호, 닉네임에 중복이 있을 경우 예외를 던진다.")
+    @ParameterizedTest
+    @MethodSource("provideDuplicateUserInfoOnOauth")
+    void 소셜_회원_중복(UserPostOauthDto oauthDto) throws Exception {
+        //given
+        UserPostDto test1 = join("test@test.com", "test1", "010-0000-0000");
+        UserServicePostDto userServicePostDto = UserServicePostDto.to(test1);
+        userService.join(userServicePostDto);
+        OAuthUserServiceDto oAuthUserServiceDto = OAuthUserServiceDto.to(oauthDto);
+        //when then
+        assertThatThrownBy(() ->  userService.addOAuthInfo(oAuthUserServiceDto) )
+        	.isInstanceOf(BusinessLogicException.class)
+        	.hasMessageContaining("");
+    }
+
     @DisplayName("회원 탈퇴시 회원 상태가 withdrawal로 변경된다.")
     @Test
     void 회원_탈퇴() throws Exception {
+
         //given
-        UserServiceDto userServiceDto = getUserServiceDto();
-        long userId = userService.join(userServiceDto);
+        UserServicePostDto userServicePostDto = getUserServiceDto();
+        long userId = userService.join(userServicePostDto);
         //when
         User user = userService.deleteUser(userId);
         //then
@@ -99,8 +170,8 @@ class UserServiceTest {
     @Test
     void 회원_정보_조회() throws Exception {
         //given
-        UserServiceDto userServiceDto = getUserServiceDto();
-        long userId = userService.join(userServiceDto);
+        UserServicePostDto userServicePostDto = getUserServiceDto();
+        long userId = userService.join(userServicePostDto);
 
         //when
         User loginUser1 = userService.getLoginUser1(userId);
@@ -113,8 +184,8 @@ class UserServiceTest {
     @Test
     void 회원_정보_수정() throws Exception {
         //given
-        UserServiceDto userServiceDto = getUserServiceDto();
-        long userId = userService.join(userServiceDto);
+        UserServicePostDto userServicePostDto = getUserServiceDto();
+        long userId = userService.join(userServicePostDto);
 
         UserPatchDto userPatchDto = UserPatchDto.builder()
             .city("인천 부평구")
@@ -131,17 +202,17 @@ class UserServiceTest {
 
         //then
         assertThat(user.getAddress())
-            .isEqualTo(new Address(userPatchDto.getCity(),userPatchDto.getDetailAddress()));
+            .isEqualTo(new Address(userPatchDto.getCity(), userPatchDto.getDetailAddress()));
         assertThat(user.getRealName()).isEqualTo("홍홍홍");
         assertThat(user.getPhone()).isEqualTo("010-0000-000");
     }
 
-    private UserServiceDto getUserServiceDto() {
+    private UserServicePostDto getUserServiceDto() {
         UserPostDto postDto = join("test1@gmail.com", "test22", "010-1112-1111");
-        return UserServiceDto.to(postDto);
+        return UserServicePostDto.to(postDto);
     }
 
-    private UserPostDto join(String email, String displayName, String phone) {
+    private static UserPostDto join(String email, String displayName, String phone) {
 
         String password = "sdfsdfe!1";
         String city = "서울시 부평구 송도동";
