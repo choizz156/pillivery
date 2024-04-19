@@ -30,6 +30,7 @@ public class UserServicePatchDto {
 
     public static UserServicePatchDto to(UserPatchDto userDto) {
         return UserServicePatchDto.builder()
+            .password(userDto.getPassword())
             .address(new Address(userDto.getCity(), userDto.getDetailAddress()))
             .displayName(userDto.getDisplayName())
             .realName(userDto.getRealName())

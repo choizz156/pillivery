@@ -43,7 +43,6 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ResponseTokenService responseTokenService;
-    private static final String JOIN_COMPLETE = "회원 가입 완료";
     private static final String LOGOUT_COMPLETE = "로그아웃 완료";
     private static final String OAUTH_JOIN_COMPLETE = "소셜 회원 추가 정보 기입 완료";
 

@@ -110,6 +110,7 @@ public class User extends BaseEntity {
     }
 
     public void applyEncryptPassword(String encryptedPwd) {
+        if(this.password.equals(encryptedPwd)) return;
         this.password = encryptedPwd;
     }
 
