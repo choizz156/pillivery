@@ -2,47 +2,6 @@ spring:
   config:
     activate:
       on-profile: test
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 606086322984-lusr30r8j649fjrc12ta8sagdq6nh57s.apps.googleusercontent.com
-            client-secret: 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
-            scope:
-              - email
-              - profile
-
-          kakao:
-            client-id: bf330f4d3abf90b27373ed901544a58b
-            client-secret: CaYT5uTksrMHIXPt8fM2EnFm9ISq0k7i
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            scope:
-              - profile_nickname
-              - account_email
-            client-name: Kakao
-            authorization-grant-type: authorization_code
-            client-authentication-method: POST
-
-        provider:
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
-
-
-  quartz:
-    properties:
-      org:
-        quartz:
-          scheduler-name: QRTZ_
-          threadPool:
-            threadCount: 5
-
-
-    job-store-type: memory
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -58,14 +17,4 @@ logging:
     org.hibernate.sql: debug
     org.hibernate.orm.jdbc.bind: trace
 
-server:
-  servlet:
-    encoding:
-      force-response: true
-  port: 8080
 
-jwt:
-  secret-key : sdfsdfsdfesdfdf11113456645454534545451
-  # 민감한 정보는 시스템 환경 변수에서 로드한다.
-  access-token-expiration-minutes: 30
-  refresh-token-expiration-minutes: 420

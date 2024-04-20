@@ -101,7 +101,7 @@ public class ParameterProvider extends ParamsConst {
     }
 
     private String getItemName(Order order) {
-        Integer itemQuantity = order.getTotalItems();
+        int itemQuantity = order.getTotalItems();
         String itemName = getTitle(order);
 
         if (itemQuantity == 1) {
