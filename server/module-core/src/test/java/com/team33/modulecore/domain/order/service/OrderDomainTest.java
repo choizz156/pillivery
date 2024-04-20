@@ -2,21 +2,21 @@ package com.team33.modulecore.domain.order.service;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.modulecore.domain.EnableDomainTest;
+import com.team33.modulecore.domain.EnableOrderTest;
 import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.item.repository.ItemRepository;
 import com.team33.modulecore.order.repository.OrderRepository;
-import com.team33.modulecore.user.repository.UserRepository;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-@EnableDomainTest
+@EnableOrderTest
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-public abstract class ServiceTest {
+public abstract class OrderDomainTest {
 
     final FixtureMonkey fixtureMonkey = FixtureMonkey
         .builder()

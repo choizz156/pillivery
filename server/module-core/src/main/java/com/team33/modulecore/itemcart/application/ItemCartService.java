@@ -6,7 +6,7 @@ import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.user.domain.User;
-import com.team33.modulecore.user.repository.UserRepository;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import java.util.List;

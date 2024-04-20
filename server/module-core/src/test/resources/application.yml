@@ -1,4 +1,7 @@
 spring:
+  config:
+    activate:
+      on-profile: test
   security:
     oauth2:
       client:
@@ -27,6 +30,8 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+
+
   quartz:
     properties:
       org:
@@ -38,7 +43,6 @@ spring:
 
     job-store-type: memory
 
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -47,10 +51,6 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
-
-  config:
-    activate:
-      on-profile: test
 #    defer-datasource-initialization: true
 
 logging:

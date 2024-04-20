@@ -12,6 +12,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,20 +43,20 @@ public class Order extends BaseEntity {
 
     @Column(nullable = false, name = "subscription")
     private boolean subscription;
-
-    @Embedded
-    private Address address;
-
-    private int totalItem; // 주문에 포함된 아이템 종류
+//
+//    @Embedded
+//    private Address address;
 
     @Embedded
     private Price price;
+
+    private int totalItems;
 
     private String sid;
 
     private String tid;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -68,22 +69,16 @@ public class Order extends BaseEntity {
     @Transient
     private int totalQuantity;
 
-    public void addSid(String sid) {
-        this.sid = sid;
-    }
-
-    public void addTid(String tid) {
-        this.tid = tid;
-    }
-
     public Order(Order origin) {
 
         this.name = origin.getName();
-        this.address = new Address(origin.getAddress().getCity(),
-            origin.getAddress().getDetailAddress());
+//        this.address = new Address(
+//            origin.getAddress().getCity(),
+//            origin.getAddress().getDetailAddress()
+//        );
         this.phone = origin.getPhone();
         this.subscription = origin.isSubscription();
-        this.totalItem = origin.getTotalItem();
+        this.totalItems = origin.getTotalItems();
         this.price = new Price(price.getTotalPrice(), price.getTotalDiscountPrice(),
             price.getExpectPrice());
         this.user = origin.getUser();
@@ -97,20 +92,20 @@ public class Order extends BaseEntity {
     @Builder
     private Order(
         String name,
-        Address address,
+//        Address address,
         String phone,
         boolean subscription,
-        int totalItem,
+        int totalItems,
         User user,
         List<OrderItem> orderItems,
         OrderStatus orderStatus,
         int totalQuantity
     ) {
         this.name = name;
-        this.address = address;
+//        this.address = address;
         this.phone = phone;
         this.subscription = subscription;
-        this.totalItem = totalItem;
+        this.totalItems = totalItems;
         this.user = user;
         this.orderItems = orderItems;
         this.orderStatus = orderStatus;
@@ -119,40 +114,48 @@ public class Order extends BaseEntity {
 
     public static Order create(List<OrderItem> orderItems, boolean subscription, User user) {
         Order order = Order.builder()
-            .address(new Address(user.getAddress().getCity(), user.getAddress().getDetailAddress()))
+//            .address(new Address(user.getCityAtAddress(), user.getDetailAddress()))
             .name(user.getRealName())
             .phone(user.getPhone())
             .subscription(subscription)
             .user(user)
             .orderStatus(OrderStatus.ORDER_COMPLETE)
             .orderItems(orderItems)
-            .totalItem(orderItems.size())
+            .totalItems(orderItems.size())
             .build();
 
-        order.calculatePrice(order.getOrderItems());
+        order.addPrice(order.getOrderItems());
         return order;
     }
 
-    private void calculatePrice(List<OrderItem> orderItems) {
-       this.price = new Price(orderItems);
+    public void addSid(String sid) {
+        this.sid = sid;
     }
 
+    public void addTid(String tid) {
+        this.tid = tid;
+    }
+
+    public String getOrdererCity(){
+        return this.user.getCityAtAddress();
+    }
+
+    public String getOrdererDetailAddress(){
+        return this.user.getDetailAddress();
+    }
+
+    private void addPrice(List<OrderItem> orderItems) {
+        this.price = new Price(orderItems);
+    }
 
     private void countQuantity() { // 주문의 담긴 상품의 총량을 구하는 메서드
 
-        if (this.orderItems == null) {
+        if (this.orderItems.isEmpty()) {
             this.totalQuantity = 0;
             return;
         }
 
-        int totalquantity = 0;
-
-        for (OrderItem orderItem : orderItems) {
-            int quantity = orderItem.getOrderItemInfo().getQuantity();
-            totalquantity += quantity;
-        }
-
-       this.totalQuantity = totalquantity;
+        this.totalQuantity =
+            this.orderItems.stream().map(OrderItem::getQuantity).reduce(0, Integer::sum);
     }
-
 }

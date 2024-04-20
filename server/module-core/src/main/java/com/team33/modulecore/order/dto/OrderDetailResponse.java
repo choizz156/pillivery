@@ -13,7 +13,7 @@ public class OrderDetailResponse {
 
     private long orderId;
     private String name;
-    private String address;
+    private String city;
     private String detailAddress;
     private String phone;
     private int totalItems;
@@ -31,7 +31,7 @@ public class OrderDetailResponse {
     private OrderDetailResponse(
         long orderId,
         String name,
-        String address,
+        String city,
         String detailAddress,
         String phone,
         int totalItems,
@@ -47,7 +47,7 @@ public class OrderDetailResponse {
     ) {
         this.orderId = orderId;
         this.name = name;
-        this.address = address;
+        this.city = city;
         this.detailAddress = detailAddress;
         this.phone = phone;
         this.totalItems = totalItems;
@@ -64,18 +64,23 @@ public class OrderDetailResponse {
 
     public static OrderDetailResponse of(Order order) {
         return OrderDetailResponse.builder()
-            .address(order.getAddress().getCity())
-            .detailAddress(order.getAddress().getDetailAddress())
+            .city(order.getOrdererCity())
+            .detailAddress(order.getOrdererDetailAddress())
             .orderId(order.getOrderId())
             .name(order.getName())
             .phone(order.getPhone())
-            .totalItems(order.getTotalItem())
+            .totalItems(order.getTotalItems())
             .totalPrice(order.getPrice().getTotalPrice())
             .totalDiscountPrice(order.getPrice().getTotalDiscountPrice())
             .expectPrice(order.getPrice().getExpectPrice())
             .subscription(order.isSubscription())
-            .itemOrders(new MultiResponseDto<>(
-                order.getOrderItems().stream().map(OrderSimpleResponse::of).collect(Collectors.toList()))
+            .itemOrders(
+                new MultiResponseDto<>(
+                    order.getOrderItems()
+                        .stream()
+                        .map(OrderSimpleResponse::of)
+                        .collect(Collectors.toList())
+                )
             )
             .orderStatus(order.getOrderStatus())
             .createdAt(order.getCreatedAt())

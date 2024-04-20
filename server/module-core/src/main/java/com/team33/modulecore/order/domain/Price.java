@@ -2,7 +2,6 @@ package com.team33.modulecore.order.domain;
 
 import com.team33.modulecore.orderitem.domain.OrderItem;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -15,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Price {
 
-    @Column(nullable = false)
     private int totalPrice;
 
     private int totalDiscountPrice;
@@ -53,8 +51,10 @@ public class Price {
             return 0;
         }
 
-        return orderItems.stream().mapToInt(
-            oi -> oi.getQuantity() * oi.getItem().getPrice() * oi.getItem().getDiscountRate()/100
-        ).sum();
+        return orderItems.stream()
+            .mapToInt(
+                oi -> oi.getQuantity() * oi.getItem().getPrice() * oi.getItem().getDiscountRate() / 100
+            )
+            .sum();
     }
 }

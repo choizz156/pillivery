@@ -17,23 +17,21 @@ import com.team33.modulecore.user.dto.UserPostDto;
 import com.team33.modulecore.user.dto.UserPostOauthDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;
-import com.team33.modulecore.user.repository.UserRepository;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @EnableUserTest
 @Transactional
-@SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class UserServiceTest {
 
     @Autowired
@@ -48,20 +46,27 @@ class UserServiceTest {
     @Autowired
     private DuplicationVerifier duplicationVerifier;
 
+    @BeforeEach
+    void setUpEach(){
+        var userDto = joinDto("test@test.com", "test1", "010-0000-0001");
+        var userServicePostDto = UserServicePostDto.to(userDto);
+        userService.join(userServicePostDto);
+    }
+
+
 
     @DisplayName("회원가입을 할 수 있다.")
     @Test
     void 회원가입() throws Exception {
         //given
-        UserServicePostDto userServicePostDto = getUserServiceDto();
+        var userServicePostDto = getUserServiceDto();
 
         //when
         userService.join(userServicePostDto);
         List<User> users = userRepository.findAll();
 
         //then
-        assertThat(users).hasSize(1);
-        User user = users.get(0);
+        User user = users.get(1);
         assertThat(user.getEmail()).isEqualTo("test1@gmail.com");
         assertThat(user.getDisplayName()).isEqualTo("test22");
         assertThat(user.getPhone()).isEqualTo("010-1112-1111");
@@ -70,10 +75,10 @@ class UserServiceTest {
         assertThat(user.getAddress().getDetailAddress()).isEqualTo("101 번지");
     }
 
-    private static Stream<Arguments> provideDuplicateUserInfoOnJoin() {
-        UserPostDto duplicateEmail = join("test@test.com", "test", "010-0000-0000");
-        UserPostDto duplicateDisplayName = join("test1@test1.com", "test1", "010-0000-0000");
-        UserPostDto duplicatePhone = join("test2@test.com", "test2", "010-0000-0001");
+    private static Stream<Arguments> provideDuplicateUserInfoOnJoinDto() {
+        var duplicateEmail = joinDto("test@test.com", "test", "010-0000-0000");
+        var duplicateDisplayName = joinDto("test1@test1.com", "test1", "010-0000-0000");
+        var duplicatePhone = joinDto("test2@test.com", "test2", "010-0000-0001");
 
         return Stream.of(
             Arguments.arguments(UserServicePostDto.to(duplicateEmail)),
@@ -84,12 +89,12 @@ class UserServiceTest {
 
     @DisplayName("이메일, 닉네임, 전화번호가 중복될 시 예외를 던진다.")
     @ParameterizedTest
-    @MethodSource("provideDuplicateUserInfoOnJoin")
+    @MethodSource("provideDuplicateUserInfoOnJoinDto")
     void 회원_가입_중복_예외(UserServicePostDto userPostDto) throws Exception {
         //given
-        UserPostDto test1 = join("test@test.com", "test1", "010-0000-0001");
-        UserServicePostDto userServicePostDto = UserServicePostDto.to(test1);
-        userService.join(userServicePostDto);
+//        var userDto = joinDto("test@test.com", "test1", "010-0000-0001");
+//        var userServicePostDto = UserServicePostDto.to(userDto);
+//        userService.join(userServicePostDto);
         //then
         assertThatThrownBy(() -> userService.join(userPostDto))
             .isInstanceOf(BusinessLogicException.class);
@@ -99,10 +104,14 @@ class UserServiceTest {
     @Test
     void 추가_정보_기입() throws Exception {
         //given
-        User user = User.builder().realName("testset").email("test@gmail.com").roles(UserRoles.USER)
+        User user = User.builder()
+            .realName("testset")
+            .email("test@gmail.com")
+            .roles(UserRoles.USER)
             .build();
+
         userRepository.save(user);
-        OAuthUserServiceDto oAuthUserServiceDto = OAuthUserServiceDto.to(oauthJoin());
+        var oAuthUserServiceDto = OAuthUserServiceDto.to(oauthJoinDto());
 
         //when
         User result = userService.addOAuthInfo(oAuthUserServiceDto);
@@ -115,7 +124,7 @@ class UserServiceTest {
     }
 
     private static Stream<Arguments> provideDuplicateUserInfoOnOauth() {
-        UserPostOauthDto duplicatePhone = UserPostOauthDto.builder()
+        var duplicatePhone = UserPostOauthDto.builder()
             .city("서울")
             .detailAddress("한국아파트")
             .email("test5@test.com")
@@ -123,7 +132,7 @@ class UserServiceTest {
             .phone("010-0000-0000")
             .build();
 
-        UserPostOauthDto duplicateDisplayName =
+        var duplicateDisplayName =
             UserPostOauthDto.builder()
                 .city("서울")
                 .detailAddress("한국아파트")
@@ -143,25 +152,25 @@ class UserServiceTest {
     @MethodSource("provideDuplicateUserInfoOnOauth")
     void 소셜_회원_중복(UserPostOauthDto oauthDto) throws Exception {
         //given
-        UserPostDto test1 = join("test@test.com", "test1", "010-0000-0000");
-        UserServicePostDto userServicePostDto = UserServicePostDto.to(test1);
-        userService.join(userServicePostDto);
-        OAuthUserServiceDto oAuthUserServiceDto = OAuthUserServiceDto.to(oauthDto);
+//        var test1 = joinDto("test@test.com", "test1", "010-0000-0000");
+//        var userServicePostDto = UserServicePostDto.to(test1);
+//        userService.join(userServicePostDto);
+        var oAuthUserServiceDto = OAuthUserServiceDto.to(oauthDto);
         //when then
         assertThatThrownBy(() ->  userService.addOAuthInfo(oAuthUserServiceDto) )
-        	.isInstanceOf(BusinessLogicException.class)
-        	.hasMessageContaining("");
+        	.isInstanceOf(BusinessLogicException.class);
     }
 
     @DisplayName("회원 탈퇴시 회원 상태가 withdrawal로 변경된다.")
     @Test
     void 회원_탈퇴() throws Exception {
-
         //given
-        UserServicePostDto userServicePostDto = getUserServiceDto();
+        var userServicePostDto = getUserServiceDto();
         long userId = userService.join(userServicePostDto);
+
         //when
         User user = userService.deleteUser(userId);
+
         //then
         assertThat(user.getUserStatus()).isEqualTo(UserStatus.USER_WITHDRAWAL);
     }
@@ -170,7 +179,7 @@ class UserServiceTest {
     @Test
     void 회원_정보_조회() throws Exception {
         //given
-        UserServicePostDto userServicePostDto = getUserServiceDto();
+        var userServicePostDto = getUserServiceDto();
         long userId = userService.join(userServicePostDto);
 
         //when
@@ -184,7 +193,7 @@ class UserServiceTest {
     @Test
     void 회원_정보_수정() throws Exception {
         //given
-        UserServicePostDto userServicePostDto = getUserServiceDto();
+        var userServicePostDto = getUserServiceDto();
         long userId = userService.join(userServicePostDto);
 
         UserPatchDto userPatchDto = UserPatchDto.builder()
@@ -195,7 +204,7 @@ class UserServiceTest {
             .realName("홍홍홍")
             .build();
 
-        UserServicePatchDto userServicePatchDto = UserServicePatchDto.to(userPatchDto);
+        var userServicePatchDto = UserServicePatchDto.to(userPatchDto);
 
         //when
         User user = userService.updateUser(userServicePatchDto, userId);
@@ -208,11 +217,11 @@ class UserServiceTest {
     }
 
     private UserServicePostDto getUserServiceDto() {
-        UserPostDto postDto = join("test1@gmail.com", "test22", "010-1112-1111");
+        var postDto = joinDto("test1@gmail.com", "test22", "010-1112-1111");
         return UserServicePostDto.to(postDto);
     }
 
-    private static UserPostDto join(String email, String displayName, String phone) {
+    private static UserPostDto joinDto(String email, String displayName, String phone) {
 
         String password = "sdfsdfe!1";
         String city = "서울시 부평구 송도동";
@@ -230,7 +239,7 @@ class UserServiceTest {
             .build();
     }
 
-    private UserPostOauthDto oauthJoin() {
+    private UserPostOauthDto oauthJoinDto() {
 
         String email = "test@gmail.com";
         String displayName = "test2";
@@ -246,5 +255,4 @@ class UserServiceTest {
             .displayName(displayName)
             .build();
     }
-
 }

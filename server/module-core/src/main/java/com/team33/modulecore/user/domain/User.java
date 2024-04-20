@@ -134,6 +134,14 @@ public class User extends BaseEntity {
     public void withdrawal() {
         this.userStatus = UserStatus.USER_WITHDRAWAL;
     }
+
+    public String getCityAtAddress(){
+        return this.address.getCity();
+    }
+
+    public String getDetailAddress(){
+        return this.address.getDetailAddress();
+    }
 }
 
 

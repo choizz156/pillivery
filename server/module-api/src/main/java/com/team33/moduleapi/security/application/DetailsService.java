@@ -3,7 +3,7 @@ package com.team33.moduleapi.security.application;
 import com.team33.moduleapi.security.domain.UserDetailsEntity;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.UserStatus;
-import com.team33.modulecore.user.repository.UserRepository;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

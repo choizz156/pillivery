@@ -7,7 +7,7 @@ import com.team33.modulecore.orderitem.repository.OrderItemRepository;
 import com.team33.modulecore.order.repository.OrderRepository;
 import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.user.domain.User;
-import com.team33.modulecore.user.repository.UserRepository;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import java.util.List;

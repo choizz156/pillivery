@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 
-class OrderServiceTest extends ServiceTest {
+class OrderServiceTest extends OrderDomainTest {
 
     @Transactional
     @DisplayName("단건 order 객체를 생성할 수 있다.")
@@ -36,9 +36,8 @@ class OrderServiceTest extends ServiceTest {
         assertThat(order.getPrice()).isEqualTo(price);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ORDER_COMPLETE);
         assertThat(order.getOrderItems()).hasSize(1);
-        assertThat(order.getTotalItem()).isEqualTo(1);
+        assertThat(order.getTotalItems()).isEqualTo(1);
         assertThat(order.getUser()).isEqualTo(user);
-        assertThat(order.getAddress()).isEqualTo(user.getAddress());
     }
 
     private User getUser() {

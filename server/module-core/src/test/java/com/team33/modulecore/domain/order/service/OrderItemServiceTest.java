@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class OrderItemServiceTest extends ServiceTest {
+class OrderItemServiceTest extends OrderDomainTest {
 
 
     @DisplayName("orderItem을 1개 생성할 수 있다.")
@@ -130,7 +130,6 @@ class OrderItemServiceTest extends ServiceTest {
         OrderItemInfo orderItemInfo = OrderItemInfo.of(1, false, 30);
         return orderItemService.getOrderItemSingle(item.getItemId(), orderItemInfo);
     }
-
 
     private Item getItem(String name) {
         Item sampleItem = fixtureMonkey.giveMeBuilder(Item.class)
