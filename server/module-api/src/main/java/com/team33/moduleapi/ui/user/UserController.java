@@ -71,7 +71,7 @@ public class UserController {
     @PatchMapping("/{userId}")
     public SingleResponseDto<UserResponse> updateInfo(
         @Valid @RequestBody UserPatchDto userDto,
-        @PathVariable long userId
+        @PathVariable Long userId
     ) {
         UserServicePatchDto userServicePatchDto = UserServicePatchDto.to(userDto);
         User user = userService.updateUser(userServicePatchDto, userId);
@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public SingleResponseDto<UserResponse> getUserInfo(@PathVariable long userId) {
+    public SingleResponseDto<UserResponse> getUserInfo(@PathVariable Long userId) {
         User loginUser = userService.getLoginUser1(userId);
         return new SingleResponseDto<>(UserResponse.of(loginUser));
     }
@@ -91,7 +91,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public SingleResponseDto<String> deleteUser(@PathVariable long userId, HttpServletRequest request) {
+    public SingleResponseDto<String> deleteUser(@PathVariable Long userId, HttpServletRequest request) {
         User user = userService.deleteUser(userId);
         logout.doLogout(request);
         return new SingleResponseDto<>(user.getUserStatus().name());

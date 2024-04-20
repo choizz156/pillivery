@@ -1,18 +1,18 @@
 package com.team33.moduleapi.ui.order;
 
 
+import com.team33.modulecore.cart.application.CartService;
+import com.team33.modulecore.common.SingleResponseDto;
+import com.team33.modulecore.itemcart.application.ItemCartService;
+import com.team33.modulecore.itemcart.domain.ItemCart;
+import com.team33.modulecore.order.application.OrderService;
+import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.dto.OrderDetailResponse;
 import com.team33.modulecore.order.dto.OrderPostDto;
-import com.team33.modulecore.itemcart.domain.ItemCart;
-import com.team33.modulecore.cart.application.CartService;
-import com.team33.modulecore.itemcart.application.ItemCartService;
-import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.orderitem.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderService;
+import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.orderitem.domain.OrderItemInfo;
 import com.team33.modulecore.user.application.UserService;
-import com.team33.modulecore.common.SingleResponseDto;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userId}/single")
     public SingleResponseDto postSingleOrder(
-        @PathVariable long userId,
+        @PathVariable Long userId,
         @RequestBody @Valid OrderPostDto orderPostDto
     ) {
         OrderItemInfo orderItemInfo = OrderItemInfo.of(
@@ -65,7 +65,7 @@ public class OrderController {
     @PostMapping("/{userId}/cart")// 장바구니에서 주문요청을 하는 경우
     public SingleResponseDto postOrderInCart(
         @RequestParam(value = "subscription") boolean subscription,
-        @PathVariable long userId
+        @PathVariable Long userId
     ) {
         List<ItemCart> itemCarts = itemCartService.findItemCarts(userId, subscription);
         List<OrderItem> orderItems = orderItemService.getOrderItemsInCart(itemCarts);
