@@ -5,14 +5,13 @@ import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;
-import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,16 +57,16 @@ public class UserService {
             () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
-    public User getLoginUser() {
-        String principal = (String) SecurityContextHolder
-            .getContext()
-            .getAuthentication()
-            .getPrincipal();
-
-        Optional<User> userOptional = userRepository.findByEmail(principal);
-        return userOptional.orElseThrow(
-            () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-    }
+//    public User getLoginUser() {
+//        String principal = (String) SecurityContextHolder
+//            .getContext()
+//            .getAuthentication()
+//            .getPrincipal();
+//
+//        Optional<User> userOptional = userRepository.findByEmail(principal);
+//        return userOptional.orElseThrow(
+//            () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+//    }
 
     private void makeCart(User user) {
         Cart cart = Cart.createCart(user);

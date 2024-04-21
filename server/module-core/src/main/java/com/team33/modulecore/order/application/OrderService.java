@@ -1,15 +1,17 @@
 package com.team33.modulecore.order.application;
 
-import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.orderitem.repository.OrderItemRepository;
-import com.team33.modulecore.order.repository.OrderRepository;
-import com.team33.modulecore.orderitem.application.OrderItemService;
-import com.team33.modulecore.user.domain.User;
-import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.infra.OrderPageRequest;
+import com.team33.modulecore.order.domain.OrderRepository;
+import com.team33.modulecore.order.infra.SortType;
+import com.team33.modulecore.orderitem.application.OrderItemService;
+import com.team33.modulecore.orderitem.domain.OrderItem;
+import com.team33.modulecore.orderitem.repository.OrderItemRepository;
+import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -35,11 +37,6 @@ public class OrderService {
         return order;
     }
 
-
-    public Order createOrder(Order order) {
-        return orderRepository.save(order);
-    }
-
     public void cancelOrder(long orderId) {
         Order findOrder = findOrder(orderId);
         findOrder.setOrderStatus(OrderStatus.ORDER_CANCEL);
@@ -57,21 +54,27 @@ public class OrderService {
             () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
     }
 
-
-    public Page<Order> findOrders(User user, int page, boolean subscription) {
-        if (subscription) {
-            Page<Order> findAllOrder = orderRepository.findAllByUserAndSubscriptionAndOrderStatusNot(
-                PageRequest.of(page, 7, Sort.by("orderId").descending()),
-                user, true, OrderStatus.ORDER_REQUEST);
-
-            return findAllOrder;
-        }
-        Page<Order> findAllOrder = orderRepository.findAllByUserAndSubscriptionAndOrderStatusNotAndOrderStatusNot(
-            PageRequest.of(page, 7, Sort.by("orderId").descending()),
-            user, false, OrderStatus.ORDER_REQUEST, OrderStatus.ORDER_SUBSCRIBE);
-
-        return findAllOrder;
+    public Page<Order> findAllOrders(Long userId, int page, int size, boolean subscription) {
+        User user = findUser(userId);
+        return orderRepository.findPaidOrders(
+            OrderPageRequest.of(PageRequest.of(page, size), SortType.DESC),
+            user,
+            OrderStatus.ORDER_REQUEST,
+            subscription
+        );
     }
+
+//    public Page<Order> findOrders(User user, int page, boolean subscription) {
+//        if (subscription) {
+//            return orderRepository.findAllByUserAndSubscriptionAndOrderStatusNot(
+//                PageRequest.of(page, 7, Sort.by("orderId").descending()),
+//                user, true, OrderStatus.ORDER_REQUEST); //주문요청 빼고 다 가지고 와라 ,취소, 구독, 완료
+//        }
+//
+//        return orderRepository.findAllByUserAndSubscriptionAndOrderStatusNotAndOrderStatusNot(
+//            PageRequest.of(page, 7, Sort.by("orderId").descending()),
+//            user, false, OrderStatus.ORDER_REQUEST, OrderStatus.ORDER_SUBSCRIBE);
+//    }
 
     public Page<Order> findSubs(User user, int page) {
         Page<Order> findAllSubs = orderRepository.findAllByUserAndOrderStatus(
@@ -132,8 +135,12 @@ public class OrderService {
     }
 
     private Order createOrder(List<OrderItem> orderItems, boolean subscription, long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        User user = findUser(userId);
         return Order.create(orderItems, subscription, user);
+    }
+
+    private User findUser(long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 }

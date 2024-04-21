@@ -37,7 +37,7 @@ public class SubscriptionService {
 
     public void startSchedule(Order order, OrderItem orderItem) {
         applySchedule(order, orderItem);
-        log.info("orderId = {}, itemOrderId ={} ==> 스케쥴 설정완료", order.getOrderId());
+        log.info("orderId = {}, itemOrderId ={} ==> 스케쥴 설정완료", order.getId());
     }
 
     @Transactional
@@ -106,7 +106,7 @@ public class SubscriptionService {
 
     private void deleteSchedule(Order order, OrderItem orderItem) {
         log.info("delete schedule");
-        User user = getUser(order.getOrderId());
+        User user = getUser(order.getId());
         deleteSchedule(orderItem, user);
     }
 
@@ -152,13 +152,13 @@ public class SubscriptionService {
 
     private void applySchedule(Order order, OrderItem orderItem) {
         User user = order.getUser();
-        log.info("{} {}", order.getOrderId(), orderItem.getOrderItemId());
+        log.info("{} {}", order.getId(), orderItem.getOrderItemId());
         JobKey jobkey = jobKey(
             user.getId() + orderItem.getItem().getTitle(),
             String.valueOf(user.getId())
         );
 
-        JobDetail payDay = jobDetailService.build(jobkey, order.getOrderId(), orderItem);
+        JobDetail payDay = jobDetailService.build(jobkey, order.getId(), orderItem);
         Trigger lastTrigger = trigger.build(jobkey, orderItem);
 
         schedule(payDay, lastTrigger);

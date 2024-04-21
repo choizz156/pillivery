@@ -1,4 +1,4 @@
-package com.team33.modulecore.common;
+package com.team33.moduleapi.dto;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

@@ -9,7 +9,7 @@ import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.orderitem.domain.OrderItemInfo;
 import com.team33.modulecore.orderitem.repository.OrderItemRepository;
-import com.team33.modulecore.order.repository.OrderRepository;
+import com.team33.modulecore.order.domain.OrderRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import java.time.ZonedDateTime;

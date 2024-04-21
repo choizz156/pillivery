@@ -1,5 +1,9 @@
 package com.team33.modulecore.wish.application;
 
+import com.team33.modulecore.item.application.ItemService;
+import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.repository.ItemRepository;
+import com.team33.modulecore.user.application.UserService;
 import com.team33.modulecore.wish.domain.Wish;
 import com.team33.modulecore.wish.repository.WishRepository;
 import java.util.List;
@@ -8,11 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.item.repository.ItemRepository;
-import com.team33.modulecore.item.application.ItemService;
-import com.team33.modulecore.user.domain.User;
-import com.team33.modulecore.user.application.UserService;
 
 @Service
 @RequiredArgsConstructor
@@ -31,27 +30,27 @@ public class WishService {
     }
 
 
-    public Wish wishItem(long itemId, int isWish) {
-        User user = userService.getLoginUser();
-
-        Wish wish = wishRepository.findByItemAndUser(itemService.findVerifiedItem(itemId), user);
-
-        if (wish == null) {
-            Wish newWish = new Wish();
-            newWish.addItem(itemService.findVerifiedItem(itemId));
-            newWish.addUser(user);
-            newWish.setIsWish(isWish);
-            wishRepository.save(newWish);
-            refreshWishes(itemId);
-            return newWish;
-        } else {
-            wish.setIsWish(isWish);
-            wishRepository.save(wish);
-            refreshWishes(itemId);
-            return wish;
-        }
-
-    }
+//    public Wish wishItem(long itemId, int isWish) {
+//        User user = userService.getLoginUser();
+//
+//        Wish wish = wishRepository.findByItemAndUser(itemService.findVerifiedItem(itemId), user);
+//
+//        if (wish == null) {
+//            Wish newWish = new Wish();
+//            newWish.addItem(itemService.findVerifiedItem(itemId));
+//            newWish.addUser(user);
+//            newWish.setIsWish(isWish);
+//            wishRepository.save(newWish);
+//            refreshWishes(itemId);
+//            return newWish;
+//        } else {
+//            wish.setIsWish(isWish);
+//            wishRepository.save(wish);
+//            refreshWishes(itemId);
+//            return wish;
+//        }
+//
+//    }
 
     public int getWishes(long itemId) {
         int wishValue = wishRepository.findWishValue(itemId);

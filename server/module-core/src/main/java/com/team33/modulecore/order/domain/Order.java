@@ -2,6 +2,7 @@ package com.team33.modulecore.order.domain;
 
 
 import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,12 +30,13 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity(name = "orders")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    @Column(name = "order_id")
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -119,7 +122,7 @@ public class Order extends BaseEntity {
             .phone(user.getPhone())
             .subscription(subscription)
             .user(user)
-            .orderStatus(OrderStatus.ORDER_COMPLETE)
+            .orderStatus(OrderStatus.ORDER_REQUEST)
             .orderItems(orderItems)
             .totalItems(orderItems.size())
             .build();
@@ -144,6 +147,10 @@ public class Order extends BaseEntity {
         return this.user.getDetailAddress();
     }
 
+    public Item getFirstItem(){
+        return orderItems.get(0).getItem();
+    }
+
     private void addPrice(List<OrderItem> orderItems) {
         this.price = new Price(orderItems);
     }
@@ -156,6 +163,8 @@ public class Order extends BaseEntity {
         }
 
         this.totalQuantity =
-            this.orderItems.stream().map(OrderItem::getQuantity).reduce(0, Integer::sum);
+            this.orderItems.stream()
+                .map(OrderItem::getQuantity)
+                .reduce(0, Integer::sum);
     }
 }

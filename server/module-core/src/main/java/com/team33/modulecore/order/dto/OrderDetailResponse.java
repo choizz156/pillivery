@@ -1,9 +1,10 @@
 package com.team33.modulecore.order.dto;
 
-import com.team33.modulecore.common.MultiResponseDto;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.orderitem.dto.OrderItemSimpleResponse;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class OrderDetailResponse {
     private int totalDiscountPrice;
     private int expectPrice;
     private boolean subscription;
-    private MultiResponseDto<OrderSimpleResponse> itemOrders;
+    private  List<OrderItemSimpleResponse> itemOrders;
     private OrderStatus orderStatus;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
@@ -39,7 +40,7 @@ public class OrderDetailResponse {
         int totalDiscountPrice,
         int expectPrice,
         boolean subscription,
-        MultiResponseDto<OrderSimpleResponse> itemOrders,
+        List<OrderItemSimpleResponse> itemOrders,
         OrderStatus orderStatus,
         ZonedDateTime createdAt,
         ZonedDateTime updatedAt,
@@ -66,7 +67,7 @@ public class OrderDetailResponse {
         return OrderDetailResponse.builder()
             .city(order.getOrdererCity())
             .detailAddress(order.getOrdererDetailAddress())
-            .orderId(order.getOrderId())
+            .orderId(order.getId())
             .name(order.getName())
             .phone(order.getPhone())
             .totalItems(order.getTotalItems())
@@ -75,12 +76,10 @@ public class OrderDetailResponse {
             .expectPrice(order.getPrice().getExpectPrice())
             .subscription(order.isSubscription())
             .itemOrders(
-                new MultiResponseDto<>(
                     order.getOrderItems()
                         .stream()
-                        .map(OrderSimpleResponse::of)
+                        .map(OrderItemSimpleResponse::of)
                         .collect(Collectors.toList())
-                )
             )
             .orderStatus(order.getOrderStatus())
             .createdAt(order.getCreatedAt())

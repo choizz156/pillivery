@@ -13,7 +13,7 @@ public class ParameterProvider extends ParamsConst {
     public MultiValueMap<String, String> getOneTimeReqsParams(Order order) {
         var commonReqsParams = getRequestParams(order);
         commonReqsParams.add(CID, ONE_TIME_CID);
-        commonReqsParams.add(APPROVAL_URL, ONE_TIME_APPROVAL_URL + order.getOrderId());
+        commonReqsParams.add(APPROVAL_URL, ONE_TIME_APPROVAL_URL + order.getId());
 
         return commonReqsParams;
     }
@@ -96,7 +96,7 @@ public class ParameterProvider extends ParamsConst {
         return PaymentParams.builder().totalAmount(order.getPrice().getTotalPrice())
             .quantity(order.getTotalQuantity())
             .itemName(itemName)
-            .orderId(order.getOrderId())
+            .orderId(order.getId())
             .build();
     }
 

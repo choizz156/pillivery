@@ -20,7 +20,7 @@ public class ItemSimpleResponseDto {
     private int disCountPrice;
 
     @Builder
-    public ItemSimpleResponseDto(
+    private ItemSimpleResponseDto(
         long itemId,
         Brand brand,
         String thumbnail,

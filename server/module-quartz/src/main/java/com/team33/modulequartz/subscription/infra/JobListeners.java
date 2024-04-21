@@ -126,7 +126,7 @@ public class JobListeners implements JobListener {
             jobKey(user.getId() + orderItem.getItem().getTitle(),
                 String.valueOf(user.getId())
             );
-        return jobDetailService.build(jobkey, newOrder.getOrderId(), newOrderItem);
+        return jobDetailService.build(jobkey, newOrder.getId(), newOrderItem);
     }
 
     private Order getOrder(Long orderId) {

@@ -1,5 +1,6 @@
-package com.team33.modulecore.common;
+package com.team33.moduleapi.dto;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MultiResponseDto<T> {
+    private ZonedDateTime time = ZonedDateTime.now();
     private List<T> data;
     private PageInfo pageInfo;
 

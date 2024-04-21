@@ -1,24 +1,30 @@
 package com.team33.moduleapi.ui.order;
 
 
+import com.team33.moduleapi.dto.MultiResponseDto;
+import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.cart.application.CartService;
-import com.team33.modulecore.common.SingleResponseDto;
 import com.team33.modulecore.itemcart.application.ItemCartService;
 import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.dto.OrderDetailResponse;
 import com.team33.modulecore.order.dto.OrderPostDto;
+import com.team33.modulecore.order.dto.OrderSimpleResponse;
 import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.orderitem.domain.OrderItemInfo;
 import com.team33.modulecore.user.application.UserService;
 import java.util.List;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * The type Order controller.
+ */
 @Slf4j
 @Validated
 @RequiredArgsConstructor
@@ -41,10 +50,13 @@ public class OrderController {
     private final UserService userService;
 //    private final ItemMapper itemMapper;
 
+    /**
+     * 단건 주문 정보를 생성합니다.
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userId}/single")
     public SingleResponseDto postSingleOrder(
-        @PathVariable Long userId,
+        @NotNull @PathVariable Long userId,
         @RequestBody @Valid OrderPostDto orderPostDto
     ) {
         OrderItemInfo orderItemInfo = OrderItemInfo.of(
@@ -61,11 +73,14 @@ public class OrderController {
         return new SingleResponseDto<>(OrderDetailResponse.of(order));
     }
 
+    /**
+     * 장바구니에서 주문 요청을 하는 경우의 주문을 생성합니다.
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userId}/cart")// 장바구니에서 주문요청을 하는 경우
     public SingleResponseDto postOrderInCart(
-        @RequestParam(value = "subscription") boolean subscription,
-        @PathVariable Long userId
+        @NotNull @PathVariable Long userId,
+        @RequestParam(value = "subscription") Boolean subscription
     ) {
         List<ItemCart> itemCarts = itemCartService.findItemCarts(userId, subscription);
         List<OrderItem> orderItems = orderItemService.getOrderItemsInCart(itemCarts);
@@ -75,19 +90,33 @@ public class OrderController {
 
         return new SingleResponseDto<>(OrderDetailResponse.of(order));
     }
-//
+
+    /**
+     * 주문(일반, 정기) 목록을 불러 옵니다. (상세 x)
+     */
+    @GetMapping("/{userId}")
+    public MultiResponseDto getOrders(
+        @NotNull @PathVariable Long userId,
+        @Positive @RequestParam(defaultValue = "1") int page,
+        @Positive @RequestParam int size,
+        @RequestParam(value = "subscription", defaultValue = "false") boolean subscription
+    ) {
+
+        Page<Order> allOrders = orderService.findAllOrders(userId, page, size, subscription);
+        List<Order> orders = allOrders.getContent();
+        List<OrderSimpleResponse> ordersDto = OrderSimpleResponse.toList(orders);
+
+        return new MultiResponseDto<>(orders, allOrders);
+    }
 //    @GetMapping // 로그인 한 유저의 일반 / 정기 주문 목록 불러오기
-//    public ResponseEntity getOrders(
-//        @Positive @RequestParam(value = "page", defaultValue = "1") int page,
-//        @RequestParam(value = "subscription", defaultValue = "false") boolean subscription) {
-//        Page<Order> pageOrders = orderService.findOrders(userService.getLoginUser(), page - 1,
-//            subscription);
+//    public ResponseEntity getOrders(@Positive @RequestParam(value="page", defaultValue="1") int page,
+//        @RequestParam(value="subscription", defaultValue="false") boolean subscription) {
+//        Page<Order> pageOrders = orderService.findOrders(userService.getLoginUser(), page-1, subscription);
 //
 //        List<Order> orders = pageOrders.getContent();
 //
 //        return new ResponseEntity<>(new MultiResponseDto<>(
-//            orderMapper.ordersToOrderSimpleResponseDtos(orders, itemMapper), pageOrders),
-//            HttpStatus.OK);
+//            orderMapper.ordersToOrderSimpleResponseDtos(orders, itemMapper), pageOrders), HttpStatus.OK);
 //    }
 //
 //    @GetMapping("/subs") // 정기 구독 목록 불러오기
