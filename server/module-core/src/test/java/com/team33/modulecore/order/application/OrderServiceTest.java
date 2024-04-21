@@ -1,13 +1,13 @@
-package com.team33.modulecore.domain.order.service;
+package com.team33.modulecore.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.orderitem.domain.OrderItemInfo;
 import com.team33.modulecore.order.domain.Price;
+import com.team33.modulecore.orderitem.domain.OrderItem;
+import com.team33.modulecore.orderitem.domain.OrderItemInfo;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,6 @@ class OrderServiceTest extends OrderDomainTest {
         OrderItemInfo orderItemInfo = OrderItemInfo.of(1, false, 30);
         return orderItemService.getOrderItemSingle(item.getItemId(), orderItemInfo);
     }
-
 
     private Item getItem() {
         Item sampleItem = fixtureMonkey.giveMeBuilder(Item.class)

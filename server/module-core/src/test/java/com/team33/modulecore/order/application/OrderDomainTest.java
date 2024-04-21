@@ -1,15 +1,14 @@
-package com.team33.modulecore.domain.order.service;
+package com.team33.modulecore.order.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.modulecore.domain.EnableOrderTest;
+import com.team33.modulecore.EnableOrderTest;
 import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.item.repository.ItemRepository;
 import com.team33.modulecore.order.repository.OrderRepository;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.orderitem.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;

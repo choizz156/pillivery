@@ -1,4 +1,4 @@
-package com.team33.modulecore.domain.order.service;
+package com.team33.modulecore.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

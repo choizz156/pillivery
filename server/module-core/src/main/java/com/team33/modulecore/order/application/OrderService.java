@@ -1,12 +1,11 @@
 package com.team33.modulecore.order.application;
 
+import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.repository.OrderRepository;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.infra.OrderPageRequest;
-import com.team33.modulecore.order.domain.OrderRepository;
-import com.team33.modulecore.order.infra.SortType;
 import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.orderitem.repository.OrderItemRepository;
@@ -30,6 +29,7 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderItemService orderItemService;
     private final UserRepository userRepository;
+    private final UserFindHelper userFindHelper;
 
     public Order callOrder(List<OrderItem> orderItems, boolean subscription, long userId) {
         Order order = createOrder(orderItems, subscription, userId);
@@ -52,16 +52,6 @@ public class OrderService {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         return optionalOrder.orElseThrow(
             () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
-    }
-
-    public Page<Order> findAllOrders(Long userId, int page, int size, boolean subscription) {
-        User user = findUser(userId);
-        return orderRepository.findPaidOrders(
-            OrderPageRequest.of(PageRequest.of(page, size), SortType.DESC),
-            user,
-            OrderStatus.ORDER_REQUEST,
-            subscription
-        );
     }
 
 //    public Page<Order> findOrders(User user, int page, boolean subscription) {
@@ -135,12 +125,7 @@ public class OrderService {
     }
 
     private Order createOrder(List<OrderItem> orderItems, boolean subscription, long userId) {
-        User user = findUser(userId);
+        User user = userFindHelper.findUser(userId);
         return Order.create(orderItems, subscription, user);
-    }
-
-    private User findUser(long userId) {
-        return userRepository.findById(userId)
-            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 }

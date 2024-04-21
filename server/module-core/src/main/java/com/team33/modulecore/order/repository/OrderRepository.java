@@ -1,6 +1,8 @@
-package com.team33.modulecore.order.domain;
+package com.team33.modulecore.order.repository;
 
 
+import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderStatus;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,8 +12,8 @@ import org.springframework.data.repository.query.Param;
 import com.team33.modulecore.user.domain.User;
 
 public interface OrderRepository extends JpaRepository<Order, Long>, OrderRepositoryCustom {
-    Page<Order> findAllByUserAndSubscriptionAndOrderStatusNot(
-            Pageable pageable, User user, boolean subscription, OrderStatus orderStatus1);
+//    Page<Order> findAllByUserAndSubscriptionAndOrderStatusNot(
+//            Pageable pageable, User user, boolean subscription, OrderStatus orderStatus1);
 
     Page<Order> findAllByUserAndSubscriptionAndOrderStatusNotAndOrderStatusNot(
             Pageable pageable, User user, boolean subscription, OrderStatus orderStatus1, OrderStatus orderStatus2

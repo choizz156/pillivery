@@ -6,6 +6,7 @@ import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.cart.application.CartService;
 import com.team33.modulecore.itemcart.application.ItemCartService;
 import com.team33.modulecore.itemcart.domain.ItemCart;
+import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.dto.OrderDetailResponse;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderQueryService orderQueryService;
     private final OrderItemService orderItemService;
     private final ItemCartService itemCartService;
     private final CartService cartService;
@@ -102,7 +104,7 @@ public class OrderController {
         @RequestParam(value = "subscription", defaultValue = "false") boolean subscription
     ) {
 
-        Page<Order> allOrders = orderService.findAllOrders(userId, page, size, subscription);
+        Page<Order> allOrders = orderQueryService.findAllOrders(userId, page, size, subscription);
         List<Order> orders = allOrders.getContent();
         List<OrderSimpleResponse> ordersDto = OrderSimpleResponse.toList(orders);
 

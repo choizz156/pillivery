@@ -1,9 +1,9 @@
-package com.team33.modulecore.domain.user.service;
+package com.team33.modulecore.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.team33.modulecore.domain.EnableUserTest;
+import com.team33.modulecore.EnableUserTest;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.order.domain.Address;
 import com.team33.modulecore.user.application.UserService;

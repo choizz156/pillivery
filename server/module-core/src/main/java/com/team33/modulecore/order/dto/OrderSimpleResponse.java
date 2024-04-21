@@ -6,13 +6,10 @@ import com.team33.modulecore.order.domain.OrderStatus;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderSimpleResponse { // 주문 목록 조회
 
     private long orderId;
@@ -60,7 +57,7 @@ public class OrderSimpleResponse { // 주문 목록 조회
             .subscription(order.isSubscription())
             .item(ItemSimpleResponseDto.of(order.getFirstItem()))
             .createdAt(order.getCreatedAt())
-            .createdAt(order.getUpdatedAt())
+            .updatedAt(order.getUpdatedAt())
             .build();
     }
 }
