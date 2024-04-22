@@ -19,6 +19,7 @@ import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 @EnableUserTest
-@Transactional
 class UserServiceTest {
 
     @Autowired
@@ -45,6 +44,10 @@ class UserServiceTest {
         userService.join(userServicePostDto);
     }
 
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAllInBatch();
+    }
 
     @DisplayName("회원가입을 할 수 있다.")
     @Test
@@ -83,9 +86,6 @@ class UserServiceTest {
     @MethodSource("provideDuplicateUserInfoOnJoinDto")
     void 회원_가입_중복_예외(UserServicePostDto userPostDto) throws Exception {
         //given
-//        var userDto = joinDto("test@test.com", "test1", "010-0000-0001");
-//        var userServicePostDto = UserServicePostDto.to(userDto);
-//        userService.join(userServicePostDto);
         //then
         assertThatThrownBy(() -> userService.join(userPostDto))
             .isInstanceOf(BusinessLogicException.class);
@@ -143,9 +143,6 @@ class UserServiceTest {
     @MethodSource("provideDuplicateUserInfoOnOauth")
     void 소셜_회원_중복(UserPostOauthDto oauthDto) throws Exception {
         //given
-//        var test1 = joinDto("test@test.com", "test1", "010-0000-0000");
-//        var userServicePostDto = UserServicePostDto.to(test1);
-//        userService.join(userServicePostDto);
         var oAuthUserServiceDto = OAuthUserServiceDto.to(oauthDto);
         //when then
         assertThatThrownBy(() ->  userService.addOAuthInfo(oAuthUserServiceDto) )
@@ -177,7 +174,7 @@ class UserServiceTest {
         User loginUser1 = userService.getLoginUser1(userId);
         //then
         User userOptional = userRepository.findById(userId).orElse(null);
-        assertThat(loginUser1).isEqualTo(userOptional);
+        assertThat(loginUser1.getId()).isEqualTo(userOptional.getId());
     }
 
     @DisplayName("회원 정보 수정를 수정할 수 있다.")

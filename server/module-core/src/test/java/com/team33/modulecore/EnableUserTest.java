@@ -1,5 +1,6 @@
 package com.team33.modulecore;
 
+import com.team33.modulecore.config.QueryDslConfig;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.user.application.DuplicationVerifier;
 import com.team33.modulecore.user.application.UserService;
@@ -24,7 +25,8 @@ import org.springframework.test.context.ContextConfiguration;
     UserRepository.class,
     UserService.class,
     PasswordConfig.class,
-    DuplicationVerifier.class
+    DuplicationVerifier.class,
+    QueryDslConfig.class
 })
 @EnableJpaRepositories(basePackages = "com.team33.modulecore")
 @EntityScan("com.team33.modulecore")

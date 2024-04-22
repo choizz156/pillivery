@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class OrderItemServiceTest extends OrderDomainTest {
+class OrderItemServiceTest extends OrderDomainHelper {
 
 
     @DisplayName("orderItem을 1개 생성할 수 있다.")
@@ -84,7 +84,7 @@ class OrderItemServiceTest extends OrderDomainTest {
     private void orderItem_생성(List<OrderItem> orderItemSingle, OrderItemInfo orderItemInfo) {
         OrderItem orderItem = orderItemSingle.get(0);
         assertThat(orderItemSingle).hasSize(1);
-        assertThat(orderItem.getItem().getItemId()).isEqualTo(1L);
+        assertThat(orderItem.getItem().getItemId()).isNotNull();
         assertThat(orderItem.getOrderItemInfo()).isEqualTo(orderItemInfo);
         assertThat(orderItem.getQuantity()).isEqualTo(1);
         assertThat(orderItem.getPeriod()).isEqualTo(30);

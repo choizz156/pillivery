@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @EnableOrderTest
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-public abstract class OrderDomainTest {
+public abstract class OrderDomainHelper {
 
     final FixtureMonkey fixtureMonkey = FixtureMonkey
         .builder()
