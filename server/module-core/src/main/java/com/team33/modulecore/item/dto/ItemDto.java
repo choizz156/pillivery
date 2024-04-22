@@ -4,13 +4,10 @@ import com.team33.modulecore.category.dto.CategoryDto.Post;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.nutritionFact.dto.NutritionFactDto;
 import com.team33.modulecore.nutritionFact.dto.NutritionFactDto.Response;
-import com.team33.modulecore.review.dto.ReviewResponseDto;
-import com.team33.modulecore.talk.dto.TalkAndCommentDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.team33.modulecore.common.MultiResponseDto;
 
 public class ItemDto {
 
@@ -57,8 +54,8 @@ public class ItemDto {
         private List<String> categories;
         private List<Response> nutritionFacts;
         private double starAvg;
-        private MultiResponseDto<ReviewResponseDto> reviews;
-        private MultiResponseDto<TalkAndCommentDto> talks;
+//        private MultiResponseDto<ReviewResponseDto> reviews;
+//        private MultiResponseDto<TalkAndCommentDto> talks;
     }
 
 
@@ -84,8 +81,8 @@ public class ItemDto {
     @Setter
     @NoArgsConstructor
     public static class ItemMainTop9Response {
-        private MultiResponseDto<ItemCategoryResponse> bestItem;
-        private MultiResponseDto<ItemCategoryResponse> saleItem;
-        private MultiResponseDto<ItemCategoryResponse> MdPickItem;
+//        private MultiResponseDto<ItemCategoryResponse> bestItem;
+//        private MultiResponseDto<ItemCategoryResponse> saleItem;
+//        private MultiResponseDto<ItemCategoryResponse> MdPickItem;
     }
 }

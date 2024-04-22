@@ -19,7 +19,7 @@ public class JobDetailService {
     public JobDetail build(JobKey jobKey, Long orderId, OrderItem orderItem) {
 
         log.warn("job detail orderId= {}", orderId);
-        log.warn("job datail itemOrderId = {}", orderItem.getOrderItemId());
+        log.warn("job datail itemOrderId = {}", orderItem.getId());
 
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put("orderId", orderId);

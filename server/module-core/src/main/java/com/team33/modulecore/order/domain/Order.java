@@ -26,9 +26,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Setter
 @Getter
+@DynamicUpdate
 @Entity(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
@@ -149,6 +151,10 @@ public class Order extends BaseEntity {
 
     public Item getFirstItem(){
         return orderItems.get(0).getItem();
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     private void addPrice(List<OrderItem> orderItems) {

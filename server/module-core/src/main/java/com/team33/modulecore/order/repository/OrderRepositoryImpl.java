@@ -10,11 +10,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderFindCondition;
+import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -27,7 +28,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
     @Override
     public Page<Order> searchOrders(
-        Pageable pageRequest,
+        OrderPageRequest pageRequest,
         OrderFindCondition orderFindCondition
     ) {
         List<Order> contents = queryFactory
@@ -37,7 +38,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 notOrderStatusRequest(orderFindCondition.getOrderStatus()),
                 isSubscription(orderFindCondition.isSubscription())
             )
-            .limit(pageRequest.getPageSize())
+            .limit(pageRequest.getSize())
             .offset(pageRequest.getOffset())
             .orderBy(getSort(pageRequest))
             .fetch();
@@ -51,10 +52,12 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 isSubscription(orderFindCondition.isSubscription())
             );
 
-        return PageableExecutionUtils.getPage(contents, pageRequest, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(
+            contents,
+            PageRequest.of(pageRequest.getPage(), pageRequest.getSize(), Sort.by(pageRequest.getSort(), "id")),
+            countQuery::fetchOne
+        );
     }
-
-
 
     private BooleanExpression userEq(User user) {
         return user == null ? null : order.user.eq(user);
@@ -63,19 +66,14 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {
         return StringUtils.isNullOrEmpty(orderStatus.name())
             ? null
-            : order.orderStatus.eq(orderStatus);
+            : order.orderStatus.eq(orderStatus).not();
     }
 
     private BooleanExpression isSubscription(boolean subscription) {
         return order.subscription.eq(subscription);
     }
 
-    private OrderSpecifier<Long> getSort(Pageable pageRequest) {
-        boolean isDESC = pageRequest.getSort().stream()
-            .map(Sort.Order::getDirection)
-            .limit(1)
-            .anyMatch(direction -> direction == Direction.DESC);
-
-        return isDESC ? order.id.desc() : order.id.asc();
+    private OrderSpecifier<Long> getSort(OrderPageRequest pageRequest) {
+       return pageRequest.getSort() == Direction.DESC ? order.id.desc() : order.id.asc();
     }
 }

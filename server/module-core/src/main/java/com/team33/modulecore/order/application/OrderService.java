@@ -4,21 +4,20 @@ import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.repository.OrderRepository;
 import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.repository.OrderRepository;
 import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.orderitem.repository.OrderItemRepository;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.List;
-import java.util.Optional;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Transactional
@@ -44,13 +43,9 @@ public class OrderService {
         orderRepository.save(findOrder);
     }
 
+    @Transactional(readOnly = true)
     public Order findOrder(long orderId) {
-        return findVerifiedOrder(orderId);
-    }
-
-    public Order findVerifiedOrder(long orderId) {
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        return optionalOrder.orElseThrow(
+        return orderRepository.findById(orderId).orElseThrow(
             () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
     }
 
@@ -94,12 +89,12 @@ public class OrderService {
 
     public void completeOrder(Long orderId) {
         Order order = findOrder(orderId);
-        order.setOrderStatus(OrderStatus.ORDER_COMPLETE);
+        order.changeOrderStatus(OrderStatus.ORDER_COMPLETE);
     }
 
     public void subsOrder(Long orderId) {
         Order order = findOrder(orderId);
-        order.setOrderStatus(OrderStatus.ORDER_SUBSCRIBE);
+        order.changeOrderStatus(OrderStatus.ORDER_SUBSCRIBE);
     }
 
     public Order deepCopy(Order order) {

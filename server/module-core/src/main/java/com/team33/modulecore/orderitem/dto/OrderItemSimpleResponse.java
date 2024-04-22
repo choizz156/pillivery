@@ -38,7 +38,7 @@ public class OrderItemSimpleResponse {
 
     public static OrderItemSimpleResponse of(OrderItem orderItem) {
         return OrderItemSimpleResponse.builder()
-            .itemOrderId(orderItem.getOrderItemId())
+            .itemOrderId(orderItem.getId())
             .quantity(orderItem.getQuantity())
             .period(orderItem.getPeriod())
             .subscription(orderItem.isSubscription())
