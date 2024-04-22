@@ -1,9 +1,15 @@
 package com.team33.modulecore.order.application;
 
+import static com.team33.modulecore.order.domain.QOrder.order;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.util.StringUtils;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.orderitem.domain.OrderItemInfo;
 import com.team33.modulecore.user.domain.User;
@@ -13,12 +19,42 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 class OrderQueryServiceTest extends OrderDomainTest {
 
     @Autowired
     OrderQueryService orderQueryService;
 
+    @Autowired
+    JPAQueryFactory jpaQueryFactory;
+
+    public List<Order> test(User user, OrderStatus status, boolean subscription) {
+        return jpaQueryFactory
+            .selectFrom(order)
+            .where(
+                userEq(user),
+                notOrderStatusRequest(status),
+                isSubscription(subscription)
+            )
+            .fetch();
+    }
+
+    private BooleanExpression userEq(User user) {
+        return user == null ? null : order.user.eq(user);
+    }
+
+    private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {
+        return StringUtils.isNullOrEmpty(orderStatus.name())
+            ? null
+            : order.orderStatus.eq(orderStatus).not();
+    }
+
+    private BooleanExpression isSubscription(boolean subscription) {
+        return order.subscription.eq(subscription);
+    }
+
+    @Transactional
     @DisplayName("유저의 전체 주문 목록을 조회할 수 있다.")
     @Test
     void 주문_목록_조회() throws Exception {
@@ -41,11 +77,23 @@ class OrderQueryServiceTest extends OrderDomainTest {
         orderService.completeOrder(order.getId());
 
         //when
-        Page<Order> allOrders = orderQueryService.findAllOrders(user.getId(), 5, 5, false);
-        List<Order> contents = allOrders.getContent();
+        Page<Order> allOrders = orderQueryService.findAllOrders(user.getId(), 1, 5, false);
 
         //then
-        assertThat(contents).hasSize(1);
+        List<Order> content = allOrders.getContent();
+        assertThat(allOrders.getNumberOfElements()).isEqualTo(1);
+        assertThat(content).hasSize(1)
+            .extracting("id", "user", "orderStatus")
+            .containsExactlyInAnyOrder(
+                tuple(order.getId(), user, OrderStatus.ORDER_COMPLETE)
+            );
+
+        assertThat(content.get(0).getOrderItems())
+            .hasSize(3)
+            .extracting("item")
+            .containsExactlyInAnyOrder(items.get(0), items.get(1), items.get(2));
+
+
     }
 
 
