@@ -48,7 +48,7 @@ public class KakaoPaymentFacade implements PaymentFacade {
                 kakaoPayApprove.approveFirstSubscription(tid, pgToken, orderId);
 
             order.addSid(approve.getSid());
-            orderService.subsOrder(orderId);
+            orderService.subscribeOrder(orderId);
             doKakaoScheduling(orderId);
             return approve;
         }

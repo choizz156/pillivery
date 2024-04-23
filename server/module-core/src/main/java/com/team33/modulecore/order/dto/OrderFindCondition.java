@@ -12,21 +12,21 @@ import lombok.NoArgsConstructor;
 public class OrderFindCondition {
 
     private User user;
-    private boolean isSubscription;
+    private Boolean subscription;
     private OrderStatus orderStatus;
 
     @Builder
     private OrderFindCondition(User user, boolean isSubscription, OrderStatus orderStatus) {
         this.user = user;
-        this.isSubscription = isSubscription;
+        this.subscription = isSubscription;
         this.orderStatus = orderStatus;
     }
 
-    public static OrderFindCondition to(User user, boolean subscription, OrderStatus orderStatus) {
+    public static OrderFindCondition to(User user, OrderStatus orderStatus) {
         return OrderFindCondition.builder()
-            .isSubscription(subscription)
             .user(user)
             .orderStatus(orderStatus)
             .build();
     }
+
 }

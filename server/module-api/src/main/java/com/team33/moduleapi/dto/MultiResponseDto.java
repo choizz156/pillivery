@@ -11,17 +11,18 @@ import org.springframework.data.domain.Page;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MultiResponseDto<T> {
+
     private ZonedDateTime time = ZonedDateTime.now();
     private List<T> data;
     private PageInfo pageInfo;
 
-    public MultiResponseDto(List<T> data, Page page) {
+    public MultiResponseDto(List<T> data, Page<T> page) {
         this.data = data;
         this.pageInfo = new PageInfo(
-                page.getNumber() + 1,
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages());
+            page.getNumber() + 1,
+            page.getSize(),
+            page.getTotalElements(),
+            page.getTotalPages());
     }
 
     public MultiResponseDto(List<T> data) {

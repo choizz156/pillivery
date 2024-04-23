@@ -23,5 +23,5 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderReposi
             "where io.item.itemId = :itemId and o.user.id = :userId and o.orderStatus not in :status")
     List<Order> findByItemAndUser(@Param("itemId") long itemId, @Param("userId") long userId, @Param("status") OrderStatus status);
 
-    Page<Order> findAllByUserAndOrderStatus(Pageable pageable, User user, OrderStatus orderStatus);
+//    Page<Order> findAllByUserAndOrderStatus(Pageable pageable, User user, OrderStatus orderStatus);
 }

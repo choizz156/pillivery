@@ -56,8 +56,8 @@ public class OrderItemService {
         orderItemList.add(orderItem);
     }
 
-    public OrderItem findItemOrder(long itemOrderId) {
-        Optional<OrderItem> optionalItemOrder = orderItemRepository.findById(itemOrderId);
+    public OrderItem findOrderItem(long orderItemId) {
+        Optional<OrderItem> optionalItemOrder = orderItemRepository.findById(orderItemId);
         OrderItem orderItem = optionalItemOrder.orElseThrow(() -> new BusinessLogicException(
             ExceptionCode.ORDER_NOT_FOUND));
 

@@ -135,7 +135,7 @@ public class SubscriptionService {
     }
 
     private OrderItem getItemOrder(Long itemOrderId) {
-        return orderItemService.findItemOrder(itemOrderId);
+        return orderItemService.findOrderItem(itemOrderId);
     }
 
     public User getUser(Long orderId) {

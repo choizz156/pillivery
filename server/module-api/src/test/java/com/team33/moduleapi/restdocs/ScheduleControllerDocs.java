@@ -97,7 +97,7 @@ class ScheduleControllerDocs extends WebRestDocsSupport {
             .willReturn(order);
         given(orderRepository.findById(anyLong()))
             .willReturn(Optional.ofNullable(order));
-        given(orderItemService.findItemOrder(anyLong()))
+        given(orderItemService.findOrderItem(anyLong()))
             .willReturn(orderItem);
 
         //다음 배송일 업데이트

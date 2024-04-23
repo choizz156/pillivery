@@ -1,12 +1,12 @@
 package com.team33.modulecore.order.dto;
 
-import lombok.AccessLevel;
+import com.team33.modulecore.common.PageDto;
+import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Sort.Direction;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Data
 public class OrderPageRequest {
 
     private static final int DEFAULT_PAGE_SIZE = 7;
@@ -14,12 +14,12 @@ public class OrderPageRequest {
     private static final int MIN_SIZE = 1;
     private static final Direction DEFAULT_SORT_TYPE = Direction.DESC;
 
-    private int page;
-    private int size;
-    private Direction sort;
+    private int page = MIN_SIZE;
+    private int size = DEFAULT_PAGE_SIZE;
+    private Direction sort = DEFAULT_SORT_TYPE;
 
-    private OrderPageRequest(int size, int page) {
-        this(size, page, DEFAULT_SORT_TYPE);
+    private OrderPageRequest(int page, int size) {
+        this(page, size, DEFAULT_SORT_TYPE);
     }
 
     private OrderPageRequest(int page, int size, Direction sort) {
@@ -36,13 +36,17 @@ public class OrderPageRequest {
         return new OrderPageRequest(page, size, sort);
     }
 
-    public long getOffset(){
+    public static OrderPageRequest of(PageDto pageDto) {
+        return new OrderPageRequest(pageDto.getPage(), pageDto.getSize(), pageDto.getSort());
+    }
+
+    public long getOffset() {
         return ((long) (this.page - 1) * this.size);
     }
 
     private int getSize(int size) {
         return size < DEFAULT_PAGE_SIZE
-            ? size
+            ? DEFAULT_PAGE_SIZE
             : Math.min(size, MAX_SIZE);
     }
 }

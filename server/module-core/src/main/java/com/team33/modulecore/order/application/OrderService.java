@@ -13,9 +13,6 @@ import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +35,7 @@ public class OrderService {
 
     public void cancelOrder(long orderId) {
         Order findOrder = findOrder(orderId);
-        findOrder.setOrderStatus(OrderStatus.ORDER_CANCEL);
+        findOrder.changeOrderStatus(OrderStatus.ORDER_CANCEL);
         orderItemService.minusSales(findOrder.getOrderItems()); // 주문 취소 -> 판매량 집계에서 제외
         orderRepository.save(findOrder);
     }
@@ -61,21 +58,25 @@ public class OrderService {
 //            user, false, OrderStatus.ORDER_REQUEST, OrderStatus.ORDER_SUBSCRIBE);
 //    }
 
-    public Page<Order> findSubs(User user, int page) {
-        Page<Order> findAllSubs = orderRepository.findAllByUserAndOrderStatus(
-            PageRequest.of(page, 6, Sort.by("orderId").descending()), user,
-            OrderStatus.ORDER_SUBSCRIBE);
+//    public Page<Order> findSubs(User user, int page) {
+//        Page<Order> findAllSubs = orderRepository.findAllByUserAndOrderStatus(
+//            PageRequest.of(page, 6, Sort.by("orderId").descending()), user,
+//            OrderStatus.ORDER_SUBSCRIBE);
+//
+//        return findAllSubs;
+//    }
 
-        return findAllSubs;
-    }
 
-    public Page<OrderItem> findAllSubs(User user, int page) {
-        Page<OrderItem> findAllSubs = orderItemRepository.findAllSubs(
-            PageRequest.of(page, 6, Sort.by("itemOrderId").descending()),
-            OrderStatus.ORDER_SUBSCRIBE, user.getId());
 
-        return findAllSubs;
-    }
+//    public Page<OrderItem> findAllSubs(User user, int page) {
+//        Page<OrderItem> findAllSubs = orderItemRepository.findAllSubs(
+//            PageRequest.of(page, 6, Sort.by("itemOrderId").descending()),
+//            OrderStatus.ORDER_SUBSCRIBE,
+//            user.getId()
+//        );
+//
+//        return findAllSubs;
+//    }
 
     public boolean isShopper(long itemId, long userId) { // 유저의 특정 아이템 구매여부 확인
         List<Order> order = orderRepository.findByItemAndUser(itemId, userId,
@@ -92,7 +93,7 @@ public class OrderService {
         order.changeOrderStatus(OrderStatus.ORDER_COMPLETE);
     }
 
-    public void subsOrder(Long orderId) {
+    public void subscribeOrder(Long orderId) {
         Order order = findOrder(orderId);
         order.changeOrderStatus(OrderStatus.ORDER_SUBSCRIBE);
     }
