@@ -86,15 +86,21 @@ public class UserController {
 
     @PostMapping("/logout")
     public SingleResponseDto<String> handleLogout(HttpServletRequest request) {
-        logout.doLogout(request);
+        String jws = getJws(request);
+        logout.doLogout(jws);
         return new SingleResponseDto<>(LOGOUT_COMPLETE);
     }
 
     @DeleteMapping("/{userId}")
     public SingleResponseDto<String> deleteUser(@PathVariable Long userId, HttpServletRequest request) {
         User user = userService.deleteUser(userId);
-        logout.doLogout(request);
+        String jws = getJws(request);
+        logout.doLogout(jws);
         return new SingleResponseDto<>(user.getUserStatus().name());
+    }
+
+    private String getJws(HttpServletRequest request) {
+        return jwtTokenProvider.extractJws(request);
     }
 }
 

@@ -28,8 +28,7 @@ public class Logout {
             .maxSize(1000)
             .build();
 
-    public void doLogout(HttpServletRequest request) {
-        String jws = jwtTokenProvider.extractJws(request);
+    public void doLogout(String jws) {
 
         if (isExpiredToken(jws)) {
             LOGOUT_STORE.put(LOGOUT_PREFIX + jws, "token");
@@ -43,7 +42,9 @@ public class Logout {
     }
 
     private boolean isExpiredToken(String jws) {
-        return jwtTokenProvider.getJws(jws, secretKey.getSecretKey()).getBody().getExpiration()
+        return jwtTokenProvider
+            .getJws(jws, secretKey.getSecretKey()).getBody()
+            .getExpiration()
             .after(new Date());
     }
 }

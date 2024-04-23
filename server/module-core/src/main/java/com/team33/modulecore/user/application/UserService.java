@@ -2,14 +2,12 @@ package com.team33.modulecore.user.application;
 
 import com.team33.modulecore.cart.domain.Cart;
 import com.team33.modulecore.cart.repository.CartRepository;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
+    private final UserFindHelper helper;
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
@@ -52,9 +51,7 @@ public class UserService {
     }
 
     public User getLoginUser1(long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        return userOptional.orElseThrow(
-            () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        return helper.findUser(userId);
     }
 
 //    public User getLoginUser() {
@@ -78,46 +75,29 @@ public class UserService {
     }
 
     private User addOauthUserInfo(OAuthUserServiceDto userDto) {
-        Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            makeCart(user);
-            user.addAdditionalOauthUserInfo(userDto);
-            return user;
-        }
-
-        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        User user = helper.findUserByEmail(userDto.getEmail());
+        makeCart(user);
+        user.addAdditionalOauthUserInfo(userDto);
+        return user;
     }
 
     private User withdrawal(long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.withdrawal();
-            return user;
-        }
-        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        User user = helper.findUser(userId);
+        user.withdrawal();
+        return user;
     }
 
     private User updateUserInfo(UserServicePatchDto userDto, long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.updateUserInfo(userDto);
-            String encodedPwd = passwordEncoder.encode(userDto.getPassword());
-            user.applyEncryptPassword(encodedPwd);
-            return user;
-        }
-
-        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        User user = helper.findUser(userId);
+        user.updateUserInfo(userDto);
+        String encodedPwd = passwordEncoder.encode(userDto.getPassword());
+        user.applyEncryptPassword(encodedPwd);
+        return user;
     }
 
     private User getUpdatedUser(UserServicePatchDto userDto, long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            duplicationVerifier.checkDuplicationOnUpdate(userDto, user.get());
-            return updateUserInfo(userDto, userId);
-        }
-        throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        User user = helper.findUser(userId);
+        duplicationVerifier.checkDuplicationOnUpdate(userDto, user);
+        return updateUserInfo(userDto, userId);
     }
 }

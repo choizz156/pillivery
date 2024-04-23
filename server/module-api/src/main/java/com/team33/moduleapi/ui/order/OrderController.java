@@ -92,15 +92,14 @@ public class OrderController {
 
         return new SingleResponseDto<>(OrderDetailResponse.of(order));
     }
-
     /**
-     * 주문(일반, 정기) 목록을 불러 옵니다. (상세 x)
+     * 주문(일반, 정기) 목록을 불러 옵니다.(상세 x)
      */
     @GetMapping("/{userId}")
     public MultiResponseDto getOrders(
         @NotNull @PathVariable Long userId,
         @Positive @RequestParam(defaultValue = "1") int page,
-        @Positive @RequestParam int size,
+        @Positive @RequestParam(defaultValue = "7") int size,
         @RequestParam(value = "subscription", defaultValue = "false") boolean subscription
     ) {
 
