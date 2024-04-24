@@ -77,15 +77,14 @@ public class Order extends BaseEntity {
     public Order(Order origin) {
 
         this.name = origin.getName();
-//        this.address = new Address(
-//            origin.getAddress().getCity(),
-//            origin.getAddress().getDetailAddress()
-//        );
         this.phone = origin.getPhone();
         this.subscription = origin.isSubscription();
         this.totalItems = origin.getTotalItems();
-        this.price = new Price(price.getTotalPrice(), price.getTotalDiscountPrice(),
-            price.getExpectPrice());
+        this.price = new Price(
+            price.getTotalPrice(),
+            price.getTotalDiscountPrice(),
+            price.getExpectPrice()
+        );
         this.user = origin.getUser();
         this.orderItems = origin.getOrderItems();
         this.orderStatus = OrderStatus.ORDER_SUBSCRIBE;
@@ -97,7 +96,6 @@ public class Order extends BaseEntity {
     @Builder
     private Order(
         String name,
-//        Address address,
         String phone,
         boolean subscription,
         int totalItems,
@@ -107,7 +105,6 @@ public class Order extends BaseEntity {
         int totalQuantity
     ) {
         this.name = name;
-//        this.address = address;
         this.phone = phone;
         this.subscription = subscription;
         this.totalItems = totalItems;
@@ -119,7 +116,6 @@ public class Order extends BaseEntity {
 
     public static Order create(List<OrderItem> orderItems, boolean subscription, User user) {
         Order order = Order.builder()
-//            .address(new Address(user.getCityAtAddress(), user.getDetailAddress()))
             .name(user.getRealName())
             .phone(user.getPhone())
             .subscription(subscription)
@@ -141,15 +137,15 @@ public class Order extends BaseEntity {
         this.tid = tid;
     }
 
-    public String getOrdererCity(){
+    public String getOrdererCity() {
         return this.user.getCityAtAddress();
     }
 
-    public String getOrdererDetailAddress(){
+    public String getOrdererDetailAddress() {
         return this.user.getDetailAddress();
     }
 
-    public Item getFirstItem(){
+    public Item getFirstItem() {
         return orderItems.get(0).getItem();
     }
 

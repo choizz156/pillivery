@@ -73,7 +73,6 @@ public class OrderController {
         List<OrderItem> orderItems =
             orderItemService.getOrderItemSingle(orderPostDto.getItemId(), orderItemInfo);
         Order order = orderService.callOrder(orderItems, orderPostDto.isSubscription(), userId);
-        orderService.creatOrderItem(order);
 
         return new SingleResponseDto<>(OrderDetailResponse.of(order));
     }

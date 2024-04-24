@@ -103,18 +103,18 @@ public class OrderService {
         orderRepository.save(newOrder);
         return newOrder;
     }
-
-    public void creatOrderItem(Order order) {
-        order.getOrderItems().forEach(oi -> {
-            saveOrderItem(order, oi);
-        });
-    }
-
-    private void saveOrderItem(Order order, OrderItem oi) {
-        oi.addOrder(order);
-        pulusSalesOfItem(oi);
-        orderItemRepository.save(oi);
-    }
+//
+//    public void creatOrderItem(Order order) {
+//        order.getOrderItems().forEach(oi -> {
+//            saveOrderItem(order, oi);
+//        });
+//    }
+//
+//    private void saveOrderItem(Order order, OrderItem oi) {
+//        oi.addOrder(order);
+//        pulusSalesOfItem(oi);
+//        orderItemRepository.save(oi);
+//    }
 
     private void pulusSalesOfItem(OrderItem oi) {
         oi.getItem().plusSales(oi.getItem().getSales() + oi.getQuantity());

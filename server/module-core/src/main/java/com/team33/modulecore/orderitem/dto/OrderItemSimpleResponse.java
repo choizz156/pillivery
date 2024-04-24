@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class OrderItemSimpleResponse {
 
-    private long itemOrderId;
+    private long orderItemId;
     private int quantity;
     private int period;
     private boolean subscription;
@@ -19,7 +19,7 @@ public class OrderItemSimpleResponse {
 
     @Builder
     public OrderItemSimpleResponse(
-        long itemOrderId,
+        long orderItemId,
         int quantity,
         int period,
         boolean subscription,
@@ -27,7 +27,7 @@ public class OrderItemSimpleResponse {
         ZonedDateTime createdAt,
         ZonedDateTime updatedAt
     ) {
-        this.itemOrderId = itemOrderId;
+        this.orderItemId = orderItemId;
         this.quantity = quantity;
         this.period = period;
         this.subscription = subscription;
@@ -38,7 +38,7 @@ public class OrderItemSimpleResponse {
 
     public static OrderItemSimpleResponse of(OrderItem orderItem) {
         return OrderItemSimpleResponse.builder()
-            .itemOrderId(orderItem.getId())
+            .orderItemId(orderItem.getId())
             .quantity(orderItem.getQuantity())
             .period(orderItem.getPeriod())
             .subscription(orderItem.isSubscription())
