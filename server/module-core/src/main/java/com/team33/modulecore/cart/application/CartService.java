@@ -93,7 +93,7 @@ public class CartService {
 
         for (ItemCart itemCart : itemCarts) {
             int quantity = itemCart.getItem().getPrice();
-            int price = itemCart.getOrderItemInfo().getQuantity();
+            int price = itemCart.getQuantity();
             totalPrice += (quantity * price);
         }
 

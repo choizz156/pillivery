@@ -4,6 +4,7 @@ import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.order.domain.Order;
 import java.time.ZonedDateTime;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,10 +28,14 @@ public class OrderItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_item_id")
     private Long id;
 
+    @Column(nullable = false)
+    private int quantity;
+
     @Embedded
-    private OrderItemInfo orderItemInfo;
+    private SubscriptionItemInfo subscriptionItemInfo;
 
     private ZonedDateTime nextDelivery;
 
@@ -46,28 +51,33 @@ public class OrderItem extends BaseEntity {
 
     @Builder
     private OrderItem(int quantity, int period, boolean subscription, Item item) {
-        this.orderItemInfo = new OrderItemInfo(quantity, period, subscription);
+        this.quantity = quantity;
+        this.subscriptionItemInfo = new SubscriptionItemInfo(period, subscription);
         this.item = item;
     }
 
     public OrderItem(OrderItem origin) {
-        this.orderItemInfo = new OrderItemInfo(
-            origin.getOrderItemInfo().getQuantity(),
-            origin.getOrderItemInfo().getPeriod(),
-            origin.getOrderItemInfo().isSubscription()
+        this.subscriptionItemInfo = new SubscriptionItemInfo(
+            origin.getSubscriptionItemInfo().getPeriod(),
+            origin.getSubscriptionItemInfo().isSubscription()
         );
+        this.quantity = origin.getQuantity();
         this.nextDelivery = origin.getNextDelivery();
         this.paymentDay = origin.getPaymentDay();
         this.item = origin.getItem();
         this.order = origin.getOrder();
     }
 
-    public static OrderItem createWithoutOrder(Item item, OrderItemInfo orderItemInfo) {
+    public static OrderItem createWithoutOrder(
+        Item item,
+        SubscriptionItemInfo subscriptionItemInfo,
+        int quantity
+    ) {
         return OrderItem.builder()
             .item(item)
-            .quantity(orderItemInfo.getQuantity())
-            .period(orderItemInfo.getPeriod())
-            .subscription(orderItemInfo.isSubscription())
+            .quantity(quantity)
+            .period(subscriptionItemInfo.getPeriod())
+            .subscription(subscriptionItemInfo.isSubscription())
             .build();
     }
 
@@ -76,22 +86,18 @@ public class OrderItem extends BaseEntity {
     }
 
     public void addPeriod(int period){
-        this.orderItemInfo.addPeriod(period);
+        this.subscriptionItemInfo.addPeriod(period);
     }
 
     public void cancelSubscription(){
-        this.orderItemInfo.cancelSubscription();
-    }
-
-    public int getQuantity(){
-        return orderItemInfo.getQuantity();
+        this.subscriptionItemInfo.cancelSubscription();
     }
 
     public int getPeriod(){
-        return orderItemInfo.getPeriod();
+        return subscriptionItemInfo.getPeriod();
     }
 
     public boolean isSubscription(){
-        return orderItemInfo.isSubscription();
+        return subscriptionItemInfo.isSubscription();
     }
 }

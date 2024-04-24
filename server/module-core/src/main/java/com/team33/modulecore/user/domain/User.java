@@ -67,6 +67,7 @@ public class User extends BaseEntity {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wish> wishList = new ArrayList<>();
 

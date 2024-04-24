@@ -42,7 +42,7 @@ public class ItemCartService {
     }
 
     public ItemCart checkItemCart(ItemCart itemCart) { // 장바구니에 특정 아이템이 이미 담겨있는지 확인
-        return itemCartRepository.findByCartAndItemAndOrderItemInfoSubscription(
+        return itemCartRepository.findByCartAndItemAndSubscriptionItemInfoIsSubscription(
             itemCart.getCart(), itemCart.getItem(), itemCart.getSubscription());
     }
 
@@ -72,13 +72,13 @@ public class ItemCartService {
 //    }
 
     public List<ItemCart> findItemCarts(Cart cart, boolean subscription) { // 장바구니 목록 조회
-        return itemCartRepository.findAllByCartAndOrderItemInfoSubscription(cart, subscription);
+        return itemCartRepository.findAllByCartAndSubscriptionItemInfoIsSubscription(cart, subscription);
         // subscription - true 정기구독, false 일반
     }
 
     public List<ItemCart> findItemCarts(Cart cart, boolean subscription,
         boolean buyNow) { // 금액 합계, 주문
-        return itemCartRepository.findAllByCartAndOrderItemInfoSubscriptionAndBuyNow(cart, subscription, buyNow);
+        return itemCartRepository.findAllByCartAndSubscriptionItemInfoIsSubscriptionAndBuyNow(cart, subscription, buyNow);
         // subscription - true 정기구독, false 일반
         // buyNow - true 체크박스 활성화, false 체크박스 비활성화
     }
@@ -109,7 +109,7 @@ public class ItemCartService {
 
     private List<ItemCart> getItemCarts(boolean subscription, Cart cart) {
         List<ItemCart> itemCarts =
-            itemCartRepository.findAllByCartAndOrderItemInfoSubscriptionAndBuyNow(cart, subscription, true);
+            itemCartRepository.findAllByCartAndSubscriptionItemInfoIsSubscriptionAndBuyNow(cart, subscription, true);
 
         if (itemCarts.isEmpty()) {
             throw new BusinessLogicException(ExceptionCode.ITEMCART_NOT_FOUND);

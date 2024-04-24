@@ -16,7 +16,7 @@ import com.team33.modulecore.order.dto.OrderPostDto;
 import com.team33.modulecore.order.dto.OrderSimpleResponse;
 import com.team33.modulecore.orderitem.application.OrderItemService;
 import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.domain.OrderItemInfo;
+import com.team33.modulecore.orderitem.dto.OrderItemServiceDto;
 import com.team33.modulecore.orderitem.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.user.application.UserService;
 import java.util.List;
@@ -64,14 +64,9 @@ public class OrderController {
         @NotNull @RequestParam Long userId,
         @RequestBody @Valid OrderPostDto orderPostDto
     ) {
-        OrderItemInfo orderItemInfo = OrderItemInfo.of(
-            orderPostDto.getQuantity(),
-            orderPostDto.isSubscription(),
-            orderPostDto.getPeriod()
-        );
-
+        OrderItemServiceDto dto = OrderItemServiceDto.to(orderPostDto);
         List<OrderItem> orderItems =
-            orderItemService.getOrderItemSingle(orderPostDto.getItemId(), orderItemInfo);
+            orderItemService.getOrderItemSingle(dto);
         Order order = orderService.callOrder(orderItems, orderPostDto.isSubscription(), userId);
 
         return new SingleResponseDto<>(OrderDetailResponse.of(order));

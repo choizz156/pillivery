@@ -4,7 +4,7 @@ package com.team33.modulecore.itemcart.domain;
 import com.team33.modulecore.cart.domain.Cart;
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.orderitem.domain.OrderItemInfo;
+import com.team33.modulecore.orderitem.domain.SubscriptionItemInfo;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -33,8 +33,11 @@ public class ItemCart extends BaseEntity {
     @Column(name = "item_cart_id")
     private Long itemCartId;
 
+    @Column(nullable = false)
+    private int quantity;
+
     @Embedded
-    private OrderItemInfo orderItemInfo;
+    private SubscriptionItemInfo subscriptionItemInfo;
 
     @Column(nullable = false)
     private boolean buyNow;
@@ -48,8 +51,15 @@ public class ItemCart extends BaseEntity {
     private Item item;
 
     @Builder
-    public ItemCart(OrderItemInfo orderItemInfo, boolean buyNow, Cart cart, Item item) {
-        this.orderItemInfo = orderItemInfo;
+    public ItemCart(
+        int quantity,
+        SubscriptionItemInfo subscriptionItemInfo,
+        boolean buyNow,
+        Cart cart,
+        Item item
+    ) {
+        this.quantity = quantity;
+        this.subscriptionItemInfo = subscriptionItemInfo;
         this.buyNow = buyNow;
         this.cart = cart;
         this.item = item;
@@ -57,25 +67,22 @@ public class ItemCart extends BaseEntity {
 
     public void addCart(Cart cart) {
         this.cart = cart;
-        if(!this.cart.getItemCarts().contains(this)) {
+        if (!this.cart.getItemCarts().contains(this)) {
             this.cart.getItemCarts().add(this);
         }
     }
 
     // 장바구니에 같은 상품을 또 담을 경우 수량만 증가
     public void addQuantity(int quantity) {
-        this.orderItemInfo.addQuantity(quantity);
+        this.quantity += quantity;
     }
 
-    public int getQuantity(){
-        return orderItemInfo.getQuantity();
-    }
-    public int getPeriod(){
-        return orderItemInfo.getPeriod();
+    public int getPeriod() {
+        return subscriptionItemInfo.getPeriod();
     }
 
-    public boolean getSubscription(){
-        return orderItemInfo.isSubscription();
+    public boolean getSubscription() {
+        return subscriptionItemInfo.isSubscription();
     }
 
 //    @PrePersist

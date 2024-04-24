@@ -7,7 +7,7 @@ import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.Price;
 import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.domain.OrderItemInfo;
+import com.team33.modulecore.orderitem.dto.OrderItemServiceDto;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +52,14 @@ class OrderServiceTest extends OrderDomainHelper {
     }
 
     private List<OrderItem> getOrderItems(Item item) {
-        OrderItemInfo orderItemInfo = OrderItemInfo.of(1, false, 30);
-        return orderItemService.getOrderItemSingle(item.getItemId(), orderItemInfo);
+        var dto = OrderItemServiceDto.builder()
+            .isSubscription(false)
+            .itemId(item.getItemId())
+            .period(30)
+            .quantity(3)
+            .build();
+
+       return orderItemService.getOrderItemSingle(dto);
     }
 
     private Item getItem() {

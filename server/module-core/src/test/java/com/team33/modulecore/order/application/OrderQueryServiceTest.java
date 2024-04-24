@@ -8,19 +8,22 @@ import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.domain.OrderItemInfo;
+import com.team33.modulecore.orderitem.domain.SubscriptionItemInfo;
 import com.team33.modulecore.orderitem.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
+
 class OrderQueryServiceTest extends OrderDomainHelper {
+
 
     @Autowired
     OrderQueryService orderQueryService;
@@ -33,31 +36,34 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         var user = getUser();
         var items = getItems();
         var orderItemInfos1 = List.of(
-            OrderItemInfo.of(3, false, 0),
-            OrderItemInfo.of(2, false, 0),
-            OrderItemInfo.of(1, false, 0)
+            SubscriptionItemInfo.of(false, 0),
+            SubscriptionItemInfo.of(false, 0),
+            SubscriptionItemInfo.of(false, 0)
         );
 
         var orderItemInfoSubs = List.of(
-            OrderItemInfo.of(3, true, 30),
-            OrderItemInfo.of(2, true, 30),
-            OrderItemInfo.of(1, true, 30)
+            SubscriptionItemInfo.of(true, 30),
+            SubscriptionItemInfo.of(true, 30),
+            SubscriptionItemInfo.of(true, 30)
         );
 
         var orderItems = List.of(
-            OrderItem.createWithoutOrder(items.get(0), orderItemInfos1.get(0)),
-            OrderItem.createWithoutOrder(items.get(1), orderItemInfos1.get(1)),
-            OrderItem.createWithoutOrder(items.get(2), orderItemInfos1.get(2))
+            OrderItem.createWithoutOrder(items.get(0), orderItemInfos1.get(0), 3),
+            OrderItem.createWithoutOrder(items.get(1), orderItemInfos1.get(1), 2),
+            OrderItem.createWithoutOrder(items.get(2), orderItemInfos1.get(2), 2)
         );
 
         var orderItemsSubs = List.of(
-            OrderItem.createWithoutOrder(items.get(0), orderItemInfoSubs.get(0)),
-            OrderItem.createWithoutOrder(items.get(1), orderItemInfoSubs.get(1)),
-            OrderItem.createWithoutOrder(items.get(2), orderItemInfoSubs.get(2))
+            OrderItem.createWithoutOrder(items.get(0), orderItemInfoSubs.get(0), 3
+            ),
+            OrderItem.createWithoutOrder(items.get(1), orderItemInfoSubs.get(1), 3
+            ),
+            OrderItem.createWithoutOrder(items.get(2), orderItemInfoSubs.get(2), 3
+            )
         );
 
-        Order order = orderService.callOrder(orderItems, false, user.getId());
-        Order orderSubs = orderService.callOrder(orderItemsSubs, true, user.getId());
+        var order = orderService.callOrder(orderItems, false, user.getId());
+        var orderSubs = orderService.callOrder(orderItemsSubs, true, user.getId());
         orderService.completeOrder(order.getId());
         orderService.subscribeOrder(orderSubs.getId());
 
@@ -88,6 +94,8 @@ class OrderQueryServiceTest extends OrderDomainHelper {
             .containsExactlyInAnyOrder(items.get(0), items.get(1), items.get(2));
     }
 
+
+
     @Transactional
     @DisplayName("유저의 정기 주문(구독) 목록을 조회할 수 있다.")
     @Test
@@ -96,52 +104,55 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         var user = getUser();
         var items = getItems();
 
-        var orderItemInfos1 = List.of(
-            OrderItemInfo.of(3, true, 60),
-            OrderItemInfo.of(2, true, 60),
-            OrderItemInfo.of(1, true, 60)
-        );
-
-        var orderItemInfo2 = List.of(
-            OrderItemInfo.of(3, true, 30),
-            OrderItemInfo.of(2, true, 30),
-            OrderItemInfo.of(1, true, 30)
-        );
-
-        var orderItems1 = List.of(
-            OrderItem.createWithoutOrder(items.get(0), orderItemInfos1.get(0)),
-            OrderItem.createWithoutOrder(items.get(1), orderItemInfos1.get(1)),
-            OrderItem.createWithoutOrder(items.get(2), orderItemInfos1.get(2))
-        );
-
-        var orderItems2 = List.of(
-            OrderItem.createWithoutOrder(items.get(3), orderItemInfo2.get(0)),
-            OrderItem.createWithoutOrder(items.get(4), orderItemInfo2.get(1)),
-            OrderItem.createWithoutOrder(items.get(5), orderItemInfo2.get(2))
-        );
-
-        var orderSubs1 = orderService.callOrder(orderItems1, true, user.getId());
-        var orderSubs2 = orderService.callOrder(orderItems2, true, user.getId());
-
+        List<OrderItem> orderItems = items.stream()
+            .map(item -> OrderItem.createWithoutOrder(
+                item,
+                SubscriptionItemInfo.of(true, 60),
+                1
+            ))
+            .collect(Collectors.toList());
+        var orderSubs1 = orderService.callOrder(orderItems, true, user.getId());
         orderService.subscribeOrder(orderSubs1.getId());
-        orderService.subscribeOrder(orderSubs2.getId());
+
+        var orderPageRequest1 = OrderPageRequest.of(1, 5);
+        var orderPageRequest2 = OrderPageRequest.of(2, 10);
 
         //when
-        var orderPageRequest = OrderPageRequest.of(1, 5);
-        List<OrderItemSimpleResponse> allSubscriptions =
-            orderQueryService.findAllSubscriptions(user.getId(), orderPageRequest);
+        List<OrderItemSimpleResponse> allSubscriptions1 = orderQueryService.findAllSubscriptions(
+            user.getId(), orderPageRequest1);
+        List<OrderItemSimpleResponse> allSubscriptions2 = orderQueryService.findAllSubscriptions(
+            user.getId(), orderPageRequest2);
 
         //then
-        assertThat(allSubscriptions).hasSize(6)
-            .extracting("orderItemId", "subscription", "item.title","period")
+        assertThat(allSubscriptions1).hasSize(7)
+            .extracting("item.title")
+            .as("page 1, size 7, offset 0, 내림차순")
             .containsExactly(
-                tuple(orderItems2.get(0).getId(), true, "sample4", 30),
-                tuple(orderItems2.get(1).getId(), true, "sample5", 30),
-                tuple(orderItems2.get(2).getId(), true, "sample6", 30),
-                tuple(orderItems1.get(0).getId(), true, "sample1", 60),
-                tuple(orderItems1.get(1).getId(), true, "sample2", 60),
-                tuple(orderItems1.get(2).getId(), true, "sample3", 60)
+                "sample23",
+                "sample22",
+                "sample21",
+                "sample20",
+                "sample19",
+                "sample18",
+                "sample17"
             );
+
+        assertThat(allSubscriptions2).hasSize(10)
+            .extracting("item.title")
+            .as("page 2, size 10, offset 10, 내림차순")
+            .containsExactly(
+                "sample13",
+                "sample12",
+                "sample11",
+                "sample10",
+                "sample9",
+                "sample8",
+                "sample7",
+                "sample6",
+                "sample5",
+                "sample4"
+            );
+
     }
 
 
@@ -166,7 +177,7 @@ class OrderQueryServiceTest extends OrderDomainHelper {
             .set("reviews", new ArrayList<>())
             .set("talks", new ArrayList<>())
             .set("nutritionFacts", new ArrayList<>())
-            .sampleList(6);
+            .sampleList(23);
 
         return itemRepository.saveAll(items);
     }

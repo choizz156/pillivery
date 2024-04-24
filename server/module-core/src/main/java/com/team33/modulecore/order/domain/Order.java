@@ -124,8 +124,8 @@ public class Order extends BaseEntity {
             .orderItems(orderItems)
             .totalItems(orderItems.size())
             .build();
-
         order.addPrice(order.getOrderItems());
+        order.getOrderItems().forEach(orderItem -> orderItem.addOrder(order));
         return order;
     }
 

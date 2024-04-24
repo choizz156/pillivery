@@ -3,6 +3,7 @@ package com.team33.modulecore.order.repository;
 import static com.team33.modulecore.order.domain.OrderStatus.ORDER_REQUEST;
 import static com.team33.modulecore.order.domain.OrderStatus.ORDER_SUBSCRIBE;
 import static com.team33.modulecore.order.domain.QOrder.order;
+import static com.team33.modulecore.orderitem.domain.QOrderItem.orderItem;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
@@ -13,6 +14,7 @@ import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
+import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +43,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             )
             .limit(pageRequest.getSize())
             .offset(pageRequest.getOffset())
-            .orderBy(getSort(pageRequest))
+            .orderBy(getOrderSort(pageRequest))
             .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
@@ -64,19 +66,21 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     @Override
-    public List<Order> findSubscriptionOrder(
+    public List<OrderItem> findSubscriptionOrder(
         OrderPageRequest pageRequest,
         OrderFindCondition orderFindCondition
     ) {
         return queryFactory
-            .selectFrom(order)
+            .select(orderItem)
+            .from(orderItem)
+            .join(orderItem.order, order)
             .where(
                 userEq(orderFindCondition.getUser()),
                 subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
             )
             .limit(pageRequest.getSize())
             .offset(pageRequest.getOffset())
-            .orderBy(getSort(pageRequest))
+            .orderBy(getSubscirptionOrderSort(pageRequest))
             .fetch();
     }
 
@@ -97,7 +101,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
 
-    private OrderSpecifier<Long> getSort(OrderPageRequest pageRequest) {
+    private OrderSpecifier<Long> getOrderSort(OrderPageRequest pageRequest) {
         return pageRequest.getSort() == Direction.DESC ? order.id.desc() : order.id.asc();
+    }
+
+    private OrderSpecifier<Long> getSubscirptionOrderSort(OrderPageRequest pageRequest) {
+        return pageRequest.getSort() == Direction.DESC ? orderItem.id.desc() : orderItem.id.asc();
     }
 }

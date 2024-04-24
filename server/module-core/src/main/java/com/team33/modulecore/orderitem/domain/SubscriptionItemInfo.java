@@ -12,34 +12,25 @@ import org.hibernate.annotations.ColumnDefault;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-public class OrderItemInfo {
-
-    @Column(nullable = false)
-    private int quantity;
+public class SubscriptionItemInfo {
 
     @ColumnDefault("0")
     private int period;
 
     @Column(name = "subscription")
-    private boolean subscription;
+    private boolean isSubscription;
 
     @Builder
-    public OrderItemInfo(int quantity, int period, boolean subscription) {
-        this.quantity = quantity;
+    public SubscriptionItemInfo(int period, boolean isSubscription) {
         this.period = period;
-        this.subscription = subscription;
+        this.isSubscription = isSubscription;
     }
 
-    public static OrderItemInfo of(int quantity, boolean subscription, int period) {
-        return OrderItemInfo.builder()
-            .subscription(subscription)
+    public static SubscriptionItemInfo of(boolean subscription, int period) {
+        return SubscriptionItemInfo.builder()
+            .isSubscription(subscription)
             .period(period)
-            .quantity(quantity)
             .build();
-    }
-
-    public void addQuantity(int quantity) {
-        this.quantity += quantity;
     }
 
     public void addPeriod(int period) {
@@ -47,6 +38,6 @@ public class OrderItemInfo {
     }
 
     public void cancelSubscription() {
-        this.subscription = false;
+        this.isSubscription = false;
     }
 }

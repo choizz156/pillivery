@@ -9,11 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ItemCartRepository extends JpaRepository<ItemCart, Long> {
 
-    ItemCart findByCartAndItemAndOrderItemInfoSubscription(Cart cart, Item item, boolean subscription);
+    ItemCart findByCartAndItemAndSubscriptionItemInfoIsSubscription(Cart cart, Item item, boolean subscription);
 
-    List<ItemCart> findAllByCartAndOrderItemInfoSubscription(Cart cart, boolean subscription);
+    List<ItemCart> findAllByCartAndSubscriptionItemInfoIsSubscription(Cart cart, boolean subscription);
 
-    List<ItemCart> findAllByCartAndOrderItemInfoSubscriptionAndBuyNow(Cart cart, boolean subscription, boolean buyNow);
+    List<ItemCart> findAllByCartAndSubscriptionItemInfoIsSubscriptionAndBuyNow(Cart cart, boolean subscription, boolean buyNow);
 
     void deleteByItemAndCart(Item item, Cart cart); // 주문시 장바구니에서 아이템 삭제
 

@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
     @Query("select io from OrderItem io join orders o on io.order.id = o.id "
-        + "and o.orderStatus = :orderStatus and o.user.id = :id and io.orderItemInfo.subscription = true")
+        + "and o.orderStatus = :orderStatus and o.user.id = :id and io.subscriptionItemInfo.isSubscription = true")
     Page<OrderItem> findAllSubs(Pageable pageable, OrderStatus orderStatus, long id);
 }

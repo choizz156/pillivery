@@ -3,10 +3,11 @@ package com.team33.modulecore.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team33.modulecore.cart.domain.Cart;
-import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.domain.OrderItemInfo;
+import com.team33.modulecore.orderitem.domain.SubscriptionItemInfo;
+import com.team33.modulecore.orderitem.dto.OrderItemServiceDto;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
     @Test
     void createOrderItem() throws Exception {
         //given
-        Item sampleItem = fixtureMonkey.giveMeBuilder(Item.class)
+        var sampleItem = fixtureMonkey.giveMeBuilder(Item.class)
             .set("itemId", null)
             .set("wishList", new ArrayList<>())
             .set("categories", new ArrayList<>())
@@ -31,15 +32,21 @@ class OrderItemServiceTest extends OrderDomainHelper {
             .set("nutritionFacts", new ArrayList<>())
             .sample();
 
-        Item item = itemRepository.save(sampleItem);
-        OrderItemInfo orderItemInfo = OrderItemInfo.of(1, false, 30);
+        var item = itemRepository.save(sampleItem);
+
+        var dto = OrderItemServiceDto.builder()
+            .isSubscription(false)
+            .itemId(sampleItem.getItemId())
+            .period(30)
+            .quantity(3)
+            .build();
 
         //when
-        List<OrderItem> orderItemSingle =
-            orderItemService.getOrderItemSingle(item.getItemId(), orderItemInfo);
+        List<OrderItem> orderItemSingle = orderItemService.getOrderItemSingle(dto);
+        System.out.println("orderItemSingle = " + orderItemSingle.get(0).getQuantity());
 
         //then
-        orderItem_생성(orderItemSingle, orderItemInfo);
+        orderItem_생성(orderItemSingle);
     }
 
 
@@ -75,39 +82,42 @@ class OrderItemServiceTest extends OrderDomainHelper {
     ) {
         OrderItem orderItem1 = orderItemsInCart.get(i);
         assertThat(orderItem1.getItem().getTitle()).isEqualTo(title1);
-        assertThat(orderItem1.getOrderItemInfo()).isEqualTo(result.orderItemInfo);
-        assertThat(orderItem1.getQuantity()).isEqualTo(1);
+        assertThat(orderItem1.getSubscriptionItemInfo()).isEqualTo(result.subscriptionItemInfo);
+        assertThat(orderItem1.getQuantity()).isEqualTo(3);
         assertThat(orderItem1.getPeriod()).isEqualTo(30);
         assertThat(orderItem1.isSubscription()).isFalse();
     }
 
-    private void orderItem_생성(List<OrderItem> orderItemSingle, OrderItemInfo orderItemInfo) {
+    private void orderItem_생성(List<OrderItem> orderItemSingle) {
         OrderItem orderItem = orderItemSingle.get(0);
         assertThat(orderItemSingle).hasSize(1);
         assertThat(orderItem.getItem().getItemId()).isNotNull();
-        assertThat(orderItem.getOrderItemInfo()).isEqualTo(orderItemInfo);
-        assertThat(orderItem.getQuantity()).isEqualTo(1);
+        assertThat(orderItem.getSubscriptionItemInfo())
+            .isEqualTo(orderItemSingle.get(0).getSubscriptionItemInfo());
+        assertThat(orderItem.getQuantity()).isEqualTo(3);
         assertThat(orderItem.getPeriod()).isEqualTo(30);
         assertThat(orderItem.isSubscription()).isFalse();
     }
 
     private ItemCarts getItemCarts(Cart cart, Item item1, Item item2) {
-        OrderItemInfo orderItemInfo = OrderItemInfo.of(1, false, 30);
+        SubscriptionItemInfo subscriptionItemInfo = SubscriptionItemInfo.of(false, 30);
         ItemCart itemCart1 = ItemCart.builder()
             .cart(cart)
             .item(item1)
             .buyNow(true)
-            .orderItemInfo(orderItemInfo)
+            .quantity(3)
+            .subscriptionItemInfo(subscriptionItemInfo)
             .build();
 
         ItemCart itemCart2 = ItemCart.builder()
             .cart(cart)
             .item(item2)
             .buyNow(true)
-            .orderItemInfo(orderItemInfo)
+            .quantity(3)
+            .subscriptionItemInfo(subscriptionItemInfo)
             .build();
 
-        return new ItemCarts(orderItemInfo, itemCart1, itemCart2);
+        return new ItemCarts(subscriptionItemInfo, itemCart1, itemCart2);
     }
 
     private Cart getCart(User user) {
@@ -127,8 +137,15 @@ class OrderItemServiceTest extends OrderDomainHelper {
     }
 
     private List<OrderItem> getOrderItems(Item item) {
-        OrderItemInfo orderItemInfo = OrderItemInfo.of(1, false, 30);
-        return orderItemService.getOrderItemSingle(item.getItemId(), orderItemInfo);
+
+        var dto = OrderItemServiceDto.builder()
+            .isSubscription(false)
+            .itemId(item.getItemId())
+            .period(30)
+            .quantity(3)
+            .build();
+
+        return orderItemService.getOrderItemSingle(dto);
     }
 
     private Item getItem(String name) {
@@ -147,12 +164,13 @@ class OrderItemServiceTest extends OrderDomainHelper {
 
     private static class ItemCarts {
 
-        public final OrderItemInfo orderItemInfo;
+        public final SubscriptionItemInfo subscriptionItemInfo;
         public final ItemCart itemCart1;
         public final ItemCart itemCart2;
 
-        public ItemCarts(OrderItemInfo orderItemInfo, ItemCart itemCart1, ItemCart itemCart2) {
-            this.orderItemInfo = orderItemInfo;
+        public ItemCarts(SubscriptionItemInfo subscriptionItemInfo, ItemCart itemCart1,
+            ItemCart itemCart2) {
+            this.subscriptionItemInfo = subscriptionItemInfo;
             this.itemCart1 = itemCart1;
             this.itemCart2 = itemCart2;
         }
