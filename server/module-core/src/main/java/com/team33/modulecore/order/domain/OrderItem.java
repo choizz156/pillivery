@@ -1,8 +1,7 @@
-package com.team33.modulecore.orderitem.domain;
+package com.team33.modulecore.order.domain;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.order.domain.Order;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -68,7 +67,7 @@ public class OrderItem extends BaseEntity {
         this.order = origin.getOrder();
     }
 
-    public static OrderItem createWithoutOrder(
+    public static OrderItem create(
         Item item,
         SubscriptionItemInfo subscriptionItemInfo,
         int quantity
@@ -99,5 +98,9 @@ public class OrderItem extends BaseEntity {
 
     public boolean isSubscription(){
         return subscriptionItemInfo.isSubscription();
+    }
+
+    public void changeQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

@@ -3,7 +3,6 @@ package com.team33.modulecore.order.domain;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.orderitem.domain.OrderItem;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +24,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-@Setter
 @Getter
 @DynamicUpdate
 @Entity(name = "orders")
@@ -47,10 +44,7 @@ public class Order extends BaseEntity {
     private String phone;
 
     @Column(nullable = false, name = "subscription")
-    private boolean subscription;
-//
-//    @Embedded
-//    private Address address;
+    private boolean isSubscription;
 
     @Embedded
     private Price price;
@@ -61,24 +55,24 @@ public class Order extends BaseEntity {
 
     private String tid;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus = OrderStatus.REQUEST;
+
+    @Transient
+    private int totalQuantity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
-
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.ORDER_REQUEST;
-
-    @Transient
-    private int totalQuantity;
 
     public Order(Order origin) {
 
         this.name = origin.getName();
         this.phone = origin.getPhone();
-        this.subscription = origin.isSubscription();
+        this.isSubscription = origin.isSubscription();
         this.totalItems = origin.getTotalItems();
         this.price = new Price(
             price.getTotalPrice(),
@@ -87,7 +81,7 @@ public class Order extends BaseEntity {
         );
         this.user = origin.getUser();
         this.orderItems = origin.getOrderItems();
-        this.orderStatus = OrderStatus.ORDER_SUBSCRIBE;
+        this.orderStatus = OrderStatus.SUBSCRIBE;
         this.totalQuantity = origin.getTotalQuantity();
         this.sid = origin.getSid();
         this.tid = origin.getTid();
@@ -97,7 +91,7 @@ public class Order extends BaseEntity {
     private Order(
         String name,
         String phone,
-        boolean subscription,
+        boolean isSubscription,
         int totalItems,
         User user,
         List<OrderItem> orderItems,
@@ -106,7 +100,7 @@ public class Order extends BaseEntity {
     ) {
         this.name = name;
         this.phone = phone;
-        this.subscription = subscription;
+        this.isSubscription = isSubscription;
         this.totalItems = totalItems;
         this.user = user;
         this.orderItems = orderItems;
@@ -118,9 +112,9 @@ public class Order extends BaseEntity {
         Order order = Order.builder()
             .name(user.getRealName())
             .phone(user.getPhone())
-            .subscription(subscription)
+            .isSubscription(subscription)
             .user(user)
-            .orderStatus(OrderStatus.ORDER_REQUEST)
+            .orderStatus(OrderStatus.REQUEST)
             .orderItems(orderItems)
             .totalItems(orderItems.size())
             .build();

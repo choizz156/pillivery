@@ -1,13 +1,15 @@
 package com.team33.modulecore.order.application;
 
 import com.team33.modulecore.common.UserFindHelper;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.order.repository.OrderRepository;
-import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.dto.OrderItemSimpleResponse;
+import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.List;
@@ -29,7 +31,7 @@ public class OrderQueryService {
     public Page<Order> findAllOrders(Long userId, OrderPageRequest orderPageRequest) {
         User user = userFindHelper.findUser(userId);
         OrderFindCondition orderFindCondition =
-            OrderFindCondition.to(user, OrderStatus.ORDER_REQUEST);
+            OrderFindCondition.to(user, OrderStatus.REQUEST);
 
         return orderRepository.searchOrders(
             orderPageRequest,
@@ -44,9 +46,15 @@ public class OrderQueryService {
         User user = userFindHelper.findUser(userId);
         List<OrderItem> subscriptionOrder = orderRepository.findSubscriptionOrder(
             orderPageRequest,
-            OrderFindCondition.to(user, OrderStatus.ORDER_SUBSCRIBE)
+            OrderFindCondition.to(user, OrderStatus.SUBSCRIBE)
         );
         return getSubscriptionItem(subscriptionOrder);
+    }
+
+    public Order findOrder(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(
+            () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND)
+        );
     }
 
     private List<OrderItemSimpleResponse> getSubscriptionItem(List<OrderItem> subscriptionOrder) {

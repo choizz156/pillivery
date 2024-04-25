@@ -2,7 +2,7 @@ package com.team33.modulequartz.subscription.application;
 
 import static org.quartz.JobBuilder.newJob;
 
-import com.team33.modulecore.orderitem.domain.OrderItem;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulequartz.subscription.domain.KaKaoSubscriptionJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

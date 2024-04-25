@@ -1,6 +1,5 @@
-package com.team33.modulecore.orderitem.dto;
+package com.team33.modulecore.order.dto;
 
-import com.team33.modulecore.order.dto.OrderPostDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

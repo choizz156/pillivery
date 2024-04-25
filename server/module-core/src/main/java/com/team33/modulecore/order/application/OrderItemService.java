@@ -1,4 +1,4 @@
-package com.team33.modulecore.orderitem.application;
+package com.team33.modulecore.order.application;
 
 
 import com.team33.modulecore.exception.BusinessLogicException;
@@ -8,11 +8,11 @@ import com.team33.modulecore.item.repository.ItemRepository;
 import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.repository.OrderRepository;
-import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.domain.SubscriptionItemInfo;
-import com.team33.modulecore.orderitem.dto.OrderItemServiceDto;
-import com.team33.modulecore.orderitem.repository.OrderItemRepository;
+import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.SubscriptionItemInfo;
+import com.team33.modulecore.order.dto.OrderItemServiceDto;
+import com.team33.modulecore.order.domain.repository.OrderItemRepository;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +35,18 @@ public class OrderItemService {
 
     @Transactional(readOnly = true)
     public List<OrderItem> getOrderItemSingle(OrderItemServiceDto dto) {
-        Item item = getItem(dto.getItemId());
+        Item item = findItem(dto.getItemId());
+
         SubscriptionItemInfo subscriptionItemInfo =
             SubscriptionItemInfo.of(dto.isSubscription(), dto.getPeriod());
-        OrderItem orderItem = OrderItem.createWithoutOrder(
+
+        OrderItem orderItem = OrderItem.create(
             item,
             subscriptionItemInfo,
             dto.getQuantity()
         );
 
-        return getOrderItems(orderItem);
+        return makeOrderItems(orderItem);
     }
 
     public List<OrderItem> getOrderItemsInCart(List<ItemCart> itemCarts) {
@@ -57,7 +59,7 @@ public class OrderItemService {
     }
 
     private void createOrderItem(ItemCart itemCart, List<OrderItem> orderItemList) {
-        OrderItem orderItem = OrderItem.createWithoutOrder(
+        OrderItem orderItem = OrderItem.create(
             itemCart.getItem(),
             itemCart.getSubscriptionItemInfo(),
             itemCart.getQuantity()
@@ -149,13 +151,13 @@ public class OrderItemService {
         }
     }
 
-    private List<OrderItem> getOrderItems(OrderItem orderItem) {
+    private List<OrderItem> makeOrderItems(OrderItem orderItem) {
         List<OrderItem> orderItems = new ArrayList<>();
         orderItems.add(orderItem);
         return orderItems;
     }
 
-    private Item getItem(long id) {
+    private Item findItem(long id) {
         Optional<Item> optionalItem = itemRepository.findById(id);
         return optionalItem.orElseThrow(
             () -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND)

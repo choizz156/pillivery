@@ -1,6 +1,5 @@
 package com.team33.modulecore.order.domain;
 
-import com.team33.modulecore.orderitem.domain.OrderItem;
 import java.util.List;
 import javax.persistence.Embeddable;
 import lombok.Builder;

@@ -2,7 +2,6 @@ package com.team33.modulecore.order.dto;
 
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.orderitem.dto.OrderItemSimpleResponse;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;

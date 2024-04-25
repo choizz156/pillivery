@@ -97,4 +97,7 @@ public class Item {
         this.sales = sales;
     }
 
+    public void minusSales(int quantity) {
+        this.sales -= quantity;
+    }
 }

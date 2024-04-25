@@ -14,10 +14,10 @@ import com.team33.modulecore.order.dto.OrderDetailResponse;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.order.dto.OrderPostDto;
 import com.team33.modulecore.order.dto.OrderSimpleResponse;
-import com.team33.modulecore.orderitem.application.OrderItemService;
-import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.dto.OrderItemServiceDto;
-import com.team33.modulecore.orderitem.dto.OrderItemSimpleResponse;
+import com.team33.modulecore.order.application.OrderItemService;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.dto.OrderItemServiceDto;
+import com.team33.modulecore.order.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.user.application.UserService;
 import java.util.List;
 import javax.validation.Valid;
@@ -29,7 +29,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,16 +60,22 @@ public class OrderController {
 
     /**
      * 단건 주문 정보를 생성합니다.
+     *
+     * @param userId       the user id
+     * @param orderPostDto the order post dto
+     * @return the single response dto
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/single")
     public SingleResponseDto<?> postSingleOrder(
         @NotNull @RequestParam Long userId,
-        @RequestBody @Valid OrderPostDto orderPostDto
+        @Valid @RequestBody OrderPostDto orderPostDto
     ) {
         OrderItemServiceDto dto = OrderItemServiceDto.to(orderPostDto);
+
         List<OrderItem> orderItems =
             orderItemService.getOrderItemSingle(dto);
+
         Order order = orderService.callOrder(orderItems, orderPostDto.isSubscription(), userId);
 
         return new SingleResponseDto<>(OrderDetailResponse.of(order));
@@ -74,15 +83,20 @@ public class OrderController {
 
     /**
      * 장바구니에서 주문 요청을 하는 경우의 주문을 생성합니다.
+     *
+     * @param userId       the user id
+     * @param subscription the subscription
+     * @return the single response dto
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/cart")// 장바구니에서 주문요청을 하는 경우
-    public SingleResponseDto postOrderInCart(
+    public SingleResponseDto<?> postOrderInCart(
         @NotNull @RequestParam Long userId,
-        @RequestParam(value = "subscription") Boolean subscription
+        @NotNull @RequestParam(value = "subscription") boolean subscription
     ) {
         List<ItemCart> itemCarts = itemCartService.findItemCarts(userId, subscription);
         List<OrderItem> orderItems = orderItemService.getOrderItemsInCart(itemCarts);
+
         cartService.refreshCart(itemCarts, subscription);
 
         Order order = orderService.callOrder(orderItems, subscription, userId);
@@ -92,22 +106,35 @@ public class OrderController {
 
     /**
      * 주문(일반, 정기) 목록을 불러 옵니다.(상세 x)
+     *
+     * @param userId  the user id
+     * @param pageDto the page dto
+     * @return the orders
      */
     @GetMapping
     public MultiResponseDto<?> getOrders(
         @NotNull @RequestParam Long userId,
         PageDto pageDto
     ) {
-
         OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
+
         Page<Order> allOrders = orderQueryService.findAllOrders(userId, orderPageRequest);
+
         List<Order> orders = allOrders.getContent();
+
         List<OrderSimpleResponse> ordersDto = OrderSimpleResponse.toList(orders);
 
         return new MultiResponseDto<>(orders, allOrders);
     }
 
-    @GetMapping("/subscriptions") // 정기 구독 목록 불러오기
+    /**
+     * Gets subscriptions order.
+     *
+     * @param userId  the user id
+     * @param pageDto the page dto
+     * @return the subscriptions order
+     */
+    @GetMapping("/subscriptions")
     public MultiResponseDto<?> getSubscriptionsOrder(
         @NotNull @RequestParam Long userId,
         PageDto pageDto
@@ -127,33 +154,36 @@ public class OrderController {
         );
     }
 
-//    @GetMapping("/{order-id}") // 특정 주문의 상세 내역 확인
-//    public ResponseEntity getOrder(
-//        @NotNull @RequestParam Long userId,
-//        @Positive @PathVariable("order-id")  long orderId) {
-//
-//        Order order = orderService.findOrder(orderId);
-//
-//        return new ResponseEntity<>(new SingleResponseDto<>(
-//            orderMapper.orderToOrderDetailResponseDto(order, itemMapper, itemOrderMapper)),
-//            HttpStatus.OK);
-//    }
+    /**
+     * 특정 주문 상세 내역을 확인
+     */
+    @GetMapping("/{orderId}")
+    public SingleResponseDto<?> getOrder(
+        @NotNull @RequestParam Long userId,
+        @NotNull @PathVariable Long orderId
+    ) {
+        Order order = orderQueryService.findOrder(orderId);
+        OrderDetailResponse orderDetailResponse = OrderDetailResponse.of(order);
 
-//    @PatchMapping("/subs/{itemOrder-id}") // 정기 구독 아이템의 수량 변경
-//    public ResponseEntity changeQuantity(@PathVariable("itemOrder-id") long itemOrderId,
-//        @RequestParam(value = "upDown") int upDown) {
-//
-//        OrderItem orderItem = orderItemService.changeSubQuantity(itemOrderId, upDown);
-//
-//        return new ResponseEntity<>(new SingleResponseDto<>(
-//            itemOrderMapper.itemOrderToSubResponse(orderItem, itemMapper)), HttpStatus.OK);
-//    }
-//
-//
-//    @DeleteMapping("/{order-id}") // 특정 주문 취소
-//    public ResponseEntity cancelOrder(@PathVariable("order-id") @Positive long orderId) {
-//        orderService.cancelOrder(orderId);
-//
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+        return new SingleResponseDto<>(orderDetailResponse);
+    }
+
+    /**
+     * Change quantity single response dto.
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("/subscription/{orderId}") // 정기 구독 아이템의 수량 변경
+    public void changeSubscriptionItemQuantity(
+        @NotNull @PathVariable Long orderId,
+        @NotNull @RequestParam Long orderItemId,
+        @NotNull @RequestParam int quantity
+    ) {
+        orderService.changeSubscriptionItemQuantity(orderId, orderItemId, quantity);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{orderId}") // 특정 주문 취소
+    public void cancelOrder(@NotNull @PathVariable Long orderId) {
+        orderService.cancelOrder(orderId);
+    }
 }

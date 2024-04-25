@@ -2,9 +2,10 @@ package com.team33.modulequartz.subscription.infra;
 
 import static org.quartz.JobKey.jobKey;
 
-import com.team33.modulecore.orderitem.domain.OrderItem;
+import com.team33.modulecore.order.application.OrderQueryService;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.orderitem.application.OrderItemService;
+import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.exception.BusinessLogicException;
@@ -33,6 +34,7 @@ public class JobListeners implements JobListener {
     private final OrderItemService orderItemService;
     private final OrderService orderService;
     private final JobDetailService jobDetailService;
+    private final OrderQueryService orderQueryService;
 
     private static final String PAYMENT_JOB = "payment Job";
     private static final String RETRY = "retry";
@@ -131,7 +133,7 @@ public class JobListeners implements JobListener {
 
     private Order getOrder(Long orderId) {
         orderService.completeOrder(orderId);
-        Order order = orderService.findOrder(orderId);
+        Order order = orderQueryService.findOrder(orderId);
         return orderService.deepCopy(order);
     }
 

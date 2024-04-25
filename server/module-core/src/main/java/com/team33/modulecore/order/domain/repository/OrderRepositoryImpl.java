@@ -1,7 +1,7 @@
-package com.team33.modulecore.order.repository;
+package com.team33.modulecore.order.domain.repository;
 
-import static com.team33.modulecore.order.domain.OrderStatus.ORDER_REQUEST;
-import static com.team33.modulecore.order.domain.OrderStatus.ORDER_SUBSCRIBE;
+import static com.team33.modulecore.order.domain.OrderStatus.REQUEST;
+import static com.team33.modulecore.order.domain.OrderStatus.SUBSCRIBE;
 import static com.team33.modulecore.order.domain.QOrder.order;
 import static com.team33.modulecore.orderitem.domain.QOrderItem.orderItem;
 
@@ -14,7 +14,7 @@ import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.orderitem.domain.OrderItem;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -85,7 +85,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     private Predicate subscriptionOrderStatusEq(OrderStatus orderStatus) {
-        return orderStatus == ORDER_SUBSCRIBE
+        return orderStatus == SUBSCRIBE
             ? order.orderStatus.eq(orderStatus)
             : null;
     }
@@ -95,7 +95,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {
-        return orderStatus == ORDER_REQUEST
+        return orderStatus == REQUEST
             ? null
             : order.orderStatus.eq(orderStatus).not();
     }
