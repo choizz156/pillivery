@@ -1,6 +1,6 @@
 package com.team33.modulecore.wish.dto;
 
-import com.team33.modulecore.nutritionFact.dto.NutritionFactDto.Response;
+import com.team33.modulecore.item.dto.NutritionFactResponseDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class WishDto {
         private int discountRate;
         private int discountPrice;
         private Brand brand;
-        private List<Response> nutritionFacts;
+        private List<NutritionFactResponseDto> nutritionFacts;
         private double starAvg;
         private int reviewSize;
     }

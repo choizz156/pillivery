@@ -2,7 +2,7 @@ package com.team33.modulecore.wish.application;
 
 import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.item.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.user.application.UserService;
 import com.team33.modulecore.wish.domain.Wish;
 import com.team33.modulecore.wish.repository.WishRepository;

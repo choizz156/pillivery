@@ -11,13 +11,6 @@ public class CategoryDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class Post {
-        private String categoryName;
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
     public static class Response {
         private String categoryName;
     }

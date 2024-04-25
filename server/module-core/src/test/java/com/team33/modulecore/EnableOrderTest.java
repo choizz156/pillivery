@@ -3,7 +3,7 @@ package com.team33.modulecore;
 import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.config.QueryDslConfig;
-import com.team33.modulecore.item.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderService;

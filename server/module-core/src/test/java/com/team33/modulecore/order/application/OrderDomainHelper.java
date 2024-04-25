@@ -5,7 +5,7 @@ import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntr
 import com.team33.modulecore.EnableOrderTest;
 import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
-import com.team33.modulecore.item.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

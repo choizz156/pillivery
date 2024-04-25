@@ -1,24 +1,32 @@
 package com.team33.modulecore.category.application;
 
 import com.team33.modulecore.category.domain.Category;
+import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.category.repository.CategoryRepository;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Transactional
 @RequiredArgsConstructor
+@Service
 public class CategoryService {
+
     private final CategoryRepository categoryRepository;
 
-    public Category createCategory(Category category) {
-        return categoryRepository.save(category);
+    public Set<Category> getCategories(Set<CategoryName> category) {
+        return category.stream()
+            .map(Category::new)
+            .map(categoryRepository::save)
+            .collect(Collectors.toSet());
     }
-
 
     public void verifyExistCategory(String categoryName) {
         Optional<Category> byCategoryName =
-                categoryRepository.findByCategoryName(categoryName);
+            categoryRepository.findByCategoryName(categoryName);
 
         if (byCategoryName.isEmpty()) { // 카테고리 이름이 존재하지 않는다면
             throw new RuntimeException();
@@ -26,9 +34,7 @@ public class CategoryService {
     }
 
     public Long findCategoryId(String categoryName) {
-        return categoryRepository.findByCategoryName(categoryName).get().getCategoryId();
+        return categoryRepository.findByCategoryName(categoryName).get().getId();
     }
-
-
-
 }
+

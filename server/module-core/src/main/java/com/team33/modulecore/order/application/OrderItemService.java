@@ -4,7 +4,7 @@ package com.team33.modulecore.order.application;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.item.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.domain.Order;
@@ -78,27 +78,18 @@ public class OrderItemService {
 //    public OrderItem changeSubQuantity(long itemOrderId, int upDown) {
 //        OrderItem orderItem = findItemOrder(itemOrderId);
 //
+//
 //        orderItem.setQuantity(orderItem.getQuantity() + upDown);
 //        orderItemRepository.save(orderItem);
 //
 //        return orderItem;
 //    }
 
-
-    public void minusSales(List<OrderItem> orderItems) { // 주문 취소할 경우 아이템 판매량에서 제외
-
-        for (OrderItem orderItem : orderItems) {
-            int sales = orderItem.getQuantity();
-            orderItem.getItem().setSales(orderItem.getItem().getSales() - sales);
-            itemRepository.save(orderItem.getItem());
-        }
-    }
-
-    public void addSales(OrderItem orderItem) { // 주문 요청할 경우 아이템 판매량 증가
-        int sales = orderItem.getQuantity();
-
+//    public void addSales(OrderItem orderItem) { // 주문 요청할 경우 아이템 판매량 증가
+//        int sales = orderItem.getQuantity();
+//
 //        itemRepository.save(orderItem.getItem());
-    }
+//    }
 
     public void setItemPeriod(int period, OrderItem orderItem) {
         orderItem.addPeriod(period);
@@ -135,7 +126,7 @@ public class OrderItemService {
         if (orderEntity.isPresent()) {
             OrderItem orderItem = new OrderItem(getItemOrder(io, orderEntity));
             orderItem.setOrder(newOrder);
-            addSales(orderItem);
+//            addSales(orderItem);
             orderItemRepository.save(orderItem);
             return orderItem;
         }
@@ -164,6 +155,8 @@ public class OrderItemService {
         );
     }
 
+
+    //TODO: 리팩토링 -> optional 제거
     private OrderItem getItemOrder(OrderItem io, Optional<Order> order) {
         int i = order.get().getOrderItems().indexOf(io);
         return order.get().getOrderItems().get(i);

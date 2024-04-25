@@ -2,10 +2,11 @@ package com.team33.modulequartz.subscription.application;
 
 import static org.quartz.JobKey.jobKey;
 
-import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.orderitem.application.OrderItemService;
+import com.team33.modulecore.order.application.OrderItemService;
+import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderService;
+import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulequartz.subscription.infra.JobListeners;
 import com.team33.modulequartz.subscription.infra.TriggerListeners;
@@ -33,6 +34,7 @@ public class SubscriptionService {
     private final JobDetailService jobDetailService;
     private final OrderService orderService;
     private final OrderItemService orderItemService;
+    private final OrderQueryService orderQueryService;
 
 
     public void startSchedule(Order order, OrderItem orderItem) {
@@ -43,7 +45,7 @@ public class SubscriptionService {
     @Transactional
     public OrderItem changePeriod(Long orderId, Integer period, Long itemOrderId) {
 
-        Order order = orderService.findOrder(orderId);
+        Order order = orderQueryService.findOrder(orderId);
         OrderItem orderItem = findItemOrderInOrder(order, itemOrderId);
 
         orderItemService.setItemPeriod(period, orderItem);
@@ -71,7 +73,7 @@ public class SubscriptionService {
     @Transactional
     public void cancelScheduler(Long orderId, Long itemOrderId) {
         log.info("cancelScheduler");
-        Order order = orderService.findOrder(orderId);
+        Order order = orderQueryService.findOrder(orderId);
         OrderItem orderItem = getItemOrder(itemOrderId);
 
         deleteSchedule(order, orderItem);
@@ -139,7 +141,7 @@ public class SubscriptionService {
     }
 
     public User getUser(Long orderId) {
-        Order order = orderService.findOrder(orderId);
+        Order order = orderQueryService.findOrder(orderId);
         return order.getUser();
     }
 

@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.item.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.user.domain.User;
 

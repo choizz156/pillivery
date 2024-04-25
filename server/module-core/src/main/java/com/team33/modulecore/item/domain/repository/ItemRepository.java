@@ -1,4 +1,4 @@
-package com.team33.modulecore.item.repository;
+package com.team33.modulecore.item.domain.repository;
 
 
 import com.team33.modulecore.item.domain.Item;

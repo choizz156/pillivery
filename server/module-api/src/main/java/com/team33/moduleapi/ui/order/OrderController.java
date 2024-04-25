@@ -44,8 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
  * The type Order controller.
  */
 @Slf4j
-@Validated
 @RequiredArgsConstructor
+@Validated
 @RestController
 @RequestMapping("/orders")
 public class OrderController {

@@ -19,10 +19,11 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.team33.moduleapi.controller.UserAccount;
 import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.orderitem.domain.OrderItem;
+import com.team33.modulecore.order.application.OrderQueryService;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.repository.OrderRepository;
-import com.team33.modulecore.orderitem.application.OrderItemService;
+import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.user.domain.User;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
@@ -43,6 +44,9 @@ class ScheduleControllerDocs extends WebRestDocsSupport {
 
     @MockBean(name = "orderService")
     private OrderService orderService;
+
+    @MockBean
+    private OrderQueryService orderQueryService;
 
     @MockBean
     private OrderRepository orderRepository;
@@ -93,7 +97,7 @@ class ScheduleControllerDocs extends WebRestDocsSupport {
         order.setOrderItems((List.of(orderItem)));
         orderItem.setOrder(order);
 
-        given(orderService.findOrder(anyLong()))
+        given(orderQueryService.findOrder(anyLong()))
             .willReturn(order);
         given(orderRepository.findById(anyLong()))
             .willReturn(Optional.ofNullable(order));
