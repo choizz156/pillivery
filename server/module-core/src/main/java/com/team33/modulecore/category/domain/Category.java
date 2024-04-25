@@ -14,10 +14,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 @Entity
 public class Category {
 
@@ -31,10 +33,15 @@ public class Category {
     @JoinColumn(name = "item_id")
     private Item item;
 
+
     @Enumerated(EnumType.STRING)
     private CategoryName categoryName;
 
     public Category(CategoryName categoryName) {
+        if(categoryName == null) {
+            throw new IllegalArgumentException("카테고리는 null일 수 없습니다.");
+        }
+
         this.categoryName = categoryName;
     }
 

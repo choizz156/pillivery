@@ -28,7 +28,7 @@ public class ReviewService {
 
     public Review createReview(Review review) {
         reviewRepository.save(review);
-        refreshStarAvg(review.getItem().getItemId());
+        refreshStarAvg(review.getItem().getId());
         return review;
     }
 
@@ -69,7 +69,7 @@ public class ReviewService {
                 .ifPresent(findReview::setStar);
 
         Review updatedReview = reviewRepository.save(findReview);
-        refreshStarAvg(findReview.getItem().getItemId());
+        refreshStarAvg(findReview.getItem().getId());
         return updatedReview;
     }
 
@@ -90,7 +90,7 @@ public class ReviewService {
         }
 
         reviewRepository.delete(review);
-        refreshStarAvg(review.getItem().getItemId());
+        refreshStarAvg(review.getItem().getId());
     }
 
     public double getStarAvg(long itemId) {

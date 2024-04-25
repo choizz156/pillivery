@@ -24,7 +24,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
     void createOrderItem() throws Exception {
         //given
         var sampleItem = fixtureMonkey.giveMeBuilder(Item.class)
-            .set("itemId", null)
+            .set("id", null)
             .set("wishList", new ArrayList<>())
             .set("categories", new ArrayList<>())
             .set("reviews", new ArrayList<>())
@@ -36,7 +36,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
 
         var dto = OrderItemServiceDto.builder()
             .isSubscription(false)
-            .itemId(sampleItem.getItemId())
+            .itemId(sampleItem.getId())
             .period(30)
             .quantity(3)
             .build();
@@ -91,7 +91,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
     private void orderItem_생성(List<OrderItem> orderItemSingle) {
         OrderItem orderItem = orderItemSingle.get(0);
         assertThat(orderItemSingle).hasSize(1);
-        assertThat(orderItem.getItem().getItemId()).isNotNull();
+        assertThat(orderItem.getItem().getId()).isNotNull();
         assertThat(orderItem.getSubscriptionItemInfo())
             .isEqualTo(orderItemSingle.get(0).getSubscriptionItemInfo());
         assertThat(orderItem.getQuantity()).isEqualTo(3);
@@ -127,7 +127,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
 
     private User getUser() {
         User userSample = fixtureMonkey.giveMeBuilder(User.class)
-            .set("userId", null)
+            .set("id", null)
             .set("wishList", new ArrayList<>())
             .set("displayName", "test")
             .set("cart", null)
@@ -140,7 +140,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
 
         var dto = OrderItemServiceDto.builder()
             .isSubscription(false)
-            .itemId(item.getItemId())
+            .itemId(item.getId())
             .period(30)
             .quantity(3)
             .build();
@@ -150,7 +150,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
 
     private Item findItem(String name) {
         Item sampleItem = fixtureMonkey.giveMeBuilder(Item.class)
-            .set("itemId", null)
+            .set("id", null)
             .set("title", name)
             .set("wishList", new ArrayList<>())
             .set("categories", new ArrayList<>())

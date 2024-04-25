@@ -2,7 +2,7 @@ package com.team33.modulecore.item.dto;
 
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
-import java.util.Set;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,8 +24,8 @@ public class ItemPostServiceDto {
     private int servingSize;
     private int discountRate;
     private int discountPrice;
-    private Set<CategoryName> categories;
-    private Set<NutritionFactPostDto> nutritionFacts;
+    private List<CategoryName> categories;
+    private List<NutritionFactPostDto> nutritionFacts;
     private double starAvg;
 
     @Builder
@@ -42,8 +42,8 @@ public class ItemPostServiceDto {
         int servingSize,
         int discountRate,
         int discountPrice,
-        Set<CategoryName> categories,
-        Set<NutritionFactPostDto> nutritionFacts,
+        List<CategoryName> categories,
+        List<NutritionFactPostDto> nutritionFacts,
         double starAvg
     ) {
         this.thumbnail = thumbnail;

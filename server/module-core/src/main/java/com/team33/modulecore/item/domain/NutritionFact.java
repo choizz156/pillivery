@@ -1,7 +1,7 @@
 package com.team33.modulecore.item.domain;
 
 import com.team33.modulecore.item.dto.NutritionFactPostDto;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,7 +43,7 @@ public class NutritionFact {
         this.volume = volume;
     }
 
-    public static Set<NutritionFact> of(Set<NutritionFactPostDto> nutritionFacts) {
+    public static List<NutritionFact> of(List<NutritionFactPostDto> nutritionFacts) {
         if(nutritionFacts == null || nutritionFacts.isEmpty()) {
             throw new IllegalArgumentException("영양성분은 null이나 비어있어서는 안됩니다.");
         }
@@ -54,7 +54,7 @@ public class NutritionFact {
                 .volume(dto.getVolume())
                 .build()
             )
-            .collect(Collectors.toUnmodifiableSet());
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public void addItem(Item item) {

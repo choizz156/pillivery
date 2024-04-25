@@ -6,9 +6,7 @@ import com.team33.modulecore.review.domain.Review;
 import com.team33.modulecore.talk.domain.Talk;
 import com.team33.modulecore.wish.domain.Wish;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -71,7 +69,7 @@ public class Item {
 
 
     @OneToMany(mappedBy = "item")
-    private Set<Category> categories = new HashSet<>();
+    private List<Category> categories = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
@@ -83,7 +81,7 @@ public class Item {
 
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<NutritionFact> nutritionFacts = new HashSet<>();
+    private List<NutritionFact> nutritionFacts = new ArrayList<>();
 
     @Builder
     private Item(
@@ -103,10 +101,10 @@ public class Item {
         double starAvg,
         Brand brand,
         List<Wish> wishList,
-        Set<Category> categories,
+        List<Category> categories,
         List<Review> reviews,
         List<Talk> talks,
-        Set<NutritionFact> nutritionFacts
+        List<NutritionFact> nutritionFacts
     ) {
         this.title = title;
         this.content = content;
@@ -132,8 +130,8 @@ public class Item {
 
     public static Item create(
         ItemPostServiceDto dto,
-        Set<NutritionFact> nutritionFacts,
-        Set<Category> category
+        List<NutritionFact> nutritionFacts,
+        List<Category> category
     ) {
         Item item = Item.builder()
             .title(dto.getTitle())

@@ -158,7 +158,7 @@ class OrderQueryServiceTest extends OrderDomainHelper {
 
     private User getUser() {
         User userSample = fixtureMonkey.giveMeBuilder(User.class)
-            .set("userId", null)
+            .set("id", null)
             .set("wishList", new ArrayList<>())
             .set("displayName", "test")
             .set("cart", null)
@@ -171,7 +171,7 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         AtomicReference<Integer> value = new AtomicReference<>(1);
         List<Item> items = fixtureMonkey.giveMeBuilder(Item.class)
             .setLazy("title", () -> "sample" + value.getAndSet(value.get() + 1))
-            .set("itemId", null)
+            .set("id", null)
             .set("wishList", new ArrayList<>())
             .set("categories", new ArrayList<>())
             .set("reviews", new ArrayList<>())

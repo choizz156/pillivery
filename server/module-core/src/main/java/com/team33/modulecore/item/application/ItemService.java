@@ -8,12 +8,11 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.item.domain.NutritionFact;
-import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,13 +27,13 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final BrandService brandService;
-    private final NutritionFactsService nutritionFactsService;
+    private final NutritionFactService nutritionFactService;
     private final CategoryService categoryService;
 
     public Item createItem(ItemPostServiceDto dto) {
-        Set<NutritionFact> nutritionFacts = nutritionFactsService.getNutritionFacts(dto);
+        List<NutritionFact> nutritionFacts = nutritionFactService.getNutritionFacts(dto);
 
-        Set<Category> category = categoryService.getCategories(dto.getCategories());
+        List<Category> category = categoryService.getCategories(dto.getCategories());
 
         Item item = Item.create(dto, nutritionFacts, category);
 
@@ -133,7 +132,7 @@ public class ItemService {
     }
 
     public List<Item> findTop9MdPickItems() {
-        return itemRepository.findTop9ByOrderByItemIdDesc();
+        return itemRepository.findTop9ByOrderByIdDesc();
     }
 
     public Page<Item> searchItems(String keyword, int page, int size, String sort) {

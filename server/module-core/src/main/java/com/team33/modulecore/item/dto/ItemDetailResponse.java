@@ -31,7 +31,7 @@ public class ItemDetailResponse { // 아이템 상세 조회
     private int servingSize;
     private int discountRate;
     private int discountPrice;
-    private Set<CategoryName> categories;
+    private List<CategoryName> categories;
     private Set<NutritionFactResponseDto> nutritionFacts;
     private double starAvg;
     private List<ReviewResponseDto> reviews;
@@ -52,7 +52,7 @@ public class ItemDetailResponse { // 아이템 상세 조회
         int servingSize,
         int discountRate,
         int discountPrice,
-        Set<CategoryName> categories,
+        List<CategoryName> categories,
         Set<NutritionFactResponseDto> nutritionFacts,
         double starAvg,
         List<ReviewResponseDto> reviews,
@@ -98,7 +98,7 @@ public class ItemDetailResponse { // 아이템 상세 조회
                 item.getCategories()
                     .stream()
                     .map(Category::getCategoryName)
-                    .collect(Collectors.toSet())
+                    .collect(Collectors.toUnmodifiableList())
             )
             .nutritionFacts(item.getNutritionFacts().stream()
                 .map(nutritionFact ->

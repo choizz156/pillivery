@@ -103,7 +103,7 @@ class OrderServiceTest extends OrderDomainHelper {
     private List<OrderItem> getOrderItems(Item item) {
         var dto = OrderItemServiceDto.builder()
             .isSubscription(false)
-            .itemId(item.getItemId())
+            .itemId(item.getId())
             .period(30)
             .quantity(3)
             .build();
