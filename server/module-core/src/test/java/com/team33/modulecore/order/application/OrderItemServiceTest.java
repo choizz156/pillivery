@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.team33.modulecore.cart.domain.Cart;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.itemcart.domain.ItemCart;
-import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.domain.SubscriptionItemInfo;
-import com.team33.modulecore.orderitem.dto.OrderItemServiceDto;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.SubscriptionItemInfo;
+import com.team33.modulecore.order.dto.OrderItemServiceDto;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +54,12 @@ class OrderItemServiceTest extends OrderDomainHelper {
     @Test
     void createOrderItemCart() throws Exception {
         //given
-        Item item1 = getItem("title1");
-        Item item2 = getItem("title2");
+        Item item1 = findItem("title1");
+        Item item2 = findItem("title2");
         User user = getUser();
         Cart cart = getCart(user);
 
-        ItemCarts result = getItemCarts(cart, item1, item2);
+        ItemCarts result = findItemCarts(cart, item1, item2);
 
         List<ItemCart> itemCartsSample = List.of(result.itemCart1, result.itemCart2);
 
@@ -99,7 +99,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
         assertThat(orderItem.isSubscription()).isFalse();
     }
 
-    private ItemCarts getItemCarts(Cart cart, Item item1, Item item2) {
+    private ItemCarts findItemCarts(Cart cart, Item item1, Item item2) {
         SubscriptionItemInfo subscriptionItemInfo = SubscriptionItemInfo.of(false, 30);
         ItemCart itemCart1 = ItemCart.builder()
             .cart(cart)
@@ -136,7 +136,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
         return userRepository.save(userSample);
     }
 
-    private List<OrderItem> getOrderItems(Item item) {
+    private List<OrderItem> makeOrderItems(Item item) {
 
         var dto = OrderItemServiceDto.builder()
             .isSubscription(false)
@@ -148,7 +148,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
         return orderItemService.getOrderItemSingle(dto);
     }
 
-    private Item getItem(String name) {
+    private Item findItem(String name) {
         Item sampleItem = fixtureMonkey.giveMeBuilder(Item.class)
             .set("itemId", null)
             .set("title", name)

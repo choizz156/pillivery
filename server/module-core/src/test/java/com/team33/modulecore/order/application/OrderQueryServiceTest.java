@@ -7,9 +7,9 @@ import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.orderitem.domain.OrderItem;
-import com.team33.modulecore.orderitem.domain.SubscriptionItemInfo;
-import com.team33.modulecore.orderitem.dto.OrderItemSimpleResponse;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.SubscriptionItemInfo;
+import com.team33.modulecore.order.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,17 +48,17 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         );
 
         var orderItems = List.of(
-            OrderItem.createWithoutOrder(items.get(0), orderItemInfos1.get(0), 3),
-            OrderItem.createWithoutOrder(items.get(1), orderItemInfos1.get(1), 2),
-            OrderItem.createWithoutOrder(items.get(2), orderItemInfos1.get(2), 2)
+            OrderItem.create(items.get(0), orderItemInfos1.get(0), 3),
+            OrderItem.create(items.get(1), orderItemInfos1.get(1), 2),
+            OrderItem.create(items.get(2), orderItemInfos1.get(2), 2)
         );
 
         var orderItemsSubs = List.of(
-            OrderItem.createWithoutOrder(items.get(0), orderItemInfoSubs.get(0), 3
+            OrderItem.create(items.get(0), orderItemInfoSubs.get(0), 3
             ),
-            OrderItem.createWithoutOrder(items.get(1), orderItemInfoSubs.get(1), 3
+            OrderItem.create(items.get(1), orderItemInfoSubs.get(1), 3
             ),
-            OrderItem.createWithoutOrder(items.get(2), orderItemInfoSubs.get(2), 3
+            OrderItem.create(items.get(2), orderItemInfoSubs.get(2), 3
             )
         );
 
@@ -79,8 +79,8 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         assertThat(content).hasSize(2)
             .extracting("id", "user", "orderStatus")
             .containsExactly(
-                tuple(orderSubs.getId(), user, OrderStatus.ORDER_SUBSCRIBE),
-                tuple(order.getId(), user, OrderStatus.ORDER_COMPLETE)
+                tuple(orderSubs.getId(), user, OrderStatus.SUBSCRIBE),
+                tuple(order.getId(), user, OrderStatus.COMPLETE)
             );
 
         assertThat(content.get(0).getOrderItems())
@@ -105,7 +105,7 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         var items = getItems();
 
         List<OrderItem> orderItems = items.stream()
-            .map(item -> OrderItem.createWithoutOrder(
+            .map(item -> OrderItem.create(
                 item,
                 SubscriptionItemInfo.of(true, 60),
                 1
