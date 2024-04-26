@@ -16,7 +16,7 @@ public class ItemSimpleResponseDto {
     private String title;
     private int capacity;
     private int price;
-    private int discountRate;
+    private double discountRate;
     private int disCountPrice;
 
     @Builder
@@ -27,7 +27,7 @@ public class ItemSimpleResponseDto {
         String title,
         int capacity,
         int price,
-        int discountRate,
+        double discountRate,
         int disCountPrice
     ) {
         this.itemId = itemId;

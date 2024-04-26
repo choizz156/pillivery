@@ -1,12 +1,13 @@
 package com.team33.modulecore.item.domain;
 
 import com.team33.modulecore.category.domain.Category;
+import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import com.team33.modulecore.review.domain.Review;
-import com.team33.modulecore.talk.domain.Talk;
 import com.team33.modulecore.wish.domain.Wish;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Item {
+public class Item extends BaseEntity {
 
     @Id
     @Column(name = "item_id")
@@ -47,9 +48,9 @@ public class Item {
 
     private int price;
 
-    private int discountRate;
+    private double discountRate;
 
-    private int view;
+    private long view;
 
     private int sales;
 
@@ -67,18 +68,11 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<Wish> wishList = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "item")
     private List<Category> categories = new ArrayList<>();
 
-
-    @OneToMany(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
-
-
-    @OneToMany(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private List<Talk> talks = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NutritionFact> nutritionFacts = new ArrayList<>();
@@ -92,7 +86,7 @@ public class Item {
         String expiration,
         int discountPrice,
         int price,
-        int discountRate,
+        double discountRate,
         int view,
         int sales,
         int capacity,
@@ -103,7 +97,6 @@ public class Item {
         List<Wish> wishList,
         List<Category> categories,
         List<Review> reviews,
-        List<Talk> talks,
         List<NutritionFact> nutritionFacts
     ) {
         this.title = title;
@@ -124,7 +117,6 @@ public class Item {
         this.wishList = wishList;
         this.categories = categories;
         this.reviews = reviews;
-        this.talks = talks;
         this.nutritionFacts = nutritionFacts;
     }
 
@@ -149,7 +141,6 @@ public class Item {
             .starAvg(dto.getStarAvg())
             .categories(category)
             .reviews(new ArrayList<>())
-            .talks(new ArrayList<>())
             .nutritionFacts(nutritionFacts)
             .wishList(new ArrayList<>())
             .build();
@@ -158,7 +149,6 @@ public class Item {
         item.getNutritionFacts().forEach(nutritionFact -> nutritionFact.addItem(item));
         return item;
     }
-
 
     public void addCategories(Category category) {
         categories.add(category);
@@ -171,5 +161,15 @@ public class Item {
 
     public void minusSales(int quantity) {
         this.sales -= quantity;
+    }
+
+    public void addView() {
+        this.view += 1L;
+    }
+
+    public List<Review> getItemReviewsBy5() {
+        return this.reviews.stream()
+            .limit(5)
+            .collect(Collectors.toUnmodifiableList());
     }
 }

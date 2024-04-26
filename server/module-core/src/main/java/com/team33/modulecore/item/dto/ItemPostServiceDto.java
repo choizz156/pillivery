@@ -22,7 +22,7 @@ public class ItemPostServiceDto {
     private int price;
     private int capacity;
     private int servingSize;
-    private int discountRate;
+    private double discountRate;
     private int discountPrice;
     private List<CategoryName> categories;
     private List<NutritionFactPostDto> nutritionFacts;
@@ -40,7 +40,7 @@ public class ItemPostServiceDto {
         int price,
         int capacity,
         int servingSize,
-        int discountRate,
+        double discountRate,
         int discountPrice,
         List<CategoryName> categories,
         List<NutritionFactPostDto> nutritionFacts,

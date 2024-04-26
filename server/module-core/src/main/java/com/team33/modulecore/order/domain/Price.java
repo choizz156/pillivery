@@ -52,7 +52,7 @@ public class Price {
 
         return orderItems.stream()
             .mapToInt(
-                oi -> oi.getQuantity() * oi.getItem().getPrice() * oi.getItem().getDiscountRate() / 100
+                oi -> (int) (oi.getQuantity() * oi.getItem().getPrice() * oi.getItem().getDiscountRate() / 100)
             )
             .sum();
     }

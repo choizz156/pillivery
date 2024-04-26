@@ -5,7 +5,6 @@ import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.review.dto.ReviewResponseDto;
-import com.team33.modulecore.talk.dto.TalkAndCommentDto;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ItemDetailResponse { // 아이템 상세 조회
+public class ItemDetailResponseDto { // 아이템 상세 조회
 
     private Long itemId;
     private String thumbnail;
@@ -29,16 +28,15 @@ public class ItemDetailResponse { // 아이템 상세 조회
     private int price;
     private int capacity;
     private int servingSize;
-    private int discountRate;
+    private double discountRate;
     private int discountPrice;
     private List<CategoryName> categories;
     private Set<NutritionFactResponseDto> nutritionFacts;
     private double starAvg;
     private List<ReviewResponseDto> reviews;
-    private List<TalkAndCommentDto> talks;
 
     @Builder
-    private ItemDetailResponse(
+    private ItemDetailResponseDto(
         Long itemId,
         String thumbnail,
         String descriptionImage,
@@ -50,13 +48,12 @@ public class ItemDetailResponse { // 아이템 상세 조회
         int price,
         int capacity,
         int servingSize,
-        int discountRate,
+        double discountRate,
         int discountPrice,
         List<CategoryName> categories,
         Set<NutritionFactResponseDto> nutritionFacts,
         double starAvg,
-        List<ReviewResponseDto> reviews,
-        List<TalkAndCommentDto> talks
+        List<ReviewResponseDto> reviews
     ) {
         this.itemId = itemId;
         this.thumbnail = thumbnail;
@@ -75,11 +72,10 @@ public class ItemDetailResponse { // 아이템 상세 조회
         this.nutritionFacts = nutritionFacts;
         this.starAvg = starAvg;
         this.reviews = reviews;
-        this.talks = talks;
     }
 
-    public static ItemDetailResponse of(Item item) {
-        return ItemDetailResponse.builder()
+    public static ItemDetailResponseDto of(Item item) {
+        return ItemDetailResponseDto.builder()
             .itemId(item.getId())
             .thumbnail(item.getThumbnail())
             .descriptionImage(item.getDescriptionImage())
@@ -101,15 +97,13 @@ public class ItemDetailResponse { // 아이템 상세 조회
                     .collect(Collectors.toUnmodifiableList())
             )
             .nutritionFacts(item.getNutritionFacts().stream()
-                .map(nutritionFact ->
-                    new NutritionFactResponseDto(
-                        nutritionFact.getIngredient(),
-                        nutritionFact.getIngredient()
-                    )
-                ).collect(Collectors.toSet())
+                .map(NutritionFactResponseDto::from)
+                .collect(Collectors.toSet())
+            )
+            .reviews(item.getItemReviewsBy5().stream()
+                .map(ReviewResponseDto::from)
+                .collect(Collectors.toUnmodifiableList())
             )
             .build();
-
-        //TODO: review는 리팩토링 하면서 추가
     }
 }

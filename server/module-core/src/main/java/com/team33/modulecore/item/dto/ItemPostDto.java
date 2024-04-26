@@ -30,7 +30,7 @@ public class ItemPostDto {
     @NotNull
     private int servingSize;
     @NotNull
-    private int discountRate;
+    private double discountRate;
     @NotNull
     private int discountPrice;
     @NotNull

@@ -22,7 +22,7 @@ public class WishDto {
         private String content;
         private int capacity;
         private int price;
-        private int discountRate;
+        private double discountRate;
         private int discountPrice;
         private Brand brand;
         private List<NutritionFactResponseDto> nutritionFacts;

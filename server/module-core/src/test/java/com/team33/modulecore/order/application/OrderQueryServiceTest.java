@@ -175,7 +175,6 @@ class OrderQueryServiceTest extends OrderDomainHelper {
             .set("wishList", new ArrayList<>())
             .set("categories", new ArrayList<>())
             .set("reviews", new ArrayList<>())
-            .set("talks", new ArrayList<>())
             .set("nutritionFacts", new ArrayList<>())
             .sampleList(23);
 

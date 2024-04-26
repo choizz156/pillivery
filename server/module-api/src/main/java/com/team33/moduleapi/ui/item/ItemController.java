@@ -3,14 +3,19 @@ package com.team33.moduleapi.ui.item;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.item.dto.ItemDetailResponse;
+import com.team33.modulecore.item.dto.ItemDetailResponseDto;
+import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
 import com.team33.modulecore.item.dto.ItemPostDto;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import com.team33.modulecore.review.application.ReviewService;
+import java.util.List;
+import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,43 +37,39 @@ public class ItemController {
 //    private final ItemMapper mapper;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/items")
+    @PostMapping
     public SingleResponseDto<?> postItem(@RequestBody ItemPostDto itemPostDto) {
         ItemPostServiceDto dto = ItemPostServiceDto.to(itemPostDto);
 
         Item item = itemService.createItem(dto);
 
-        ItemDetailResponse itemDetailResponse = ItemDetailResponse.of(item);
+        ItemDetailResponseDto itemDetailResponseDto = ItemDetailResponseDto.of(item);
 
-        return new SingleResponseDto<>(itemDetailResponse);
+        return new SingleResponseDto<>(itemDetailResponseDto);
     }
 
-
-//    @DeleteMapping("/items/{item-id}")
+    //    @DeleteMapping("/items/{item-id}")
 //    public ResponseEntity deleteItem(@PathVariable("item-id") long itemId) {
 //        itemService.deleteItem(itemId);
 //        return new ResponseEntity(HttpStatus.NO_CONTENT);
 //    }
 //
 //
-//    @GetMapping("/items/{item-id}")
-//    public ResponseEntity getItem(@PathVariable("item-id") long itemId,
-//        @RequestParam(value = "reviewPage", defaultValue = "1") int reviewPage,
-//        @RequestParam(value = "talkPage", defaultValue = "1") int talkPage) {
-//        Item item = itemService.findItem(itemId);
-//        return new ResponseEntity(new SingleResponseDto<>(mapper.itemToItemDetailResponseDto(
-//            item, reviewService, reviewMapper, talkService, talkMapper, reviewPage - 1, 5,
-//            talkPage - 1, 5)), HttpStatus.OK);
-//    }
-//
-//
-//    @GetMapping("/main") // 메인화면에서 best 제품 9개 , 할인제품 9개 조회하기, MD pick(최신순) 9개 조회하기
-//    public ResponseEntity getMainItem() {
-//        return new ResponseEntity(
-//            new SingleResponseDto<>(mapper.itemToItemMainTop9ResponseDto(itemService)),
-//            HttpStatus.OK);
-//    }
-//
+    @GetMapping("/{itemId}")
+    public SingleResponseDto<?> getItem(@NotNull @PathVariable Long itemId) {
+        Item item = itemService.findItemWithAddingView(itemId);
+
+        return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
+    }
+
+    @GetMapping("/main") // 메인화면에서 best 제품 9개 , 할인제품 9개 조회하기
+    public SingleResponseDto<?> getMainItem() {
+        List<Item> top9DiscountItems = itemService.findTop9DiscountItems();
+        List<Item> top9SaleItems = itemService.findTop9SaleItems();
+
+        return new SingleResponseDto<>(ItemMainTop9ResponseDto.from(top9SaleItems, top9SaleItems));
+    }
+
 //    @GetMapping("/search")
 //    public ResponseEntity searchItems(@RequestParam("keyword") String keyword,
 //        @Positive @RequestParam(value = "page", defaultValue = "1") int page,

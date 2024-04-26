@@ -60,6 +60,6 @@ public class OrderQueryService {
     private List<OrderItemSimpleResponse> getSubscriptionItem(List<OrderItem> subscriptionOrder) {
         return subscriptionOrder.stream()
             .map(OrderItemSimpleResponse::of)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 }

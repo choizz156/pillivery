@@ -1,6 +1,7 @@
 package com.team33.modulecore.item.domain.repository;
 
 
+import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.Item;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -8,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.team33.modulecore.item.domain.Brand;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
@@ -32,11 +32,10 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         @Param("categoryName") String categoryName, @Param("brand") Brand brand);
 
 
+    //TODO: 이거는 캐싱을 해놔야할 듯...
     List<Item> findTop9ByOrderBySalesDesc();
 
     List<Item> findTop9ByOrderByDiscountRateDesc();
-
-    List<Item> findTop9ByOrderByIdDesc();
 
     Page<Item> findByTitleContaining(Pageable pageable, String keyword);
 

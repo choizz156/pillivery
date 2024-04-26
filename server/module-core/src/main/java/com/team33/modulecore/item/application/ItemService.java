@@ -12,7 +12,6 @@ import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,17 +39,16 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    // 아이템 상세페이지 조회 비지니스 로직
-    public Item findItem(long itemId) {
+    //TODO: 이것도 캐싱을 해놓고, 조회수는 나중에 푸시하는 느낌으로 해도 될 것 같은데
+    public Item findItemWithAddingView(long itemId) {
         Item item = findVerifiedItem(itemId);
-        item.setView(item.getView() + 1);
-        return itemRepository.save(item);
+        item.addView();
+        return item;
     }
 
-    @Transactional(readOnly = true)
     public Item findVerifiedItem(long itemId) {
-        Optional<Item> item = itemRepository.findById(itemId);
-        return item.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
+        return itemRepository.findById(itemId)
+            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
     }
 
     public Page<Item> findItems(String categoryName, int page, int size, String sort) {
@@ -123,16 +121,14 @@ public class ItemService {
         }
     }
 
-    public List<Item> findTop9BestItems() {
-        return itemRepository.findTop9ByOrderBySalesDesc();
-    }
-
-    public List<Item> findTop9SaleItems() {
+    @Transactional(readOnly = true)
+    public List<Item> findTop9DiscountItems() {
         return itemRepository.findTop9ByOrderByDiscountRateDesc();
     }
 
-    public List<Item> findTop9MdPickItems() {
-        return itemRepository.findTop9ByOrderByIdDesc();
+    @Transactional(readOnly = true)
+    public List<Item> findTop9SaleItems() {
+        return itemRepository.findTop9ByOrderBySalesDesc();
     }
 
     public Page<Item> searchItems(String keyword, int page, int size, String sort) {

@@ -16,6 +16,7 @@ import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -70,7 +71,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         OrderPageRequest pageRequest,
         OrderFindCondition orderFindCondition
     ) {
-        return queryFactory
+        List<OrderItem> fetch = queryFactory
             .select(orderItem)
             .from(orderItem)
             .join(orderItem.order, order)
@@ -82,6 +83,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             .offset(pageRequest.getOffset())
             .orderBy(getSubscirptionOrderSort(pageRequest))
             .fetch();
+        return Collections.unmodifiableList(fetch);
     }
 
     private Predicate subscriptionOrderStatusEq(OrderStatus orderStatus) {
