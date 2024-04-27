@@ -3,13 +3,14 @@ package com.team33.modulecore.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import com.team33.modulecore.common.OrderPageDto;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.SubscriptionItemInfo;
 import com.team33.modulecore.order.dto.OrderItemSimpleResponse;
+import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,11 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         orderService.completeOrder(order.getId());
         orderService.subscribeOrder(orderSubs.getId());
 
-        var orderPageRequest = OrderPageRequest.of(1, 5);
+        var orderPageDto = new OrderPageDto();
+        orderPageDto.setPage(1);
+        orderPageDto.setSize(5);
+
+        var orderPageRequest = OrderPageRequest.of(orderPageDto);
         //when
         Page<Order> allOrders = orderQueryService.findAllOrders(user.getId(), orderPageRequest);
 
@@ -114,8 +119,16 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         var orderSubs1 = orderService.callOrder(orderItems, true, user.getId());
         orderService.subscribeOrder(orderSubs1.getId());
 
-        var orderPageRequest1 = OrderPageRequest.of(1, 5);
-        var orderPageRequest2 = OrderPageRequest.of(2, 10);
+        var orderPageDto1 = new OrderPageDto();
+        orderPageDto1.setPage(1);
+        orderPageDto1.setSize(5);
+
+        var orderPageDto2 = new OrderPageDto();
+        orderPageDto2.setPage(2);
+        orderPageDto2.setSize(10);
+
+        var orderPageRequest1 = OrderPageRequest.of(orderPageDto1);
+        var orderPageRequest2 = OrderPageRequest.of(orderPageDto2);
 
         //when
         List<OrderItemSimpleResponse> allSubscriptions1 = orderQueryService.findAllSubscriptions(

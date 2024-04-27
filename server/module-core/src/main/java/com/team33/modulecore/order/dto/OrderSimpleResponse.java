@@ -4,8 +4,8 @@ import com.team33.modulecore.item.dto.ItemSimpleResponseDto;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -43,9 +43,9 @@ public class OrderSimpleResponse { // 주문 목록 조회
     }
 
     public static List<OrderSimpleResponse> toList(List<Order> orders) {
-        List<OrderSimpleResponse> dtos = new ArrayList<>(orders.size());
-        orders.forEach(order -> dtos.add(OrderSimpleResponse.of(order)));
-        return dtos;
+        return orders.stream()
+            .map(OrderSimpleResponse::of)
+            .collect(Collectors.toUnmodifiableList());
     }
 
     private static OrderSimpleResponse of(Order order) {
@@ -53,7 +53,7 @@ public class OrderSimpleResponse { // 주문 목록 조회
             .orderId(order.getId())
             .orderStatus(order.getOrderStatus())
             .totalItems(order.getTotalItems())
-            .expectPrice(order.getPrice().getExpectPrice())
+            .expectPrice(order.getOrderPrice().getTotalPrice())
             .subscription(order.isSubscription())
             .item(ItemSimpleResponseDto.of(order.getFirstItem()))
             .createdAt(order.getCreatedAt())

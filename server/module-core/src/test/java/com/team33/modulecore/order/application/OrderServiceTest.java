@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.domain.Price;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 import com.team33.modulecore.user.domain.User;
@@ -37,10 +37,10 @@ class OrderServiceTest extends OrderDomainHelper {
 
         //when
         Order order = orderService.callOrder(orderItemSingle, false, user.getId());
-        Price price = new Price(orderItemSingle);
+        OrderPrice orderPrice = new OrderPrice(orderItemSingle);
 
         //then
-        assertThat(order.getPrice()).isEqualTo(price);
+        assertThat(order.getOrderPrice()).isEqualTo(orderPrice);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.REQUEST);
         assertThat(order.getOrderItems()).hasSize(1);
         assertThat(order.getTotalItems()).isEqualTo(1);

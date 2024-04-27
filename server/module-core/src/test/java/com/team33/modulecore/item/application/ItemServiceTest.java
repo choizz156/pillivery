@@ -11,17 +11,20 @@ import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
+import com.team33.modulecore.item.dto.ItemSearchRequest;
 import com.team33.modulecore.item.dto.NutritionFactPostDto;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Commit;
+import org.springframework.data.domain.Page;
 
 @EnableItemDomainTest
 class ItemServiceTest {
@@ -37,17 +40,24 @@ class ItemServiceTest {
     @Autowired
     private ItemRepository itemRepository;
 
+    @AfterEach
+    void tearDown() {
+        itemRepository.deleteAllInBatch();
+        itemRepository.flush();
+    }
+
+
     @DisplayName("item을 저장할 수 있다.")
     @Test
     void 아이템_생성() throws Exception {
         //given
-        ItemPostServiceDto sample = fixtureMonkey.giveMeBuilder(ItemPostServiceDto.class)
+        var sample = fixtureMonkey.giveMeBuilder(ItemPostServiceDto.class)
             .set("categories", List.of(CategoryName.EYE, CategoryName.BONE))
             .set("nutritionFacts", List.of(new NutritionFactPostDto("test1", "test11")))
             .sample();
 
         //when
-        Item item = itemService.createItem(sample);
+        var item = itemService.createItem(sample);
 
         //then
         assertThat(item.getCategories()).hasSize(2)
@@ -65,19 +75,18 @@ class ItemServiceTest {
 
         assertThat(optionalItem).isNotNull();
         assertThat(optionalItem.getId()).isEqualTo(item.getId());
-
     }
 
     @DisplayName("아이템을 조회하면서 view수를 늘릴 수 있다.")
     @Test
     void 아이템_조회수_증가_조회() throws Exception {
         //given
-        ItemPostServiceDto sample = fixtureMonkey.giveMeBuilder(ItemPostServiceDto.class)
+        var sample = fixtureMonkey.giveMeBuilder(ItemPostServiceDto.class)
             .set("categories", List.of(CategoryName.EYE))
             .set("nutritionFacts", List.of(new NutritionFactPostDto("test1", "test11")))
             .sample();
 
-        Item item = itemService.createItem(sample);
+        var item = itemService.createItem(sample);
 
         //when
         IntStream.range(0, 100).forEach(
@@ -94,8 +103,8 @@ class ItemServiceTest {
     @Test
     void 판매량_9() throws Exception {
         //given
-        AtomicReference<Integer> value = new AtomicReference<>(1);
-        List<Item> items = fixtureMonkey.giveMeBuilder(Item.class)
+        var value = new AtomicReference<>(1);
+        var items = fixtureMonkey.giveMeBuilder(Item.class)
             .set("id", null)
             .setLazy("sales", () -> value.getAndSet(value.get() + 1))
             .setLazy("title", () -> "title" + value)
@@ -127,13 +136,12 @@ class ItemServiceTest {
             );
     }
 
-    @Commit
     @DisplayName("할인율이 높은 9개를 조회할 수 있다.")
     @Test
     void 할인율_9() throws Exception {
         //given
-        AtomicReference<Double> value = new AtomicReference<>(1D);
-        List<Item> items = fixtureMonkey.giveMeBuilder(Item.class)
+        var value = new AtomicReference<>(1D);
+        var items = fixtureMonkey.giveMeBuilder(Item.class)
             .set("id", null)
             .setLazy("discountRate", () -> value.getAndSet(value.get() + 1))
             .setLazy("title", () -> "title" + value)
@@ -165,4 +173,49 @@ class ItemServiceTest {
             );
     }
 
+    @DisplayName("아이템 이름을 통해 조회할 수 있다.")
+    @Test
+    void 아이템_이름_조회() throws Exception {
+
+        var value1 = new AtomicReference<>(1);
+        var items1 = fixtureMonkey.giveMeBuilder(Item.class)
+            .set("id", null)
+            .setLazy("title", () -> "title" + value1.getAndSet(value1.get() + 1))
+            .set("nutritionFacts", new ArrayList<>())
+            .set("reviews", null)
+            .set("brand", Brand.MYNI)
+            .set("wishList", null)
+            .set("categories", new ArrayList<>())
+            .sampleList(5);
+
+        var value2 = new AtomicReference<>(10);
+        var items2 = fixtureMonkey.giveMeBuilder(Item.class)
+            .set("id", null)
+            .setLazy("title", () -> "test" + value2.getAndSet(value2.get() + 1))
+            .set("nutritionFacts", new ArrayList<>())
+            .set("reviews", null)
+            .set("brand", Brand.MYNI)
+            .set("wishList", null)
+            .set("categories", new ArrayList<>())
+            .sampleList(3);
+
+        items1.addAll(items2);
+        itemRepository.saveAll(items1);
+        var dto = new ItemPageDto();
+        dto.setPage(1);
+        dto.setSize(14);
+
+        //when
+        Page<Item> items = itemService.searchItems("test", ItemSearchRequest.to(dto));
+
+        //then
+        assertThat(items.getContent())
+            .hasSize(3)
+            .isSortedAccordingTo(Comparator.comparing(Item::getSales).reversed())
+            .extracting("title")
+            .containsExactlyInAnyOrder("test12", "test11", "test10");
+        assertThat(items.getSize()).isEqualTo(16);
+        assertThat(items.getTotalElements()).isEqualTo(3);
+        assertThat(items.getTotalPages()).isEqualTo(1);
+    }
 }
