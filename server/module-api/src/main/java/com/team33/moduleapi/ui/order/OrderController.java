@@ -4,7 +4,7 @@ package com.team33.moduleapi.ui.order;
 import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.cart.application.CartService;
-import com.team33.modulecore.common.PageDto;
+import com.team33.modulecore.common.OrderPageDto;
 import com.team33.modulecore.itemcart.application.ItemCartService;
 import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.order.application.OrderQueryService;
@@ -114,7 +114,7 @@ public class OrderController {
     @GetMapping
     public MultiResponseDto<?> getOrders(
         @NotNull @RequestParam Long userId,
-        PageDto pageDto
+        OrderPageDto pageDto
     ) {
         OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
 
@@ -124,7 +124,7 @@ public class OrderController {
 
         List<OrderSimpleResponse> ordersDto = OrderSimpleResponse.toList(orders);
 
-        return new MultiResponseDto<>(orders, allOrders);
+        return new MultiResponseDto<>(ordersDto, allOrders);
     }
 
     /**
@@ -137,7 +137,7 @@ public class OrderController {
     @GetMapping("/subscriptions")
     public MultiResponseDto<?> getSubscriptionsOrder(
         @NotNull @RequestParam Long userId,
-        PageDto pageDto
+        OrderPageDto pageDto
     ) {
         OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
 

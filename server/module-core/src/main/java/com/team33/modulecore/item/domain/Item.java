@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -44,11 +45,8 @@ public class Item extends BaseEntity {
 
     private String expiration;
 
-    private int discountPrice;
-
-    private int price;
-
-    private double discountRate;
+    @Embedded
+    private ItemPrice itemPrice;
 
     private long view;
 
@@ -84,9 +82,7 @@ public class Item extends BaseEntity {
         String thumbnail,
         String descriptionImage,
         String expiration,
-        int discountPrice,
-        int price,
-        double discountRate,
+        ItemPrice itemPrice,
         int view,
         int sales,
         int capacity,
@@ -104,9 +100,7 @@ public class Item extends BaseEntity {
         this.thumbnail = thumbnail;
         this.descriptionImage = descriptionImage;
         this.expiration = expiration;
-        this.discountPrice = discountPrice;
-        this.price = price;
-        this.discountRate = discountRate;
+        this.itemPrice = itemPrice;
         this.view = view;
         this.sales = sales;
         this.capacity = capacity;
@@ -131,9 +125,7 @@ public class Item extends BaseEntity {
             .thumbnail(dto.getThumbnail())
             .descriptionImage(dto.getDescriptionImage())
             .expiration(dto.getExpiration())
-            .discountPrice(dto.getDiscountPrice())
-            .price(dto.getPrice())
-            .discountRate(dto.getDiscountRate())
+            .itemPrice(new ItemPrice(dto.getPrice(), dto.getDiscountRate()))
             .capacity(dto.getCapacity())
             .servingSize(dto.getServingSize())
             .sales(dto.getSales())
@@ -171,5 +163,17 @@ public class Item extends BaseEntity {
         return this.reviews.stream()
             .limit(5)
             .collect(Collectors.toUnmodifiableList());
+    }
+
+    public int getDiscountPrice(){
+        return this.itemPrice.getDiscountPrice();
+    }
+
+    public int getOriginalPrice(){
+        return this.itemPrice.getOriginPrice();
+    }
+
+    public double getDiscountRate(){
+        return this.itemPrice.getDiscountRate();
     }
 }

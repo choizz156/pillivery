@@ -1,17 +1,22 @@
 package com.team33.moduleapi.ui.item;
 
+import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.item.dto.ItemDetailResponseDto;
 import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
+import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemPostDto;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
+import com.team33.modulecore.item.dto.ItemResponseDto;
+import com.team33.modulecore.item.dto.ItemSearchRequest;
 import com.team33.modulecore.review.application.ReviewService;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,8 +59,7 @@ public class ItemController {
 //        itemService.deleteItem(itemId);
 //        return new ResponseEntity(HttpStatus.NO_CONTENT);
 //    }
-//
-//
+
     @GetMapping("/{itemId}")
     public SingleResponseDto<?> getItem(@NotNull @PathVariable Long itemId) {
         Item item = itemService.findItemWithAddingView(itemId);
@@ -70,17 +75,18 @@ public class ItemController {
         return new SingleResponseDto<>(ItemMainTop9ResponseDto.from(top9SaleItems, top9SaleItems));
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity searchItems(@RequestParam("keyword") String keyword,
-//        @Positive @RequestParam(value = "page", defaultValue = "1") int page,
-//        @Positive @RequestParam(value = "size", defaultValue = "16") int size,
-//        @RequestParam(value = "sort", defaultValue = "sales") String sort) { // 키워드 검색
-//        Page<Item> itemPage = itemService.searchItems(keyword, page - 1, size, sort);
-//        List<Item> itemList = itemPage.getContent();
-//        return new ResponseEntity(
-//            new MultiResponseDto<>(mapper.itemsToItemCategoryResponseDto(itemList), itemPage),
-//            HttpStatus.OK);
-//    }
+    @GetMapping("/keywords")
+    public MultiResponseDto searchItems(
+        @NotNull @RequestParam String keywords,
+        ItemPageDto pageDto
+    ) {
+        ItemSearchRequest dto = ItemSearchRequest.to(pageDto);
+
+        Page<Item> itemPage = itemService.searchItems(keywords, dto);
+        List<Item>  items = itemPage.getContent();
+
+        return new MultiResponseDto<>(ItemResponseDto.from(items), itemPage);
+    }
 //
 //    @GetMapping("/price")
 //    public ResponseEntity priceFilteredItems(@RequestParam("low") int low,

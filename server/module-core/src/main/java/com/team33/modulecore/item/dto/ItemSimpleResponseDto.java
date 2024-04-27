@@ -47,8 +47,8 @@ public class ItemSimpleResponseDto {
             .thumbnail(item.getThumbnail())
             .title(item.getTitle())
             .capacity(item.getCapacity())
-            .price(item.getPrice())
-            .discountRate(item.getDiscountRate())
+            .price(item.getOriginalPrice())
+            .discountRate(item.getItemPrice().getDiscountRate())
             .disCountPrice(item.getDiscountPrice()).
             build();
     }

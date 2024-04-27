@@ -25,7 +25,7 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
     private String expiration;
     private Brand brand;
     private int sales;
-    private int price;
+    private int realPrice;
     private int capacity;
     private int servingSize;
     private double discountRate;
@@ -63,7 +63,7 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
         this.expiration = expiration;
         this.brand = brand;
         this.sales = sales;
-        this.price = price;
+        this.realPrice = price;
         this.capacity = capacity;
         this.servingSize = servingSize;
         this.discountRate = discountRate;
@@ -84,7 +84,7 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
             .expiration(item.getExpiration())
             .brand(item.getBrand())
             .sales(item.getSales())
-            .price(item.getPrice())
+            .price(item.getOriginalPrice())
             .capacity(item.getCapacity())
             .servingSize(item.getServingSize())
             .discountRate(item.getDiscountRate())

@@ -55,7 +55,7 @@ public class CartService {
         int totalDiscountPrice = 0;
 
         for (ItemCart itemCart : itemCarts) {
-            int quantity = itemCart.getItem().getPrice();
+            int quantity = itemCart.getItem().getOriginalPrice();
             int price = itemCart.getQuantity();
             double discountRate = itemCart.getItem().getDiscountRate();
 
@@ -92,7 +92,7 @@ public class CartService {
         int totalPrice = 0;
 
         for (ItemCart itemCart : itemCarts) {
-            int quantity = itemCart.getItem().getPrice();
+            int quantity = itemCart.getItem().getOriginalPrice();
             int price = itemCart.getQuantity();
             totalPrice += (quantity * price);
         }

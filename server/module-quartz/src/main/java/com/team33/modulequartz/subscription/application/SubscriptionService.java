@@ -170,7 +170,13 @@ public class SubscriptionService {
         try {
             ListenerManager listenerManager = scheduler.getListenerManager();
             listenerManager.addJobListener(
-                new JobListeners(trigger, orderItemService, orderService, jobDetailService)
+                new JobListeners(
+                    trigger,
+                    orderItemService,
+                    orderService,
+                    jobDetailService,
+                    orderQueryService
+                )
             );
             listenerManager.addTriggerListener(new TriggerListeners());
             scheduler.scheduleJob(jobDetail, lastTrigger);

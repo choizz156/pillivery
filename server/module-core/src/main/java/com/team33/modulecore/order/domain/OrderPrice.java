@@ -11,28 +11,23 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Embeddable
-public class Price {
+public class OrderPrice {
 
     private int totalPrice;
 
     private int totalDiscountPrice;
 
-    private int expectPrice; // 실제 결제 금액 (정가 - 할인가)
-
     @Builder
-    public Price(int totalPrice, int totalDiscountPrice, int expectPrice) {
+    public OrderPrice(int totalPrice, int totalDiscountPrice) {
         this.totalPrice = totalPrice;
         this.totalDiscountPrice = totalDiscountPrice;
-        this.expectPrice = expectPrice;
     }
 
-    public Price(List<OrderItem> orderItems) {
+    public OrderPrice(List<OrderItem> orderItems) {
         int totalPrice = countTotalPrice(orderItems);
-        int totalDiscountPrice = countDiscountTotalPrice(orderItems);
-
+        int totalDiscountPrice = countTotalDiscountPrice(orderItems);
         this.totalPrice = totalPrice;
         this.totalDiscountPrice = totalDiscountPrice;
-        this.expectPrice = totalPrice - totalDiscountPrice;
     }
 
     private int countTotalPrice(List<OrderItem> orderItems) {
@@ -41,10 +36,14 @@ public class Price {
             return 0;
         }
 
-        return orderItems.stream().mapToInt(oi -> oi.getQuantity() * oi.getItem().getPrice()).sum();
+        return orderItems.stream()
+            .mapToInt(orderItem ->
+                orderItem.getQuantity() * orderItem.getItem().getItemPrice().getRealPrice()
+            )
+            .sum();
     }
 
-    private int countDiscountTotalPrice(List<OrderItem> orderItems) {
+    private int countTotalDiscountPrice(List<OrderItem> orderItems) {
 
         if (orderItems == null) {
             return 0;
@@ -52,7 +51,8 @@ public class Price {
 
         return orderItems.stream()
             .mapToInt(
-                oi -> (int) (oi.getQuantity() * oi.getItem().getPrice() * oi.getItem().getDiscountRate() / 100)
+                orderItem ->
+                    orderItem.getQuantity() * orderItem.getItem().getItemPrice().getDiscountPrice()
             )
             .sum();
     }

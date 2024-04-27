@@ -20,7 +20,7 @@ public class ItemResponseDto { // 목록 조회
     private String title;
     private String content;
     private int capacity;
-    private int price;
+    private int realPrice;
     private double discountRate;
     private int discountPrice;
     private double starAvg;
@@ -50,7 +50,7 @@ public class ItemResponseDto { // 목록 조회
         this.title = title;
         this.content = content;
         this.capacity = capacity;
-        this.price = price;
+        this.realPrice = price;
         this.discountRate = discountRate;
         this.discountPrice = discountPrice;
         this.starAvg = starAvg;
@@ -60,6 +60,12 @@ public class ItemResponseDto { // 목록 조회
         this.nutritionFacts = nutritionFacts;
     }
 
+    public static List<ItemResponseDto> from(List<Item> items) {
+        return items.stream()
+            .map(ItemResponseDto::from)
+            .collect(Collectors.toUnmodifiableList());
+    }
+
     public static ItemResponseDto from(Item item) {
         return ItemResponseDto.builder()
             .itemId(item.getId())
@@ -67,7 +73,7 @@ public class ItemResponseDto { // 목록 조회
             .title(item.getTitle())
             .content(item.getContent())
             .capacity(item.getCapacity())
-            .price(item.getPrice())
+            .price(item.getOriginalPrice())
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())
             .starAvg(item.getStarAvg())

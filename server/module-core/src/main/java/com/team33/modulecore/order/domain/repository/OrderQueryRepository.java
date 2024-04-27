@@ -7,8 +7,7 @@ import com.team33.modulecore.order.domain.OrderItem;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public interface OrderRepositoryCustom {
-
+public interface OrderQueryRepository {
 
     Page<Order> searchOrders(
         OrderPageRequest pageRequest,

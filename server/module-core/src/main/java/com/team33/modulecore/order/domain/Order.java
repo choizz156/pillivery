@@ -47,7 +47,7 @@ public class Order extends BaseEntity {
     private boolean isSubscription;
 
     @Embedded
-    private Price price;
+    private OrderPrice orderPrice;
 
     private int totalItems;
 
@@ -74,10 +74,9 @@ public class Order extends BaseEntity {
         this.phone = origin.getPhone();
         this.isSubscription = origin.isSubscription();
         this.totalItems = origin.getTotalItems();
-        this.price = new Price(
-            price.getTotalPrice(),
-            price.getTotalDiscountPrice(),
-            price.getExpectPrice()
+        this.orderPrice = new OrderPrice(
+            origin.getOrderPrice().getTotalPrice(),
+            origin.getOrderPrice().getTotalDiscountPrice()
         );
         this.user = origin.getUser();
         this.orderItems = origin.getOrderItems();
@@ -148,7 +147,7 @@ public class Order extends BaseEntity {
     }
 
     private void addPrice(List<OrderItem> orderItems) {
-        this.price = new Price(orderItems);
+        this.orderPrice = new OrderPrice(orderItems);
     }
 
     private void countQuantity() { // 주문의 담긴 상품의 총량을 구하는 메서드

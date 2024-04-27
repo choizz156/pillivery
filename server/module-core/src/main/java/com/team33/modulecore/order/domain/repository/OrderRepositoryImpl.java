@@ -27,7 +27,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 
 @RequiredArgsConstructor
-public class OrderRepositoryImpl implements OrderRepositoryCustom {
+public class OrderRepositoryImpl implements OrderQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
@@ -44,7 +44,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             )
             .limit(pageRequest.getSize())
             .offset(pageRequest.getOffset())
-            .orderBy(getOrderSort(pageRequest))
+            .orderBy(getOrderSort(pageRequest.getSort()))
             .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
@@ -81,7 +81,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             )
             .limit(pageRequest.getSize())
             .offset(pageRequest.getOffset())
-            .orderBy(getSubscirptionOrderSort(pageRequest))
+            .orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
             .fetch();
         return Collections.unmodifiableList(fetch);
     }
@@ -102,12 +102,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             : order.orderStatus.eq(orderStatus).not();
     }
 
-
-    private OrderSpecifier<Long> getOrderSort(OrderPageRequest pageRequest) {
-        return pageRequest.getSort() == Direction.DESC ? order.id.desc() : order.id.asc();
+    private OrderSpecifier<Long> getOrderSort(Direction pageRequest) {
+        return pageRequest == Direction.DESC ? order.id.desc() : order.id.asc();
     }
 
-    private OrderSpecifier<Long> getSubscirptionOrderSort(OrderPageRequest pageRequest) {
-        return pageRequest.getSort() == Direction.DESC ? orderItem.id.desc() : orderItem.id.asc();
+    private OrderSpecifier<Long> getSubscriptionOrderSort(Direction pageRequest) {
+        return pageRequest == Direction.DESC ? orderItem.id.desc() : orderItem.id.asc();
     }
 }

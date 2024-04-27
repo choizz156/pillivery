@@ -70,9 +70,9 @@ public class OrderDetailResponse {
             .name(order.getName())
             .phone(order.getPhone())
             .totalItems(order.getTotalItems())
-            .totalPrice(order.getPrice().getTotalPrice())
-            .totalDiscountPrice(order.getPrice().getTotalDiscountPrice())
-            .expectPrice(order.getPrice().getExpectPrice())
+            .totalPrice(order.getOrderPrice().getTotalPrice())
+            .totalDiscountPrice(order.getOrderPrice().getTotalDiscountPrice())
+            .expectPrice(order.getOrderPrice().getTotalPrice())
             .subscription(order.isSubscription())
             .itemOrders(
                     order.getOrderItems()
