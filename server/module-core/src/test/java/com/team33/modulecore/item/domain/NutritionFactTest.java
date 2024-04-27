@@ -3,6 +3,7 @@ package com.team33.modulecore.item.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import com.team33.modulecore.item.domain.entity.NutritionFact;
 import com.team33.modulecore.item.dto.NutritionFactPostDto;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

@@ -4,6 +4,7 @@ import com.team33.modulecore.category.application.CategoryService;
 import com.team33.modulecore.category.repository.CategoryRepository;
 import com.team33.modulecore.config.QueryDslConfig;
 import com.team33.modulecore.item.application.BrandService;
+import com.team33.modulecore.item.application.ItemQueryService;
 import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.item.application.NutritionFactService;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
@@ -31,7 +32,8 @@ import org.springframework.test.context.ContextConfiguration;
     NutritionFactService.class,
     ItemRepository.class,
     ItemService.class,
-    BrandService.class
+    BrandService.class,
+    ItemQueryService.class
 })
 @EnableAutoConfiguration
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)

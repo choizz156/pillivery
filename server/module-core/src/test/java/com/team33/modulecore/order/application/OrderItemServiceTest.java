@@ -3,7 +3,7 @@ package com.team33.modulecore.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team33.modulecore.cart.domain.Cart;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.SubscriptionItemInfo;

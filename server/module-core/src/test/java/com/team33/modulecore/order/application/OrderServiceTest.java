@@ -2,7 +2,7 @@ package com.team33.modulecore.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
