@@ -3,7 +3,7 @@ package com.team33.modulecore.order.application;
 
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;

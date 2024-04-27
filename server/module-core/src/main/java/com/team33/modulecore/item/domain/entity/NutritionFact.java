@@ -1,4 +1,4 @@
-package com.team33.modulecore.item.domain;
+package com.team33.modulecore.item.domain.entity;
 
 import com.team33.modulecore.item.dto.NutritionFactPostDto;
 import java.util.List;

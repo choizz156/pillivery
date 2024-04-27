@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.user.domain.User;
 
 @Getter

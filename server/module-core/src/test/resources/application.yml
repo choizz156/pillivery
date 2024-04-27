@@ -19,9 +19,9 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
-        show_sql: true
+#        show_sql: true
         use_sql_comments: true
-#    defer-datasource-initialization: true
+#    defer-datasource-initialization: false
 
 logging:
   level:

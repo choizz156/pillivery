@@ -16,7 +16,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.user.domain.User;
 
 @Getter

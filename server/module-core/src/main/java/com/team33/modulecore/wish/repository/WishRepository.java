@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.wish.domain.Wish;
 

@@ -1,7 +1,7 @@
 package com.team33.modulecore.item.domain.repository;
 
 
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

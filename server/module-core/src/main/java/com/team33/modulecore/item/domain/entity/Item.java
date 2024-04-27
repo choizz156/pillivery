@@ -1,7 +1,9 @@
-package com.team33.modulecore.item.domain;
+package com.team33.modulecore.item.domain.entity;
 
 import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.item.domain.Brand;
+import com.team33.modulecore.item.domain.ItemPrice;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import com.team33.modulecore.review.domain.Review;
 import com.team33.modulecore.wish.domain.Wish;
@@ -23,10 +25,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 @Entity
 public class Item extends BaseEntity {
 

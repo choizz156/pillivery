@@ -2,8 +2,9 @@ package com.team33.moduleapi.ui.item;
 
 import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.modulecore.item.application.ItemQueryService;
 import com.team33.modulecore.item.application.ItemService;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemDetailResponseDto;
 import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
 import com.team33.modulecore.item.dto.ItemPageDto;
@@ -37,6 +38,7 @@ public class ItemController {
 
     private final ItemService itemService;
     private final ReviewService reviewService;
+    private final ItemQueryService itemQueryService;
 //    private final TalkService talkService;
 //    private final ReviewMapper reviewMapper;
 //    private final TalkMapper talkMapper;
@@ -54,23 +56,11 @@ public class ItemController {
         return new SingleResponseDto<>(itemDetailResponseDto);
     }
 
-    //    @DeleteMapping("/items/{item-id}")
-//    public ResponseEntity deleteItem(@PathVariable("item-id") long itemId) {
-//        itemService.deleteItem(itemId);
-//        return new ResponseEntity(HttpStatus.NO_CONTENT);
-//    }
-
-    @GetMapping("/{itemId}")
-    public SingleResponseDto<?> getItem(@NotNull @PathVariable Long itemId) {
-        Item item = itemService.findItemWithAddingView(itemId);
-
-        return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
-    }
 
     @GetMapping("/main") // 메인화면에서 best 제품 9개 , 할인제품 9개 조회하기
     public SingleResponseDto<?> getMainItem() {
-        List<Item> top9DiscountItems = itemService.findTop9DiscountItems();
-        List<Item> top9SaleItems = itemService.findTop9SaleItems();
+        List<Item> top9DiscountItems = itemQueryService.findTop9DiscountItems();
+        List<Item> top9SaleItems = itemQueryService.findTop9SaleItems();
 
         return new SingleResponseDto<>(ItemMainTop9ResponseDto.from(top9SaleItems, top9SaleItems));
     }
@@ -82,10 +72,22 @@ public class ItemController {
     ) {
         ItemSearchRequest dto = ItemSearchRequest.to(pageDto);
 
-        Page<Item> itemPage = itemService.searchItems(keywords, dto);
+        Page<Item> itemPage = itemQueryService.searchItems(keywords, dto);
         List<Item>  items = itemPage.getContent();
 
         return new MultiResponseDto<>(ItemResponseDto.from(items), itemPage);
+    }
+
+    //    @DeleteMapping("/items/{item-id}")
+//    public ResponseEntity deleteItem(@PathVariable("item-id") long itemId) {
+//        itemService.deleteItem(itemId);
+//        return new ResponseEntity(HttpStatus.NO_CONTENT);
+//    }
+
+    @GetMapping("/{itemId}")
+    public SingleResponseDto<?> getItem(@NotNull @PathVariable Long itemId) {
+        Item item = itemService.findItemWithAddingView(itemId);
+        return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
     }
 //
 //    @GetMapping("/price")

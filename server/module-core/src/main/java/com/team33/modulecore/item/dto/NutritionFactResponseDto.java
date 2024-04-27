@@ -1,6 +1,6 @@
 package com.team33.modulecore.item.dto;
 
-import com.team33.modulecore.item.domain.NutritionFact;
+import com.team33.modulecore.item.domain.entity.NutritionFact;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

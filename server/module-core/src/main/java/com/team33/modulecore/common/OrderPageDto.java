@@ -1,7 +1,6 @@
 package com.team33.modulecore.common;
 
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.domain.Sort.Direction;
 

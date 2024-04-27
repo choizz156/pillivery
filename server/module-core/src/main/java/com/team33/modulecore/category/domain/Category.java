@@ -1,6 +1,6 @@
 package com.team33.modulecore.category.domain;
 
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

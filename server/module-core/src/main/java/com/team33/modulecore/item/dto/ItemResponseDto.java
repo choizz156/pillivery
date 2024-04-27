@@ -3,7 +3,7 @@ package com.team33.modulecore.item.dto;
 import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;

@@ -1,7 +1,6 @@
 package com.team33.modulecore.wish.application;
 
 import com.team33.modulecore.item.application.ItemService;
-import com.team33.modulecore.item.domain.Item;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.user.application.UserService;
 import com.team33.modulecore.wish.domain.Wish;
@@ -23,11 +22,11 @@ public class WishService {
     private final UserService userService;
 
 
-    public void refreshWishes(long itemId) {
-        Item item = itemService.findVerifiedItem(itemId);
-        item.setTotalWishes(getWishes(itemId));
-        itemRepository.save(item);
-    }
+//    public void refreshWishes(long itemId) {
+//        Item item = itemService.findVerifiedItem(itemId);
+//        item.setTotalWishes(getWishes(itemId));
+//        itemRepository.save(item);
+//    }
 
 
 //    public Wish wishItem(long itemId, int isWish) {

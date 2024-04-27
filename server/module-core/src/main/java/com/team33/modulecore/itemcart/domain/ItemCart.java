@@ -3,7 +3,7 @@ package com.team33.modulecore.itemcart.domain;
 
 import com.team33.modulecore.cart.domain.Cart;
 import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.SubscriptionItemInfo;
 import javax.persistence.Column;
 import javax.persistence.Embedded;

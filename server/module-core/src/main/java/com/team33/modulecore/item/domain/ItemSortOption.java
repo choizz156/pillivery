@@ -1,4 +1,4 @@
-package com.team33.modulecore.item.dto;
+package com.team33.modulecore.item.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

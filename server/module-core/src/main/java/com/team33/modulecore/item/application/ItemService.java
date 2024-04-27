@@ -5,14 +5,12 @@ import com.team33.modulecore.category.application.CategoryService;
 import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.item.domain.Item;
-import com.team33.modulecore.item.domain.NutritionFact;
+import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.entity.NutritionFact;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
-import com.team33.modulecore.item.dto.ItemSearchRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +31,7 @@ public class ItemService {
 
         Item item = Item.create(dto, nutritionFacts, category);
 
+//        return itemRepository.save(item);
         return itemRepository.save(item);
     }
 
@@ -44,6 +43,8 @@ public class ItemService {
     }
 
     public Item findVerifiedItem(long itemId) {
+//        return itemRepository.findById(itemId)
+//            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
         return itemRepository.findById(itemId)
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
     }
@@ -118,16 +119,6 @@ public class ItemService {
 //        }
 //    }
 
-    @Transactional(readOnly = true)
-    public List<Item> findTop9DiscountItems() {
-        return itemRepository.findTop9ByOrderByItemPriceDiscountRateDesc();
-    }
-
-    @Transactional(readOnly = true)
-    public List<Item> findTop9SaleItems() {
-        return itemRepository.findTop9ByOrderBySalesDesc();
-    }
-
 //    public Page<Item> searchItems(String keyword, int page, int size, String sort) {
 //        keyword = keyword.replace("_", " ");
 //        if (Objects.equals(sort, "priceH")) {
@@ -147,11 +138,7 @@ public class ItemService {
 //        }
 //    }
 
-    @Transactional(readOnly = true)
-    public Page<Item> searchItems(String keyword, ItemSearchRequest request) {
-        String title = keyword.replace("_", " ");
-        return  itemRepository.findByTitle(title, request);
-    }
+
 
 //    public Page<Item> pricefilteredItems(int low, int high, int page, int size, String sort) {
 //        if (Objects.equals(sort, "priceH")) {

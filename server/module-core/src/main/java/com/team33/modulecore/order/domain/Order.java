@@ -2,7 +2,7 @@ package com.team33.modulecore.order.domain;
 
 
 import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;

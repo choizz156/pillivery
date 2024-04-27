@@ -1,7 +1,7 @@
 package com.team33.modulecore.item.dto;
 
 import com.team33.modulecore.item.domain.Brand;
-import com.team33.modulecore.item.domain.Item;
+import com.team33.modulecore.item.domain.entity.Item;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.team33.modulecore.item.application;
 
-import com.team33.modulecore.item.domain.NutritionFact;
+import com.team33.modulecore.item.domain.entity.NutritionFact;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
