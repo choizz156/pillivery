@@ -1,6 +1,5 @@
 package com.team33.modulecore.item.domain.entity;
 
-import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.ItemPrice;
@@ -8,7 +7,9 @@ import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import com.team33.modulecore.review.domain.Review;
 import com.team33.modulecore.wish.domain.Wish;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -67,11 +68,11 @@ public class Item extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Brand brand;
 
+    @OneToMany(mappedBy = "item")
+    private Set<ItemCategory> itemCategories = new HashSet<>();
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<Wish> wishList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "item")
-    private List<Category> categories = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
@@ -95,7 +96,7 @@ public class Item extends BaseEntity {
         double starAvg,
         Brand brand,
         List<Wish> wishList,
-        List<Category> categories,
+        Set<ItemCategory> itemCategories,
         List<Review> reviews,
         List<NutritionFact> nutritionFacts
     ) {
@@ -113,7 +114,7 @@ public class Item extends BaseEntity {
         this.starAvg = starAvg;
         this.brand = brand;
         this.wishList = wishList;
-        this.categories = categories;
+        this.itemCategories = itemCategories;
         this.reviews = reviews;
         this.nutritionFacts = nutritionFacts;
     }
@@ -121,7 +122,7 @@ public class Item extends BaseEntity {
     public static Item create(
         ItemPostServiceDto dto,
         List<NutritionFact> nutritionFacts,
-        List<Category> category
+        Set<ItemCategory> itemCategories
     ) {
         Item item = Item.builder()
             .title(dto.getTitle())
@@ -135,20 +136,16 @@ public class Item extends BaseEntity {
             .sales(dto.getSales())
             .brand(dto.getBrand())
             .starAvg(dto.getStarAvg())
-            .categories(category)
             .reviews(new ArrayList<>())
+            .itemCategories(itemCategories)
             .nutritionFacts(nutritionFacts)
             .wishList(new ArrayList<>())
             .build();
-        //TODO: 나머지 연관관계는 리팩토링 하면서
-        item.getCategories().forEach(c -> c.addItem(item));
-        item.getNutritionFacts().forEach(nutritionFact -> nutritionFact.addItem(item));
-        return item;
-    }
 
-    public void addCategories(Category category) {
-        categories.add(category);
-        category.setItem(this);
+        item.getItemCategories().forEach(itemCategory -> itemCategory.addItem(item));
+        item.getNutritionFacts().forEach(nutritionFact -> nutritionFact.addItem(item));
+        //TODO: 나머지 연관관계는 리팩토링 하면서
+        return item;
     }
 
     public void plusSales(int sales) {
@@ -169,19 +166,19 @@ public class Item extends BaseEntity {
             .collect(Collectors.toUnmodifiableList());
     }
 
-    public int getDiscountPrice(){
+    public int getDiscountPrice() {
         return this.itemPrice.getDiscountPrice();
     }
 
-    public int getOriginalPrice(){
+    public int getOriginalPrice() {
         return this.itemPrice.getOriginPrice();
     }
 
-    public double getDiscountRate(){
+    public double getDiscountRate() {
         return this.itemPrice.getDiscountRate();
     }
 
-    public int getRealPrice(){
+    public int getRealPrice() {
         return this.itemPrice.getRealPrice();
     }
 }

@@ -1,6 +1,5 @@
 package com.team33.modulecore.item.dto;
 
-import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.Item;
@@ -91,9 +90,9 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
             .discountPrice(item.getDiscountPrice())
             .starAvg(item.getStarAvg())
             .categories(
-                item.getCategories()
+                item.getItemCategories()
                     .stream()
-                    .map(Category::getCategoryName)
+                    .map(itemCategory -> itemCategory.getCategory().getCategoryName())
                     .collect(Collectors.toUnmodifiableList())
             )
             .nutritionFacts(item.getNutritionFacts().stream()
@@ -102,7 +101,7 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
             )
             .reviews(item.getItemReviewsBy5().stream()
                 .map(ReviewResponseDto::from)
-                .collect(Collectors.toUnmodifiableList())
+                .collect(Collectors.toList())
             )
             .build();
     }

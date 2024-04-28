@@ -1,7 +1,7 @@
 package com.team33.modulecore.item.application;
 
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ItemQueryService {
 
-    private final ItemRepository itemQueryRepository;
+    private final ItemQueryRepository itemQueryRepository;
 
     public List<Item> findTop9DiscountItems() {
         return itemQueryRepository.findItemsWithDiscountRateTop9();

@@ -25,11 +25,11 @@ public class ItemMainTop9ResponseDto {
     public static ItemMainTop9ResponseDto from(List<Item> sales, List<Item> discountRate) {
         List<ItemResponseDto> top9Sales = sales.stream()
             .map(ItemResponseDto::from)
-            .collect(Collectors.toUnmodifiableList());
+            .collect(Collectors.toList());
 
         List<ItemResponseDto> top9discount = discountRate.stream()
             .map(ItemResponseDto::from)
-            .collect(Collectors.toUnmodifiableList());
+            .collect(Collectors.toList());
 
         return new ItemMainTop9ResponseDto(top9Sales, top9discount);
     }

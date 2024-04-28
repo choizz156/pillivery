@@ -11,6 +11,7 @@
     <class> com.team33.modulecore.cart.domain.Cart</class>
     <class>com.team33.modulecore.category.domain.Category</class>
     <class>com.team33.modulecore.itemcart.domain.ItemCart</class>
+    <class>com.team33.modulecore.item.domain.entity.ItemCategory</class>
     <properties>
       <!-- 필수 속성 -->
       <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>

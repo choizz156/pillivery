@@ -21,11 +21,15 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     implementation 'mysql:mysql-connector-java'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'org.apache.httpcomponents:httpclient'
 
+    //password-seucirty
     implementation 'org.springframework.security:spring-security-crypto'
 
+    //fixuture-monkey
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14")
+
+    //log
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 }
 

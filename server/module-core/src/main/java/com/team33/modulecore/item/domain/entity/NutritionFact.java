@@ -44,9 +44,6 @@ public class NutritionFact {
     }
 
     public static List<NutritionFact> of(List<NutritionFactPostDto> nutritionFacts) {
-        if(nutritionFacts == null || nutritionFacts.isEmpty()) {
-            throw new IllegalArgumentException("영양성분은 null이나 비어있어서는 안됩니다.");
-        }
 
         return nutritionFacts.stream()
             .map(dto -> NutritionFact.builder()

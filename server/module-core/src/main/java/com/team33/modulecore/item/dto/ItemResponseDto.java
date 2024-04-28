@@ -1,6 +1,5 @@
 package com.team33.modulecore.item.dto;
 
-import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.Item;
@@ -79,8 +78,8 @@ public class ItemResponseDto { // 목록 조회
             .starAvg(item.getStarAvg())
             .reviewSize(item.getReviews().size())
             .categoryName(
-                item.getCategories().stream()
-                    .map(Category::getCategoryName)
+                item.getItemCategories().stream()
+                    .map(itemCategory -> itemCategory.getCategory().getCategoryName())
                     .collect(Collectors.toUnmodifiableList())
             )
             .brand(item.getBrand())

@@ -6,10 +6,14 @@ import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.entity.ItemCategory;
 import com.team33.modulecore.item.domain.entity.NutritionFact;
-import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,20 +23,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ItemService {
 
-    private final ItemRepository itemRepository;
     private final BrandService brandService;
     private final NutritionFactService nutritionFactService;
     private final CategoryService categoryService;
+    private final ItemCommandRepository itemCommandRepository;
+    private final ItemQueryRepository itemQueryRepository;
 
     public Item createItem(ItemPostServiceDto dto) {
         List<NutritionFact> nutritionFacts = nutritionFactService.getNutritionFacts(dto);
 
-        List<Category> category = categoryService.getCategories(dto.getCategories());
+        List<Category> categories = categoryService.getCategories(dto.getCategories());
 
-        Item item = Item.create(dto, nutritionFacts, category);
+        Set<ItemCategory> itemCategoryList =
+            categories.stream()
+                .map(ItemCategory::of)
+                .collect(Collectors.toSet());
 
-//        return itemRepository.save(item);
-        return itemRepository.save(item);
+        Item item = Item.create(dto, nutritionFacts, itemCategoryList);
+
+        return itemCommandRepository.save(item);
     }
 
     //TODO: 이것도 캐싱을 해놓고, 조회수는 나중에 푸시하는 느낌으로 해도 될 것 같은데
@@ -45,7 +54,7 @@ public class ItemService {
     public Item findVerifiedItem(long itemId) {
 //        return itemRepository.findById(itemId)
 //            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
-        return itemRepository.findById(itemId)
+        return itemCommandRepository.findById(itemId)
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
     }
 
@@ -137,8 +146,6 @@ public class ItemService {
 //            return searchItems;
 //        }
 //    }
-
-
 
 //    public Page<Item> pricefilteredItems(int low, int high, int page, int size, String sort) {
 //        if (Objects.equals(sort, "priceH")) {
@@ -289,10 +296,10 @@ public class ItemService {
 //        }
 //    }
 
-
-    public void deleteItem(long itemId) {
-        Item verifiedItem = findVerifiedItem(itemId);
-        itemRepository.delete(verifiedItem);
-    }
-
+//
+//    public void deleteItem(long itemId) {
+//        Item verifiedItem = findVerifiedItem(itemId);
+//        itemRepository.delete(verifiedItem);
+//    }
+//
 }
