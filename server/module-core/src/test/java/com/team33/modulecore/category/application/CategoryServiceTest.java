@@ -3,7 +3,7 @@ package com.team33.modulecore.category.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.category.repository.CategoryRepository;
+import com.team33.modulecore.category.domain.repository.CategoryRepository;
 import com.team33.modulecore.config.QueryDslConfig;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
