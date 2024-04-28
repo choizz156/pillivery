@@ -14,10 +14,10 @@ public class ItemSearchRequest {
     private static final ItemSortOption DEFAULT_ITEM_SORT_OPTION = ItemSortOption.SALES;
     private static final Direction DEFAULT_SORT_TYPE = Direction.DESC;
 
-    private int page = MIN_SIZE;
-    private int size = DEFAULT_PAGE_SIZE;
-    private Direction sort = DEFAULT_SORT_TYPE;
-    private ItemSortOption sortOption = DEFAULT_ITEM_SORT_OPTION;
+    private final int page;
+    private final int size;
+    private final Direction sort;
+    private final ItemSortOption sortOption;
 
     @Builder
     private ItemSearchRequest(int page, int size, Direction sort, ItemSortOption sortOption) {
@@ -32,7 +32,7 @@ public class ItemSearchRequest {
             .page(Math.max(dto.getPage(), MIN_SIZE))
             .size(getSize(dto.getSize()))
             .sort(dto.getDirection() == Direction.ASC ? Direction.ASC : Direction.DESC)
-            .sortOption(dto.getSortOption())
+            .sortOption(dto.getSortOption() == ItemSortOption.SALES ? DEFAULT_ITEM_SORT_OPTION : dto.getSortOption())
             .build();
     }
 

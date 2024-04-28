@@ -1,4 +1,4 @@
-package com.team33.modulecore.item.domain.repository;
+package com.team33.modulecore.item.domain.mock;
 
 import static com.team33.modulecore.item.domain.entity.QItem.item;
 
@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -24,6 +25,7 @@ public class MemoryItemRepository implements ItemQueryRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
+
 
     public MemoryItemRepository(EntityManager entityManager) {
         this.queryFactory = new JPAQueryFactory(entityManager);
@@ -58,25 +60,26 @@ public class MemoryItemRepository implements ItemQueryRepository {
         return StringUtils.isNullOrEmpty(title) ? null : item.title.contains(title);
     }
 
-    private OrderSpecifier<Integer> getItemSort(ItemSortOption itemSortOption) {
+    private OrderSpecifier<? extends Number> getItemSort(ItemSortOption itemSortOption) {
 
         switch (itemSortOption) {
             case DISCOUNT_RATE_H:
-                item.itemPrice.discountRate.desc();
+                return item.itemPrice.discountRate.desc();
             case DISCOUNT_RATE_L:
-                item.itemPrice.discountRate.asc();
+                return item.itemPrice.discountRate.asc();
             case PRICE_H:
-                item.itemPrice.realPrice.desc();
+                return item.itemPrice.realPrice.desc();
             case PRICE_L:
-                item.itemPrice.realPrice.asc();
-            default:
-                return item.sales.desc();
+                return item.itemPrice.realPrice.asc();
+            default: return item.sales.desc();
         }
     }
+
 
     public void saveAll(List<Item> items) {
         items.forEach(this.entityManager::persist);
     }
+
 
     public void deleteAll(){
         entityManager.createQuery("DELETE FROM Item").executeUpdate();

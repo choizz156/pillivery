@@ -53,17 +53,17 @@ public class ItemQueryRepositoryImpl implements ItemQueryRepository {
         return StringUtils.isNullOrEmpty(title) ? null : item.title.contains(title);
     }
 
-    private OrderSpecifier<Integer> getItemSort(ItemSortOption itemSortOption) {
+    private OrderSpecifier<? extends Number> getItemSort(ItemSortOption itemSortOption) {
 
         switch (itemSortOption) {
             case DISCOUNT_RATE_H:
-                item.itemPrice.discountRate.desc();
+                return item.itemPrice.discountRate.desc();
             case DISCOUNT_RATE_L:
-                item.itemPrice.discountRate.asc();
+                return item.itemPrice.discountRate.asc();
             case PRICE_H:
-                item.itemPrice.realPrice.desc();
+                return item.itemPrice.realPrice.desc();
             case PRICE_L:
-                item.itemPrice.realPrice.asc();
+                return item.itemPrice.realPrice.asc();
             default:
                 return item.sales.desc();
         }

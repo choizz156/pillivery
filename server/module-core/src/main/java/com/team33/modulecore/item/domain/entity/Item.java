@@ -180,4 +180,8 @@ public class Item extends BaseEntity {
     public double getDiscountRate(){
         return this.itemPrice.getDiscountRate();
     }
+
+    public int getRealPrice(){
+        return this.itemPrice.getRealPrice();
+    }
 }

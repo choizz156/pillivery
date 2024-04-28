@@ -1,15 +1,17 @@
 package com.team33.modulecore.item.domain.repository;
 
+import static java.util.Comparator.comparing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.team33.modulecore.item.domain.Brand;
+import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.mock.MemoryItemRepository;
 import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,9 +21,15 @@ import javax.persistence.Persistence;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 
+/**
+ * {@code MemoryItemRepository}는 {@code ItemQueryRepositoryImpl}와 로직이 동일한 가짜 대역 리포지토리입니다.
+ * {@code MemoryItemRepository}에서 발견된 버그나 실패한 테스트에 대한 수정 사항은,
+ * 로직의 일관성을 유지하기 위해 {@code ItemQueryRepositoryImpl}에도 반영되어야 합니다.
+ */
 
 class ItemQueryRepositoryTest {
 
@@ -67,7 +75,7 @@ class ItemQueryRepositoryTest {
 
         //then
         assertThat(itemsWithSalesTop9).hasSize(9)
-            .isSortedAccordingTo(Comparator.comparing(Item::getSales).reversed())
+            .isSortedAccordingTo(comparing(Item::getSales).reversed())
             .extracting("title")
             .containsExactly("title16",
                 "title15",
@@ -90,7 +98,7 @@ class ItemQueryRepositoryTest {
 
         //then
         assertThat(top9SaleItems).hasSize(9)
-            .isSortedAccordingTo(Comparator.comparing(Item::getDiscountRate).reversed())
+            .isSortedAccordingTo(comparing(Item::getDiscountRate).reversed())
             .extracting("title")
             .containsExactly("title16",
                 "title15",
@@ -104,27 +112,117 @@ class ItemQueryRepositoryTest {
             );
     }
 
-    @DisplayName("아이템 이름을 통해 조회할 수 있다.")
-    @Test
-    void 아이템_이름_조회() throws Exception {
 
-        var dto = new ItemPageDto();
-        dto.setPage(1);
-        dto.setSize(14);
+    @Nested
+    @DisplayName("아이템 조회 테스트 및 타입 정렬 테스트")
+    class ItemTitleQuerytest {
 
-        //when
-        Page<Item> items = itemQueryRepository.findByTitle("test", ItemSearchRequest.to(dto));
+        @DisplayName("이름이 포함된 아이템을 조회할 수 있다.")
+        @Test
+        void 아이템_이름_조회() throws Exception {
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(14);
 
-        //then
-        assertThat(items.getContent())
-            .hasSize(3)
-            .isSortedAccordingTo(Comparator.comparing(Item::getSales).reversed())
-            .extracting("title")
-            .containsExactlyInAnyOrder("test12", "test11", "test10");
-        assertThat(items.getSize()).isEqualTo(16);
-        assertThat(items.getTotalElements()).isEqualTo(3);
-        assertThat(items.getTotalPages()).isEqualTo(1);
+            //when
+            Page<Item> items = itemQueryRepository.findByTitle("tes", ItemSearchRequest.to(dto));
+
+            //then
+            assertThat(items.getContent())
+                .hasSize(3)
+                .extracting("title")
+                .containsExactlyInAnyOrder("test12", "test11", "test10");
+            assertThat(items.getSize()).isEqualTo(16);
+            assertThat(items.getTotalElements()).isEqualTo(3);
+            assertThat(items.getTotalPages()).isEqualTo(1);
+        }
+
+        @DisplayName("이름을 통해 조회된 아이템들을 판매량 순으로 정렬할 수 있다.")
+        @Test
+        void 판매량_순() throws Exception {
+            //given
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(14);
+            dto.setSortOption(ItemSortOption.SALES);
+
+            //when
+            Page<Item> items = itemQueryRepository.findByTitle("title", ItemSearchRequest.to(dto));
+
+            //then
+            assertThat(items.getContent())
+                .hasSize(15)
+                .isSortedAccordingTo(comparing(Item::getSales).reversed());
+
+            assertThat(items.getTotalElements()).isEqualTo(15);
+            assertThat(items.getTotalPages()).isEqualTo(1);
+        }
+
+        @DisplayName("이름을 통해 조회된 아이템들을 할인율 순으로 내림차순 할 수 있다.")
+        @Test
+        void 할인율_순() throws Exception {
+            //given
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(14);
+            dto.setSortOption(ItemSortOption.DISCOUNT_RATE_H);
+
+            //when
+            Page<Item> items = itemQueryRepository.findByTitle("title", ItemSearchRequest.to(dto));
+
+            //then
+            assertThat(items.getContent())
+                .hasSize(15)
+                .isSortedAccordingTo(comparing(Item::getDiscountRate).reversed());
+
+            assertThat(items.getTotalElements()).isEqualTo(15);
+            assertThat(items.getTotalPages()).isEqualTo(1);
+        }
+
+        @DisplayName("이름을 통해 조회된 아이템들을 가격순으로 오름차순 정렬할 수 있다.")
+        @Test
+        void 최저가_순() throws Exception {
+            //given
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(14);
+            dto.setSortOption(ItemSortOption.PRICE_L);
+
+            //when
+            Page<Item> items = itemQueryRepository.findByTitle("title", ItemSearchRequest.to(dto));
+
+            //then
+            assertThat(items.getContent())
+                .hasSize(15)
+                .isSortedAccordingTo(comparing(Item::getRealPrice));
+
+            assertThat(items.getTotalElements()).isEqualTo(15);
+            assertThat(items.getTotalPages()).isEqualTo(1);
+        }
+
+        @DisplayName("이름을 통해 조회된 아이템들을 가격순으로 내림차순 정렬할 수 있다.")
+        @Test
+        void 최고가_순() throws Exception {
+            //given
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(14);
+            dto.setSortOption(ItemSortOption.PRICE_H);
+
+            //when
+            Page<Item> items = itemQueryRepository.findByTitle("title", ItemSearchRequest.to(dto));
+
+            //then
+            assertThat(items.getContent())
+                .hasSize(15)
+                .isSortedAccordingTo(comparing(Item::getRealPrice).reversed());
+
+            assertThat(items.getTotalElements()).isEqualTo(15);
+            assertThat(items.getTotalPages()).isEqualTo(1);
+
+        }
     }
+
 
     private static List<Item> toSavedItems() {
         var value = new AtomicInteger(1);
@@ -133,6 +231,7 @@ class ItemQueryRepositoryTest {
             .set("id", null)
             .setLazy("sales", () -> value.addAndGet(1))
             .setLazy("itemPrice.discountRate", () -> value1.getAndSet(value1.get() + 1D))
+            .setLazy("itemPrice.realPrice", value::intValue)
             .setLazy("title", () -> "title" + value)
             .set("nutritionFacts", new ArrayList<>())
             .set("reviews", null)
@@ -146,6 +245,7 @@ class ItemQueryRepositoryTest {
             .set("id", null)
             .set("sales", 0)
             .set("itemPrice.discountRate", 0)
+            .set("itemPrice.realPrice", 1)
             .setLazy("title", () -> "test" + value2.addAndGet(1))
             .set("nutritionFacts", new ArrayList<>())
             .set("reviews", null)

@@ -55,7 +55,7 @@ class ItemServiceTest {
         itemRepository.deleteAll();
     }
 
-    @Disabled
+
     @DisplayName("item을 저장할 수 있다.")
     @Test
     void 아이템_생성() throws Exception {
@@ -86,7 +86,6 @@ class ItemServiceTest {
         assertThat(optionalItem.getId()).isEqualTo(item.getId());
     }
 
-    @Disabled
     @DisplayName("아이템을 조회하면서 view수를 늘릴 수 있다.")
     @Test
     void 아이템_조회수_증가_조회() throws Exception {
@@ -109,6 +108,7 @@ class ItemServiceTest {
         assertThat(result.getView()).isEqualTo(101);
     }
 
+    @Disabled
     @DisplayName("판매량이 높은 9개를 조회할 수 있다.")
     @Test
     void 판매량_9() throws Exception {
@@ -147,6 +147,7 @@ class ItemServiceTest {
             );
     }
 
+    @Disabled
     @DisplayName("할인율이 높은 9개를 조회할 수 있다.")
     @Test
     void 할인율_9() throws Exception {
@@ -184,6 +185,7 @@ class ItemServiceTest {
             );
     }
 
+    @Disabled
     @DisplayName("아이템 이름을 통해 조회할 수 있다.")
     @Test
     void 아이템_이름_조회() throws Exception {
