@@ -3,7 +3,7 @@ package com.team33.moduleapi.ui.item;
 import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.item.application.ItemQueryService;
-import com.team33.modulecore.item.application.ItemService;
+import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemDetailResponseDto;
 import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final ItemService itemService;
+    private final ItemCommandService itemService;
     private final ReviewService reviewService;
     private final ItemQueryService itemQueryService;
 //    private final TalkService talkService;

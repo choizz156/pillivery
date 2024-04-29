@@ -14,10 +14,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class NutritionFact {
@@ -43,8 +41,7 @@ public class NutritionFact {
         this.volume = volume;
     }
 
-    public static List<NutritionFact> of(List<NutritionFactPostDto> nutritionFacts) {
-
+    public static List<NutritionFact> createList(List<NutritionFactPostDto> nutritionFacts) {
         return nutritionFacts.stream()
             .map(dto -> NutritionFact.builder()
                 .ingredient(dto.getIngredient())

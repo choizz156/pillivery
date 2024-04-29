@@ -48,13 +48,13 @@ public class KakaoPaymentFacade implements PaymentFacade {
                 kakaoPayApprove.approveFirstSubscription(tid, pgToken, orderId);
 
             order.addSid(approve.getSid());
-            orderService.subscribeOrder(orderId);
+            orderService.changeOrderStatusToSubscribe(orderId);
             doKakaoScheduling(orderId);
             return approve;
         }
 
         Approve approve = kakaoPayApprove.approveOneTime(tid, pgToken, orderId);
-        orderService.completeOrder(orderId);
+        orderService.changeOrderStatusToComplete(orderId);
         return approve;
     }
 

@@ -10,6 +10,8 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
@@ -24,10 +26,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 
 @RequiredArgsConstructor
-public class OrderRepositoryImpl implements OrderQueryRepository {
+@Repository
+public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
@@ -67,7 +71,7 @@ public class OrderRepositoryImpl implements OrderQueryRepository {
     }
 
     @Override
-    public List<OrderItem> findSubscriptionOrder(
+    public List<OrderItem> findSubscriptionOrderItem(
         OrderPageRequest pageRequest,
         OrderFindCondition orderFindCondition
     ) {
@@ -84,6 +88,15 @@ public class OrderRepositoryImpl implements OrderQueryRepository {
             .orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
             .fetch();
         return Collections.unmodifiableList(fetch);
+    }
+
+    @Override
+    public Order findById(Long id) {
+        Order fetch = queryFactory.selectFrom(order).where(order.id.eq(id)).fetchOne();
+        if (fetch == null) {
+            throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
+        }
+        return fetch;
     }
 
     private Predicate subscriptionOrderStatusEq(OrderStatus orderStatus) {

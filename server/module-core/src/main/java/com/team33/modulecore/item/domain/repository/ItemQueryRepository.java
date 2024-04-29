@@ -12,4 +12,5 @@ public interface ItemQueryRepository extends Repository<Item, Long> {
     Page<Item> findByTitle(String title, ItemSearchRequest pageable);
     List<Item> findItemsWithSalesTop9();
     List<Item> findItemsWithDiscountRateTop9();
+
 }

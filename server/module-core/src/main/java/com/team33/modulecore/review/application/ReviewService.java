@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
-import com.team33.modulecore.item.application.ItemService;
+import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.user.domain.User;
 
 
@@ -24,13 +24,13 @@ public class ReviewService {
     private final ItemRepository itemRepository;
 
     private final ReviewRepository reviewRepository;
-    private final ItemService itemService;
+    private final ItemCommandService itemService;
 
-    public Review createReview(Review review) {
-        reviewRepository.save(review);
-        refreshStarAvg(review.getItem().getId());
-        return review;
-    }
+//    public Review createReview(Review review) {
+//        reviewRepository.save(review);
+//        refreshStarAvg(review.getItem().getId());
+//        return review;
+//    }
 
     public Review findReview(long reviewId) {
         Review review = findVerifiedReview(reviewId);
@@ -59,19 +59,19 @@ public class ReviewService {
         return review.getUser().getId();
     }
 
-    public Review updateReview(Review review) {
-        Review findReview = findVerifiedReview(review.getReviewId());
-
-        Optional.ofNullable(review.getContent())
-                .ifPresent(findReview::setContent);
-
-        Optional.ofNullable(review.getStar())
-                .ifPresent(findReview::setStar);
-
-        Review updatedReview = reviewRepository.save(findReview);
-        refreshStarAvg(findReview.getItem().getId());
-        return updatedReview;
-    }
+//    public Review updateReview(Review review) {
+//        Review findReview = findVerifiedReview(review.getReviewId());
+//
+//        Optional.ofNullable(review.getContent())
+//                .ifPresent(findReview::setContent);
+//
+//        Optional.ofNullable(review.getStar())
+//                .ifPresent(findReview::setStar);
+//
+//        Review updatedReview = reviewRepository.save(findReview);
+//        refreshStarAvg(findReview.getItem().getId());
+//        return updatedReview;
+//    }
 
     public Review findVerifiedReview(long reviewId) {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
@@ -81,17 +81,17 @@ public class ReviewService {
         return findReview;
     }
 
-    public void deleteReview(long reviewId, long userId) {
-        Review review = findVerifiedReview(reviewId);
-        long writerId = findReviewWriter(reviewId);
-
-        if(userId != writerId) {
-            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED_USER);
-        }
-
-        reviewRepository.delete(review);
-        refreshStarAvg(review.getItem().getId());
-    }
+//    public void deleteReview(long reviewId, long userId) {
+//        Review review = findVerifiedReview(reviewId);
+//        long writerId = findReviewWriter(reviewId);
+//
+//        if(userId != writerId) {
+//            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED_USER);
+//        }
+//
+//        reviewRepository.delete(review);
+//        refreshStarAvg(review.getItem().getId());
+//    }
 
     public double getStarAvg(long itemId) {
         Optional<Double> optionalStarAvg = reviewRepository.findReviewAvg(itemId);
@@ -101,10 +101,10 @@ public class ReviewService {
 
 
     // 리뷰 등록, 수정, 삭제 하는 경우 평균 별점을 갱신하는 로직
-    public void refreshStarAvg(long itemId) {
-        Item item = itemService.findVerifiedItem(itemId);
-        item.setStarAvg(getStarAvg(itemId));
-        itemRepository.save(item);
-    }
+//    public void refreshStarAvg(long itemId) {
+//        Item item = itemService.findVerifiedItem(itemId);
+//        item.setStarAvg(getStarAvg(itemId));
+//        itemRepository.save(item);
+//    }
 
 }

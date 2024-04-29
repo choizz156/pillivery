@@ -8,7 +8,7 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.entity.ItemCategory;
 import com.team33.modulecore.item.domain.entity.NutritionFact;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import java.util.List;
@@ -21,12 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class ItemService {
+public class ItemCommandService {
 
     private final BrandService brandService;
     private final NutritionFactService nutritionFactService;
     private final CategoryService categoryService;
-    private final ItemCommandRepository itemCommandRepository;
+    private final ItemRepository itemRepository;
     private final ItemQueryRepository itemQueryRepository;
 
     public Item createItem(ItemPostServiceDto dto) {
@@ -41,21 +41,15 @@ public class ItemService {
 
         Item item = Item.create(dto, nutritionFacts, itemCategoryList);
 
-        return itemCommandRepository.save(item);
+        return itemRepository.save(item);
     }
 
     //TODO: 이것도 캐싱을 해놓고, 조회수는 나중에 푸시하는 느낌으로 해도 될 것 같은데
     public Item findItemWithAddingView(long itemId) {
-        Item item = findVerifiedItem(itemId);
+        Item item = itemRepository.findById(itemId)
+            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
         item.addView();
         return item;
-    }
-
-    public Item findVerifiedItem(long itemId) {
-//        return itemRepository.findById(itemId)
-//            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
-        return itemCommandRepository.findById(itemId)
-            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
     }
 
 //    public Page<Item> findItems(String categoryName, int page, int size, String sort) {

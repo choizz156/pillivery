@@ -1,6 +1,6 @@
 package com.team33.modulecore.wish.application;
 
-import com.team33.modulecore.item.application.ItemService;
+import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.user.application.UserService;
 import com.team33.modulecore.wish.domain.Wish;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WishService {
 
-    private final ItemService itemService;
+    private final ItemCommandService itemService;
     private final ItemRepository itemRepository;
     private final WishRepository wishRepository;
     private final UserService userService;

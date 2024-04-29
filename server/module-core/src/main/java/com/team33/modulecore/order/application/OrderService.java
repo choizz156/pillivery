@@ -42,13 +42,13 @@ public class OrderService {
                 .forEach(orderItem -> orderItem.getItem().minusSales(orderItem.getQuantity()));
     }
 
-    public void completeOrder(Long orderId) {
+    public void changeOrderStatusToComplete(Long orderId) {
         Order order = orderQueryService.findOrder(orderId);
 
         order.changeOrderStatus(OrderStatus.COMPLETE);
     }
 
-    public void subscribeOrder(Long orderId) {
+    public void changeOrderStatusToSubscribe(Long orderId) {
         Order order = orderQueryService.findOrder(orderId);
 
         order.changeOrderStatus(OrderStatus.SUBSCRIBE);

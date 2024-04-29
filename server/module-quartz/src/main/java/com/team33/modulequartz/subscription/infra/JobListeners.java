@@ -132,7 +132,7 @@ public class JobListeners implements JobListener {
     }
 
     private Order getOrder(Long orderId) {
-        orderService.completeOrder(orderId);
+        orderService.changeOrderStatusToComplete(orderId);
         Order order = orderQueryService.findOrder(orderId);
         return orderService.deepCopy(order);
     }

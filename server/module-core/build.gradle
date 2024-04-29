@@ -2,7 +2,6 @@ dependencies {
 
     //querydsl
     implementation 'com.querydsl:querydsl-jpa'
-    testImplementation 'org.springframework.security:spring-security-test'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
@@ -28,7 +27,7 @@ dependencies {
 
     //fixuture-monkey
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14")
-
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14")
     //log
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 }

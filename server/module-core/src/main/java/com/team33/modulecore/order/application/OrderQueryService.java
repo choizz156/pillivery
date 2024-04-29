@@ -1,15 +1,13 @@
 package com.team33.modulecore.order.application;
 
 import com.team33.modulecore.common.UserFindHelper;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.dto.OrderFindCondition;
-import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
+import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderItemSimpleResponse;
+import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.List;
@@ -24,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderQueryService {
 
-    private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
     private final UserRepository userRepository;
     private final UserFindHelper userFindHelper;
 
@@ -33,7 +31,7 @@ public class OrderQueryService {
         OrderFindCondition orderFindCondition =
             OrderFindCondition.to(user, OrderStatus.REQUEST);
 
-        return orderRepository.searchOrders(
+        return orderQueryRepository.searchOrders(
             orderPageRequest,
             orderFindCondition
         );
@@ -44,7 +42,7 @@ public class OrderQueryService {
         OrderPageRequest orderPageRequest
     ) {
         User user = userFindHelper.findUser(userId);
-        List<OrderItem> subscriptionOrder = orderRepository.findSubscriptionOrder(
+        List<OrderItem> subscriptionOrder = orderQueryRepository.findSubscriptionOrderItem(
             orderPageRequest,
             OrderFindCondition.to(user, OrderStatus.SUBSCRIBE)
         );
@@ -52,9 +50,7 @@ public class OrderQueryService {
     }
 
     public Order findOrder(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(
-            () -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND)
-        );
+        return orderQueryRepository.findById(orderId);
     }
 
     private List<OrderItemSimpleResponse> getSubscriptionItem(List<OrderItem> subscriptionOrder) {

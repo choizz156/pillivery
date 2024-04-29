@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,6 @@ public class User extends BaseEntity {
     @Column(updatable = false)
     private String email;
 
-    @Column(length = 20)
     private String displayName;
 
     private String password;

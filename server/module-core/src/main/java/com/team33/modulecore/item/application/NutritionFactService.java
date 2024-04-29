@@ -11,6 +11,6 @@ import org.springframework.stereotype.Service;
 public class NutritionFactService {
 
     public List<NutritionFact> getNutritionFacts(ItemPostServiceDto dto){
-        return NutritionFact.of(dto.getNutritionFacts());
+        return NutritionFact.createList(dto.getNutritionFacts());
     }
 }
