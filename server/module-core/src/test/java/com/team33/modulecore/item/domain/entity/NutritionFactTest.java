@@ -1,9 +1,8 @@
-package com.team33.modulecore.item.domain;
+package com.team33.modulecore.item.domain.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import com.team33.modulecore.item.domain.entity.NutritionFact;
 import com.team33.modulecore.item.dto.NutritionFactPostDto;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +17,7 @@ class NutritionFactTest {
         var nutritionFact = List.of(new NutritionFactPostDto("test1", "test11"));
 
         //when
-        List<NutritionFact> nutritionFacts = NutritionFact.of(nutritionFact);
+        List<NutritionFact> nutritionFacts = NutritionFact.createList(nutritionFact);
 
         //then
         assertThat(nutritionFacts).hasSize(1)

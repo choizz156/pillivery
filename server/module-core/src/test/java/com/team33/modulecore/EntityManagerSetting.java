@@ -7,8 +7,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-
-public abstract class RepositorySetting {
+/**
+ * entityManger를 설정하는 클래스입니다.
+ */
+public abstract class EntityManagerSetting {
 
     private static EntityManagerFactory emf;
     private static EntityManager em;

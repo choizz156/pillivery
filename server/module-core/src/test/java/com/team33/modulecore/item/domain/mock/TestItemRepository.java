@@ -1,17 +1,24 @@
 package com.team33.modulecore.item.domain.mock;
 
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.item.domain.repository.ItemRepository;
+import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 
 
-public class TestItemCommandRepository implements ItemCommandRepository {
+public class TestItemRepository implements ItemRepository {
 
     private EntityManager entityManager;
 
-    public TestItemCommandRepository(EntityManager entityManager) {
+    public TestItemRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+
+    @Override
+    public <S extends Item> List<S> saveAll(Iterable<S> entities) {
+        return List.of();
     }
 
     @Override

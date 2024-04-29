@@ -3,7 +3,7 @@ package com.team33.modulecore.item.domain.repository;
 import static java.util.Comparator.comparing;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.team33.modulecore.RepositorySetting;
+import com.team33.modulecore.EntityManagerSetting;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.mock.TestItemQueryRepository;
@@ -21,7 +21,7 @@ import org.springframework.data.domain.Page;
  * {@code ItemQueryRepositoryImpl}에도 반영되어야 합니다.
  */
 
-class ItemQueryRepositoryTest extends RepositorySetting {
+class ItemQueryEntityManagerTest extends EntityManagerSetting {
 
     //    private static EntityManagerFactory emf;
 //    private static EntityManager em;

@@ -1,11 +1,11 @@
 package com.team33.modulecore;
 
 import com.team33.modulecore.category.application.CategoryService;
-import com.team33.modulecore.category.repository.CategoryRepository;
+import com.team33.modulecore.category.domain.repository.CategoryRepository;
 import com.team33.modulecore.config.QueryDslConfig;
 import com.team33.modulecore.item.application.BrandService;
 import com.team33.modulecore.item.application.ItemQueryService;
-import com.team33.modulecore.item.application.ItemService;
+import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.application.NutritionFactService;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
 import java.lang.annotation.ElementType;
@@ -31,7 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
     QueryDslConfig.class,
     NutritionFactService.class,
     ItemRepository.class,
-    ItemService.class,
+    ItemCommandService.class,
     BrandService.class,
     ItemQueryService.class
 })

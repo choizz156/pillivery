@@ -10,13 +10,14 @@ import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional
 class OrderServiceTest extends OrderDomainHelper {
 
     private Item item;
@@ -28,7 +29,7 @@ class OrderServiceTest extends OrderDomainHelper {
          user = getUser();
     }
 
-    @Transactional
+
     @DisplayName("단건 order 객체를 생성할 수 있다.")
     @Test
     void callOrderTest() throws Exception {
@@ -47,21 +48,44 @@ class OrderServiceTest extends OrderDomainHelper {
         assertThat(order.getUser()).isEqualTo(user);
     }
 
-    @Transactional
+    @DisplayName("주문 상태를 구독 중으로 바꿀 수 있다.")
+    @Test
+    void 주문_상태_변경1() throws Exception{
+    	//given
+        OrderItem sampleOrderItem = getOrderItem();
+
+        Order order = orderService.callOrder(List.of(sampleOrderItem), true, user.getId());
+    	//when
+        orderService.changeOrderStatusToSubscribe(order.getId());
+
+        //then
+    	assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.SUBSCRIBE);
+    }
+
+    @DisplayName("주문 상태를 주문 완료로 바꿀 수 있다.")
+    @Test
+    void 주문_상태_변경2() throws Exception{
+        //given
+        OrderItem sampleOrderItem = getOrderItem();
+
+        Order order = orderService.callOrder(List.of(sampleOrderItem), true, user.getId());
+        //when
+        orderService.changeOrderStatusToComplete(order.getId());
+
+        //then
+        assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.COMPLETE);
+    }
+
     @DisplayName("정기 구독 아이템의 수량을 조정할 수 있다.")
     @Test
     void 정기_구독_수량_조정() throws Exception {
         //given
-        OrderItem sampleOrderItem = fixtureMonkey.giveMeBuilder(OrderItem.class)
-            .set("id", null)
-            .set("item", item)
-            .set("quantity", 3)
-            .sample();
+        OrderItem sampleOrderItem = getOrderItem();
 
         Order order = orderService.callOrder(List.of(sampleOrderItem), true, user.getId());
 
         //when
-        orderService.changeSubscriptionItemQuantity(1L, 1L, 2);
+        orderService.changeSubscriptionItemQuantity(order.getId(), order.getOrderItems().get(0).getId(), 2);
 
         //then
         assertThat(order.getOrderItems()).hasSize(1)
@@ -69,16 +93,20 @@ class OrderServiceTest extends OrderDomainHelper {
             .containsExactly(2);
     }
 
-    @Transactional
-    @DisplayName("주문을 취소할 수 있다.")
-    @Test
-    void 주문_취소() throws Exception {
-        //given
+    private OrderItem getOrderItem() {
         OrderItem sampleOrderItem = fixtureMonkey.giveMeBuilder(OrderItem.class)
             .set("id", null)
             .set("item", item)
             .set("quantity", 3)
             .sample();
+        return sampleOrderItem;
+    }
+
+    @DisplayName("주문을 취소할 수 있다.")
+    @Test
+    void 주문_취소() throws Exception {
+        //given
+        OrderItem sampleOrderItem = getOrderItem();
 
         Order order = orderService.callOrder(List.of(sampleOrderItem), true, user.getId());
 
@@ -91,7 +119,7 @@ class OrderServiceTest extends OrderDomainHelper {
 
     private User getUser() {
         User userSample = fixtureMonkey.giveMeBuilder(User.class)
-            .set("userId", null)
+            .set("id", null)
             .set("wishList", new ArrayList<>())
             .set("displayName", "test")
             .set("cart", null)
@@ -113,11 +141,10 @@ class OrderServiceTest extends OrderDomainHelper {
 
     private Item getItem() {
         Item sampleItem = fixtureMonkey.giveMeBuilder(Item.class)
-            .set("itemId", null)
+            .set("id", null)
             .set("wishList", new ArrayList<>())
-            .set("categories", new ArrayList<>())
+            .set("itemCategories", new HashSet<>())
             .set("reviews", new ArrayList<>())
-            .set("talks", new ArrayList<>())
             .set("nutritionFacts", new ArrayList<>())
             .sample();
 

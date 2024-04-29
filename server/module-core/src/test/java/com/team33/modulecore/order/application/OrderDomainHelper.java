@@ -6,6 +6,7 @@ import com.team33.modulecore.EnableOrderTest;
 import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.item.domain.repository.ItemRepository;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
+import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public abstract class OrderDomainHelper {
 
     @Autowired
     OrderRepository orderRepository;
+
+    @Autowired
+    OrderQueryRepository orderQueryRepository;
 
     @Autowired
     OrderService orderService;

@@ -13,6 +13,7 @@ import com.team33.modulecore.order.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -65,8 +66,8 @@ class OrderQueryServiceTest extends OrderDomainHelper {
 
         var order = orderService.callOrder(orderItems, false, user.getId());
         var orderSubs = orderService.callOrder(orderItemsSubs, true, user.getId());
-        orderService.completeOrder(order.getId());
-        orderService.subscribeOrder(orderSubs.getId());
+        orderService.changeOrderStatusToComplete(order.getId());
+        orderService.changeOrderStatusToSubscribe(orderSubs.getId());
 
         var orderPageDto = new OrderPageDto();
         orderPageDto.setPage(1);
@@ -117,7 +118,7 @@ class OrderQueryServiceTest extends OrderDomainHelper {
             ))
             .collect(Collectors.toList());
         var orderSubs1 = orderService.callOrder(orderItems, true, user.getId());
-        orderService.subscribeOrder(orderSubs1.getId());
+        orderService.changeOrderStatusToSubscribe(orderSubs1.getId());
 
         var orderPageDto1 = new OrderPageDto();
         orderPageDto1.setPage(1);
@@ -186,7 +187,7 @@ class OrderQueryServiceTest extends OrderDomainHelper {
             .setLazy("title", () -> "sample" + value.getAndSet(value.get() + 1))
             .set("id", null)
             .set("wishList", new ArrayList<>())
-            .set("categories", new ArrayList<>())
+            .set("itemCategories", new HashSet<>())
             .set("reviews", new ArrayList<>())
             .set("nutritionFacts", new ArrayList<>())
             .sampleList(23);
