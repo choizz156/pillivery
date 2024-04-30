@@ -26,12 +26,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.stereotype.Repository;
 
 
 @RequiredArgsConstructor
-@Repository
-public class OrderQueryRepositoryImpl implements OrderQueryRepository {
+public class OrderQueryDslDao implements OrderQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 

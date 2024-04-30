@@ -6,9 +6,10 @@ import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import java.util.List;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.Repository;
+import org.springframework.stereotype.Repository;
 
-public interface OrderQueryRepository extends Repository<Order, Long> {
+@Repository
+public interface OrderQueryRepository{
 
     Page<Order> searchOrders(
         OrderPageRequest pageRequest,

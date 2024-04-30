@@ -4,10 +4,10 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
 import java.util.List;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.Repository;
+import org.springframework.stereotype.Repository;
 
-
-public interface ItemQueryRepository extends Repository<Item, Long> {
+@Repository
+public interface ItemQueryRepository  {
 
     Page<Item> findByTitle(String title, ItemSearchRequest pageable);
     List<Item> findItemsWithSalesTop9();

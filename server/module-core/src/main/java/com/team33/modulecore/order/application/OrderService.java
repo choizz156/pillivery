@@ -74,7 +74,7 @@ public class OrderService {
             );
     }
 
-    private Order ifindOrder(long orderId) {
+    private Order findOrder(long orderId) {
         return orderRepository.findById(orderId)
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
     }

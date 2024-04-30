@@ -19,7 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
 
 @RequiredArgsConstructor
-public class ItemQueryRepositoryImpl implements ItemQueryRepository {
+public class ItemQueryDslDao implements ItemQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
