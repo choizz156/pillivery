@@ -148,6 +148,6 @@ class OrderServiceTest extends OrderDomainHelper {
             .set("nutritionFacts", new ArrayList<>())
             .sample();
 
-        return itemRepository.save(sampleItem);
+        return itemCommandRepository.save(sampleItem);
     }
 }

@@ -1,7 +1,7 @@
 package com.team33.modulecore.category.application;
 
 import static com.team33.modulecore.category.domain.CategoryName.EYE;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;

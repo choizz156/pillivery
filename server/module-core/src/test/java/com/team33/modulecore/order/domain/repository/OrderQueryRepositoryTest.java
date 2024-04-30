@@ -7,68 +7,119 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.navercorp.fixturemonkey.javax.validation.plugin.JavaxValidationPlugin;
-import com.team33.modulecore.EntityManagerSetting;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team33.modulecore.MockEntityFactory;
 import com.team33.modulecore.common.OrderPageDto;
 import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.domain.mock.FakeOrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.data.domain.Page;
 
+@Slf4j
+@TestInstance(Lifecycle.PER_CLASS)
+class OrderQueryRepositoryTest {
 
-/**
- * {@linkplain FakeOrderQueryRepository}는 {@linkplain OrderQueryRepositoryImpl}과 로직이 동일한 가짜 대역
- * 리포지토리입니다. {@code FakeOrderQueryRepository}에서 발견된 버그나 실패한 테스트에 대한 수정 사항은, 로직의 일관성을 유지하기 위해
- * {@code OrderQueryRepositoryImpl}에도 반영되어야 합니다.
- */
-class OrderQueryRepositoryTest extends EntityManagerSetting {
+    private EntityManagerFactory emf;
+    private EntityManager em;
+    private OrderQueryRepository orderQueryRepository;
+    private final User MOCK_USER = getMockUser();
 
-    private static final FixtureMonkey FIXTURE_MONKEY = FixtureMonkey
-        .builder()
-        .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
-        .defaultNotNull(true)
-        .plugin(new JavaxValidationPlugin())
-        .build();
+    @BeforeAll
+    void beforeAll() {
+        emf = Persistence.createEntityManagerFactory("test");
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+        orderQueryRepository =
+            new OrderQueryRepositoryImpl(new JPAQueryFactory(em));
+        MockEntityFactory.start(em, MOCK_USER);
+    }
 
-    private final User user = getMockUser();
+    @AfterAll
+    void afterAll() {
+        em.getTransaction().rollback(); // 커넥션 반납용 롤백
+        em.close();
+        emf.close();
 
-    @Test
-    void 아이템_조회 () throws Exception {
-        //given
-        var orderPageDto = new OrderPageDto();
-        orderPageDto.setPage(1);
-        orderPageDto.setSize(5);
-
-        var orderPageRequest = OrderPageRequest.of(orderPageDto);
-
-        OrderFindCondition orderFindCondition = OrderFindCondition.to(user, OrderStatus.REQUEST);
-        OrderQueryRepository orderQueryRepository = new FakeOrderQueryRepository(user, getEmAtSuperClass());
-
-        //when
-        Page<Order> allOrders = orderQueryRepository.searchOrders(orderPageRequest, orderFindCondition);
-
-        //then
-        List<Order> content = allOrders.getContent();
-
-        assertThat(content).hasSize(6)
-            .isSortedAccordingTo(comparing(Order::getId).reversed())
-                .extracting("user")
-                    .containsExactlyInAnyOrder(user,user,user,user,user,user);
-
-        assertThat(allOrders.getSize()).isEqualTo(7);
-        assertThat(allOrders.getTotalPages()).isEqualTo(1);
-        assertThat(allOrders.getNumberOfElements()).isEqualTo(6);
     }
 
     private User getMockUser() {
+        FixtureMonkey FIXTURE_MONKEY = FixtureMonkey
+            .builder()
+            .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
+            .defaultNotNull(true)
+            .plugin(new JavaxValidationPlugin())
+            .build();
+
         return FIXTURE_MONKEY.giveMeBuilder(User.class)
             .set("id", null)
             .set("wishList", null)
             .set("cart", null)
             .sample();
+    }
+
+    @DisplayName("유저가 구매한 주문 목록을 조회할 수 있다.")
+    @Test
+    void 주문_조회() throws Exception {
+        //given
+        var orderPageDto = new OrderPageDto();
+        orderPageDto.setPage(1);
+        orderPageDto.setSize(10);
+
+        var orderPageRequest = OrderPageRequest.of(orderPageDto);
+
+        var orderFindCondition =
+            OrderFindCondition.to(MOCK_USER, OrderStatus.REQUEST);
+
+        //when
+        Page<Order> allOrders =
+            orderQueryRepository.searchOrders(orderPageRequest, orderFindCondition);
+
+        //then
+        List<Order> content = allOrders.getContent();
+        assertThat(content).hasSize(10)
+            .isSortedAccordingTo(comparing(Order::getId).reversed());
+
+        assertThat(allOrders.getSize()).isEqualTo(10);
+        assertThat(allOrders.getTotalPages()).isEqualTo(2);
+    }
+
+    @DisplayName("유저의 정기 주문(구독) 목록을 조회할 수 있다.")
+    @Test
+    void 정기_주문_목록_조회() throws Exception {
+        //given
+        var orderPageDto1 = new OrderPageDto();
+        orderPageDto1.setPage(1);
+        orderPageDto1.setSize(10);
+
+        var orderPageRequest = OrderPageRequest.of(orderPageDto1);
+
+        var orderFindCondition = OrderFindCondition.to(MOCK_USER, OrderStatus.SUBSCRIBE);
+
+        //when
+        List<OrderItem> subscriptionOrderItem =
+            orderQueryRepository.findSubscriptionOrderItem(orderPageRequest, orderFindCondition);
+
+        //then
+        assertThat(subscriptionOrderItem).hasSize(7)
+            .extracting("item.title")
+            .as("page 1, size 7, offset 0, 내림차순")
+            .containsExactly(
+                "title16", "title15", "title14", "title13", "title12", "title11", "title10"
+            );
+
     }
 }

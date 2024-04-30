@@ -18,8 +18,8 @@ import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.entity.NutritionFact;
-import com.team33.modulecore.item.domain.mock.TestItemRepository;
-import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.domain.mock.FakeItemCommandRepository;
+import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import com.team33.modulecore.item.dto.NutritionFactPostDto;
 import java.util.List;
@@ -78,7 +78,7 @@ class ItemServiceTest extends EntityManagerSetting {
             null,
             nutritionFactService,
             categoryService,
-            new TestItemRepository(getEmAtSuperClass()),
+            new FakeItemCommandRepository(getEmAtSuperClass()),
             null
         );
 
@@ -105,7 +105,7 @@ class ItemServiceTest extends EntityManagerSetting {
             .set("view", 0L)
             .sample();
 
-        ItemRepository itemRepository = mock(ItemRepository.class);
+        ItemCommandRepository itemRepository = mock(ItemCommandRepository.class);
         given(itemRepository.findById(anyLong())).willReturn(Optional.ofNullable(item));
 
         var itemCommandService = new ItemCommandService(

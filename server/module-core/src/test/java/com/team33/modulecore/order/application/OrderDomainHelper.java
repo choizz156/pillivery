@@ -4,7 +4,7 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.team33.modulecore.EnableOrderTest;
 import com.team33.modulecore.cart.repository.CartRepository;
-import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
@@ -36,7 +36,7 @@ public abstract class OrderDomainHelper {
     OrderService orderService;
 
     @Autowired
-    ItemRepository itemRepository;
+    ItemCommandRepository itemCommandRepository;
 
     @Autowired
     ItemCartRepository itemCartRepository;

@@ -1,7 +1,5 @@
 package com.team33.modulecore;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -14,13 +12,6 @@ public abstract class EntityManagerSetting {
 
     private static EntityManagerFactory emf;
     private static EntityManager em;
-
-    private static final FixtureMonkey FIXTURE_MONKEY = FixtureMonkey
-        .builder()
-        .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
-        .defaultNotNull(true)
-        .build();
-
 
     @BeforeAll
     static void beforeAll() {

@@ -32,7 +32,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
             .set("nutritionFacts", new ArrayList<>())
             .sample();
 
-        var item = itemRepository.save(sampleItem);
+        var item = itemCommandRepository.save(sampleItem);
 
         var dto = OrderItemServiceDto.builder()
             .isSubscription(false)
@@ -158,7 +158,7 @@ class OrderItemServiceTest extends OrderDomainHelper {
             .set("nutritionFacts", new ArrayList<>())
             .sample();
 
-        return itemRepository.save(sampleItem);
+        return itemCommandRepository.save(sampleItem);
     }
 
     private static class ItemCarts {

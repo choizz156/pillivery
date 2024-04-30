@@ -7,7 +7,7 @@ import com.team33.modulecore.item.application.BrandService;
 import com.team33.modulecore.item.application.ItemQueryService;
 import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.application.NutritionFactService;
-import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -30,7 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
     CategoryRepository.class,
     QueryDslConfig.class,
     NutritionFactService.class,
-    ItemRepository.class,
+    ItemCommandRepository.class,
     ItemCommandService.class,
     BrandService.class,
     ItemQueryService.class

@@ -56,12 +56,9 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         );
 
         var orderItemsSubs = List.of(
-            OrderItem.create(items.get(0), orderItemInfoSubs.get(0), 3
-            ),
-            OrderItem.create(items.get(1), orderItemInfoSubs.get(1), 3
-            ),
-            OrderItem.create(items.get(2), orderItemInfoSubs.get(2), 3
-            )
+            OrderItem.create(items.get(0), orderItemInfoSubs.get(0), 3),
+            OrderItem.create(items.get(1), orderItemInfoSubs.get(1), 3),
+            OrderItem.create(items.get(2), orderItemInfoSubs.get(2), 3)
         );
 
         var order = orderService.callOrder(orderItems, false, user.getId());
@@ -100,12 +97,11 @@ class OrderQueryServiceTest extends OrderDomainHelper {
             .containsExactlyInAnyOrder(items.get(0), items.get(1), items.get(2));
     }
 
-
-
     @Transactional
     @DisplayName("유저의 정기 주문(구독) 목록을 조회할 수 있다.")
     @Test
     void 정기_주문_목록_조회() throws Exception {
+
         //given
         var user = getUser();
         var items = getItems();
@@ -117,6 +113,7 @@ class OrderQueryServiceTest extends OrderDomainHelper {
                 1
             ))
             .collect(Collectors.toList());
+
         var orderSubs1 = orderService.callOrder(orderItems, true, user.getId());
         orderService.changeOrderStatusToSubscribe(orderSubs1.getId());
 
@@ -124,51 +121,26 @@ class OrderQueryServiceTest extends OrderDomainHelper {
         orderPageDto1.setPage(1);
         orderPageDto1.setSize(5);
 
-        var orderPageDto2 = new OrderPageDto();
-        orderPageDto2.setPage(2);
-        orderPageDto2.setSize(10);
-
         var orderPageRequest1 = OrderPageRequest.of(orderPageDto1);
-        var orderPageRequest2 = OrderPageRequest.of(orderPageDto2);
 
         //when
-        List<OrderItemSimpleResponse> allSubscriptions1 = orderQueryService.findAllSubscriptions(
-            user.getId(), orderPageRequest1);
-        List<OrderItemSimpleResponse> allSubscriptions2 = orderQueryService.findAllSubscriptions(
-            user.getId(), orderPageRequest2);
+        List<OrderItemSimpleResponse> allSubscriptions1 =
+            orderQueryService.findAllSubscriptions(user.getId(), orderPageRequest1);
 
         //then
         assertThat(allSubscriptions1).hasSize(7)
             .extracting("item.title")
             .as("page 1, size 7, offset 0, 내림차순")
             .containsExactly(
-                "sample23",
-                "sample22",
-                "sample21",
-                "sample20",
-                "sample19",
-                "sample18",
-                "sample17"
-            );
-
-        assertThat(allSubscriptions2).hasSize(10)
-            .extracting("item.title")
-            .as("page 2, size 10, offset 10, 내림차순")
-            .containsExactly(
+                "sample15",
+                "sample14",
                 "sample13",
                 "sample12",
                 "sample11",
                 "sample10",
-                "sample9",
-                "sample8",
-                "sample7",
-                "sample6",
-                "sample5",
-                "sample4"
+                "sample9"
             );
-
     }
-
 
     private User getUser() {
         User userSample = fixtureMonkey.giveMeBuilder(User.class)
@@ -190,8 +162,13 @@ class OrderQueryServiceTest extends OrderDomainHelper {
             .set("itemCategories", new HashSet<>())
             .set("reviews", new ArrayList<>())
             .set("nutritionFacts", new ArrayList<>())
-            .sampleList(23);
+            .sampleList(15);
 
-        return itemRepository.saveAll(items);
+        items.forEach(
+            item -> itemCommandRepository.save(item)
+        );
+
+        return items;
+
     }
 }

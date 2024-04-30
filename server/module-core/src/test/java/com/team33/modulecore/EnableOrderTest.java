@@ -3,7 +3,7 @@ package com.team33.modulecore;
 import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.config.QueryDslConfig;
-import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
@@ -31,7 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
     OrderItemRepository.class,
     OrderRepository.class,
     OrderItemService.class,
-    ItemRepository.class,
+    ItemCommandRepository.class,
     ItemCartRepository.class,
     CartRepository.class,
     OrderService.class,
@@ -40,6 +40,7 @@ import org.springframework.test.context.ContextConfiguration;
     QueryDslConfig.class,
     UserFindHelper.class,
     OrderQueryRepositoryImpl.class,
+    ItemCommandRepository.class
 })
 @EnableJpaRepositories(basePackages = "com.team33.modulecore")
 @EntityScan("com.team33.modulecore")
