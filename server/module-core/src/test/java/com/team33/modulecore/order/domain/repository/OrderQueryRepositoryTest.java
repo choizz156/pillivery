@@ -12,7 +12,7 @@ import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.order.infra.OrderQueryRepositoryImpl;
+import com.team33.modulecore.order.infra.OrderQueryDslDao;
 import com.team33.modulecore.user.domain.User;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -41,10 +41,10 @@ class OrderQueryRepositoryTest {
         emf = Persistence.createEntityManagerFactory("test");
         em = emf.createEntityManager();
         em.getTransaction().begin();
-        orderQueryRepository = new OrderQueryRepositoryImpl(new JPAQueryFactory(em));
+        orderQueryRepository = new OrderQueryDslDao(new JPAQueryFactory(em));
         MockEntityFactory mockEntityFactory = MockEntityFactory.of(em);
         mockEntityFactory.persistEntity();
-        MOCK_USER = mockEntityFactory.getMockUser();
+        MOCK_USER = mockEntityFactory.getPersistedUser();
     }
 
     @AfterAll
@@ -53,8 +53,6 @@ class OrderQueryRepositoryTest {
         em.close();
         emf.close();
     }
-
-
 
     @DisplayName("유저가 구매한 주문 목록을 조회할 수 있다.")
     @Test
@@ -77,9 +75,10 @@ class OrderQueryRepositoryTest {
         List<Order> content = allOrders.getContent();
         assertThat(content).hasSize(10)
             .isSortedAccordingTo(comparing(Order::getId).reversed());
-
         assertThat(allOrders.getSize()).isEqualTo(10);
         assertThat(allOrders.getTotalPages()).isEqualTo(2);
+        assertThat(allOrders.getTotalElements()).isEqualTo(15);
+        assertThat(allOrders.getNumberOfElements()).isEqualTo(10);
     }
 
     @DisplayName("유저의 정기 주문(구독) 목록을 조회할 수 있다.")

@@ -30,7 +30,8 @@ public class MockEntityFactory {
         .build();
 
     private EntityManager entityManager;
-    private final User user = getMockUser();
+
+    private User user;
 
     private MockEntityFactory(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -45,20 +46,16 @@ public class MockEntityFactory {
     }
 
     public void persistEntity() {
+        user = getMockUser();
         entityManager.persist(user);
 
         List<Item> mockItems = getMockItems();
         mockItems.forEach(entityManager::persist);
 
         getMockOrders(user, mockItems);
-        List<OrderItem> resultList = entityManager.createQuery(
-                "select oi from OrderItem oi inner join orders o on oi.order.id = o.id where oi.order.user.id = o.user.id and o.orderStatus = : orderStatus",
-                OrderItem.class)
-            .setParameter("orderStatus", OrderStatus.SUBSCRIBE)
-            .getResultList();
     }
 
-    public void getMockOrders(User user, List<Item> mockItems) {
+    private void getMockOrders(User user, List<Item> mockItems) {
         mockItems.stream()
             .takeWhile(item -> item.getId() <= 8)
             .map(item -> OrderItem.create(
@@ -88,7 +85,7 @@ public class MockEntityFactory {
 
     public List<Item> getMockItems() {
         var sales = new AtomicInteger(1);
-        var discountRate = new AtomicReference<Double>(1D);
+        var discountRate = new AtomicReference<>(1D);
         return FIXTURE_MONKEY.giveMeBuilder(Item.class)
             .set("id", null)
             .setLazy("sales", () -> sales.addAndGet(1))
@@ -119,6 +116,39 @@ public class MockEntityFactory {
             .sample();
     }
 
+    public List<OrderItem> getMockOrderItems() {
+        return FIXTURE_MONKEY.giveMeBuilder(OrderItem.class)
+            .set("item", getMockItem())
+            .sampleList(3);
+    }
+
+    public OrderItem getMockOrderItem() {
+        return FIXTURE_MONKEY.giveMeBuilder(OrderItem.class)
+            .set("item", getMockItem())
+            .sample();
+    }
+
+    public Order getMockOrder() {
+        return FIXTURE_MONKEY.giveMeOne(Order.class);
+    }
+
+    public Order getMockOrderWithOrderItem() {
+        return FIXTURE_MONKEY.giveMeBuilder(Order.class)
+            .set("id", 1L)
+            .set("orderItems", List.of(getMockOrderItem()))
+            .set("user", null)
+            .set("orderPrice", null)
+            .sample();
+    }
+    public List<Order> getMockOrders() {
+        return FIXTURE_MONKEY.giveMeBuilder(Order.class)
+            .set("orderItems", null)
+            .set("user", null)
+            .set("orderStatus", OrderStatus.COMPLETE)
+            .set("orderPrice", null)
+            .sampleList(15);
+    }
+
     public User getMockUser() {
         return FIXTURE_MONKEY.giveMeBuilder(User.class)
             .set("id", null)
@@ -127,11 +157,7 @@ public class MockEntityFactory {
             .sample();
     }
 
-    public List<OrderItem> getMockOrderItems(){
-        return FIXTURE_MONKEY.giveMeBuilder(OrderItem.class).sampleList(3);
-    }
-
-    public Order getMockOrder() {
-        return FIXTURE_MONKEY.giveMeOne(Order.class);
+    public User getPersistedUser() {
+        return user;
     }
 }

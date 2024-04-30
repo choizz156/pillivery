@@ -16,14 +16,10 @@ public class FakeOrderRepository implements OrderRepository {
 
     public Order save(Order order) {
         store.put(order.getId(), order);
-        System.out.println("order.getId() = " + order.getId());
-        System.out.println(store.get(order.getId()));
         return order;
     }
 
     public Optional<Order> findById(Long id) {
-        System.out.println("id = " + id);
-        System.out.println(store.get(id));
         return store.containsKey(id) ? Optional.of(store.get(id)) : Optional.empty();
     }
 
