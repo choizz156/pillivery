@@ -8,7 +8,7 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.entity.ItemCategory;
 import com.team33.modulecore.item.domain.entity.NutritionFact;
-import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import java.util.List;
@@ -26,7 +26,7 @@ public class ItemCommandService {
     private final BrandService brandService;
     private final NutritionFactService nutritionFactService;
     private final CategoryService categoryService;
-    private final ItemRepository itemRepository;
+    private final ItemCommandRepository itemRepository;
     private final ItemQueryRepository itemQueryRepository;
 
     public Item createItem(ItemPostServiceDto dto) {

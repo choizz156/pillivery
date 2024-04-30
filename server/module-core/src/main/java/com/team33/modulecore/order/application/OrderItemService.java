@@ -4,7 +4,7 @@ package com.team33.modulecore.order.application;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemRepository;
+import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.domain.Order;
@@ -30,7 +30,7 @@ public class OrderItemService {
 
     private final ItemCartRepository itemCartRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ItemRepository itemRepository;
+    private final ItemCommandRepository itemRepository;
     private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)

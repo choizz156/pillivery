@@ -23,7 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @NoArgsConstructor
+
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
@@ -111,7 +111,8 @@ public class User extends BaseEntity {
     }
 
     public void applyEncryptPassword(String encryptedPwd) {
-        if(this.password.equals(encryptedPwd)) return;
+        if (this.password.equals(encryptedPwd))
+            return;
         this.password = encryptedPwd;
     }
 
@@ -136,13 +137,14 @@ public class User extends BaseEntity {
         this.userStatus = UserStatus.USER_WITHDRAWAL;
     }
 
-    public String getCityAtAddress(){
+    public String getCityAtAddress() {
         return this.address.getCity();
     }
 
-    public String getDetailAddress(){
+    public String getDetailAddress() {
         return this.address.getDetailAddress();
     }
 }
+
 
 

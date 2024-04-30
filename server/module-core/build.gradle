@@ -30,6 +30,10 @@ dependencies {
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14")
     //log
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
+
+    //lombok
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 clean {

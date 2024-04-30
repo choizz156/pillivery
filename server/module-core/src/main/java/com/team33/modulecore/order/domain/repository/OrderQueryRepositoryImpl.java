@@ -6,7 +6,6 @@ import static com.team33.modulecore.order.domain.QOrder.order;
 import static com.team33.modulecore.order.domain.QOrderItem.orderItem;
 
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -76,17 +75,18 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         OrderFindCondition orderFindCondition
     ) {
         List<OrderItem> fetch = queryFactory
-            .select(orderItem)
-            .from(orderItem)
-            .join(orderItem.order, order)
+            .select(orderItem).
+            from(orderItem)
+            .innerJoin(orderItem.order, order)
             .where(
-                userEq(orderFindCondition.getUser()),
+                orderUserAndOrderItemUserEq(),
                 subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
             )
             .limit(pageRequest.getSize())
             .offset(pageRequest.getOffset())
             .orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
             .fetch();
+
         return Collections.unmodifiableList(fetch);
     }
 
@@ -99,7 +99,11 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         return fetch;
     }
 
-    private Predicate subscriptionOrderStatusEq(OrderStatus orderStatus) {
+    private  BooleanExpression orderUserAndOrderItemUserEq() {
+        return orderItem.order.user.id.eq(order.user.id);
+    }
+
+    private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {
         return orderStatus == SUBSCRIBE
             ? order.orderStatus.eq(orderStatus)
             : null;
@@ -111,8 +115,9 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
     private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {
         return orderStatus == REQUEST
-            ? null
-            : order.orderStatus.eq(orderStatus).not();
+            ? order.orderStatus.eq(orderStatus).not()
+            : null;
+
     }
 
     private OrderSpecifier<Long> getOrderSort(Direction pageRequest) {
