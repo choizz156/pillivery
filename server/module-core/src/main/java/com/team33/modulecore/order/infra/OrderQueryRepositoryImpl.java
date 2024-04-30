@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.domain.repository;
+package com.team33.modulecore.order.infra;
 
 import static com.team33.modulecore.order.domain.OrderStatus.REQUEST;
 import static com.team33.modulecore.order.domain.OrderStatus.SUBSCRIBE;
@@ -14,6 +14,7 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
@@ -117,7 +118,6 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         return orderStatus == REQUEST
             ? order.orderStatus.eq(orderStatus).not()
             : null;
-
     }
 
     private OrderSpecifier<Long> getOrderSort(Direction pageRequest) {

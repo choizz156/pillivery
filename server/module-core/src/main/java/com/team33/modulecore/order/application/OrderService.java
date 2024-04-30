@@ -6,9 +6,9 @@ import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
-import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.List;
@@ -25,31 +25,29 @@ public class OrderService {
     private final OrderItemService orderItemService;
     private final UserRepository userRepository;
     private final UserFindHelper userFindHelper;
-    private final OrderQueryService orderQueryService;
 
     public Order callOrder(List<OrderItem> orderItems, boolean subscription, long userId) {
         Order order = createOrder(orderItems, subscription, userId);
-
-       return orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     public void cancelOrder(Long orderId) {
-        Order findOrder = orderQueryService.findOrder(orderId);
+        Order order = findOrder(orderId);
 
-        findOrder.changeOrderStatus(CANCEL);
+        order.changeOrderStatus(CANCEL);
 
-        findOrder.getOrderItems()
-                .forEach(orderItem -> orderItem.getItem().minusSales(orderItem.getQuantity()));
+        order.getOrderItems()
+            .forEach(orderItem -> orderItem.getItem().minusSales(orderItem.getQuantity()));
     }
 
     public void changeOrderStatusToComplete(Long orderId) {
-        Order order = orderQueryService.findOrder(orderId);
+        Order order = findOrder(orderId);
 
         order.changeOrderStatus(OrderStatus.COMPLETE);
     }
 
     public void changeOrderStatusToSubscribe(Long orderId) {
-        Order order = orderQueryService.findOrder(orderId);
+        Order order = findOrder(orderId);
 
         order.changeOrderStatus(OrderStatus.SUBSCRIBE);
     }
@@ -63,9 +61,9 @@ public class OrderService {
     }
 
     public void changeSubscriptionItemQuantity(long orderId, long orderItemId, int quantity) {
-        Order order = orderQueryService.findOrder(orderId);
+        Order findOrder = findOrder(orderId);
 
-        order.getOrderItems().stream()
+        findOrder.getOrderItems().stream()
             .filter(orderItem -> orderItem.getId() == orderItemId)
             .findFirst()
             .ifPresentOrElse(
@@ -74,6 +72,11 @@ public class OrderService {
                     throw new BusinessLogicException(ExceptionCode.NOT_ORDERED_ITEM);
                 }
             );
+    }
+
+    private Order ifindOrder(long orderId) {
+        return orderRepository.findById(orderId)
+            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
     }
 
 //    private void plusSalesOfItem(OrderItem oi) {

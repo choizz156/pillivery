@@ -4,9 +4,6 @@ package com.team33.modulecore.order.domain.repository;
 import static java.util.Comparator.comparing;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.navercorp.fixturemonkey.javax.validation.plugin.JavaxValidationPlugin;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.MockEntityFactory;
 import com.team33.modulecore.common.OrderPageDto;
@@ -15,6 +12,7 @@ import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
+import com.team33.modulecore.order.infra.OrderQueryRepositoryImpl;
 import com.team33.modulecore.user.domain.User;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -36,16 +34,17 @@ class OrderQueryRepositoryTest {
     private EntityManagerFactory emf;
     private EntityManager em;
     private OrderQueryRepository orderQueryRepository;
-    private final User MOCK_USER = getMockUser();
+    private User MOCK_USER;
 
     @BeforeAll
     void beforeAll() {
         emf = Persistence.createEntityManagerFactory("test");
         em = emf.createEntityManager();
         em.getTransaction().begin();
-        orderQueryRepository =
-            new OrderQueryRepositoryImpl(new JPAQueryFactory(em));
-        MockEntityFactory.start(em, MOCK_USER);
+        orderQueryRepository = new OrderQueryRepositoryImpl(new JPAQueryFactory(em));
+        MockEntityFactory mockEntityFactory = MockEntityFactory.of(em);
+        mockEntityFactory.persistEntity();
+        MOCK_USER = mockEntityFactory.getMockUser();
     }
 
     @AfterAll
@@ -53,23 +52,9 @@ class OrderQueryRepositoryTest {
         em.getTransaction().rollback(); // 커넥션 반납용 롤백
         em.close();
         emf.close();
-
     }
 
-    private User getMockUser() {
-        FixtureMonkey FIXTURE_MONKEY = FixtureMonkey
-            .builder()
-            .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
-            .defaultNotNull(true)
-            .plugin(new JavaxValidationPlugin())
-            .build();
 
-        return FIXTURE_MONKEY.giveMeBuilder(User.class)
-            .set("id", null)
-            .set("wishList", null)
-            .set("cart", null)
-            .sample();
-    }
 
     @DisplayName("유저가 구매한 주문 목록을 조회할 수 있다.")
     @Test

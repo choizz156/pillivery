@@ -27,10 +27,8 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.annotation.Transactional;
 
 
-//@EnableItemDomainTest
 class ItemServiceTest extends EntityManagerSetting {
 
     final FixtureMonkey fixtureMonkey = FixtureMonkey
@@ -38,23 +36,7 @@ class ItemServiceTest extends EntityManagerSetting {
         .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
         .defaultNotNull(true)
         .build();
-//
-//    @Autowired
-//    private CategoryRepository categoryRepository;
-//    @Autowired
-//    private ItemCommandService itemService;
-//    @Autowired
-//    private ItemQueryService itemQueryService;
-//    @Autowired
-//    private ItemRepository itemRepository;
 
-//    @AfterEach
-//    void tearDown() {
-//        categoryRepository.deleteAllInBatch();
-//        itemRepository.deleteAll();
-//    }
-
-    @Transactional
     @DisplayName("item을 저장할 수 있다.")
     @Test
     void 아이템_생성() throws Exception {

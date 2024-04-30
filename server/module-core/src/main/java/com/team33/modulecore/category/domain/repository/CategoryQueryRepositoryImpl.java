@@ -5,12 +5,12 @@ import com.team33.modulecore.category.domain.CategoryName;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class CategoryQueryRepositoryImpl implements CategoryQueryRepository {
 
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Override
     public Optional<Category> findByCategoryName(CategoryName categoryName) {

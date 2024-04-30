@@ -16,7 +16,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.persistence.EntityManager;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MockEntityFactory {
 
     private static final FixtureMonkey FIXTURE_MONKEY = FixtureMonkey
@@ -26,18 +29,22 @@ public class MockEntityFactory {
         .plugin(new JavaxValidationPlugin())
         .build();
 
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
+    private final User user = getMockUser();
 
-    private MockEntityFactory(EntityManager entityManager, User user) {
+    private MockEntityFactory(EntityManager entityManager) {
         this.entityManager = entityManager;
-        persistEntity(user);
     }
 
-    public static void start(EntityManager entityManager, User user) {
-         new MockEntityFactory(entityManager, user);
+    public static MockEntityFactory of(EntityManager entityManager) {
+        return new MockEntityFactory(entityManager);
     }
 
-    private void persistEntity(User user) {
+    public static MockEntityFactory of() {
+        return new MockEntityFactory();
+    }
+
+    public void persistEntity() {
         entityManager.persist(user);
 
         List<Item> mockItems = getMockItems();
@@ -49,9 +56,9 @@ public class MockEntityFactory {
                 OrderItem.class)
             .setParameter("orderStatus", OrderStatus.SUBSCRIBE)
             .getResultList();
-      }
+    }
 
-    private void getMockOrders(User user, List<Item> mockItems) {
+    public void getMockOrders(User user, List<Item> mockItems) {
         mockItems.stream()
             .takeWhile(item -> item.getId() <= 8)
             .map(item -> OrderItem.create(
@@ -79,7 +86,7 @@ public class MockEntityFactory {
             });
     }
 
-    private List<Item> getMockItems() {
+    public List<Item> getMockItems() {
         var sales = new AtomicInteger(1);
         var discountRate = new AtomicReference<Double>(1D);
         return FIXTURE_MONKEY.giveMeBuilder(Item.class)
@@ -95,5 +102,36 @@ public class MockEntityFactory {
             .set("wishList", null)
             .set("itemCategories", new HashSet<>())
             .sampleList(15);
+    }
+
+    public Item getMockItem() {
+        return FIXTURE_MONKEY.giveMeBuilder(Item.class)
+            .set("id", null)
+            .set("sales", 1)
+            .set("itemPrice.discountRate", 3L)
+            .set("itemPrice.realPrice", 3000)
+            .set("title", "mockItem")
+            .set("nutritionFacts", new ArrayList<>())
+            .set("reviews", null)
+            .set("brand", Brand.MYNI)
+            .set("wishList", null)
+            .set("itemCategories", new HashSet<>())
+            .sample();
+    }
+
+    public User getMockUser() {
+        return FIXTURE_MONKEY.giveMeBuilder(User.class)
+            .set("id", null)
+            .set("wishList", null)
+            .set("cart", null)
+            .sample();
+    }
+
+    public List<OrderItem> getMockOrderItems(){
+        return FIXTURE_MONKEY.giveMeBuilder(OrderItem.class).sampleList(3);
+    }
+
+    public Order getMockOrder() {
+        return FIXTURE_MONKEY.giveMeOne(Order.class);
     }
 }

@@ -1,4 +1,4 @@
-package com.team33.modulecore.item.domain.repository;
+package com.team33.modulecore.item.infra;
 
 
 import static com.team33.modulecore.item.domain.entity.QItem.item;
@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
