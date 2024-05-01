@@ -51,7 +51,7 @@ public class ExceptionController {
         return ErrorResponse.of(e.getMessage());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
         return ErrorResponse.of(e.getMessage());

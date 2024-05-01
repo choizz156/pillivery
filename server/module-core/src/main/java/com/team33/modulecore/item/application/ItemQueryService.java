@@ -4,6 +4,7 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemResponseDto;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
+import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,12 +36,12 @@ public class ItemQueryService {
     }
 
     public Page<ItemResponseDto> findFilteredItemByPrice(
-        int low,
-        int high,
+        PriceFilterDto priceFilterDto,
         ItemSearchRequest itemSearchRequest
     ) {
         Page<ItemQueryDto> itemsByPrice =
-            itemQueryRepository.findItemsByPrice(low, high, itemSearchRequest);
+            itemQueryRepository.findItemsByPrice(priceFilterDto, itemSearchRequest);
+
         List<ItemResponseDto> itemResponseDtos = itemsByPrice.getContent().stream()
             .map(ItemResponseDto::from)
             .collect(Collectors.toUnmodifiableList());
@@ -52,5 +53,4 @@ public class ItemQueryService {
             itemsByPrice.getTotalElements()
         );
     }
-//
 }

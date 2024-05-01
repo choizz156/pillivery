@@ -3,21 +3,23 @@ package com.team33.modulecore.item.dto;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Sort.Direction;
 
+@NoArgsConstructor
 @Getter
 public class ItemSearchRequest {
 
     private static final int DEFAULT_PAGE_SIZE = 16;
     private static final int MAX_SIZE = 2000;
     private static final int MIN_SIZE = 1;
-    private static final ItemSortOption DEFAULT_ITEM_SORT_OPTION = ItemSortOption.SALES;
+    private static final ItemSortOption DEFAULT_ITEM_SORT_OPTION = com.team33.modulecore.item.domain.ItemSortOption.SALES;
     private static final Direction DEFAULT_SORT_TYPE = Direction.DESC;
 
-    private final int page;
-    private final int size;
-    private final Direction sort;
-    private final ItemSortOption sortOption;
+    private int page;
+    private int size;
+    private Direction sort;
+    private ItemSortOption sortOption;
 
     @Builder
     private ItemSearchRequest(int page, int size, Direction sort, ItemSortOption sortOption) {
@@ -32,7 +34,8 @@ public class ItemSearchRequest {
             .page(Math.max(dto.getPage(), MIN_SIZE))
             .size(getSize(dto.getSize()))
             .sort(dto.getDirection() == Direction.ASC ? Direction.ASC : Direction.DESC)
-            .sortOption(dto.getSortOption() == ItemSortOption.SALES ? DEFAULT_ITEM_SORT_OPTION : dto.getSortOption())
+            .sortOption(dto.getSortOption() == ItemSortOption.SALES ? DEFAULT_ITEM_SORT_OPTION
+                : dto.getSortOption())
             .build();
     }
 

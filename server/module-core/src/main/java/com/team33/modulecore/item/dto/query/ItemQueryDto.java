@@ -4,12 +4,12 @@ import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.NutritionFact;
 import java.util.List;
-import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class ItemQueryDto {
 
     private Long itemId;
@@ -25,5 +25,36 @@ public class ItemQueryDto {
     private Brand brand;
     private List<CategoryName> categoryNames;
     private List<NutritionFact> nutritionFacts;
+
+    @Builder
+    public ItemQueryDto(
+        Long itemId,
+        String thumbnail,
+        String title,
+        String content,
+        int capacity,
+        int realPrice,
+        double discountRate,
+        int discountPrice,
+        double starAvg,
+        int reviewSize,
+        Brand brand,
+        List<CategoryName> categoryNames,
+        List<NutritionFact> nutritionFacts
+    ) {
+        this.itemId = itemId;
+        this.thumbnail = thumbnail;
+        this.title = title;
+        this.content = content;
+        this.capacity = capacity;
+        this.realPrice = realPrice;
+        this.discountRate = discountRate;
+        this.discountPrice = discountPrice;
+        this.starAvg = starAvg;
+        this.reviewSize = reviewSize;
+        this.brand = brand;
+        this.categoryNames = categoryNames;
+        this.nutritionFacts = nutritionFacts;
+    }
 
 }

@@ -14,11 +14,15 @@ import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
+import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,6 +44,8 @@ public class ItemQueryDslDao implements ItemQueryRepository {
             .offset(request.getOffset())
             .orderBy(getItemSort(request.getSortOption()))
             .fetch();
+
+        checkEmptyList(fetch);
 
         JPAQuery<Long> countQuery = queryFactory
             .select(item.count())
@@ -71,8 +77,10 @@ public class ItemQueryDslDao implements ItemQueryRepository {
     }
 
     @Override
-    public Page<ItemQueryDto> findItemsByPrice(int low, int high, ItemSearchRequest request) {
-        List<ItemQueryDto> fetch = queryFactory.select(
+    public Page<ItemQueryDto> findItemsByPrice(PriceFilterDto filterDto,
+        ItemSearchRequest request) {
+        List<ItemQueryDto> fetch = queryFactory
+            .select(
                 Projections.fields(ItemQueryDto.class,
                     item.id.as("itemId"),
                     item.thumbnail,
@@ -89,32 +97,47 @@ public class ItemQueryDslDao implements ItemQueryRepository {
                             .select(category.categoryName)
                             .from(itemCategory)
                             .where(itemCategory.item.id.eq(item.id))
-                        , "categoryNames"
+                        , "categoryName"
                     ),
                     ExpressionUtils.as(
                         JPAExpressions
                             .selectFrom(nutritionFact)
                             .where(nutritionFact.item.id.eq(item.id))
-                        , "nutritionFacts"
+                        , "nutritionFact"
                     )
                 ))
             .from(item)
             .where(
-                item.itemPrice.realPrice.between(low, high)
+                priceFilter(filterDto)
             )
             .limit(request.getSize())
             .offset(request.getOffset())
             .orderBy(getItemSort(request.getSortOption()))
             .fetch();
 
+        checkEmptyList(fetch);
+
         JPAQuery<Long> count = queryFactory.select(item.count())
             .from(item)
-            .where(item.itemPrice.realPrice.between(low, high));
+            .where(priceFilter(filterDto));
 
         return PageableExecutionUtils.getPage(
             fetch,
-            PageRequest.of(request.getPage() - 1, request.getPage()),
+            PageRequest.of(request.getPage() - 1, request.getSize()),
             count::fetchOne
+        );
+    }
+
+    private BooleanExpression priceFilter(PriceFilterDto priceFilter) {
+        if (priceFilter.isSamePriceEach()) {
+            return item.itemPrice.realPrice.eq(priceFilter.getLowPrice());
+        }
+
+        priceFilter.checkReversedPrice();
+
+        return item.itemPrice.realPrice.between(
+            priceFilter.getLowPrice(),
+            priceFilter.getHighPrice()
         );
     }
 
@@ -123,18 +146,12 @@ public class ItemQueryDslDao implements ItemQueryRepository {
     }
 
     private OrderSpecifier<? extends Number> getItemSort(ItemSortOption itemSortOption) {
+        return itemSortOption.getSort();
+    }
 
-        switch (itemSortOption) {
-            case DISCOUNT_RATE_H:
-                return item.itemPrice.discountRate.desc();
-            case DISCOUNT_RATE_L:
-                return item.itemPrice.discountRate.asc();
-            case PRICE_H:
-                return item.itemPrice.realPrice.desc();
-            case PRICE_L:
-                return item.itemPrice.realPrice.asc();
-            default:
-                return item.sales.desc();
+    private void checkEmptyList(Collection<?> fetch) {
+        if(fetch.isEmpty()) {
+            throw new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND);
         }
     }
 }

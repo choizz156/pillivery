@@ -10,12 +10,13 @@ import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
 import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemPostDto;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
+import com.team33.modulecore.item.dto.ItemPriceDto;
 import com.team33.modulecore.item.dto.ItemResponseDto;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
+import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.review.application.ReviewService;
 import java.util.List;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -92,13 +93,13 @@ public class ItemController {
     }
 
     @GetMapping("/prices")
-    public MultiResponseDto priceFilteredItems(
-        @Positive @NotNull @RequestParam("low") int low,
-        @Positive @NotNull @RequestParam("high") int high,
-        ItemPageDto pageDto
+    public MultiResponseDto<?> priceFilteredItems(
+        ItemPageDto pageDto,
+        ItemPriceDto itemPriceDto
     ) {
-        ItemSearchRequest dto = ItemSearchRequest.to(pageDto);
-        Page<ItemResponseDto> itemsPage = itemQueryService.findFilteredItemByPrice(low, high, dto);
+        PriceFilterDto priceFilterDto = PriceFilterDto.to(itemPriceDto);
+        ItemSearchRequest searchDto = ItemSearchRequest.to(pageDto);
+        Page<ItemResponseDto> itemsPage = itemQueryService.findFilteredItemByPrice(priceFilterDto, searchDto);
         return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
     }
 //
