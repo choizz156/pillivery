@@ -1,5 +1,6 @@
 package com.team33.modulecore;
 
+import com.navercorp.fixturemonkey.ArbitraryBuilder;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.navercorp.fixturemonkey.javax.validation.plugin.JavaxValidationPlugin;
@@ -103,7 +104,7 @@ public class MockEntityFactory {
 
     public Item getMockItem() {
         return FIXTURE_MONKEY.giveMeBuilder(Item.class)
-            .set("id", null)
+            .set("id", 1L)
             .set("sales", 1)
             .set("itemPrice.discountRate", 3L)
             .set("itemPrice.realPrice", 3000)
@@ -141,12 +142,22 @@ public class MockEntityFactory {
             .sample();
     }
     public List<Order> getMockOrders() {
-        return FIXTURE_MONKEY.giveMeBuilder(Order.class)
-            .set("orderItems", null)
+        OrderItem mockOrderItem = getMockOrderItem();
+        List<Order> orders1 = FIXTURE_MONKEY.giveMeBuilder(Order.class)
+            .set("orderItems", List.of(mockOrderItem))
             .set("user", null)
             .set("orderStatus", OrderStatus.COMPLETE)
             .set("orderPrice", null)
-            .sampleList(15);
+            .sampleList(7);
+
+        List<Order> orders2 = FIXTURE_MONKEY.giveMeBuilder(Order.class)
+            .set("orderItems", List.of(mockOrderItem))
+            .set("user", null)
+            .set("orderStatus", OrderStatus.SUBSCRIBE)
+            .set("orderPrice", null)
+            .sampleList(7);
+        orders1.addAll(orders2);
+        return orders1;
     }
 
     public User getMockUser() {

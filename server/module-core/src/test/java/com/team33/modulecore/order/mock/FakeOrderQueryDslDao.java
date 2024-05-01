@@ -3,6 +3,7 @@ package com.team33.modulecore.order.mock;
 import com.team33.modulecore.MockEntityFactory;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -47,9 +49,15 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
     }
 
     @Override
-    public List<OrderItem> findSubscriptionOrderItem(OrderPageRequest pageRequest,
-        OrderFindCondition orderFindCondition) {
-        return List.of();
+    public List<OrderItem> findSubscriptionOrderItem(
+        OrderPageRequest pageRequest,
+        OrderFindCondition orderFindCondition
+    ) {
+        return orders.values().stream()
+            .filter(order -> order.getOrderStatus() == OrderStatus.SUBSCRIBE)
+            .map(Order::getOrderItems)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
     }
 
     @Override

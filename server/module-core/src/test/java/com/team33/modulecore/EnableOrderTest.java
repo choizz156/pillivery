@@ -7,7 +7,7 @@ import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.infra.ItemQueryDslDao;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderQueryService;
+import com.team33.modulecore.order.application.OrderQueryServiceTest;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.order.domain.repository.OrderItemRepository;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
@@ -37,7 +37,7 @@ import org.springframework.test.context.ContextConfiguration;
     CartRepository.class,
     OrderService.class,
     OrderItemService.class,
-    OrderQueryService.class,
+    OrderQueryServiceTest.class,
     QueryDslConfig.class,
     UserFindHelper.class,
     OrderQueryDslDao.class,

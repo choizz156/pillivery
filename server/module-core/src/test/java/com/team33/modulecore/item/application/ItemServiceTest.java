@@ -56,7 +56,7 @@ class ItemServiceTest extends EntityManagerSetting {
         var categories = List.of(Category.of(EYE), Category.of(BONE));
         given(categoryService.getCategories(anyList())).willReturn(categories);
 
-        var itemCommandService = new ItemCommandService(
+        var itemCommandService = new ItemService(
             null,
             nutritionFactService,
             categoryService,
@@ -90,7 +90,7 @@ class ItemServiceTest extends EntityManagerSetting {
         ItemCommandRepository itemRepository = mock(ItemCommandRepository.class);
         given(itemRepository.findById(anyLong())).willReturn(Optional.ofNullable(item));
 
-        var itemCommandService = new ItemCommandService(
+        var itemCommandService = new ItemService(
             null,
             null,
             null,
