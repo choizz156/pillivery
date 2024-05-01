@@ -1,6 +1,5 @@
 package com.team33.modulecore;
 
-import com.navercorp.fixturemonkey.ArbitraryBuilder;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.navercorp.fixturemonkey.javax.validation.plugin.JavaxValidationPlugin;
@@ -46,42 +45,18 @@ public class MockEntityFactory {
         return new MockEntityFactory();
     }
 
-    public void persistEntity() {
+    public void persistItem(){
+        persistMockItems();
+    }
+
+    public void persistOrder() {
         user = getMockUser();
         entityManager.persist(user);
 
         List<Item> mockItems = getMockItems();
         mockItems.forEach(entityManager::persist);
 
-        getMockOrders(user, mockItems);
-    }
-
-    private void getMockOrders(User user, List<Item> mockItems) {
-        mockItems.stream()
-            .takeWhile(item -> item.getId() <= 8)
-            .map(item -> OrderItem.create(
-                item,
-                SubscriptionItemInfo.of(false, 60),
-                1
-            ))
-            .map(orderItem -> Order.create(List.of(orderItem), false, user))
-            .forEach(order -> {
-                order.changeOrderStatus(OrderStatus.COMPLETE);
-                entityManager.persist(order);
-            });
-
-        mockItems.stream()
-            .dropWhile(item -> item.getId() <= 8)
-            .map(item -> OrderItem.create(
-                item,
-                SubscriptionItemInfo.of(true, 60),
-                1
-            ))
-            .map(orderItem -> Order.create(List.of(orderItem), true, user))
-            .forEach(order -> {
-                order.changeOrderStatus(OrderStatus.SUBSCRIBE);
-                entityManager.persist(order);
-            });
+        persistMockOrder(user, mockItems);
     }
 
     public List<Item> getMockItems() {
@@ -141,6 +116,7 @@ public class MockEntityFactory {
             .set("orderPrice", null)
             .sample();
     }
+
     public List<Order> getMockOrders() {
         OrderItem mockOrderItem = getMockOrderItem();
         List<Order> orders1 = FIXTURE_MONKEY.giveMeBuilder(Order.class)
@@ -159,7 +135,6 @@ public class MockEntityFactory {
         orders1.addAll(orders2);
         return orders1;
     }
-
     public User getMockUser() {
         return FIXTURE_MONKEY.giveMeBuilder(User.class)
             .set("id", null)
@@ -171,4 +146,66 @@ public class MockEntityFactory {
     public User getPersistedUser() {
         return user;
     }
-}
+
+    private void persistMockOrder(User user, List<Item> mockItems) {
+        mockItems.stream()
+            .takeWhile(item -> item.getId() <= 8)
+            .map(item -> OrderItem.create(
+                item,
+                SubscriptionItemInfo.of(false, 60),
+                1
+            ))
+            .map(orderItem -> Order.create(List.of(orderItem), false, user))
+            .forEach(order -> {
+                order.changeOrderStatus(OrderStatus.COMPLETE);
+                entityManager.persist(order);
+            });
+
+        mockItems.stream()
+            .dropWhile(item -> item.getId() <= 8)
+            .map(item -> OrderItem.create(
+                item,
+                SubscriptionItemInfo.of(true, 60),
+                1
+            ))
+            .map(orderItem -> Order.create(List.of(orderItem), true, user))
+            .forEach(order -> {
+                order.changeOrderStatus(OrderStatus.SUBSCRIBE);
+                entityManager.persist(order);
+            });
+    }
+
+    private void persistMockItems() {
+
+        var value = new AtomicInteger(0);
+        var value1 = new AtomicReference<Double>(1D);
+        var items = FIXTURE_MONKEY.giveMeBuilder(Item.class)
+            .set("id", null)
+            .setLazy("sales", () -> value.addAndGet(1))
+            .setLazy("itemPrice.discountRate", () -> value1.getAndSet(value1.get() + 1D))
+            .setLazy("itemPrice.realPrice", () -> value.intValue() * 1000)
+            .setLazy("title", () -> "title" + value)
+            .set("nutritionFacts", new ArrayList<>())
+            .set("reviews", null)
+            .set("brand", Brand.MYNI)
+            .set("wishList", null)
+            .set("itemCategories", new HashSet<>())
+            .sampleList(15);
+
+        var value2 = new AtomicInteger(9);
+        var items2 = FIXTURE_MONKEY.giveMeBuilder(Item.class)
+            .set("id", null)
+            .set("sales", 0)
+            .set("itemPrice.discountRate", 0)
+            .set("itemPrice.realPrice", 1)
+            .setLazy("title", () -> "test" + value2.addAndGet(1))
+            .set("nutritionFacts", new ArrayList<>())
+            .set("reviews", null)
+            .set("brand", Brand.MYNI)
+            .set("wishList", null)
+            .set("itemCategories", new HashSet<>())
+            .sampleList(3);
+
+        items.addAll(items2);
+        items.forEach(entityManager::persist);
+    }}

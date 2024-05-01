@@ -43,7 +43,7 @@ class OrderQueryRepositoryTest {
         em.getTransaction().begin();
         orderQueryRepository = new OrderQueryDslDao(new JPAQueryFactory(em));
         MockEntityFactory mockEntityFactory = MockEntityFactory.of(em);
-        mockEntityFactory.persistEntity();
+        mockEntityFactory.persistOrder();
         MOCK_USER = mockEntityFactory.getPersistedUser();
     }
 

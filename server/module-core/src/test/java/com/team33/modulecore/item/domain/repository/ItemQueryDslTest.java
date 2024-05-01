@@ -2,21 +2,23 @@ package com.team33.modulecore.item.domain.repository;
 
 import static java.util.Comparator.comparing;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team33.modulecore.item.domain.Brand;
+import com.team33.modulecore.MockEntityFactory;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemPageDto;
+import com.team33.modulecore.item.dto.ItemPriceDto;
 import com.team33.modulecore.item.dto.ItemSearchRequest;
+import com.team33.modulecore.item.dto.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.item.infra.ItemQueryDslDao;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -30,7 +32,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.data.domain.Page;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class ItemQueryRepositoryTest {
+class ItemQueryDslTest {
 
     private EntityManagerFactory emf;
     private EntityManager em;
@@ -43,7 +45,9 @@ class ItemQueryRepositoryTest {
         em = emf.createEntityManager();
         em.getTransaction().begin();
         itemQueryRepository = new ItemQueryDslDao(new JPAQueryFactory(em));
-        getMockItem();
+//        getMockItem();
+        MockEntityFactory mockEntityFactory = MockEntityFactory.of(em);
+        mockEntityFactory.persistItem();
     }
 
     @AfterAll
@@ -65,15 +69,15 @@ class ItemQueryRepositoryTest {
         assertThat(itemsWithSalesTop9).hasSize(9)
             .isSortedAccordingTo(comparing(Item::getSales).reversed())
             .extracting("title")
-            .containsExactly("title16",
-                "title15",
+            .containsExactly("title15",
                 "title14",
                 "title13",
                 "title12",
                 "title11",
                 "title10",
                 "title9",
-                "title8"
+                "title8",
+                "title7"
             );
     }
 
@@ -88,21 +92,21 @@ class ItemQueryRepositoryTest {
         assertThat(top9SaleItems).hasSize(9)
             .isSortedAccordingTo(comparing(Item::getDiscountRate).reversed())
             .extracting("title")
-            .containsExactly("title16",
-                "title15",
+            .containsExactly("title15",
                 "title14",
                 "title13",
                 "title12",
                 "title11",
                 "title10",
                 "title9",
-                "title8"
+                "title8",
+                "title7"
             );
     }
 
 
     @Nested
-    @DisplayName("아이템 조회 테스트 및 타입 정렬 테스트")
+    @DisplayName("아이템 정렬 타입에 따른 정렬 테스트")
     class ItemTitleQuerytest {
 
         @DisplayName("이름이 포함된 아이템을 조회할 수 있다.")
@@ -211,43 +215,116 @@ class ItemQueryRepositoryTest {
         }
     }
 
-    private void getMockItem() {
-        FixtureMonkey FIXTURE_MONKEY = FixtureMonkey
-            .builder()
-            .objectIntrospector(FieldReflectionArbitraryIntrospector.INSTANCE)
-            .defaultNotNull(true)
-            .build();
+    @Nested
+    @DisplayName("가격 따른 필터링 테스트(1_000원 ~ 15_000원)")
+    class PriceFilterTest {
 
-        var value = new AtomicInteger(1);
-        var value1 = new AtomicReference<Double>(1D);
-        var items = FIXTURE_MONKEY.giveMeBuilder(Item.class)
-            .set("id", null)
-            .setLazy("sales", () -> value.addAndGet(1))
-            .setLazy("itemPrice.discountRate", () -> value1.getAndSet(value1.get() + 1D))
-            .setLazy("itemPrice.realPrice", value::intValue)
-            .setLazy("title", () -> "title" + value)
-            .set("nutritionFacts", new ArrayList<>())
-            .set("reviews", null)
-            .set("brand", Brand.MYNI)
-            .set("wishList", null)
-            .set("itemCategories", new HashSet<>())
-            .sampleList(15);
+        @DisplayName("가격이 1 만원에서 1만 5000원 필터링 조회 -> 높은 가격순")
+        @Test
+        void 가격_필터링1() throws Exception {
+            //given
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(16);
+            dto.setSortOption(ItemSortOption.PRICE_H);
 
-        var value2 = new AtomicInteger(9);
-        var items2 = FIXTURE_MONKEY.giveMeBuilder(Item.class)
-            .set("id", null)
-            .set("sales", 0)
-            .set("itemPrice.discountRate", 0)
-            .set("itemPrice.realPrice", 1)
-            .setLazy("title", () -> "test" + value2.addAndGet(1))
-            .set("nutritionFacts", new ArrayList<>())
-            .set("reviews", null)
-            .set("brand", Brand.MYNI)
-            .set("wishList", null)
-            .set("itemCategories", new HashSet<>())
-            .sampleList(3);
+            //when
+            Page<ItemQueryDto> itemsByPrice =
+                itemQueryRepository.findItemsByPrice(
+                    PriceFilterDto.to(new ItemPriceDto(10000, 15000)),
+                    ItemSearchRequest.to(dto)
+                );
 
-        items.addAll(items2);
-        items.forEach(em::persist);
+            //then
+            assertThat(itemsByPrice.getContent()).hasSize(6)
+                .isSortedAccordingTo(Comparator.comparing(ItemQueryDto::getRealPrice).reversed())
+                .extracting("itemId", "realPrice")
+                .containsExactlyInAnyOrder(
+                    tuple(10L, 10000),
+                    tuple(11L, 11000),
+                    tuple(12L, 12000),
+                    tuple(13L, 13000),
+                    tuple(14L, 14000),
+                    tuple(15L, 15000)
+                );
+
+            assertThat(itemsByPrice.getTotalElements()).isEqualTo(6);
+            assertThat(itemsByPrice.getTotalPages()).isEqualTo(1);
+            assertThat(itemsByPrice.getNumberOfElements()).isEqualTo(6);
+        }
+
+        @DisplayName("가격이  1천원에서 1만 4999원 필터링 조회 -> 낮은 가격순")
+        @Test
+        void 가격_필터링2() throws Exception {
+            //given
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(10);
+            dto.setSortOption(ItemSortOption.PRICE_L);
+
+            //when
+            Page<ItemQueryDto> itemsByPrice =
+                itemQueryRepository.findItemsByPrice(
+                    PriceFilterDto.to(new ItemPriceDto(1000, 14999)),
+                    ItemSearchRequest.to(dto)
+                );
+
+            //then
+            assertThat(itemsByPrice.getContent()).hasSize(14)
+                .isSortedAccordingTo(Comparator.comparing(ItemQueryDto::getRealPrice))
+                .extracting("itemId")
+                .doesNotContain(15L);
+
+            assertThat(itemsByPrice.getTotalElements()).isEqualTo(14);
+            assertThat(itemsByPrice.getTotalPages()).isEqualTo(1);
+            assertThat(itemsByPrice.getNumberOfElements()).isEqualTo(14);
+        }
+
+        @DisplayName("특정 가격 조회 시 아이템을 조회할 수 있다.")
+        @Test
+        void 가격_필터링3() throws Exception {
+            //given
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(10);
+            dto.setSortOption(ItemSortOption.PRICE_L);
+
+            //when
+            Page<ItemQueryDto> itemsByPrice =
+                itemQueryRepository.findItemsByPrice(
+                    PriceFilterDto.to(new ItemPriceDto(1000, 1000)),
+                    ItemSearchRequest.to(dto)
+                );
+
+            //then
+            assertThat(itemsByPrice.getContent()).hasSize(1)
+                .isSortedAccordingTo(Comparator.comparing(ItemQueryDto::getRealPrice))
+                .extracting("itemId")
+                .containsExactly(1L);
+
+            assertThat(itemsByPrice.getTotalElements()).isEqualTo(1);
+            assertThat(itemsByPrice.getTotalPages()).isEqualTo(1);
+            assertThat(itemsByPrice.getNumberOfElements()).isEqualTo(1);
+        }
+
+        @DisplayName("특정 가격 조회 시 아이템이 없을 경우 예외를 던진다.")
+        @Test
+        void 가격_필터링4() throws Exception {
+            //given
+            var dto = new ItemPageDto();
+            dto.setPage(1);
+            dto.setSize(10);
+            dto.setSortOption(ItemSortOption.PRICE_L);
+
+            //when//then
+            assertThatThrownBy(() ->
+                itemQueryRepository.findItemsByPrice(
+                    PriceFilterDto.to(new ItemPriceDto(11111, 11111)),
+                    ItemSearchRequest.to(dto)
+                )
+            )
+                .isInstanceOf(BusinessLogicException.class)
+                .hasMessageContaining(ExceptionCode.ITEM_NOT_FOUND.getMessage());
+        }
     }
 }

@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.modulecore.EntityManagerSetting;
 import com.team33.modulecore.category.application.CategoryService;
 import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.category.domain.CategoryName;
@@ -29,7 +28,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
-class ItemServiceTest extends EntityManagerSetting {
+class ItemServiceTest{
 
     final FixtureMonkey fixtureMonkey = FixtureMonkey
         .builder()
@@ -60,7 +59,7 @@ class ItemServiceTest extends EntityManagerSetting {
             null,
             nutritionFactService,
             categoryService,
-            new FakeItemCommandRepository(getEmAtSuperClass()),
+            new FakeItemCommandRepository(),
             null
         );
 
