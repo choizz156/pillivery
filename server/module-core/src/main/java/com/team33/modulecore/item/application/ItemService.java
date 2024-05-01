@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class ItemCommandService {
+public class ItemService {
 
     private final BrandService brandService;
     private final NutritionFactService nutritionFactService;
@@ -122,7 +122,7 @@ public class ItemCommandService {
 //        }
 //    }
 
-//    public Page<Item> searchItems(String keyword, int page, int size, String sort) {
+    //    public Page<Item> searchItems(String keyword, int page, int size, String sort) {
 //        keyword = keyword.replace("_", " ");
 //        if (Objects.equals(sort, "priceH")) {
 //            sort = "discountPrice";
@@ -141,24 +141,6 @@ public class ItemCommandService {
 //        }
 //    }
 
-//    public Page<Item> pricefilteredItems(int low, int high, int page, int size, String sort) {
-//        if (Objects.equals(sort, "priceH")) {
-//            sort = "discountPrice";
-//        }
-//        if (Objects.equals(sort, "priceL")) {
-//            sort = "discountPrice";
-//            Page<Item> lowSortItems = itemJpaRepository.findByPriceBetween(
-//                PageRequest.of(page, size, Sort.by(sort).ascending()), low, high);
-//
-//            return lowSortItems;
-//        } else {
-//            Page<Item> filteredItems = itemJpaRepository.findByPriceBetween(
-//                PageRequest.of(page, size, Sort.by(sort).descending()), low, high);
-//
-//            return filteredItems;
-//        }
-//    }
-//
 //    public Page<Item> searchPriceFilteredItems(String keyword, int low, int high, int page,
 //        int size, String sort) {
 //        keyword = keyword.replace("_", " ");

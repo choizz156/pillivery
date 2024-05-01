@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
-import com.team33.modulecore.item.application.ItemCommandService;
+import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.user.domain.User;
 
 
@@ -24,7 +24,7 @@ public class ReviewService {
     private final ItemCommandRepository itemRepository;
 
     private final ReviewRepository reviewRepository;
-    private final ItemCommandService itemService;
+    private final ItemService itemService;
 
 //    public Review createReview(Review review) {
 //        reviewRepository.save(review);

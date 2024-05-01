@@ -43,9 +43,9 @@ public class OrderQueryService {
     ) {
         User user = userFindHelper.findUser(userId);
         List<OrderItem> subscriptionOrder = orderQueryRepository.findSubscriptionOrderItem(
-            orderPageRequest,
-            OrderFindCondition.to(user, OrderStatus.SUBSCRIBE)
-        );
+                orderPageRequest,
+                OrderFindCondition.to(user, OrderStatus.SUBSCRIBE)
+            );
         return getSubscriptionItem(subscriptionOrder);
     }
 

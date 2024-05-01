@@ -3,6 +3,7 @@ package com.team33.modulecore.item.dto;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -11,7 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemResponseDto { // 목록 조회
 
     private Long itemId;
@@ -24,8 +25,8 @@ public class ItemResponseDto { // 목록 조회
     private int discountPrice;
     private double starAvg;
     private int reviewSize;
-    private List<CategoryName> categoryName;
     private Brand brand;
+    private List<CategoryName> categoryName;
     private List<NutritionFactResponseDto> nutritionFacts;
 
     @Builder
@@ -85,6 +86,28 @@ public class ItemResponseDto { // 목록 조회
             .brand(item.getBrand())
             .nutritionFacts(
                 item.getNutritionFacts().stream()
+                    .map(NutritionFactResponseDto::from)
+                    .collect(Collectors.toUnmodifiableList())
+            )
+            .build();
+    }
+
+    public static ItemResponseDto from(ItemQueryDto itemQueryDto) {
+        return ItemResponseDto.builder()
+            .itemId(itemQueryDto.getItemId())
+            .thumbnail(itemQueryDto.getThumbnail())
+            .title(itemQueryDto.getTitle())
+            .content(itemQueryDto.getContent())
+            .capacity(itemQueryDto.getCapacity())
+            .price(itemQueryDto.getRealPrice())
+            .discountRate(itemQueryDto.getDiscountRate())
+            .discountPrice(itemQueryDto.getDiscountPrice())
+            .starAvg(itemQueryDto.getStarAvg())
+            .reviewSize(itemQueryDto.getReviewSize())
+            .categoryName(itemQueryDto.getCategoryNames())
+            .brand(itemQueryDto.getBrand())
+            .nutritionFacts(
+                itemQueryDto.getNutritionFacts().stream()
                     .map(NutritionFactResponseDto::from)
                     .collect(Collectors.toUnmodifiableList())
             )

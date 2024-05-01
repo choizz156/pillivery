@@ -3,7 +3,7 @@ package com.team33.moduleapi.ui.item;
 import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.item.application.ItemQueryService;
-import com.team33.modulecore.item.application.ItemCommandService;
+import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemDetailResponseDto;
 import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
@@ -15,6 +15,7 @@ import com.team33.modulecore.item.dto.ItemSearchRequest;
 import com.team33.modulecore.review.application.ReviewService;
 import java.util.List;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final ItemCommandService itemService;
+    private final ItemService itemService;
     private final ReviewService reviewService;
     private final ItemQueryService itemQueryService;
 //    private final TalkService talkService;
@@ -73,7 +74,7 @@ public class ItemController {
         ItemSearchRequest dto = ItemSearchRequest.to(pageDto);
 
         Page<Item> itemPage = itemQueryService.searchItems(keywords, dto);
-        List<Item>  items = itemPage.getContent();
+        List<Item> items = itemPage.getContent();
 
         return new MultiResponseDto<>(ItemResponseDto.from(items), itemPage);
     }
@@ -89,19 +90,17 @@ public class ItemController {
         Item item = itemService.findItemWithAddingView(itemId);
         return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
     }
-//
-//    @GetMapping("/price")
-//    public ResponseEntity priceFilteredItems(@RequestParam("low") int low,
-//        @RequestParam("high") int high,
-//        @Positive @RequestParam(value = "page", defaultValue = "1") int page,
-//        @Positive @RequestParam(value = "size", defaultValue = "16") int size,
-//        @RequestParam(value = "sort", defaultValue = "sales") String sort) { // 가격 필터
-//        Page<Item> itemPage = itemService.pricefilteredItems(low, high, page - 1, size, sort);
-//        List<Item> itemList = itemPage.getContent();
-//        return new ResponseEntity(
-//            new MultiResponseDto<>(mapper.itemsToItemCategoryResponseDto(itemList), itemPage),
-//            HttpStatus.OK);
-//    }
+
+    @GetMapping("/prices")
+    public MultiResponseDto priceFilteredItems(
+        @Positive @NotNull @RequestParam("low") int low,
+        @Positive @NotNull @RequestParam("high") int high,
+        ItemPageDto pageDto
+    ) {
+        ItemSearchRequest dto = ItemSearchRequest.to(pageDto);
+        Page<ItemResponseDto> itemsPage = itemQueryService.findFilteredItemByPrice(low, high, dto);
+        return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
+    }
 //
 //    @GetMapping("/search/price")
 //    public ResponseEntity searchPriceFilteredItems(@RequestParam("keyword") String keyword,
