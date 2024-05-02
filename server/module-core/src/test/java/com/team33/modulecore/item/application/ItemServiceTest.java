@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -18,11 +17,9 @@ import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.entity.NutritionFact;
 import com.team33.modulecore.item.domain.mock.FakeItemCommandRepository;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import com.team33.modulecore.item.dto.NutritionFactPostDto;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,15 +82,14 @@ class ItemServiceTest{
             .set("id", 1L)
             .set("view", 0L)
             .sample();
-
-        ItemCommandRepository itemRepository = mock(ItemCommandRepository.class);
-        given(itemRepository.findById(anyLong())).willReturn(Optional.ofNullable(item));
+        FakeItemCommandRepository fakeItemCommandRepository = new FakeItemCommandRepository();
+        Item save = fakeItemCommandRepository.save(item);
 
         var itemCommandService = new ItemService(
             null,
             null,
             null,
-            itemRepository,
+            fakeItemCommandRepository,
             null
         );
 

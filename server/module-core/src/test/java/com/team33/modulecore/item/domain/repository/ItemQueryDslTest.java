@@ -12,8 +12,8 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemPageDto;
-import com.team33.modulecore.item.dto.ItemPriceDto;
-import com.team33.modulecore.item.dto.ItemSearchRequest;
+import com.team33.modulecore.item.dto.ItemPageRequestDto;
+import com.team33.modulecore.item.dto.ItemPriceRequstDto;
 import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.item.infra.ItemQueryDslDao;
@@ -22,6 +22,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.assertj.core.data.Index;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -104,6 +105,23 @@ class ItemQueryDslTest {
             );
     }
 
+    @DisplayName("세일 중인 아이템을 조회할 수 있다.")
+    @Test
+    void 세일_아이템_조회() throws Exception {
+        //given
+        var dto = new ItemPageRequestDto();
+        dto.setPage(1);
+        dto.setSize(14);
+
+        //when
+        Page<ItemQueryDto> items = itemQueryRepository.findItemOnSale(
+            ItemPageDto.to(dto)
+        );
+        //then
+        assertThat(items.getContent()).hasSize(15)
+            .isSortedAccordingTo(comparing(ItemQueryDto::getSales).reversed());
+    }
+
 
     @Nested
     @DisplayName("아이템 정렬 타입에 따른 정렬 테스트")
@@ -112,39 +130,47 @@ class ItemQueryDslTest {
         @DisplayName("이름이 포함된 아이템을 조회할 수 있다.")
         @Test
         void 아이템_이름_조회() throws Exception {
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(14);
 
             //when
-            Page<Item> items = itemQueryRepository.findByTitle("tes", ItemSearchRequest.to(dto));
+            Page<ItemQueryDto> tes = itemQueryRepository.findFilteredItems(
+                "tit",
+                new PriceFilterDto(),
+                ItemPageDto.to(dto)
+            );
 
             //then
-            assertThat(items.getContent())
-                .hasSize(3)
+            assertThat(tes.getContent())
+                .hasSize(15)
                 .extracting("title")
-                .containsExactlyInAnyOrder("test12", "test11", "test10");
-            assertThat(items.getSize()).isEqualTo(16);
-            assertThat(items.getTotalElements()).isEqualTo(3);
-            assertThat(items.getTotalPages()).isEqualTo(1);
+                .contains("title12", Index.atIndex(3));
+            assertThat(tes.getSize()).isEqualTo(16);
+            assertThat(tes.getTotalElements()).isEqualTo(15);
+            assertThat(tes.getTotalPages()).isEqualTo(1);
         }
 
         @DisplayName("이름을 통해 조회된 아이템들을 판매량 순으로 정렬할 수 있다.")
         @Test
         void 판매량_순() throws Exception {
             //given
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(14);
             dto.setSortOption(ItemSortOption.SALES);
 
             //when
-            Page<Item> items = itemQueryRepository.findByTitle("title", ItemSearchRequest.to(dto));
+            Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
+                "title",
+                new PriceFilterDto(),
+                ItemPageDto.to(dto)
+            );
 
             //then
             assertThat(items.getContent())
                 .hasSize(15)
-                .isSortedAccordingTo(comparing(Item::getSales).reversed());
+                .isSortedAccordingTo(comparing(ItemQueryDto::getSales).reversed());
 
             assertThat(items.getTotalElements()).isEqualTo(15);
             assertThat(items.getTotalPages()).isEqualTo(1);
@@ -154,18 +180,22 @@ class ItemQueryDslTest {
         @Test
         void 할인율_순() throws Exception {
             //given
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(14);
             dto.setSortOption(ItemSortOption.DISCOUNT_RATE_H);
 
             //when
-            Page<Item> items = itemQueryRepository.findByTitle("title", ItemSearchRequest.to(dto));
+            Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
+                "title",
+                new PriceFilterDto(),
+                ItemPageDto.to(dto)
+            );
 
             //then
             assertThat(items.getContent())
                 .hasSize(15)
-                .isSortedAccordingTo(comparing(Item::getDiscountRate).reversed());
+                .isSortedAccordingTo(comparing(ItemQueryDto::getDiscountRate).reversed());
 
             assertThat(items.getTotalElements()).isEqualTo(15);
             assertThat(items.getTotalPages()).isEqualTo(1);
@@ -175,18 +205,22 @@ class ItemQueryDslTest {
         @Test
         void 최저가_순() throws Exception {
             //given
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(14);
             dto.setSortOption(ItemSortOption.PRICE_L);
 
             //when
-            Page<Item> items = itemQueryRepository.findByTitle("title", ItemSearchRequest.to(dto));
+            Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
+                "title",
+                new PriceFilterDto(),
+                ItemPageDto.to(dto)
+            );
 
             //then
             assertThat(items.getContent())
                 .hasSize(15)
-                .isSortedAccordingTo(comparing(Item::getRealPrice));
+                .isSortedAccordingTo(comparing(ItemQueryDto::getRealPrice));
 
             assertThat(items.getTotalElements()).isEqualTo(15);
             assertThat(items.getTotalPages()).isEqualTo(1);
@@ -196,18 +230,22 @@ class ItemQueryDslTest {
         @Test
         void 최고가_순() throws Exception {
             //given
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(14);
             dto.setSortOption(ItemSortOption.PRICE_H);
 
             //when
-            Page<Item> items = itemQueryRepository.findByTitle("title", ItemSearchRequest.to(dto));
+            Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
+                "title",
+                new PriceFilterDto(),
+                ItemPageDto.to(dto)
+            );
 
             //then
             assertThat(items.getContent())
                 .hasSize(15)
-                .isSortedAccordingTo(comparing(Item::getRealPrice).reversed());
+                .isSortedAccordingTo(comparing(ItemQueryDto::getRealPrice).reversed());
 
             assertThat(items.getTotalElements()).isEqualTo(15);
             assertThat(items.getTotalPages()).isEqualTo(1);
@@ -223,16 +261,17 @@ class ItemQueryDslTest {
         @Test
         void 가격_필터링1() throws Exception {
             //given
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(16);
             dto.setSortOption(ItemSortOption.PRICE_H);
 
             //when
             Page<ItemQueryDto> itemsByPrice =
-                itemQueryRepository.findItemsByPrice(
-                    PriceFilterDto.to(new ItemPriceDto(10000, 15000)),
-                    ItemSearchRequest.to(dto)
+                itemQueryRepository.findFilteredItems(
+                    null,
+                    PriceFilterDto.to(new ItemPriceRequstDto(10000, 15000)),
+                    ItemPageDto.to(dto)
                 );
 
             //then
@@ -257,16 +296,17 @@ class ItemQueryDslTest {
         @Test
         void 가격_필터링2() throws Exception {
             //given
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(10);
             dto.setSortOption(ItemSortOption.PRICE_L);
 
             //when
             Page<ItemQueryDto> itemsByPrice =
-                itemQueryRepository.findItemsByPrice(
-                    PriceFilterDto.to(new ItemPriceDto(1000, 14999)),
-                    ItemSearchRequest.to(dto)
+                itemQueryRepository.findFilteredItems(
+                    null,
+                    PriceFilterDto.to(new ItemPriceRequstDto(1000, 14999)),
+                    ItemPageDto.to(dto)
                 );
 
             //then
@@ -284,16 +324,17 @@ class ItemQueryDslTest {
         @Test
         void 가격_필터링3() throws Exception {
             //given
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(10);
             dto.setSortOption(ItemSortOption.PRICE_L);
 
             //when
             Page<ItemQueryDto> itemsByPrice =
-                itemQueryRepository.findItemsByPrice(
-                    PriceFilterDto.to(new ItemPriceDto(1000, 1000)),
-                    ItemSearchRequest.to(dto)
+                itemQueryRepository.findFilteredItems(
+                    null,
+                    PriceFilterDto.to(new ItemPriceRequstDto(1000, 1000)),
+                    ItemPageDto.to(dto)
                 );
 
             //then
@@ -311,20 +352,22 @@ class ItemQueryDslTest {
         @Test
         void 가격_필터링4() throws Exception {
             //given
-            var dto = new ItemPageDto();
+            var dto = new ItemPageRequestDto();
             dto.setPage(1);
             dto.setSize(10);
             dto.setSortOption(ItemSortOption.PRICE_L);
 
             //when//then
             assertThatThrownBy(() ->
-                itemQueryRepository.findItemsByPrice(
-                    PriceFilterDto.to(new ItemPriceDto(11111, 11111)),
-                    ItemSearchRequest.to(dto)
+                itemQueryRepository.findFilteredItems(
+                    null,
+                    PriceFilterDto.to(new ItemPriceRequstDto(11111, 11111)),
+                    ItemPageDto.to(dto)
                 )
             )
                 .isInstanceOf(BusinessLogicException.class)
                 .hasMessageContaining(ExceptionCode.ITEM_NOT_FOUND.getMessage());
         }
     }
+
 }

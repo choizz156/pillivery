@@ -25,7 +25,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 @TestInstance(Lifecycle.PER_CLASS)
 class OrderServiceTest {
 
-    private Item item;
     private User user;
     private MockEntityFactory mockEntityFactory;
     private OrderRepository orderRepository;
@@ -33,7 +32,7 @@ class OrderServiceTest {
     @BeforeAll
     void beforeAll() {
         mockEntityFactory = MockEntityFactory.of();
-        item = mockEntityFactory.getMockItem();
+        Item item = mockEntityFactory.getMockItem();
         user = mockEntityFactory.getMockUser();
         orderRepository = new FakeOrderRepository();
     }
