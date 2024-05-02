@@ -29,7 +29,7 @@ public class ItemPageDto {
         this.sortOption = sortOption;
     }
 
-    public static ItemPageDto to(ItemPageRequestDto dto) {
+    public static ItemPageDto from(ItemPageRequestDto dto) {
         return ItemPageDto.builder()
             .page(Math.max(dto.getPage(), MIN_SIZE))
             .size(getSize(dto.getSize()))

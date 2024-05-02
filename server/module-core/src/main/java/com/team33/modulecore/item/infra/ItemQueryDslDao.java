@@ -17,7 +17,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.ItemSortOption;
-import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.PriceFilterDto;
@@ -35,20 +34,27 @@ public class ItemQueryDslDao implements ItemQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Item> findItemsWithSalesTop9() {
-        return queryFactory
-            .selectFrom(item)
+    public List<ItemQueryDto> findItemsWithSalesTop9() {
+        List<ItemQueryDto> fetch = selectItemQueryDtoFromItem()
             .orderBy(item.sales.desc())
             .limit(9)
             .fetch();
+
+        checkEmptyList(fetch);
+
+        return fetch;
     }
 
     @Override
-    public List<Item> findItemsWithDiscountRateTop9() {
-        return queryFactory.selectFrom(item)
+    public List<ItemQueryDto> findItemsWithDiscountRateTop9() {
+        List<ItemQueryDto> fetch = selectItemQueryDtoFromItem()
             .limit(9)
             .orderBy(item.itemPrice.discountRate.desc())
             .fetch();
+
+        checkEmptyList(fetch);
+
+        return fetch;
     }
 
     @Override
@@ -97,7 +103,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
         JPAQuery<Long> count = queryFactory
             .select(item.count())
             .from(item)
-            .where( item.itemPrice.discountRate.eq(0D).not());
+            .where(item.itemPrice.discountRate.eq(0D).not());
 
         return PageableExecutionUtils.getPage(
             fetch,

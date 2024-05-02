@@ -1,6 +1,5 @@
 package com.team33.modulecore.item.application;
 
-import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemResponseDto;
@@ -22,11 +21,11 @@ public class ItemQueryService {
 
     private final ItemQueryRepository itemQueryRepository;
 
-    public List<Item> findTop9DiscountItems() {
+    public List<ItemQueryDto> findTop9DiscountItems() {
         return itemQueryRepository.findItemsWithDiscountRateTop9();
     }
 
-    public List<Item> findTop9SaleItems() {
+    public List<ItemQueryDto> findTop9SaleItems() {
         return itemQueryRepository.findItemsWithSalesTop9();
     }
 

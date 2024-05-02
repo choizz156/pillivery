@@ -7,13 +7,14 @@ import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemDetailResponseDto;
 import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
+import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.dto.ItemPostDto;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
 import com.team33.modulecore.item.dto.ItemPriceRequstDto;
 import com.team33.modulecore.item.dto.ItemResponseDto;
-import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.review.application.ReviewService;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -21,8 +22,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
-@Validated
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -62,8 +60,8 @@ public class ItemController {
 
     @GetMapping("/main") // 메인화면에서 best 제품 9개 , 할인제품 9개 조회하기
     public SingleResponseDto<ItemMainTop9ResponseDto> getMainItem() {
-        List<Item> top9DiscountItems = itemQueryService.findTop9DiscountItems();
-        List<Item> top9SaleItems = itemQueryService.findTop9SaleItems();
+        List<ItemQueryDto> top9DiscountItems = itemQueryService.findTop9DiscountItems();
+        List<ItemQueryDto> top9SaleItems = itemQueryService.findTop9SaleItems();
 
         return new SingleResponseDto<>(ItemMainTop9ResponseDto.from(top9SaleItems, top9SaleItems));
     }
@@ -81,10 +79,10 @@ public class ItemController {
         ItemPageRequestDto pageDto,
         ItemPriceRequstDto itemPriceRequstDto
     ) {
-        PriceFilterDto priceFilterDto = PriceFilterDto.to(itemPriceRequstDto);
-        ItemPageDto searchDto = ItemPageDto.to(pageDto);
+        PriceFilterDto priceFilterDto = PriceFilterDto.from(itemPriceRequstDto);
+        ItemPageDto searchDto = ItemPageDto.from(pageDto);
         Page<ItemResponseDto> itemsPage = itemQueryService.findFilteredItem(
-            keyword,
+            keyword.replace("_", ""),
             priceFilterDto,
             searchDto
         );
@@ -94,15 +92,11 @@ public class ItemController {
 
 
     @GetMapping("/on-sale")
-    public ResponseEntity searchSaleItems(ItemPageRequestDto pageDto) {
-        ItemPageDto searchDto = ItemPageDto.to(pageDto);
+    public MultiResponseDto<ItemResponseDto> searchSaleItems(ItemPageRequestDto pageDto) {
+        ItemPageDto searchDto = ItemPageDto.from(pageDto);
         Page<ItemResponseDto> itemsPage = itemQueryService.findItemOnSale(searchDto);
 
-        return null;
-//        List<Item> itemList = itemPage.getContent();
-//        return new ResponseEntity<>(
-//            new MultiResponseDto<>(mapper.itemsToItemCategoryResponseDto(itemList), itemPage),
-//            HttpStatus.OK);
+        return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
     }
 //
 //    @GetMapping("/search/sale/price")

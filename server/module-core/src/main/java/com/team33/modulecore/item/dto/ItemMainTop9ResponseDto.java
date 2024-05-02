@@ -1,6 +1,6 @@
 package com.team33.modulecore.item.dto;
 
-import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -22,7 +22,7 @@ public class ItemMainTop9ResponseDto {
         this.discountRateItem = discountRateItem;
     }
 
-    public static ItemMainTop9ResponseDto from(List<Item> sales, List<Item> discountRate) {
+    public static ItemMainTop9ResponseDto from(List<ItemQueryDto> sales, List<ItemQueryDto> discountRate) {
         List<ItemResponseDto> top9Sales = sales.stream()
             .map(ItemResponseDto::from)
             .collect(Collectors.toList());

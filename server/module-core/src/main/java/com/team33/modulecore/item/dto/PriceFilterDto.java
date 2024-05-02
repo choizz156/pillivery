@@ -15,7 +15,7 @@ public class PriceFilterDto {
         this.highPrice = highPrice;
     }
 
-    public static PriceFilterDto to(ItemPriceRequstDto dto) {
+    public static PriceFilterDto from(ItemPriceRequstDto dto) {
         return new PriceFilterDto(dto.getLow(), dto.getHigh());
     }
 

@@ -1,6 +1,5 @@
 package com.team33.modulecore.item.domain.repository;
 
-import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
@@ -11,9 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemQueryRepository {
 
-    List<Item> findItemsWithSalesTop9();
+    List<ItemQueryDto> findItemsWithSalesTop9();
 
-    List<Item> findItemsWithDiscountRateTop9();
+    List<ItemQueryDto> findItemsWithDiscountRateTop9();
 
     Page<ItemQueryDto> findFilteredItems(
         String keyword,
