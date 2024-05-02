@@ -7,12 +7,12 @@ import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemDetailResponseDto;
 import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
-import com.team33.modulecore.item.dto.ItemPageDto;
+import com.team33.modulecore.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.dto.ItemPostDto;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;
-import com.team33.modulecore.item.dto.ItemPriceDto;
+import com.team33.modulecore.item.dto.ItemPriceRequstDto;
 import com.team33.modulecore.item.dto.ItemResponseDto;
-import com.team33.modulecore.item.dto.ItemSearchRequest;
+import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.review.application.ReviewService;
 import java.util.List;
@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +49,7 @@ public class ItemController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public SingleResponseDto<?> postItem(@RequestBody ItemPostDto itemPostDto) {
+    public SingleResponseDto<ItemDetailResponseDto> postItem(@RequestBody ItemPostDto itemPostDto) {
         ItemPostServiceDto dto = ItemPostServiceDto.to(itemPostDto);
 
         Item item = itemService.createItem(dto);
@@ -60,74 +61,49 @@ public class ItemController {
 
 
     @GetMapping("/main") // 메인화면에서 best 제품 9개 , 할인제품 9개 조회하기
-    public SingleResponseDto<?> getMainItem() {
+    public SingleResponseDto<ItemMainTop9ResponseDto> getMainItem() {
         List<Item> top9DiscountItems = itemQueryService.findTop9DiscountItems();
         List<Item> top9SaleItems = itemQueryService.findTop9SaleItems();
 
         return new SingleResponseDto<>(ItemMainTop9ResponseDto.from(top9SaleItems, top9SaleItems));
     }
 
-    @GetMapping("/keywords")
-    public MultiResponseDto searchItems(
-        @NotNull @RequestParam String keywords,
-        ItemPageDto pageDto
-    ) {
-        ItemSearchRequest dto = ItemSearchRequest.to(pageDto);
-
-        Page<Item> itemPage = itemQueryService.searchItems(keywords, dto);
-        List<Item> items = itemPage.getContent();
-
-        return new MultiResponseDto<>(ItemResponseDto.from(items), itemPage);
-    }
-
-    //    @DeleteMapping("/items/{item-id}")
-//    public ResponseEntity deleteItem(@PathVariable("item-id") long itemId) {
-//        itemService.deleteItem(itemId);
-//        return new ResponseEntity(HttpStatus.NO_CONTENT);
-//    }
-
     @GetMapping("/{itemId}")
-    public SingleResponseDto<?> getItem(@NotNull @PathVariable Long itemId) {
+    public SingleResponseDto<ItemDetailResponseDto> getItem(@NotNull @PathVariable Long itemId) {
         Item item = itemService.findItemWithAddingView(itemId);
+
         return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
     }
 
-    @GetMapping("/prices")
-    public MultiResponseDto<?> priceFilteredItems(
-        ItemPageDto pageDto,
-        ItemPriceDto itemPriceDto
+    @GetMapping("/search")
+    public MultiResponseDto<ItemResponseDto> priceFilteredItems(
+        @RequestParam(required = false) String keyword,
+        ItemPageRequestDto pageDto,
+        ItemPriceRequstDto itemPriceRequstDto
     ) {
-        PriceFilterDto priceFilterDto = PriceFilterDto.to(itemPriceDto);
-        ItemSearchRequest searchDto = ItemSearchRequest.to(pageDto);
-        Page<ItemResponseDto> itemsPage = itemQueryService.findFilteredItemByPrice(priceFilterDto, searchDto);
+        PriceFilterDto priceFilterDto = PriceFilterDto.to(itemPriceRequstDto);
+        ItemPageDto searchDto = ItemPageDto.to(pageDto);
+        Page<ItemResponseDto> itemsPage = itemQueryService.findFilteredItem(
+            keyword,
+            priceFilterDto,
+            searchDto
+        );
+
         return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
     }
-//
-//    @GetMapping("/search/price")
-//    public ResponseEntity searchPriceFilteredItems(@RequestParam("keyword") String keyword,
-//        @RequestParam("low") int low, @RequestParam("high") int high,
-//        @Positive @RequestParam(value = "page", defaultValue = "1") int page,
-//        @Positive @RequestParam(value = "size", defaultValue = "16") int size,
-//        @RequestParam(value = "sort", defaultValue = "sales") String sort) { // 키워드 검색 + 가격 필터
-//        Page<Item> itemPage = itemService.searchPriceFilteredItems(keyword, low, high, page - 1,
-//            size, sort);
-//        List<Item> itemList = itemPage.getContent();
-//        return new ResponseEntity(
-//            new MultiResponseDto<>(mapper.itemsToItemCategoryResponseDto(itemList), itemPage),
-//            HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/search/sale")
-//    public ResponseEntity searchSaleItems(@RequestParam("keyword") String keyword,
-//        @Positive @RequestParam(value = "page", defaultValue = "1") int page,
-//        @Positive @RequestParam(value = "size", defaultValue = "16") int size,
-//        @RequestParam(value = "sort", defaultValue = "sales") String sort) { // 키워드 검색 + 세일
-//        Page<Item> itemPage = itemService.searchSaleItems(keyword, page - 1, size, sort);
+
+
+    @GetMapping("/on-sale")
+    public ResponseEntity searchSaleItems(ItemPageRequestDto pageDto) {
+        ItemPageDto searchDto = ItemPageDto.to(pageDto);
+        Page<ItemResponseDto> itemsPage = itemQueryService.findItemOnSale(searchDto);
+
+        return null;
 //        List<Item> itemList = itemPage.getContent();
 //        return new ResponseEntity<>(
 //            new MultiResponseDto<>(mapper.itemsToItemCategoryResponseDto(itemList), itemPage),
 //            HttpStatus.OK);
-//    }
+    }
 //
 //    @GetMapping("/search/sale/price")
 //    public ResponseEntity searchSalePriceFilteredItems(@RequestParam("keyword") String keyword,

@@ -15,12 +15,12 @@ public class PriceFilterDto {
         this.highPrice = highPrice;
     }
 
-    public static PriceFilterDto to(ItemPriceDto dto) {
+    public static PriceFilterDto to(ItemPriceRequstDto dto) {
         return new PriceFilterDto(dto.getLow(), dto.getHigh());
     }
 
     public boolean isSamePriceEach() {
-        return this.lowPrice == this.highPrice;
+        return this.lowPrice == this.highPrice && this.lowPrice != 0;
     }
 
     public void checkReversedPrice() {
@@ -33,5 +33,9 @@ public class PriceFilterDto {
         int tmp = this.lowPrice;
         this.lowPrice = this.highPrice;
         this.highPrice = tmp;
+    }
+
+    public boolean isSumZero() {
+        return lowPrice + highPrice == 0;
     }
 }

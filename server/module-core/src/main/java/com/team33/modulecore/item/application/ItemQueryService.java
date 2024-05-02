@@ -2,8 +2,8 @@ package com.team33.modulecore.item.application;
 
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
+import com.team33.modulecore.item.dto.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemResponseDto;
-import com.team33.modulecore.item.dto.ItemSearchRequest;
 import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.List;
@@ -30,17 +30,13 @@ public class ItemQueryService {
         return itemQueryRepository.findItemsWithSalesTop9();
     }
 
-    public Page<Item> searchItems(String keyword, ItemSearchRequest request) {
-        String title = keyword.replace("_", " ");
-        return itemQueryRepository.findByTitle(title, request);
-    }
-
-    public Page<ItemResponseDto> findFilteredItemByPrice(
+    public Page<ItemResponseDto> findFilteredItem(
+        String keyword,
         PriceFilterDto priceFilterDto,
-        ItemSearchRequest itemSearchRequest
+        ItemPageDto itemPageDto
     ) {
         Page<ItemQueryDto> itemsByPrice =
-            itemQueryRepository.findItemsByPrice(priceFilterDto, itemSearchRequest);
+            itemQueryRepository.findFilteredItems(keyword, priceFilterDto, itemPageDto);
 
         List<ItemResponseDto> itemResponseDtos = itemsByPrice.getContent().stream()
             .map(ItemResponseDto::from)
@@ -52,5 +48,20 @@ public class ItemQueryService {
                 itemsByPrice.getSort()),
             itemsByPrice.getTotalElements()
         );
+    }
+
+    public Page<ItemResponseDto> findItemOnSale(ItemPageDto pageDto) {
+        Page<ItemQueryDto> itemOnSale = itemQueryRepository.findItemOnSale(pageDto);
+
+        List<ItemResponseDto> itemResponseDtos = itemOnSale.getContent().stream()
+            .map(ItemResponseDto::from)
+            .collect(Collectors.toUnmodifiableList());
+
+        return new PageImpl<>(
+            itemResponseDtos,
+            PageRequest.of(itemOnSale.getNumber() - 1, itemOnSale.getSize(), itemOnSale.getSort()),
+            itemOnSale.getTotalElements()
+        );
+
     }
 }

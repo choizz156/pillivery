@@ -20,6 +20,7 @@ public class ItemQueryDto {
     private int realPrice;
     private double discountRate;
     private int discountPrice;
+    private int sales;
     private double starAvg;
     private int reviewSize;
     private Brand brand;

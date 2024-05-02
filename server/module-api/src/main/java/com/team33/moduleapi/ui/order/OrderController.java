@@ -7,17 +7,17 @@ import com.team33.modulecore.cart.application.CartService;
 import com.team33.modulecore.common.OrderPageDto;
 import com.team33.modulecore.itemcart.application.ItemCartService;
 import com.team33.modulecore.itemcart.domain.ItemCart;
+import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.dto.OrderDetailResponse;
+import com.team33.modulecore.order.dto.OrderItemServiceDto;
+import com.team33.modulecore.order.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.order.dto.OrderPostDto;
 import com.team33.modulecore.order.dto.OrderSimpleResponse;
-import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.domain.OrderItem;
-import com.team33.modulecore.order.dto.OrderItemServiceDto;
-import com.team33.modulecore.order.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.user.application.UserService;
 import java.util.List;
 import javax.validation.Valid;
@@ -68,7 +68,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/single")
     public SingleResponseDto<?> postSingleOrder(
-        @NotNull @RequestParam Long userId,
+        @RequestParam Long userId,
         @Valid @RequestBody OrderPostDto orderPostDto
     ) {
         OrderItemServiceDto dto = OrderItemServiceDto.to(orderPostDto);
@@ -91,8 +91,8 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/cart")// 장바구니에서 주문요청을 하는 경우
     public SingleResponseDto<?> postOrderInCart(
-        @NotNull @RequestParam Long userId,
-        @NotNull @RequestParam(value = "subscription") boolean subscription
+        @RequestParam Long userId,
+        @RequestParam(value = "subscription") boolean subscription
     ) {
         List<ItemCart> itemCarts = itemCartService.findItemCarts(userId, subscription);
         List<OrderItem> orderItems = orderItemService.getOrderItemsInCart(itemCarts);
@@ -113,7 +113,7 @@ public class OrderController {
      */
     @GetMapping
     public MultiResponseDto<?> getOrders(
-        @NotNull @RequestParam Long userId,
+        @RequestParam Long userId,
         OrderPageDto pageDto
     ) {
         OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
@@ -136,7 +136,7 @@ public class OrderController {
      */
     @GetMapping("/subscriptions")
     public MultiResponseDto<?> getSubscriptionsOrder(
-        @NotNull @RequestParam Long userId,
+        @RequestParam Long userId,
         OrderPageDto pageDto
     ) {
         OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
@@ -159,8 +159,8 @@ public class OrderController {
      */
     @GetMapping("/{orderId}")
     public SingleResponseDto<?> getOrder(
-        @NotNull @RequestParam Long userId,
-        @NotNull @PathVariable Long orderId
+        @RequestParam Long userId,
+        @PathVariable Long orderId
     ) {
         Order order = orderQueryService.findOrder(orderId);
         OrderDetailResponse orderDetailResponse = OrderDetailResponse.of(order);
@@ -174,9 +174,9 @@ public class OrderController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/subscription/{orderId}") // 정기 구독 아이템의 수량 변경
     public void changeSubscriptionItemQuantity(
-        @NotNull @PathVariable Long orderId,
-        @NotNull @RequestParam Long orderItemId,
-        @NotNull @RequestParam int quantity
+        @PathVariable Long orderId,
+        @RequestParam Long orderItemId,
+        @RequestParam int quantity
     ) {
         orderService.changeSubscriptionItemQuantity(orderId, orderItemId, quantity);
     }

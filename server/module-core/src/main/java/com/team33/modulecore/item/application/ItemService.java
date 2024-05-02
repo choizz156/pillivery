@@ -52,21 +52,6 @@ public class ItemService {
         return item;
     }
 
-//    public Page<Item> findItems(String categoryName, int page, int size, String sort) {
-//        if (Objects.equals(sort, "priceH")) {
-//            sort = "discountPrice";
-//        }
-//        if (Objects.equals(sort, "priceL")) {
-//            sort = "discountPrice";
-//            Page<Item> lowSortItems = itemJpaRepository.findAllByCategoryName(
-//                PageRequest.of(page, size, Sort.by(sort).ascending()), categoryName);
-//            return lowSortItems;
-//        } else {
-//            Page<Item> findItems = itemJpaRepository.findAllByCategoryName(
-//                PageRequest.of(page, size, Sort.by(sort).descending()), categoryName);
-//            return findItems;
-//        }
-//    }
 //
 //
 //    public Page<Item> findBrandItems(String categoryName, Brand brand, int page, int size,
@@ -122,83 +107,6 @@ public class ItemService {
 //        }
 //    }
 
-    //    public Page<Item> searchItems(String keyword, int page, int size, String sort) {
-//        keyword = keyword.replace("_", " ");
-//        if (Objects.equals(sort, "priceH")) {
-//            sort = "discountPrice";
-//        }
-//        if (Objects.equals(sort, "priceL")) {
-//            sort = "discountPrice";
-//            Page<Item> lowSortItems = itemRepository.findByTitleContaining(
-//                PageRequest.of(page, size, Sort.by(sort).ascending()), keyword);
-//
-//            return lowSortItems;
-//        } else {
-//            Page<Item> searchItems = itemRepository.findByTitleContaining(
-//                PageRequest.of(page, size, Sort.by(sort).descending()), keyword);
-//
-//            return searchItems;
-//        }
-//    }
-
-//    public Page<Item> searchPriceFilteredItems(String keyword, int low, int high, int page,
-//        int size, String sort) {
-//        keyword = keyword.replace("_", " ");
-//        if (Objects.equals(sort, "priceH")) {
-//            sort = "discountPrice";
-//        }
-//        if (Objects.equals(sort, "priceL")) {
-//            sort = "discountPrice";
-//            Page<Item> lowSortItems = itemJpaRepository.findByTitleContainingAndPriceBetween(
-//                PageRequest.of(page, size, Sort.by(sort).ascending()), keyword, low, high);
-//
-//            return lowSortItems;
-//        } else {
-//            Page<Item> filteredItems = itemJpaRepository.findByTitleContainingAndPriceBetween(
-//                PageRequest.of(page, size, Sort.by(sort).descending()), keyword, low, high);
-//
-//            return filteredItems;
-//        }
-//    }
-//
-//    public Page<Item> searchSaleItems(String keyword, int page, int size, String sort) {
-//        keyword = keyword.replace("_", " ");
-//        if (Objects.equals(sort, "priceH")) {
-//            sort = "discountPrice";
-//        }
-//        if (Objects.equals(sort, "priceL")) {
-//            sort = "discountPrice";
-//            Page<Item> lowSortItems = itemJpaRepository.findByTitleContainingAndDiscountRateGreaterThan(
-//                PageRequest.of(page, size, Sort.by(sort).ascending()), keyword, 0);
-//
-//            return lowSortItems;
-//        } else {
-//            Page<Item> itemPage = itemJpaRepository.findByTitleContainingAndDiscountRateGreaterThan(
-//                PageRequest.of(page, size, Sort.by(sort).descending()), keyword, 0);
-//
-//            return itemPage;
-//        }
-//    }
-//
-//    public Page<Item> searchSalePriceFilteredItems(String keyword, int low, int high, int page,
-//        int size, String sort) {
-//        keyword = keyword.replace("_", " ");
-//        if (Objects.equals(sort, "priceH")) {
-//            sort = "discountPrice";
-//        }
-//        if (Objects.equals(sort, "priceL")) {
-//            sort = "discountPrice";
-//            Page<Item> lowSortItems = itemJpaRepository.findByTitleContainingAndDiscountRateGreaterThanAndPriceBetween(
-//                PageRequest.of(page, size, Sort.by(sort).ascending()), keyword, 0, low, high);
-//
-//            return lowSortItems;
-//        } else {
-//            Page<Item> itemPage = itemJpaRepository.findByTitleContainingAndDiscountRateGreaterThanAndPriceBetween(
-//                PageRequest.of(page, size, Sort.by(sort).descending()), keyword, 0, low, high);
-//
-//            return itemPage;
-//        }
-//    }
 //
 //    public Page<Item> priceFilteredCategoryItems(String categoryName, int low, int high, int page,
 //        int size, String sort) {
