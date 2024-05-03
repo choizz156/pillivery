@@ -3,8 +3,11 @@ package com.team33.modulecore;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.navercorp.fixturemonkey.javax.validation.plugin.JavaxValidationPlugin;
+import com.team33.modulecore.category.domain.Category;
+import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.entity.ItemCategory;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
@@ -13,11 +16,18 @@ import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.persistence.EntityManager;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MockEntityFactory {
@@ -45,7 +55,7 @@ public class MockEntityFactory {
         return new MockEntityFactory();
     }
 
-    public void persistItem(){
+    public void persistItem() {
         persistMockItems();
     }
 
@@ -57,24 +67,6 @@ public class MockEntityFactory {
         mockItems.forEach(entityManager::persist);
 
         persistMockOrder(user, mockItems);
-    }
-
-    public List<Item> getMockItems() {
-        var sales = new AtomicInteger(1);
-        var discountRate = new AtomicReference<>(1D);
-        return FIXTURE_MONKEY.giveMeBuilder(Item.class)
-            .set("id", null)
-            .setLazy("sales", () -> sales.addAndGet(1))
-            .setLazy("itemPrice.discountRate",
-                () -> discountRate.getAndSet(discountRate.get() + 1D))
-            .setLazy("itemPrice.realPrice", sales::intValue)
-            .setLazy("title", () -> "title" + sales)
-            .set("nutritionFacts", new ArrayList<>())
-            .set("reviews", null)
-            .set("brand", Brand.MYNI)
-            .set("wishList", null)
-            .set("itemCategories", new HashSet<>())
-            .sampleList(15);
     }
 
     public Item getMockItem() {
@@ -135,6 +127,7 @@ public class MockEntityFactory {
         orders1.addAll(orders2);
         return orders1;
     }
+
     public User getMockUser() {
         return FIXTURE_MONKEY.giveMeBuilder(User.class)
             .set("id", null)
@@ -175,37 +168,88 @@ public class MockEntityFactory {
             });
     }
 
-    private void persistMockItems() {
+    public void persistItemCategory(){
+        List<Category> categories = List.of(Category.of(CategoryName.EYE), Category.of(CategoryName.BONE));
+        categories.forEach(entityManager::persist);
+
+        List<Item> mockItems = getMockItems();
+        mockItems.forEach(entityManager::persist);
+
+        Set<ItemCategory> collect = categories.stream().map(ItemCategory::of)
+            .collect(Collectors.toSet());
+        collect.forEach(entityManager::persist);
+
+        mockItems.forEach(item -> collect.forEach(itemCategory -> itemCategory.addItem(item)));
+        mockItems.forEach(entityManager::merge);
+    }
+
+    private List<Item> getMockItems() {
+        return FIXTURE_MONKEY.giveMeBuilder(Item.class)
+            .set("id", null)
+            .set("itemPrice.discountRate", 0D)
+            .set("nutritionFacts", new ArrayList<>())
+            .set("reviews", null)
+            .set("brand", Brand.MYNI)
+            .set("wishList", null)
+            .set("itemCategories", new HashSet<>())
+            .sampleList(5);
+    }
+
+    private void persistMockItems()  {
 
         var value = new AtomicInteger(0);
         var value1 = new AtomicReference<Double>(1D);
-        var items = FIXTURE_MONKEY.giveMeBuilder(Item.class)
-            .set("id", null)
-            .setLazy("sales", () -> value.addAndGet(1))
-            .setLazy("itemPrice.discountRate", () -> value1.getAndSet(value1.get() + 1D))
-            .setLazy("itemPrice.realPrice", () -> value.intValue() * 1000)
-            .setLazy("title", () -> "title" + value)
-            .set("nutritionFacts", new ArrayList<>())
-            .set("reviews", null)
-            .set("brand", Brand.MYNI)
-            .set("wishList", null)
-            .set("itemCategories", new HashSet<>())
-            .sampleList(15);
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            executorService.submit(() -> {
+                List<Item> itemList = IntStream.range(1, 100000).mapToObj(
+                    i -> FIXTURE_MONKEY.giveMeBuilder(Item.class)
+                        .set("id", null)
+                        .setLazy("sales", () -> value.addAndGet(1))
+                        .setLazy("itemPrice.discountRate",
+                            () -> value1.getAndSet(value1.get() + 1D))
+                        .setLazy("itemPrice.realPrice", () -> value.intValue() * 1000)
+                        .setLazy("title", () -> "title" + value)
+                        .set("nutritionFacts", new ArrayList<>())
+                        .set("reviews", null)
+                        .set("brand", Brand.MYNI)
+                        .set("wishList", null)
+                        .set("itemCategories", new HashSet<>())
+                        .sample()
+                ).collect(Collectors.toList());
+                itemList.forEach(entityManager::persist);
+            });
 
-        var value2 = new AtomicInteger(9);
-        var items2 = FIXTURE_MONKEY.giveMeBuilder(Item.class)
-            .set("id", null)
-            .set("sales", 0)
-            .set("itemPrice.discountRate", 0)
-            .set("itemPrice.realPrice", 1)
-            .setLazy("title", () -> "test" + value2.addAndGet(1))
-            .set("nutritionFacts", new ArrayList<>())
-            .set("reviews", null)
-            .set("brand", Brand.MYNI)
-            .set("wishList", null)
-            .set("itemCategories", new HashSet<>())
-            .sampleList(3);
 
-        items.addAll(items2);
-        items.forEach(entityManager::persist);
-    }}
+//        List<Item> collect = FIXTURE_MONKEY.giveMeBuilder(Item.class)
+//            .set("id", null)
+//            .setLazy("sales", () -> value.addAndGet(1))
+//            .setLazy("itemPrice.discountRate", () -> value1.getAndSet(value1.get() + 1D))
+//            .setLazy("itemPrice.realPrice", () -> value.intValue() * 1000)
+//            .setLazy("title", () -> "title" + value)
+//            .set("nutritionFacts", new ArrayList<>())
+//            .set("reviews", null)
+//            .set("brand", Brand.MYNI)
+//            .set("wishList", null)
+//            .set("itemCategories", new HashSet<>())
+//            .sampleList(100)
+
+//            .sampleList(1000).parallelStream().forEach(entityManager::persist);
+
+//        var value2 = new AtomicInteger(9);
+//        var items2 = FIXTURE_MONKEY.giveMeBuilder(Item.class)
+//            .set("id", null)
+//            .set("sales", 0)
+//            .set("itemPrice.discountRate", 0)
+//            .set("itemPrice.realPrice", 1)
+//            .setLazy("title", () -> "test" + value2.addAndGet(1))
+//            .set("nutritionFacts", new ArrayList<>())
+//            .set("reviews", null)
+//            .set("brand", Brand.MYNI)
+//            .set("wishList", null)
+//            .set("itemCategories", new HashSet<>())
+//            .sampleList(3);
+//
+//        items.addAll(items2);
+//        items.forEach(entityManager::persist);
+    }
+}

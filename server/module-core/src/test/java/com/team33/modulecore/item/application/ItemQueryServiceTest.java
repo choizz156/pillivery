@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.mock.FakeItemQuerydslDao;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.dto.ItemResponseDto;
 import com.team33.modulecore.item.dto.PriceFilterDto;
@@ -39,7 +39,7 @@ class ItemQueryServiceTest {
         dto.setSize(14);
         //when
         Page<ItemResponseDto> filteredItemByPrice =
-            itemQueryService.findFilteredItem(null, new PriceFilterDto(), ItemPageDto.to(dto));
+            itemQueryService.findFilteredItem(null, new PriceFilterDto(), ItemPageDto.from(dto));
 
         //then
         List<ItemResponseDto> content = filteredItemByPrice.getContent();
@@ -59,7 +59,7 @@ class ItemQueryServiceTest {
         dto.setSize(14);
         //when
         Page<ItemResponseDto> filteredItemByPrice =
-            itemQueryService.findItemOnSale( ItemPageDto.to(dto));
+            itemQueryService.findItemOnSale( ItemPageDto.from(dto));
 
         //then
         List<ItemResponseDto> content = filteredItemByPrice.getContent();

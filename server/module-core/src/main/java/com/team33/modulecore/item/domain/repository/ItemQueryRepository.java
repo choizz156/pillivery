@@ -1,7 +1,8 @@
 package com.team33.modulecore.item.domain.repository;
 
-import com.team33.modulecore.item.dto.ItemPageDto;
+import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.dto.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.ItemPageDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -20,5 +21,6 @@ public interface ItemQueryRepository {
         ItemPageDto request
     );
 
-    Page<ItemQueryDto> findItemOnSale(ItemPageDto pageDto);
+    Page<ItemQueryDto> findItemsOnSale(ItemPageDto pageDto);
+    Page<ItemQueryDto> findItemsByCategory(CategoryName categoryName,ItemPageDto pageDto);
 }
