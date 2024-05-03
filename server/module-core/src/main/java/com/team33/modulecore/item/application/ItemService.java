@@ -26,8 +26,8 @@ public class ItemService {
     private final BrandService brandService;
     private final NutritionFactService nutritionFactService;
     private final CategoryService categoryService;
-    private final ItemCommandRepository itemRepository;
     private final ItemQueryRepository itemQueryRepository;
+    private final ItemCommandRepository itemCommandRepository;
 
     public Item createItem(ItemPostServiceDto dto) {
         List<NutritionFact> nutritionFacts = nutritionFactService.getNutritionFacts(dto);
@@ -41,12 +41,12 @@ public class ItemService {
 
         Item item = Item.create(dto, nutritionFacts, itemCategoryList);
 
-        return itemRepository.save(item);
+        return itemCommandRepository.save(item);
     }
 
     //TODO: 이것도 캐싱을 해놓고, 조회수는 나중에 푸시하는 느낌으로 해도 될 것 같은데
     public Item findItemWithAddingView(long itemId) {
-        Item item = itemRepository.findById(itemId)
+        Item item = itemCommandRepository.findById(itemId)
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
         item.addView();
         return item;

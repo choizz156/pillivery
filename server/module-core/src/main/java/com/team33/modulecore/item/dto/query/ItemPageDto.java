@@ -1,6 +1,7 @@
-package com.team33.modulecore.item.dto;
+package com.team33.modulecore.item.dto.query;
 
 import com.team33.modulecore.item.domain.ItemSortOption;
+import com.team33.modulecore.item.dto.ItemPageRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 public class ItemPageDto {
 
     private static final int DEFAULT_PAGE_SIZE = 16;
-    private static final int MAX_SIZE = 2000;
+    private static final int MAX_SIZE = 20000;
     private static final int MIN_SIZE = 1;
     private static final ItemSortOption DEFAULT_ITEM_SORT_OPTION = com.team33.modulecore.item.domain.ItemSortOption.SALES;
     private static final Direction DEFAULT_SORT_TYPE = Direction.DESC;

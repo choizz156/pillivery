@@ -24,7 +24,7 @@ public class ItemQueryDto {
     private double starAvg;
     private int reviewSize;
     private Brand brand;
-    private List<CategoryName> categoryNames;
+    private CategoryName categoryNames;
     private List<NutritionFact> nutritionFacts;
 
     @Builder
@@ -40,7 +40,7 @@ public class ItemQueryDto {
         double starAvg,
         int reviewSize,
         Brand brand,
-        List<CategoryName> categoryNames,
+        CategoryName categoryNames,
         List<NutritionFact> nutritionFacts
     ) {
         this.itemId = itemId;

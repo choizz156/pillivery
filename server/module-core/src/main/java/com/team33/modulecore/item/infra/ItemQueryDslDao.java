@@ -14,11 +14,14 @@ import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.ItemSortOption;
+import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.entity.NutritionFact;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPageDto;
 import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.Collection;
@@ -88,14 +91,42 @@ public class ItemQueryDslDao implements ItemQueryRepository {
     }
 
     @Override
-    public Page<ItemQueryDto> findItemOnSale(ItemPageDto pageDto) {
-        List<ItemQueryDto> fetch = selectItemQueryDtoFromItem()
-            .where(
-                item.itemPrice.discountRate.eq(0D).not()
-            )
-            .limit(pageDto.getSize())
-            .offset(pageDto.getOffset())
-            .orderBy(getItemSort(pageDto.getSortOption()))
+    public Page<ItemQueryDto> findItemsOnSale(ItemPageDto pageDto) {
+        List<ItemQueryDto> fetch = queryFactory
+            .select(
+                Projections.fields(ItemQueryDto.class,
+                        item.id.as("itemId"),
+                        item.thumbnail,
+                        item.title,
+                        item.content,
+                        item.capacity,
+                        item.itemPrice.realPrice,
+                        item.itemPrice.discountRate,
+                        item.itemPrice.discountPrice,
+                        item.sales,
+                        item.starAvg,
+                        item.reviews.size().as("reviewSize")
+                    ))
+                    .from(item)
+                    .where(
+                        item.itemPrice.discountRate.eq(0D).not()
+                    )
+                    .limit(pageDto.getSize())
+                    .offset(pageDto.getOffset())
+                    .orderBy(getItemSort(pageDto.getSortOption()))
+                    .fetch();
+
+        List<CategoryName> fetch1 = queryFactory
+            .select(itemCategory.category.categoryName)
+            .from(itemCategory)
+            .innerJoin(itemCategory.item, item)
+            .innerJoin(itemCategory.category, category)
+            .where(itemCategory.item.id.eq(item.id)).fetch();
+
+
+        List<NutritionFact> fetch2 = queryFactory
+            .selectFrom(nutritionFact)
+            .where(nutritionFact.item.id.eq(item.id))
             .fetch();
 
         checkEmptyList(fetch);
@@ -110,6 +141,67 @@ public class ItemQueryDslDao implements ItemQueryRepository {
             PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
             count::fetchOne
         );
+    }
+
+    @Override
+    public Page<ItemQueryDto> findItemsByCategory(CategoryName categoryName, ItemPageDto pageDto) {
+//        List<ItemQueryDto> fetch = queryFactory
+//            .select(
+//                Projections.fields(ItemQueryDto.class,
+//                    item.id.as("itemId"),
+//                    item.thumbnail,
+//                    item.title,
+//                    item.content,
+//                    item.capacity,
+//                    item.itemPrice.realPrice,
+//                    item.itemPrice.discountRate,
+//                    item.itemPrice.discountPrice,
+//                    item.sales,
+//                    item.starAvg,
+//                    item.reviews.size().as("reviewSize"),
+//                    ExpressionUtils.as(
+//                        JPAExpressions
+//                            .select(itemCategory.category.categoryName)
+//                            .from(itemCategory)
+//                            .where(itemCategory.item.id.eq(item.id))
+//                        , "categoryName"
+//                    ),
+//                    ExpressionUtils.as(
+//                        JPAExpressions
+//                            .selectFrom(nutritionFact)
+//                            .where(nutritionFact.item.id.eq(item.id))
+//                        , "nutritionFact"
+//                    )
+//                ))
+//            .from(itemCategory)
+//            .innerJoin(itemCategory.item, item)
+//            .innerJoin(itemCategory.category, category)
+//            .where(
+//                itemCategory.category.categoryName.eq(categoryName)
+//            )
+//            .limit(pageDto.getSize())
+//            .offset(pageDto.getOffset())
+//            .orderBy(getItemSort(pageDto.getSortOption()))
+//            .fetch();
+//
+//        checkEmptyList(fetch);
+//
+//        JPAQuery<Long> count = queryFactory
+//            .select(item.count())
+//            .from(itemCategory)
+//            .innerJoin(itemCategory.item, item)
+//            .innerJoin(itemCategory.category, category)
+//            .where(
+//                itemCategory.category.categoryName.eq(categoryName)
+//            );
+
+//        return PageableExecutionUtils.getPage(
+//            fetch,
+//            PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
+//            count::fetchOne
+//        );
+
+        return null;
     }
 
     private BooleanExpression priceBetween(PriceFilterDto priceFilter) {
@@ -160,8 +252,10 @@ public class ItemQueryDslDao implements ItemQueryRepository {
                     item.reviews.size().as("reviewSize"),
                     ExpressionUtils.as(
                         JPAExpressions
-                            .select(category.categoryName)
+                            .select(itemCategory.category.categoryName)
                             .from(itemCategory)
+                            .innerJoin(itemCategory.item, item)
+                            .innerJoin(itemCategory.category, category)
                             .where(itemCategory.item.id.eq(item.id))
                         , "categoryName"
                     ),
@@ -173,5 +267,33 @@ public class ItemQueryDslDao implements ItemQueryRepository {
                     )
                 ))
             .from(item);
+    }
+
+    @Override
+    public Page<Item> findItemsOnSale2(ItemPageDto pageDto) {
+        List<Item> fetch = queryFactory.
+            select(item)
+            .from(item)
+            .where(
+                item.itemPrice.discountRate.eq(0D).not()
+            )
+            .limit(pageDto.getSize())
+            .offset(pageDto.getOffset())
+            .orderBy(getItemSort(pageDto.getSortOption()))
+            .fetch();
+
+        checkEmptyList(fetch);
+
+        JPAQuery<Long> count = queryFactory
+            .select(item.count())
+            .from(item)
+            .where(item.itemPrice.discountRate.eq(0D).not());
+
+        return PageableExecutionUtils.getPage(
+            fetch,
+            PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
+            count::fetchOne
+        );
+
     }
 }

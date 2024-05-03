@@ -7,7 +7,7 @@ import com.team33.modulecore.item.application.ItemService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.ItemDetailResponseDto;
 import com.team33.modulecore.item.dto.ItemMainTop9ResponseDto;
-import com.team33.modulecore.item.dto.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.dto.ItemPostDto;
 import com.team33.modulecore.item.dto.ItemPostServiceDto;

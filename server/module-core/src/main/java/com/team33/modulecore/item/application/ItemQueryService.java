@@ -1,7 +1,8 @@
 package com.team33.modulecore.item.application;
 
+import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemResponseDto;
 import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
@@ -50,7 +51,7 @@ public class ItemQueryService {
     }
 
     public Page<ItemResponseDto> findItemOnSale(ItemPageDto pageDto) {
-        Page<ItemQueryDto> itemOnSale = itemQueryRepository.findItemOnSale(pageDto);
+        Page<Item> itemOnSale = itemQueryRepository.findItemsOnSale2(pageDto);
 
         List<ItemResponseDto> itemResponseDtos = itemOnSale.getContent().stream()
             .map(ItemResponseDto::from)

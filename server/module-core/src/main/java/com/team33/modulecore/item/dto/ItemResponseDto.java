@@ -26,7 +26,7 @@ public class ItemResponseDto { // 목록 조회
     private double starAvg;
     private int reviewSize;
     private Brand brand;
-    private List<CategoryName> categoryName;
+    private CategoryName categoryName;
     private List<NutritionFactResponseDto> nutritionFacts;
 
     @Builder
@@ -41,7 +41,7 @@ public class ItemResponseDto { // 목록 조회
         int discountPrice,
         double starAvg,
         int reviewSize,
-        List<CategoryName> categoryName,
+        CategoryName categoryName,
         Brand brand,
         List<NutritionFactResponseDto> nutritionFacts
     ) {
@@ -81,7 +81,7 @@ public class ItemResponseDto { // 목록 조회
             .categoryName(
                 item.getItemCategories().stream()
                     .map(itemCategory -> itemCategory.getCategory().getCategoryName())
-                    .collect(Collectors.toUnmodifiableList())
+                    .findAny().get()
             )
             .brand(item.getBrand())
             .nutritionFacts(

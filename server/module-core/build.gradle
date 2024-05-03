@@ -36,6 +36,8 @@ dependencies {
     //lombok
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14")
 }
 //def querydslDir = "$buildDir/generated/querydsl" //QueryDSL로 생성된 소스가 저장되는 위치
 //
