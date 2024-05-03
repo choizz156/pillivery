@@ -1,8 +1,9 @@
 package com.team33.modulecore.category.domain;
 
 import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.entity.ItemCategory;
+import com.team33.modulecore.item.domain.entity.Item;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,9 +42,24 @@ public class Category extends BaseEntity {
     }
 
     public static Category of(CategoryName name) {
-        if(name == null) {
-            throw new IllegalArgumentException("카테고리는 null일 수 없습니다.");
-        }
         return new Category(name);
     }
+
+    public static Category of(CategoryName name, List<Item> items) {
+
+        ItemCategory itemCategory = new ItemCategory();
+        Category category = new Category(name);
+
+        category.getItemCategories().add(itemCategory);
+        itemCategory.addCategory(category);
+
+        items.forEach(item -> {
+                itemCategory.addItem(item);
+                item.getItemCategories().add(itemCategory);
+            }
+        );
+
+        return category;
+    }
+
 }

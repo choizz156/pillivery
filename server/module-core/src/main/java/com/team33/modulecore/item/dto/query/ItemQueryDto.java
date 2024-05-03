@@ -1,9 +1,6 @@
 package com.team33.modulecore.item.dto.query;
 
 import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.Brand;
-import com.team33.modulecore.item.domain.entity.NutritionFact;
-import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +20,7 @@ public class ItemQueryDto {
     private int sales;
     private double starAvg;
     private int reviewSize;
-    private Brand brand;
     private CategoryName categoryNames;
-    private List<NutritionFact> nutritionFacts;
 
     @Builder
     public ItemQueryDto(
@@ -38,10 +33,7 @@ public class ItemQueryDto {
         double discountRate,
         int discountPrice,
         double starAvg,
-        int reviewSize,
-        Brand brand,
-        CategoryName categoryNames,
-        List<NutritionFact> nutritionFacts
+        int reviewSize
     ) {
         this.itemId = itemId;
         this.thumbnail = thumbnail;
@@ -53,9 +45,7 @@ public class ItemQueryDto {
         this.discountPrice = discountPrice;
         this.starAvg = starAvg;
         this.reviewSize = reviewSize;
-        this.brand = brand;
         this.categoryNames = categoryNames;
-        this.nutritionFacts = nutritionFacts;
     }
 
 }

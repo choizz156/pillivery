@@ -1,7 +1,8 @@
-package com.team33.modulecore.item.domain.entity;
+package com.team33.modulecore.category.domain;
 
-import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.item.domain.entity.Item;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,8 +40,15 @@ public class ItemCategory extends BaseEntity {
         this.item = item;
     }
 
-    public static ItemCategory of(Item item, Category c) {
-       return new ItemCategory(null, null);
+    public static ItemCategory create(Category category, List<Item> items) {
+        ItemCategory itemCategory = new ItemCategory();
+        items.forEach(itemCategory::addItem);
+        items.forEach(item1 -> item1.getItemCategories().add(itemCategory));
+
+        itemCategory.addCategory(category);
+        category.getItemCategories().add(itemCategory);
+
+        return itemCategory;
     }
 
     public static ItemCategory of(Category category) {

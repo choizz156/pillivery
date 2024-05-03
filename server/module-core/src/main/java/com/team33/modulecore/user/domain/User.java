@@ -6,7 +6,6 @@ import com.team33.modulecore.order.domain.Address;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;
-import com.team33.modulecore.wish.domain.Wish;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -66,13 +65,6 @@ public class User extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
-
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Wish> wishList = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Order> orders = new ArrayList<>();
 
     @Builder
     private User(final Long id, String email,

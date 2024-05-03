@@ -1,11 +1,9 @@
 package com.team33.modulecore.item.dto;
 
 import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.review.dto.ReviewResponseDto;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,15 +20,13 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
     private String title;
     private String content;
     private String expiration;
-    private Brand brand;
     private int sales;
     private int realPrice;
     private int capacity;
-    private int servingSize;
+    private String servingSize;
     private double discountRate;
     private int discountPrice;
     private List<CategoryName> categories;
-    private Set<NutritionFactResponseDto> nutritionFacts;
     private double starAvg;
     private List<ReviewResponseDto> reviews;
 
@@ -42,15 +38,13 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
         String title,
         String content,
         String expiration,
-        Brand brand,
         int sales,
         int price,
         int capacity,
-        int servingSize,
+        String servingSize,
         double discountRate,
         int discountPrice,
         List<CategoryName> categories,
-        Set<NutritionFactResponseDto> nutritionFacts,
         double starAvg,
         List<ReviewResponseDto> reviews
     ) {
@@ -60,7 +54,6 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
         this.title = title;
         this.content = content;
         this.expiration = expiration;
-        this.brand = brand;
         this.sales = sales;
         this.realPrice = price;
         this.capacity = capacity;
@@ -68,7 +61,6 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
         this.discountRate = discountRate;
         this.discountPrice = discountPrice;
         this.categories = categories;
-        this.nutritionFacts = nutritionFacts;
         this.starAvg = starAvg;
         this.reviews = reviews;
     }
@@ -76,16 +68,13 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
     public static ItemDetailResponseDto of(Item item) {
         return ItemDetailResponseDto.builder()
             .itemId(item.getId())
-            .thumbnail(item.getThumbnail())
+            .thumbnail(item.getThumbnailUrl())
             .descriptionImage(item.getDescriptionImage())
-            .title(item.getTitle())
-            .content(item.getContent())
-            .expiration(item.getExpiration())
-            .brand(item.getBrand())
+            .title(item.getProductName())
+            .expiration(item.getInformation().getPreservePeriod())
             .sales(item.getSales())
-            .price(item.getOriginalPrice())
-            .capacity(item.getCapacity())
-            .servingSize(item.getServingSize())
+            .price(item.getOriginPrice())
+            .servingSize(item.getServingUse())
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())
             .starAvg(item.getStarAvg())
@@ -95,14 +84,10 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
                     .map(itemCategory -> itemCategory.getCategory().getCategoryName())
                     .collect(Collectors.toUnmodifiableList())
             )
-            .nutritionFacts(item.getNutritionFacts().stream()
-                .map(NutritionFactResponseDto::from)
-                .collect(Collectors.toSet())
-            )
-            .reviews(item.getItemReviewsBy5().stream()
-                .map(ReviewResponseDto::from)
-                .collect(Collectors.toList())
-            )
+//            .reviews(item.getItemReviewsBy5().stream()
+//                .map(ReviewResponseDto::from)
+//                .collect(Collectors.toList())
+//            )
             .build();
     }
 }

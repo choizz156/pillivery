@@ -1,6 +1,5 @@
 package com.team33.modulecore.item.dto;
 
-import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.Item;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,45 +10,43 @@ import lombok.NoArgsConstructor;
 public class ItemSimpleResponseDto {
 
     private long itemId;
-    private Brand brand;
+    private String enterprise;
     private String thumbnail;
-    private String title;
-    private int capacity;
-    private int price;
+    private String product;
+    private int originPrice;
+    private int realPrice;
     private double discountRate;
-    private int disCountPrice;
+    private int discountPrice;
 
     @Builder
-    private ItemSimpleResponseDto(
+    public ItemSimpleResponseDto(
         long itemId,
-        Brand brand,
+        String enterprise,
         String thumbnail,
-        String title,
-        int capacity,
-        int price,
+        String product,
+        int originPrice,
+        int realPrice,
         double discountRate,
-        int disCountPrice
+        int discountPrice
     ) {
         this.itemId = itemId;
-        this.brand = brand;
+        this.enterprise = enterprise;
         this.thumbnail = thumbnail;
-        this.title = title;
-        this.capacity = capacity;
-        this.price = price;
+        this.product = product;
+        this.originPrice = originPrice;
+        this.realPrice = realPrice;
         this.discountRate = discountRate;
-        this.disCountPrice = disCountPrice;
+        this.discountPrice = discountPrice;
     }
 
     public static ItemSimpleResponseDto of(Item item) {
         return ItemSimpleResponseDto.builder()
             .itemId(item.getId())
-            .brand(item.getBrand())
-            .thumbnail(item.getThumbnail())
-            .title(item.getTitle())
-            .capacity(item.getCapacity())
-            .price(item.getOriginalPrice())
-            .discountRate(item.getItemPrice().getDiscountRate())
-            .disCountPrice(item.getDiscountPrice()).
-            build();
+            .thumbnail(item.getThumbnailUrl())
+            .product(item.getProductName())
+            .originPrice(item.getOriginPrice())
+            .discountRate(item.getDiscountRate())
+            .discountPrice(item.getDiscountPrice())
+            .build();
     }
 }

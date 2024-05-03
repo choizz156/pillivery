@@ -1,22 +1,15 @@
 package com.team33.modulecore.item.domain.entity;
 
+import com.team33.modulecore.category.domain.ItemCategory;
 import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.Brand;
-import com.team33.modulecore.item.domain.ItemPrice;
-import com.team33.modulecore.item.dto.ItemPostServiceDto;
-import com.team33.modulecore.review.domain.Review;
-import com.team33.modulecore.wish.domain.Wish;
-import java.util.ArrayList;
+import com.team33.modulecore.item.domain.Information;
+import com.team33.modulecore.item.domain.Price;
+import com.team33.modulecore.item.domain.Statistic;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,145 +31,83 @@ public class Item extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-
-    private String content;
-
-    private String thumbnail;
-
-    private String descriptionImage;
-
-    private String expiration;
+    @Embedded
+    private Information information;
 
     @Embedded
-    private ItemPrice itemPrice;
+    private Statistic statistics;
 
-    private long view;
+    //TODO: 이것도 정보안에 넣는다.
 
-    private int sales;
-
-    private int capacity;
-
-    private int servingSize;
-
-    private int totalWishes;
-
-    private double starAvg;
-
-    @Enumerated(value = EnumType.STRING)
-    private Brand brand;
 
     @OneToMany(mappedBy = "item")
     private Set<ItemCategory> itemCategories = new HashSet<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    private List<Wish> wishList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<NutritionFact> nutritionFacts = new ArrayList<>();
+//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Review> reviews = new ArrayList<>();
 
     @Builder
     private Item(
-        String title,
-        String content,
-        String thumbnail,
-        String descriptionImage,
-        String expiration,
-        ItemPrice itemPrice,
-        int view,
-        int sales,
-        int capacity,
-        int servingSize,
-        int totalWishes,
-        double starAvg,
-        Brand brand,
-        List<Wish> wishList,
-        Set<ItemCategory> itemCategories,
-        List<Review> reviews,
-        List<NutritionFact> nutritionFacts
-    ) {
-        this.title = title;
-        this.content = content;
-        this.thumbnail = thumbnail;
-        this.descriptionImage = descriptionImage;
-        this.expiration = expiration;
-        this.itemPrice = itemPrice;
-        this.view = view;
-        this.sales = sales;
-        this.capacity = capacity;
-        this.servingSize = servingSize;
-        this.totalWishes = totalWishes;
-        this.starAvg = starAvg;
-        this.brand = brand;
-        this.wishList = wishList;
-        this.itemCategories = itemCategories;
-        this.reviews = reviews;
-        this.nutritionFacts = nutritionFacts;
-    }
-
-    public static Item create(
-        ItemPostServiceDto dto,
-        List<NutritionFact> nutritionFacts,
+        Information information,
+        Price price,
+        Statistic statistics,
         Set<ItemCategory> itemCategories
     ) {
-        Item item = Item.builder()
-            .title(dto.getTitle())
-            .content(dto.getContent())
-            .thumbnail(dto.getThumbnail())
-            .descriptionImage(dto.getDescriptionImage())
-            .expiration(dto.getExpiration())
-            .itemPrice(new ItemPrice(dto.getPrice(), dto.getDiscountRate()))
-            .capacity(dto.getCapacity())
-            .servingSize(dto.getServingSize())
-            .sales(dto.getSales())
-            .brand(dto.getBrand())
-            .starAvg(dto.getStarAvg())
-            .reviews(new ArrayList<>())
-            .itemCategories(itemCategories)
-            .nutritionFacts(nutritionFacts)
-            .wishList(new ArrayList<>())
+        this.information = information;
+        this.statistics = statistics;
+        this.itemCategories = itemCategories;
+    }
+
+    public static Item create(Information information) {
+        return Item.builder()
+            .information(information)
+            .statistics(new Statistic())
             .build();
-
-        item.getItemCategories().forEach(itemCategory -> itemCategory.addItem(item));
-        item.getNutritionFacts().forEach(nutritionFact -> nutritionFact.addItem(item));
-        //TODO: 나머지 연관관계는 리팩토링 하면서
-        return item;
-    }
-
-    public void plusSales(int sales) {
-        this.sales = sales;
-    }
-
-    public void minusSales(int quantity) {
-        this.sales -= quantity;
     }
 
     public void addView() {
-        this.view += 1L;
+       this.statistics.addView();
     }
 
-    public List<Review> getItemReviewsBy5() {
-        return this.reviews.stream()
-            .limit(5)
-            .collect(Collectors.toUnmodifiableList());
+    public String getThumbnailUrl() {
+        return this.information.getImage().getThumbnail();
     }
 
-    public int getDiscountPrice() {
-        return this.itemPrice.getDiscountPrice();
+    public int getOriginPrice(){
+        return this.information.getPrice().getOriginPrice();
     }
 
-    public int getOriginalPrice() {
-        return this.itemPrice.getOriginPrice();
+    public double getDiscountRate(){
+        return this.information.getPrice().getDiscountRate();
     }
-
-    public double getDiscountRate() {
-        return this.itemPrice.getDiscountRate();
+    public String getProductName(){
+        return this.information.getProduct();
+    }
+    public int getDiscountPrice(){
+        return this.information.getPrice().getDiscountPrice();
     }
 
     public int getRealPrice() {
-        return this.itemPrice.getRealPrice();
+        return this.information.getPrice().getRealPrice();
+    }
+
+    public void minusSales(int quantity) {
+        this.statistics.reduceSales(quantity);
+    }
+
+    public String getDescriptionImage() {
+        return this.getInformation().getImage().getDescriptionImage();
+    }
+
+    public int getSales() {
+        return this.statistics.getSales();
+    }
+
+    public String getServingUse() {
+        return this.information.getServingUse();
+    }
+
+    public double getStarAvg() {
+        return this.statistics.getStarAvg();
     }
 }

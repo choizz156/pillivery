@@ -74,3 +74,12 @@ project(':module-quartz') {
     }
 }
 
+project(':module-admin'){
+    bootJar { enabled = true }
+    jar { enabled = false }
+
+    dependencies {
+        api project(':module-core')
+    }
+}
+

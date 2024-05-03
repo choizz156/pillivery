@@ -38,7 +38,7 @@ public class OrderPrice {
 
         return orderItems.stream()
             .mapToInt(orderItem ->
-                orderItem.getQuantity() * orderItem.getItem().getItemPrice().getRealPrice()
+                orderItem.getQuantity() * orderItem.getItem().getRealPrice()
             )
             .sum();
     }
@@ -52,7 +52,7 @@ public class OrderPrice {
         return orderItems.stream()
             .mapToInt(
                 orderItem ->
-                    orderItem.getQuantity() * orderItem.getItem().getItemPrice().getDiscountPrice()
+                    orderItem.getQuantity() * orderItem.getItem().getDiscountPrice()
             )
             .sum();
     }

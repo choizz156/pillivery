@@ -1,5 +1,6 @@
 package com.team33.modulecore.category.domain;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 public enum CategoryName {
 
     EYE("눈"),
-    BONE("뼈/관절"),
+    BONE("뼈"),
     BRAIN("뇌"),
     INTESTINE("장"),
     LIVER("간"),
@@ -18,4 +19,12 @@ public enum CategoryName {
     ETC("기타");
 
     private final String name;
+
+    public static CategoryName get(String mainFunction) {
+        CategoryName[] values = CategoryName.values();
+        values[values.length - 1] = null;
+        return Arrays.stream(values)
+            .filter(value -> mainFunction.contains(value.getName()))
+            .findFirst().orElse(ETC);
+    }
 }

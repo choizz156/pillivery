@@ -30,6 +30,8 @@ dependencies {
     //fixuture-monkey
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14")
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14")
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14")
+
     //log
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 
@@ -37,7 +39,6 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14")
 }
 //def querydslDir = "$buildDir/generated/querydsl" //QueryDSL로 생성된 소스가 저장되는 위치
 //

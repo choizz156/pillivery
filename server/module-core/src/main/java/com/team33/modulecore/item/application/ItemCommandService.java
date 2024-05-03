@@ -2,18 +2,11 @@ package com.team33.modulecore.item.application;
 
 
 import com.team33.modulecore.category.application.CategoryService;
-import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.entity.ItemCategory;
-import com.team33.modulecore.item.domain.entity.NutritionFact;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.ItemPostServiceDto;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,28 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class ItemService {
+public class ItemCommandService {
 
-    private final BrandService brandService;
-    private final NutritionFactService nutritionFactService;
     private final CategoryService categoryService;
     private final ItemQueryRepository itemQueryRepository;
     private final ItemCommandRepository itemCommandRepository;
 
-    public Item createItem(ItemPostServiceDto dto) {
-        List<NutritionFact> nutritionFacts = nutritionFactService.getNutritionFacts(dto);
-
-        List<Category> categories = categoryService.getCategories(dto.getCategories());
-
-        Set<ItemCategory> itemCategoryList =
-            categories.stream()
-                .map(ItemCategory::of)
-                .collect(Collectors.toSet());
-
-        Item item = Item.create(dto, nutritionFacts, itemCategoryList);
-
-        return itemCommandRepository.save(item);
-    }
 
     //TODO: 이것도 캐싱을 해놓고, 조회수는 나중에 푸시하는 느낌으로 해도 될 것 같은데
     public Item findItemWithAddingView(long itemId) {

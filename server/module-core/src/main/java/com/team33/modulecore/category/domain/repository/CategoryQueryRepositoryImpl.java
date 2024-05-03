@@ -3,7 +3,6 @@ package com.team33.modulecore.category.domain.repository;
 import com.team33.modulecore.category.domain.Category;
 import com.team33.modulecore.category.domain.CategoryName;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +12,7 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository {
     private final EntityManager entityManager;
 
     @Override
-    public Optional<Category> findByCategoryName(CategoryName categoryName) {
+    public Category findByCategoryName(CategoryName categoryName) {
         Category category = entityManager
             .createQuery(
                 "SELECT c FROM Category c where c.categoryName = :categoryName",
@@ -22,7 +21,11 @@ public class CategoryQueryRepositoryImpl implements CategoryQueryRepository {
             .setParameter("categoryName", categoryName)
             .getSingleResult();
 
-        return Optional.ofNullable(category);
+        if(category == null) {
+            throw new IllegalStateException("카테고리 이름을 찾을 수 없습니다. " + categoryName);
+        }
+
+        return category;
     }
 
     @Override

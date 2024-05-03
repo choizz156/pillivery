@@ -1,7 +1,6 @@
 package com.team33.modulecore.item.dto;
 
 import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.List;
@@ -25,9 +24,7 @@ public class ItemResponseDto { // 목록 조회
     private int discountPrice;
     private double starAvg;
     private int reviewSize;
-    private Brand brand;
     private CategoryName categoryName;
-    private List<NutritionFactResponseDto> nutritionFacts;
 
     @Builder
     private ItemResponseDto(
@@ -41,9 +38,7 @@ public class ItemResponseDto { // 목록 조회
         int discountPrice,
         double starAvg,
         int reviewSize,
-        CategoryName categoryName,
-        Brand brand,
-        List<NutritionFactResponseDto> nutritionFacts
+        CategoryName categoryName
     ) {
         this.itemId = itemId;
         this.thumbnail = thumbnail;
@@ -56,8 +51,6 @@ public class ItemResponseDto { // 목록 조회
         this.starAvg = starAvg;
         this.reviewSize = reviewSize;
         this.categoryName = categoryName;
-        this.brand = brand;
-        this.nutritionFacts = nutritionFacts;
     }
 
     public static List<ItemResponseDto> from(List<Item> items) {
@@ -69,25 +62,16 @@ public class ItemResponseDto { // 목록 조회
     public static ItemResponseDto from(Item item) {
         return ItemResponseDto.builder()
             .itemId(item.getId())
-            .thumbnail(item.getThumbnail())
-            .title(item.getTitle())
-            .content(item.getContent())
-            .capacity(item.getCapacity())
-            .price(item.getOriginalPrice())
+            .thumbnail(item.getThumbnailUrl())
+            .title(item.getProductName())
+            .price(item.getOriginPrice())
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())
-            .starAvg(item.getStarAvg())
-            .reviewSize(item.getReviews().size())
+            .starAvg(item.getStatistics().getStarAvg())
             .categoryName(
                 item.getItemCategories().stream()
                     .map(itemCategory -> itemCategory.getCategory().getCategoryName())
                     .findAny().get()
-            )
-            .brand(item.getBrand())
-            .nutritionFacts(
-                item.getNutritionFacts().stream()
-                    .map(NutritionFactResponseDto::from)
-                    .collect(Collectors.toUnmodifiableList())
             )
             .build();
     }
@@ -105,12 +89,6 @@ public class ItemResponseDto { // 목록 조회
             .starAvg(itemQueryDto.getStarAvg())
             .reviewSize(itemQueryDto.getReviewSize())
             .categoryName(itemQueryDto.getCategoryNames())
-            .brand(itemQueryDto.getBrand())
-            .nutritionFacts(
-                itemQueryDto.getNutritionFacts().stream()
-                    .map(NutritionFactResponseDto::from)
-                    .collect(Collectors.toUnmodifiableList())
-            )
             .build();
     }
 }

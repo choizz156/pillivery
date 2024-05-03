@@ -2,13 +2,14 @@ package com.team33.modulecore.item.domain;
 
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
-public class ItemPrice {
+public class Price {
 
     private int originPrice;
 
@@ -16,12 +17,14 @@ public class ItemPrice {
 
     private int discountPrice;
 
-    private double discountRate;
+    private Double discountRate;
 
-    public ItemPrice(int originPrice, double discountRate) {
+    @Builder
+    public Price(int originPrice, double discountRate) {
         this.originPrice = originPrice;
         this.discountRate = discountRate;
         this.discountPrice = originPrice - originPrice / (int) discountRate;
         this.realPrice = originPrice - discountPrice;
     }
+
 }

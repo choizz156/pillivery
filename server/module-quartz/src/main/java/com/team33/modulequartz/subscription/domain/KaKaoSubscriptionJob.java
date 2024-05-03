@@ -34,7 +34,7 @@ public class KaKaoSubscriptionJob implements Job {
 
         OrderItem orderItem = (OrderItem) mergedJobDataMap.get("itemOrder");
         log.info("start itemOrderId = {}", orderItem.getId());
-        log.info("itemOrder title = {}", orderItem.getItem().getTitle());
+        log.info("itemOrder title = {}", orderItem.getItem().getProductName());
 
         Long orderId = (Long) mergedJobDataMap.get("orderId");
         log.info("start orderId = {}", orderId);

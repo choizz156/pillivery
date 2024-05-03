@@ -78,7 +78,7 @@ public class SubscriptionService {
 
         deleteSchedule(order, orderItem);
         orderItemService.cancelItemOrder(orderId, orderItem);
-        log.info("canceled item title = {}", orderItem.getItem().getTitle());
+        log.info("canceled item title = {}", orderItem.getItem().getProductName());
     }
 
     private OrderItem getChangedItemOrder(final Order order, final OrderItem orderItem) {
@@ -115,7 +115,7 @@ public class SubscriptionService {
     private void deleteSchedule(final OrderItem orderItem, final User user) {
         try {
             scheduler.deleteJob(jobKey(
-                user.getId() + orderItem.getItem().getTitle(),
+                user.getId() + orderItem.getItem().getProductName(),
                 String.valueOf(user.getId()))
             );
         } catch (SchedulerException e) {
@@ -156,7 +156,7 @@ public class SubscriptionService {
         User user = order.getUser();
         log.info("{} {}", order.getId(), orderItem.getId());
         JobKey jobkey = jobKey(
-            user.getId() + orderItem.getItem().getTitle(),
+            user.getId() + orderItem.getItem().getProductName(),
             String.valueOf(user.getId())
         );
 

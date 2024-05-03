@@ -111,6 +111,6 @@ public class ParameterProvider extends ParamsConst {
     }
 
     private String getTitle(final Order order) {
-        return order.getOrderItems().get(NAME_INDEX).getItem().getTitle();
+        return order.getOrderItems().get(NAME_INDEX).getItem().getProductName();
     }
 }
