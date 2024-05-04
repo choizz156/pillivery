@@ -18,7 +18,7 @@ public class Information {
 
     private String enterprise;
 
-    private String product;
+    private String productName;
 
     private String statementNumber;
 
@@ -47,7 +47,7 @@ public class Information {
     @Builder
     public Information(
         String enterprise,
-        String product,
+        String productName,
         String statementNumber,
         String registeredDate,
         String distributionPeriod,
@@ -57,10 +57,11 @@ public class Information {
         String intake,
         String mainFunction,
         String baseStandard,
-        Price price, Image image
+        Price price,
+        Image image
     ) {
         this.enterprise = enterprise;
-        this.product = product;
+        this.productName = productName;
         this.statementNumber = statementNumber;
         this.registeredDate = registeredDate;
         this.distributionPeriod = distributionPeriod;

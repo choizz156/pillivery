@@ -8,6 +8,8 @@ import org.springframework.data.repository.Repository;
 public interface ItemCommandRepository extends Repository<Item, Long> {
 
     Item save(Item item);
+
     Optional<Item> findById(long id);
-    public <S extends Item> List<S> saveAll(Iterable<S> entities);
+
+    <S extends Item> List<S> saveAll(Iterable<S> entities);
 }

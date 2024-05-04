@@ -16,9 +16,9 @@ public class ItemResponseDto { // 목록 조회
 
     private Long itemId;
     private String thumbnail;
-    private String title;
-    private String content;
-    private int capacity;
+    private String productName;
+    private String mainFunction;
+    private String baseStandard;
     private int realPrice;
     private double discountRate;
     private int discountPrice;
@@ -27,13 +27,13 @@ public class ItemResponseDto { // 목록 조회
     private CategoryName categoryName;
 
     @Builder
-    private ItemResponseDto(
+    public ItemResponseDto(
         Long itemId,
         String thumbnail,
-        String title,
-        String content,
-        int capacity,
-        int price,
+        String productName,
+        String mainFunction,
+        String baseStandard,
+        int realPrice,
         double discountRate,
         int discountPrice,
         double starAvg,
@@ -42,10 +42,10 @@ public class ItemResponseDto { // 목록 조회
     ) {
         this.itemId = itemId;
         this.thumbnail = thumbnail;
-        this.title = title;
-        this.content = content;
-        this.capacity = capacity;
-        this.realPrice = price;
+        this.productName = productName;
+        this.mainFunction = mainFunction;
+        this.baseStandard = baseStandard;
+        this.realPrice = realPrice;
         this.discountRate = discountRate;
         this.discountPrice = discountPrice;
         this.starAvg = starAvg;
@@ -63,15 +63,15 @@ public class ItemResponseDto { // 목록 조회
         return ItemResponseDto.builder()
             .itemId(item.getId())
             .thumbnail(item.getThumbnailUrl())
-            .title(item.getProductName())
-            .price(item.getOriginPrice())
+            .productName(item.getProductName())
+            .realPrice(item.getRealPrice())
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())
             .starAvg(item.getStatistics().getStarAvg())
             .categoryName(
                 item.getItemCategories().stream()
                     .map(itemCategory -> itemCategory.getCategory().getCategoryName())
-                    .findAny().get()
+                    .findFirst().orElse(null)
             )
             .build();
     }
@@ -80,15 +80,15 @@ public class ItemResponseDto { // 목록 조회
         return ItemResponseDto.builder()
             .itemId(itemQueryDto.getItemId())
             .thumbnail(itemQueryDto.getThumbnail())
-            .title(itemQueryDto.getTitle())
-            .content(itemQueryDto.getContent())
-            .capacity(itemQueryDto.getCapacity())
-            .price(itemQueryDto.getRealPrice())
+            .productName(itemQueryDto.getProductName())
+            .baseStandard(itemQueryDto.getBaseStandard())
+            .mainFunction(itemQueryDto.getMainFunction())
+            .realPrice(itemQueryDto.getRealPrice())
             .discountRate(itemQueryDto.getDiscountRate())
             .discountPrice(itemQueryDto.getDiscountPrice())
             .starAvg(itemQueryDto.getStarAvg())
             .reviewSize(itemQueryDto.getReviewSize())
-            .categoryName(itemQueryDto.getCategoryNames())
+            .categoryName(itemQueryDto.getCategoryName())
             .build();
     }
 }

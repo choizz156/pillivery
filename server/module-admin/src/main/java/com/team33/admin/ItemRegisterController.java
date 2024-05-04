@@ -1,12 +1,12 @@
-package com.team33.moduleapi.admin;
+package com.team33.admin;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.jackson.plugin.JacksonPlugin;
 import com.navercorp.fixturemonkey.jakarta.validation.plugin.JakartaValidationPlugin;
-import com.team33.moduleapi.admin.dto.BodyWrapper;
-import com.team33.moduleapi.admin.dto.ItemDto;
-import com.team33.moduleapi.admin.dto.ItemWrapper;
-import com.team33.modulecore.item.domain.ItemInformation;
+import com.team33.admin.dto.BodyWrapper;
+import com.team33.admin.dto.ItemDto;
+import com.team33.admin.dto.ItemWrapper;
+import com.team33.modulecore.item.domain.Information;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemRegisterController {
 
     private final ItemCommandRepository itemCommandRepository;
-    private final ItemRegisterService itemRegisterService;
+    private final com.team33.moduleapi.admin.ItemRegisterService itemRegisterService;
 
     @ResponseStatus(HttpStatus.CREATED)
     public void postItem(@RequestBody BodyWrapper bodyWrapper) {
         List<ItemDto> collect = toBusinessDto(bodyWrapper.getBody().getItems());
-        List<ItemInformation> information = ItemAttributeMapper.toInformation(collect);
+        List<Information> information = ItemAttributeMapper.toInformation(collect);
         itemRegisterService.createItem(information);
     }
 

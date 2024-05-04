@@ -81,7 +81,7 @@ public class Item extends BaseEntity {
         return this.information.getPrice().getDiscountRate();
     }
     public String getProductName(){
-        return this.information.getProduct();
+        return this.information.getProductName();
     }
     public int getDiscountPrice(){
         return this.information.getPrice().getDiscountPrice();

@@ -1,4 +1,4 @@
-package com.team33.moduleapi.admin.dto;
+package com.team33.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.Max;

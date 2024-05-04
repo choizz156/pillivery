@@ -1,4 +1,4 @@
-package com.team33.moduleapi.admin.dto;
+package com.team33.admin.dto;
 
 import lombok.Data;
 

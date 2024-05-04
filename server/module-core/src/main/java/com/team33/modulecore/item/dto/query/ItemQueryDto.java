@@ -1,5 +1,6 @@
 package com.team33.modulecore.item.dto.query;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.team33.modulecore.category.domain.CategoryName;
 import lombok.Builder;
 import lombok.Data;
@@ -11,41 +12,45 @@ public class ItemQueryDto {
 
     private Long itemId;
     private String thumbnail;
-    private String title;
-    private String content;
-    private int capacity;
+    private String productName;
+    private String mainFunction;
+    private String baseStandard;
     private int realPrice;
     private double discountRate;
     private int discountPrice;
     private int sales;
     private double starAvg;
     private int reviewSize;
-    private CategoryName categoryNames;
+    private CategoryName categoryName;
 
+    @QueryProjection
     @Builder
     public ItemQueryDto(
         Long itemId,
         String thumbnail,
-        String title,
-        String content,
-        int capacity,
+        String productName,
+        String mainFunction,
+        String baseStandard,
+        String enterprise,
         int realPrice,
         double discountRate,
         int discountPrice,
+        int sales,
         double starAvg,
-        int reviewSize
+        int reviewSize,
+        CategoryName categoryName
     ) {
         this.itemId = itemId;
         this.thumbnail = thumbnail;
-        this.title = title;
-        this.content = content;
-        this.capacity = capacity;
+        this.productName = productName;
+        this.mainFunction = mainFunction;
+        this.baseStandard = baseStandard;
         this.realPrice = realPrice;
         this.discountRate = discountRate;
         this.discountPrice = discountPrice;
+        this.sales = sales;
         this.starAvg = starAvg;
         this.reviewSize = reviewSize;
-        this.categoryNames = categoryNames;
+        this.categoryName = categoryName;
     }
-
 }

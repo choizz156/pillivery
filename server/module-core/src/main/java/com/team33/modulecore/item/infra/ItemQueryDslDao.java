@@ -2,23 +2,19 @@ package com.team33.modulecore.item.infra;
 
 
 import static com.team33.modulecore.category.domain.QCategory.category;
+import static com.team33.modulecore.category.domain.QItemCategory.itemCategory;
 import static com.team33.modulecore.item.domain.entity.QItem.item;
-import static com.team33.modulecore.item.domain.entity.QItemCategory.itemCategory;
-import static com.team33.modulecore.item.domain.entity.QNutritionFact.nutritionFact;
 
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.ItemSortOption;
-import com.team33.modulecore.item.domain.entity.NutritionFact;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemPageDto;
@@ -37,8 +33,9 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
     @Override
     public List<ItemQueryDto> findItemsWithSalesTop9() {
-        List<ItemQueryDto> fetch = selectItemQueryDtoFromItem()
-            .orderBy(item.sales.desc())
+        List<ItemQueryDto> fetch = selectItemQueryDto()
+            .from(item)
+            .orderBy(item.statistics.sales.desc())
             .limit(9)
             .fetch();
 
@@ -49,9 +46,10 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
     @Override
     public List<ItemQueryDto> findItemsWithDiscountRateTop9() {
-        List<ItemQueryDto> fetch = selectItemQueryDtoFromItem()
+        List<ItemQueryDto> fetch = selectItemQueryDto()
+            .from(item)
             .limit(9)
-            .orderBy(item.itemPrice.discountRate.desc())
+            .orderBy(item.information.price.discountRate.desc())
             .fetch();
 
         checkEmptyList(fetch);
@@ -65,7 +63,8 @@ public class ItemQueryDslDao implements ItemQueryRepository {
         PriceFilterDto priceFilter,
         ItemPageDto pageDto
     ) {
-        List<ItemQueryDto> fetch = selectItemQueryDtoFromItem()
+        List<ItemQueryDto> fetch = selectItemQueryDto()
+            .from(item)
             .where(
                 titleContainsKeyword(keyword),
                 priceBetween(priceFilter)
@@ -91,41 +90,22 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
     @Override
     public Page<ItemQueryDto> findItemsOnSale(ItemPageDto pageDto) {
-        List<ItemQueryDto> fetch = queryFactory
-            .select(
-                Projections.fields(ItemQueryDto.class,
-                        item.id.as("itemId"),
-                        item.thumbnail,
-                        item.title,
-                        item.content,
-                        item.capacity,
-                        item.itemPrice.realPrice,
-                        item.itemPrice.discountRate,
-                        item.itemPrice.discountPrice,
-                        item.sales,
-                        item.starAvg,
-                        item.reviews.size().as("reviewSize")
-                    ))
-                    .from(item)
-                    .where(
-                        item.itemPrice.discountRate.eq(0D).not()
-                    )
-                    .limit(pageDto.getSize())
-                    .offset(pageDto.getOffset())
-                    .orderBy(getItemSort(pageDto.getSortOption()))
-                    .fetch();
+        List<ItemQueryDto> fetch =selectItemQueryDto()
+            .from(item)
+            .where(
+                discountPriceEqNot0()
+            )
+            .limit(pageDto.getSize())
+            .offset(pageDto.getOffset())
+            .orderBy(getItemSort(pageDto.getSortOption()))
+            .fetch();
 
-        List<CategoryName> fetch1 = queryFactory
+        List<CategoryName> categoryNames = queryFactory
             .select(itemCategory.category.categoryName)
             .from(itemCategory)
             .innerJoin(itemCategory.item, item)
             .innerJoin(itemCategory.category, category)
-            .where(itemCategory.item.id.eq(item.id)).fetch();
-
-
-        List<NutritionFact> fetch2 = queryFactory
-            .selectFrom(nutritionFact)
-            .where(nutritionFact.item.id.eq(item.id))
+            .where(itemCategory.item.id.eq(item.id))
             .fetch();
 
         checkEmptyList(fetch);
@@ -133,13 +113,17 @@ public class ItemQueryDslDao implements ItemQueryRepository {
         JPAQuery<Long> count = queryFactory
             .select(item.count())
             .from(item)
-            .where(item.itemPrice.discountRate.eq(0D).not());
+            .where(discountPriceEqNot0());
 
         return PageableExecutionUtils.getPage(
             fetch,
             PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
             count::fetchOne
         );
+    }
+
+    private static BooleanExpression discountPriceEqNot0() {
+        return item.information.price.discountRate.eq(0D).not();
     }
 
     @Override
@@ -209,19 +193,21 @@ public class ItemQueryDslDao implements ItemQueryRepository {
         }
 
         if (priceFilter.isSamePriceEach()) {
-            return item.itemPrice.realPrice.eq(priceFilter.getLowPrice());
+            return item.information.price.realPrice.eq(priceFilter.getLowPrice());
         }
 
         priceFilter.checkReversedPrice();
 
-        return item.itemPrice.realPrice.between(
+        return item.information.price.realPrice.between(
             priceFilter.getLowPrice(),
             priceFilter.getHighPrice()
         );
     }
 
-    private BooleanExpression titleContainsKeyword(String title) {
-        return StringUtils.isNullOrEmpty(title) ? null : item.title.contains(title);
+    private BooleanExpression titleContainsKeyword(String productName) {
+        return StringUtils.isNullOrEmpty(productName)
+            ? null
+            : item.information.productName.contains(productName);
     }
 
     private OrderSpecifier<? extends Number> getItemSort(ItemSortOption itemSortOption) {
@@ -234,37 +220,22 @@ public class ItemQueryDslDao implements ItemQueryRepository {
         }
     }
 
-    private JPAQuery<ItemQueryDto> selectItemQueryDtoFromItem() {
+    private JPAQuery<ItemQueryDto> selectItemQueryDto() {
         return queryFactory
             .select(
                 Projections.fields(ItemQueryDto.class,
                     item.id.as("itemId"),
-                    item.thumbnail,
-                    item.title,
-                    item.content,
-                    item.capacity,
-                    item.itemPrice.realPrice,
-                    item.itemPrice.discountRate,
-                    item.itemPrice.discountPrice,
-                    item.sales,
-                    item.starAvg,
-                    item.reviews.size().as("reviewSize"),
-                    ExpressionUtils.as(
-                        JPAExpressions
-                            .select(itemCategory.category.categoryName)
-                            .from(itemCategory)
-                            .innerJoin(itemCategory.item, item)
-                            .innerJoin(itemCategory.category, category)
-                            .where(itemCategory.item.id.eq(item.id))
-                        , "categoryName"
-                    ),
-                    ExpressionUtils.as(
-                        JPAExpressions
-                            .selectFrom(nutritionFact)
-                            .where(nutritionFact.item.id.eq(item.id))
-                        , "nutritionFact"
-                    )
-                ))
-            .from(item);
+                    item.information.image.thumbnail,
+                    item.information.image.descriptionImage,
+                    item.information.productName,
+                    item.information.mainFunction,
+                    item.information.enterprise,
+                    item.information.baseStandard,
+                    item.information.price.realPrice,
+                    item.information.price.discountRate,
+                    item.information.price.discountPrice,
+                    item.statistics.sales,
+                    item.statistics.starAvg
+                ));
     }
 }
