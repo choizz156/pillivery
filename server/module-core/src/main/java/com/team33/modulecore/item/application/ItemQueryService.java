@@ -2,7 +2,7 @@ package com.team33.modulecore.item.application;
 
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.ItemResponseDto;
-import com.team33.modulecore.item.dto.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemPageDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.List;
@@ -63,4 +63,5 @@ public class ItemQueryService {
         );
 
     }
+
 }

@@ -1,4 +1,4 @@
-package com.team33.moduleapi.admin;
+package com.team33.admin;
 
 import com.team33.modulecore.category.application.CategoryService;
 import com.team33.modulecore.category.domain.Category;
@@ -39,9 +39,7 @@ public class ItemRegisterService {
         return itemList.stream()
             .collect(Collectors.groupingBy(
                 item -> {
-                    CategoryName categoryName = CategoryName.get(
-                        item.getInformation().getMainFunction()
-                    );
+                    CategoryName categoryName = CategoryName.get(item);
                     return categoryService.getCategory(categoryName);
                 }
             ));

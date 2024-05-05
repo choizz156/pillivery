@@ -1,6 +1,6 @@
 package com.team33.modulecore.order.dto;
 
-import com.team33.modulecore.item.dto.ItemSimpleResponseDto;
+import com.team33.modulecore.item.dto.query.ItemSimpleResponseDto;
 import com.team33.modulecore.order.domain.OrderItem;
 import java.time.ZonedDateTime;
 import lombok.Builder;
@@ -42,7 +42,7 @@ public class OrderItemSimpleResponse {
             .quantity(orderItem.getQuantity())
             .period(orderItem.getPeriod())
             .subscription(orderItem.isSubscription())
-            .item(com.team33.modulecore.item.dto.ItemSimpleResponseDto.of(orderItem.getItem()))
+            .item(ItemSimpleResponseDto.of(orderItem.getItem()))
             .createdAt(orderItem.getCreatedAt())
             .updatedAt(orderItem.getUpdatedAt())
             .build();

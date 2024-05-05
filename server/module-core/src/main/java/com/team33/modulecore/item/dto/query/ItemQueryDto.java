@@ -1,7 +1,6 @@
 package com.team33.modulecore.item.dto.query;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.team33.modulecore.category.domain.CategoryName;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,7 @@ public class ItemQueryDto {
     private Long itemId;
     private String thumbnail;
     private String productName;
+    private String enterprise;
     private String mainFunction;
     private String baseStandard;
     private int realPrice;
@@ -21,7 +21,6 @@ public class ItemQueryDto {
     private int sales;
     private double starAvg;
     private int reviewSize;
-    private CategoryName categoryName;
 
     @QueryProjection
     @Builder
@@ -29,16 +28,15 @@ public class ItemQueryDto {
         Long itemId,
         String thumbnail,
         String productName,
+        String enterprise,
         String mainFunction,
         String baseStandard,
-        String enterprise,
         int realPrice,
         double discountRate,
         int discountPrice,
         int sales,
         double starAvg,
-        int reviewSize,
-        CategoryName categoryName
+        int reviewSize
     ) {
         this.itemId = itemId;
         this.thumbnail = thumbnail;
@@ -51,6 +49,5 @@ public class ItemQueryDto {
         this.sales = sales;
         this.starAvg = starAvg;
         this.reviewSize = reviewSize;
-        this.categoryName = categoryName;
     }
 }

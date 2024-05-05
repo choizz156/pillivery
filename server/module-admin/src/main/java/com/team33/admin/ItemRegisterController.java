@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemRegisterController {
 
     private final ItemCommandRepository itemCommandRepository;
-    private final com.team33.moduleapi.admin.ItemRegisterService itemRegisterService;
+    private final ItemRegisterService itemRegisterService;
 
     @ResponseStatus(HttpStatus.CREATED)
     public void postItem(@RequestBody BodyWrapper bodyWrapper) {

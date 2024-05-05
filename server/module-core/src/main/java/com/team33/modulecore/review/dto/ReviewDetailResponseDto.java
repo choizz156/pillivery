@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.team33.modulecore.item.dto.ItemSimpleResponseDto;
+import com.team33.modulecore.item.dto.query.ItemSimpleResponseDto;
 
 
 @Getter

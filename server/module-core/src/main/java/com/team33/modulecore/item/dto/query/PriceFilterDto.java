@@ -1,5 +1,6 @@
-package com.team33.modulecore.item.dto;
+package com.team33.modulecore.item.dto.query;
 
+import com.team33.modulecore.item.dto.ItemPriceRequstDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

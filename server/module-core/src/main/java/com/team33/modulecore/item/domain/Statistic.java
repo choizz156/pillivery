@@ -21,11 +21,17 @@ public class Statistic {
 
     private double starAvg;
 
+    private int reviewCount;
+
     public void addView() {
-        this.view += 1;
+        this.view ++;
     }
 
     public void reduceSales(int quantity) {
         this.sales -= quantity;
+    }
+
+    public void addReviewCount() {
+        this.reviewCount++;
     }
 }

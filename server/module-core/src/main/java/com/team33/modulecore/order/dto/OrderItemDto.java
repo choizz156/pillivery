@@ -1,6 +1,6 @@
 package com.team33.modulecore.order.dto;
 
-import com.team33.modulecore.item.dto.ItemSimpleResponseDto;
+import com.team33.modulecore.item.dto.query.ItemSimpleResponseDto;
 import java.time.ZonedDateTime;
 import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;

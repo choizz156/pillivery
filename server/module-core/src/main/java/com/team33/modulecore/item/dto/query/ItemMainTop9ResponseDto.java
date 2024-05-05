@@ -1,6 +1,6 @@
-package com.team33.modulecore.item.dto;
+package com.team33.modulecore.item.dto.query;
 
-import com.team33.modulecore.item.dto.query.ItemQueryDto;
+import com.team33.modulecore.item.dto.ItemResponseDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;

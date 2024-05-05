@@ -24,7 +24,6 @@ public class ItemResponseDto { // 목록 조회
     private int discountPrice;
     private double starAvg;
     private int reviewSize;
-    private CategoryName categoryName;
 
     @Builder
     public ItemResponseDto(
@@ -37,8 +36,7 @@ public class ItemResponseDto { // 목록 조회
         double discountRate,
         int discountPrice,
         double starAvg,
-        int reviewSize,
-        CategoryName categoryName
+        int reviewSize
     ) {
         this.itemId = itemId;
         this.thumbnail = thumbnail;
@@ -50,7 +48,6 @@ public class ItemResponseDto { // 목록 조회
         this.discountPrice = discountPrice;
         this.starAvg = starAvg;
         this.reviewSize = reviewSize;
-        this.categoryName = categoryName;
     }
 
     public static List<ItemResponseDto> from(List<Item> items) {
@@ -68,11 +65,6 @@ public class ItemResponseDto { // 목록 조회
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())
             .starAvg(item.getStatistics().getStarAvg())
-            .categoryName(
-                item.getItemCategories().stream()
-                    .map(itemCategory -> itemCategory.getCategory().getCategoryName())
-                    .findFirst().orElse(null)
-            )
             .build();
     }
 
@@ -88,7 +80,6 @@ public class ItemResponseDto { // 목록 조회
             .discountPrice(itemQueryDto.getDiscountPrice())
             .starAvg(itemQueryDto.getStarAvg())
             .reviewSize(itemQueryDto.getReviewSize())
-            .categoryName(itemQueryDto.getCategoryName())
             .build();
     }
 }
