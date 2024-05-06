@@ -3,10 +3,8 @@ package com.team33.modulecore;
 import com.team33.modulecore.category.application.CategoryService;
 import com.team33.modulecore.category.domain.repository.CategoryRepository;
 import com.team33.modulecore.config.QueryDslConfig;
-import com.team33.modulecore.item.application.BrandService;
+import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.application.ItemQueryService;
-import com.team33.modulecore.item.application.ItemService;
-import com.team33.modulecore.item.application.NutritionFactService;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,10 +27,8 @@ import org.springframework.test.context.ContextConfiguration;
     CategoryService.class,
     CategoryRepository.class,
     QueryDslConfig.class,
-    NutritionFactService.class,
     ItemCommandRepository.class,
-    ItemService.class,
-    BrandService.class,
+    ItemCommandService.class,
     ItemQueryService.class
 })
 @EnableAutoConfiguration

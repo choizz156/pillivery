@@ -1,15 +1,13 @@
 package com.team33.modulecore.item.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
-import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.mock.FakeItemQuerydslDao;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.query.ItemPageDto;
 import com.team33.modulecore.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.dto.ItemResponseDto;
-import com.team33.modulecore.item.dto.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.ItemPageDto;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +22,7 @@ class ItemQueryServiceTest {
     ItemQueryRepository itemQueryRepository;
 
     @BeforeAll
-     void beforeAll() {
+    void beforeAll() {
         itemQueryRepository = new FakeItemQuerydslDao();
     }
 
@@ -44,8 +42,8 @@ class ItemQueryServiceTest {
         //then
         List<ItemResponseDto> content = filteredItemByPrice.getContent();
         assertThat(content).hasSize(1)
-            .extracting("title", "brand")
-            .containsExactlyInAnyOrder(tuple("title", Brand.MYNI));
+            .extracting("productName")
+            .contains("test");
     }
 
     @DisplayName("조회된 결과를 dto로 변환할 수 있다.")
@@ -59,12 +57,12 @@ class ItemQueryServiceTest {
         dto.setSize(14);
         //when
         Page<ItemResponseDto> filteredItemByPrice =
-            itemQueryService.findItemOnSale( ItemPageDto.from(dto));
+            itemQueryService.findItemOnSale(ItemPageDto.from(dto));
 
         //then
         List<ItemResponseDto> content = filteredItemByPrice.getContent();
         assertThat(content).hasSize(1)
-            .extracting("title", "brand")
-            .containsExactlyInAnyOrder(tuple("title", Brand.MYNI));
+            .extracting("productName")
+            .contains("test");
     }
 }

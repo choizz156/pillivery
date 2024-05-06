@@ -13,7 +13,7 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.dto.ItemPriceRequstDto;
-import com.team33.modulecore.item.dto.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemPageDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.item.infra.ItemQueryDslDao;
@@ -69,7 +69,7 @@ class ItemQueryDslTest {
         //then
         assertThat(itemsWithSalesTop9).hasSize(9)
             .isSortedAccordingTo(comparing(ItemQueryDto::getSales).reversed())
-            .extracting("title")
+            .extracting("productName")
             .containsExactly("title15",
                 "title14",
                 "title13",
@@ -92,7 +92,7 @@ class ItemQueryDslTest {
         //then
         assertThat(top9SaleItems).hasSize(9)
             .isSortedAccordingTo(comparing(ItemQueryDto::getDiscountRate).reversed())
-            .extracting("title")
+            .extracting("productName")
             .containsExactly("title15",
                 "title14",
                 "title13",
@@ -114,13 +114,12 @@ class ItemQueryDslTest {
         dto.setSize(14);
 
         //when
-        Page<ItemQueryDto> items = itemQueryRepository.findItemsOnSale(
-            ItemPageDto.from(dto)
-        );
+        Page<ItemQueryDto> itemsOnSale = itemQueryRepository.findItemsOnSale(ItemPageDto.from(dto));
 
         //then
-//        assertThat(items.getContent()).hasSize(15)
-//            .isSortedAccordingTo(comparing(ItemQueryDto::getSales).reversed());
+        List<ItemQueryDto> content = itemsOnSale.getContent();
+        assertThat(content).hasSize(15)
+            .isSortedAccordingTo(comparing(ItemQueryDto::getSales).reversed());
     }
 
     @DisplayName("카테고리 별로 아이템을 조회할 수 있다.")
@@ -133,9 +132,15 @@ class ItemQueryDslTest {
 
         //when
         Page<ItemQueryDto> itemsByCategory = itemQueryRepository.findItemsByCategory(
-            CategoryName.EYE, ItemPageDto.from(dto));
+            CategoryName.BONE, ItemPageDto.from(dto));
 
         //then
+        List<ItemQueryDto> content = itemsByCategory.getContent();
+        assertThat(content).hasSize(3)
+            .isSortedAccordingTo(comparing(ItemQueryDto::getSales).reversed())
+            .extracting("productName")
+//            .containsAnyElementsOf("test10");
+            .contains("test10", "test11", "test12");
     }
 
 
@@ -160,7 +165,7 @@ class ItemQueryDslTest {
             //then
             assertThat(tes.getContent())
                 .hasSize(15)
-                .extracting("title")
+                .extracting("productName")
                 .contains("title12", Index.atIndex(3));
             assertThat(tes.getSize()).isEqualTo(16);
             assertThat(tes.getTotalElements()).isEqualTo(15);

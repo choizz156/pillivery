@@ -1,13 +1,11 @@
 package com.team33.modulecore.item.domain.mock;
 
 import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.Brand;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
+import com.team33.modulecore.item.dto.query.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemPageDto;
-import com.team33.modulecore.item.dto.PriceFilterDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +20,13 @@ public class FakeItemQuerydslDao implements ItemQueryRepository {
     public FakeItemQuerydslDao() {
         this.store = new HashMap<>();
         store.put(1L, new ItemQueryDto().builder()
-            .title("title")
-            .brand(Brand.MYNI)
-            .nutritionFacts(new ArrayList<>())
+            .productName("test")
             .build());
+    }
+
+    @Override
+    public Item findById(long id) {
+        return null;
     }
 
     @Override
