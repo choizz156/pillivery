@@ -380,3 +380,5 @@ application-quartztest.yml
 settings.gradle
 HELP.md
 gradlew
+
+server/module-core/src/main/generated
