@@ -1,13 +1,16 @@
-package com.team33.admin;
+package com.team33.moduleadmin.controller;
 
-import com.team33.admin.dto.ItemDto;
-import com.team33.modulecore.item.domain.Information;
-import com.team33.modulecore.item.domain.Price;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.team33.moduleadmin.dto.ItemDto;
+import com.team33.modulecore.item.domain.Information;
+import com.team33.modulecore.item.domain.Price;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Component

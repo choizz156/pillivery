@@ -1,4 +1,4 @@
-package com.team33.admin.dto;
+package com.team33.moduleadmin.dto;
 
 import java.util.ArrayList;
 import java.util.List;

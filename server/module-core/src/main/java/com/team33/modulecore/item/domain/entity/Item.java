@@ -1,15 +1,8 @@
 package com.team33.modulecore.item.domain.entity;
 
-import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.category.domain.ItemCategory;
-import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.Categories;
-import com.team33.modulecore.item.domain.Information;
-import com.team33.modulecore.item.domain.Price;
-import com.team33.modulecore.item.domain.Statistic;
-import com.team33.modulecore.item.infra.CategoryNameConverter;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -23,11 +16,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.team33.modulecore.category.domain.CategoryName;
+import com.team33.modulecore.category.domain.ItemCategory;
+import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.item.domain.Categories;
+import com.team33.modulecore.item.domain.Information;
+import com.team33.modulecore.item.domain.Price;
+import com.team33.modulecore.item.domain.Statistic;
+import com.team33.modulecore.item.infra.CategoryNameConverter;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,7 +53,7 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @ElementCollection
     @CollectionTable(name = "item_category", joinColumns = @JoinColumn(name = "item_id"))
-    private Set<CategoryName> categoryNames = new HashSet<>();
+    private Set<CategoryName> includedCategories = new HashSet<>();
 
     @Column(name = "categories")
     @Convert(converter = CategoryNameConverter.class)
@@ -126,5 +130,9 @@ public class Item extends BaseEntity {
 
     public double getStarAvg() {
         return this.statistics.getStarAvg();
+    }
+
+    public void addIncludedCategory(Set<CategoryName> categoryNames) {
+        this.categories = new Categories(categoryNames);
     }
 }

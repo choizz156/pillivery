@@ -1,8 +1,10 @@
-package com.team33.admin.dto;
+package com.team33.moduleadmin.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data

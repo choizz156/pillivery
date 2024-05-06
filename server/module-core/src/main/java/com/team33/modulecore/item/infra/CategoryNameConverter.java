@@ -15,7 +15,7 @@ public class CategoryNameConverter implements AttributeConverter<Categories, Str
             return null;
         }
 
-        return attribute.getCategoryNames().stream()
+        return attribute.getCategoryNameSet().stream()
             .map(Enum::name)
             .collect(Collectors.joining(","));
     }

@@ -1,7 +1,11 @@
 package com.team33.modulecore.category.domain;
 
-import com.team33.modulecore.item.domain.entity.Item;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.team33.modulecore.item.domain.entity.Item;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -21,11 +25,16 @@ public enum CategoryName {
 
     private final String name;
 
-    public static CategoryName get(Item item) {
+    public static Set<CategoryName> classify(Item item) {
         CategoryName[] values = CategoryName.values();
-        values[values.length - 1] = null;
-        return Arrays.stream(values)
+        Set<CategoryName> categoriesSet = Arrays.stream(values)
             .filter(value -> item.getInformation().getMainFunction().contains(value.getName()))
-            .findFirst().orElse(ETC);
+            .collect(Collectors.toSet());
+
+        if(categoriesSet.isEmpty()){
+            categoriesSet.add(ETC);
+        }
+
+        return categoriesSet;
     }
 }

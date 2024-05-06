@@ -62,6 +62,7 @@ project(':module-api') {
     dependencies {
         api project(':module-core')
         api project(':module-quartz')
+        api project(':module-admin')
     }
 }
 
@@ -75,8 +76,8 @@ project(':module-quartz') {
 }
 
 project(':module-admin'){
-    bootJar { enabled = true }
-    jar { enabled = false }
+    bootJar { enabled = false }
+    jar { enabled = true }
 
     dependencies {
         api project(':module-core')

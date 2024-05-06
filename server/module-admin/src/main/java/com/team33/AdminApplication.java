@@ -1,9 +1,8 @@
 package com.team33;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = "com.team33.modulecore")
+// @SpringBootApplication(scanBasePackages = "com.team33.modulecore")
 public class AdminApplication {
 
     public static void main(String[] args) {
