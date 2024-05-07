@@ -1,67 +1,107 @@
 package com.team33.modulecore.item.application;
 
-import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.ItemResponseDto;
-import com.team33.modulecore.item.dto.query.PriceFilterDto;
-import com.team33.modulecore.item.dto.query.ItemPageDto;
-import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.category.domain.CategoryName;
+import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
+import com.team33.modulecore.item.dto.ItemResponseDto;
+import com.team33.modulecore.item.dto.query.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemQueryDto;
+import com.team33.modulecore.item.dto.query.PriceFilterDto;
+
+import lombok.RequiredArgsConstructor;
+
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class ItemQueryService {
 
-    private final ItemQueryRepository itemQueryRepository;
+	private final ItemQueryRepository itemQueryRepository;
 
-    public List<ItemQueryDto> findTop9DiscountItems() {
-        return itemQueryRepository.findItemsWithDiscountRateTop9();
-    }
+	public List<ItemQueryDto> findMainDiscountItems() {
+		return itemQueryRepository.findItemsWithDiscountRateTop9();
+	}
 
-    public List<ItemQueryDto> findTop9SaleItems() {
-        return itemQueryRepository.findItemsWithSalesTop9();
-    }
+	public List<ItemQueryDto> findMainSaleItems() {
+		return itemQueryRepository.findItemsWithSalesTop9();
+	}
 
-    public Page<ItemResponseDto> findFilteredItem(
-        String keyword,
-        PriceFilterDto priceFilterDto,
-        ItemPageDto itemPageDto
-    ) {
-        Page<ItemQueryDto> itemsByPrice =
-            itemQueryRepository.findFilteredItems(keyword, priceFilterDto, itemPageDto);
+	public Page<ItemResponseDto> findFilteredItem(
+		String keyword,
+		PriceFilterDto priceFilterDto,
+		ItemPageDto pageDto
+	) {
+		Page<ItemQueryDto> itemsByPrice =
+			itemQueryRepository.findFilteredItems(keyword, priceFilterDto, pageDto);
 
-        List<ItemResponseDto> itemResponseDtos = itemsByPrice.getContent().stream()
-            .map(ItemResponseDto::from)
-            .collect(Collectors.toUnmodifiableList());
+		List<ItemResponseDto> itemResponseDtos = itemsByPrice.getContent().stream()
+			.map(ItemResponseDto::from)
+			.collect(Collectors.toUnmodifiableList());
 
-        return new PageImpl<>(
-            itemResponseDtos,
-            PageRequest.of(itemsByPrice.getNumber() - 1, itemsByPrice.getSize(),
-                itemsByPrice.getSort()),
-            itemsByPrice.getTotalElements()
-        );
-    }
+		return new PageImpl<>(
+			itemResponseDtos,
+			PageRequest.of(itemsByPrice.getNumber() - 1, itemsByPrice.getSize(),
+				itemsByPrice.getSort()),
+			itemsByPrice.getTotalElements()
+		);
+	}
 
-    public Page<ItemResponseDto> findItemOnSale(ItemPageDto pageDto) {
-        Page<ItemQueryDto> itemsOnSale = itemQueryRepository.findItemsOnSale(pageDto);
+	// public Page<ItemResponseDto> findByCategory(CategoryName categoryName, ItemPageDto pageDto) {
+	// 	Page<ItemQueryDto> itemsByCategory = itemQueryRepository.findItemsByCategory(categoryName, keyword,
+	// 		priceFilterDto, pageDto);
+	//
+	// 	List<ItemResponseDto> itemResponseDtos = itemsByCategory.getContent().stream()
+	// 		.map(ItemResponseDto::from)
+	// 		.collect(Collectors.toUnmodifiableList());
+	//
+	// 	return new PageImpl<>(
+	// 		itemResponseDtos,
+	// 		PageRequest.of(itemsByCategory.getNumber() - 1, itemsByCategory.getSize(), itemsByCategory.getSort()),
+	// 		itemsByCategory.getTotalElements()
+	// 	);
+	// }
 
-        List<ItemResponseDto> itemResponseDtos = itemsOnSale.getContent().stream()
-            .map(ItemResponseDto::from)
-            .collect(Collectors.toUnmodifiableList());
+	public Page<ItemResponseDto> findItemOnSale(
+		String keyword,
+		ItemPageDto pageDto,
+		PriceFilterDto priceFilterDto
+	) {
+		Page<ItemQueryDto> itemsOnSale = itemQueryRepository.findItemsOnSale(keyword, priceFilterDto, pageDto);
 
-        return new PageImpl<>(
-            itemResponseDtos,
-            PageRequest.of(itemsOnSale.getNumber() - 1, itemsOnSale.getSize(), itemsOnSale.getSort()),
-            itemsOnSale.getTotalElements()
-        );
+		List<ItemResponseDto> itemResponseDtos = itemsOnSale.getContent().stream()
+			.map(ItemResponseDto::from)
+			.collect(Collectors.toUnmodifiableList());
 
-    }
+		return new PageImpl<>(
+			itemResponseDtos,
+			PageRequest.of(itemsOnSale.getNumber() - 1, itemsOnSale.getSize(), itemsOnSale.getSort()),
+			itemsOnSale.getTotalElements()
+		);
+	}
 
+	public Page<ItemResponseDto> findByCategory(
+		CategoryName categoryName,
+		String keyword,
+		PriceFilterDto priceFilterDto,
+		ItemPageDto pageDto
+	) {
+		Page<ItemQueryDto> itemsByCategory = itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilterDto,pageDto);
+
+		List<ItemResponseDto> itemResponseDtos = itemsByCategory.getContent().stream()
+			.map(ItemResponseDto::from)
+			.collect(Collectors.toUnmodifiableList());
+
+		return new PageImpl<>(
+			itemResponseDtos,
+			PageRequest.of(itemsByCategory.getNumber() - 1, itemsByCategory.getSize(), itemsByCategory.getSort()),
+			itemsByCategory.getTotalElements()
+		);
+	}
 }

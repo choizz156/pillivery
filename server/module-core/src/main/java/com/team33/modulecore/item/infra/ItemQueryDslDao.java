@@ -105,10 +105,12 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	@Override
-	public Page<ItemQueryDto> findItemsOnSale(ItemPageDto pageDto) {
+	public Page<ItemQueryDto> findItemsOnSale(String keyword, PriceFilterDto priceFilter, ItemPageDto pageDto) {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.where(
-				discountRateEqNot0()
+				discountRateEqNot0(),
+				titleContainsKeyword(keyword),
+				priceBetween(priceFilter)
 			)
 			.limit(pageDto.getSize())
 			.offset(pageDto.getOffset())
@@ -134,10 +136,17 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	@Override
-	public Page<ItemQueryDto> findItemsByCategory(CategoryName categoryName, ItemPageDto pageDto) {
+	public Page<ItemQueryDto> findItemsByCategory(
+		CategoryName categoryName,
+		String keyword,
+		PriceFilterDto priceFilter,
+		ItemPageDto pageDto
+	) {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.where(
-				// item.categoryNames.contains(categoryName)
+				item.includedCategories.contains(categoryName),
+				titleContainsKeyword(keyword),
+				priceBetween(priceFilter)
 			)
 			.limit(pageDto.getSize())
 			.offset(pageDto.getOffset())
@@ -146,17 +155,16 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 		checkEmptyList(fetch);
 
-		// JPAQuery<Long> count = queryFactory
-		//     .select(item.count())
-		//     .from(item)
-		//     .where(item.categoryNames.contains(categoryName));
+		JPAQuery<Long> count = queryFactory
+			.select(item.count())
+			.from(item)
+			.where(item.includedCategories.contains(categoryName));
 
-		// return PageableExecutionUtils.getPage(
-		//     fetch,
-		//     PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
-		//     count::fetchOne
-		// );
-		return null;
+		return PageableExecutionUtils.getPage(
+			fetch,
+			PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
+			count::fetchOne
+		);
 	}
 
 	private BooleanExpression priceBetween(PriceFilterDto priceFilter) {
@@ -176,10 +184,10 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		);
 	}
 
-	private BooleanExpression titleContainsKeyword(String productName) {
-		return StringUtils.isNullOrEmpty(productName)
+	private BooleanExpression titleContainsKeyword(String keyword) {
+		return StringUtils.isNullOrEmpty(keyword)
 			? null
-			: item.information.productName.contains(productName);
+			: item.information.productName.contains(keyword);
 	}
 
 	private OrderSpecifier<? extends Number> getItemSort(ItemSortOption itemSortOption) {

@@ -381,4 +381,6 @@ settings.gradle
 HELP.md
 gradlew
 
-server/module-core/src/main/generated
+
+**/module-core/src/main/generated/
+
