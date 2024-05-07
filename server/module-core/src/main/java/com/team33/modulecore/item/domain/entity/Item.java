@@ -51,7 +51,7 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @ElementCollection
     @CollectionTable(name = "item_category", joinColumns = @JoinColumn(name = "item_id"))
-    private Set<CategoryName> includedCategories = new HashSet<>();
+    private Set<CategoryName> categoryNames = new HashSet<>();
 
     @Column(name = "categories")
     @Convert(converter = CategoryNameConverter.class)
@@ -63,7 +63,6 @@ public class Item extends BaseEntity {
     @Builder
     private Item(
         Information information,
-        Price price,
         Statistic statistics
     ) {
         this.information = information;

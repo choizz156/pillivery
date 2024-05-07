@@ -110,7 +110,7 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
 			.discountPrice(item.getDiscountPrice())
 			.starAvg(item.getStarAvg())
 			.categories(
-				new ArrayList<>(item.getIncludedCategories())
+				new ArrayList<>(item.getCategoryNames())
 			)
 			//            .reviews(item.getItemReviewsBy5().stream()
 			//                .map(ReviewResponseDto::from)
