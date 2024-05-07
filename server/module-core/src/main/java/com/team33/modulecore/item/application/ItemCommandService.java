@@ -1,15 +1,14 @@
 package com.team33.modulecore.item.application;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.category.application.CategoryService;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Transactional
@@ -22,14 +21,18 @@ public class ItemCommandService {
 
 
     //TODO: 이것도 캐싱을 해놓고, 조회수는 나중에 푸시하는 느낌으로 해도 될 것 같은데
-    public Item findItemWithAddingView(long itemId) {
-        Item item = itemCommandRepository.findById(itemId)
-            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
-        item.addView();
-        return item;
+    // public Item findItemWithAddingView(long itemId) {
+    //     Item item = itemCommandRepository.findById(itemId)
+    //         .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
+    //     item.addView();
+    //     return item;
+    // }
+
+    public Item increaseView(long itemId) {
+       return itemCommandRepository.incrementView(itemId);
     }
 
-//
+    //
 //
 //    public Page<Item> findBrandItems(String categoryName, Brand brand, int page, int size,
 //        String sort) {

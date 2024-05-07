@@ -15,12 +15,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.category.domain.ItemCategory;
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.Categories;
 import com.team33.modulecore.item.domain.Information;
@@ -59,9 +57,6 @@ public class Item extends BaseEntity {
     @Convert(converter = CategoryNameConverter.class)
     private Categories categories;
 
-    @OneToMany(mappedBy = "item")
-    private Set<ItemCategory> itemCategories = new HashSet<>();
-
 //    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Review> reviews = new ArrayList<>();
 
@@ -69,12 +64,10 @@ public class Item extends BaseEntity {
     private Item(
         Information information,
         Price price,
-        Statistic statistics,
-        Set<ItemCategory> itemCategories
+        Statistic statistics
     ) {
         this.information = information;
         this.statistics = statistics;
-        this.itemCategories = itemCategories;
     }
 
     public static Item create(Information information) {
@@ -84,9 +77,9 @@ public class Item extends BaseEntity {
             .build();
     }
 
-    public void addView() {
-        this.statistics.addView();
-    }
+    // public void addView() {
+    //     this.statistics.addView();
+    // }
 
     public String getThumbnailUrl() {
         return this.information.getImage().getThumbnail();

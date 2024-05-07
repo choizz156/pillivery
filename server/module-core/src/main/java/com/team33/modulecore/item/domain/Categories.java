@@ -7,12 +7,14 @@ import com.team33.modulecore.category.domain.CategoryName;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @EqualsAndHashCode
 @Getter
 public class Categories {
 
-    private final Set<CategoryName> categoryNameSet;
+    private Set<CategoryName> categoryNameSet;
 
     public Categories(Set<CategoryName> categoryNameSet) {
         this.categoryNameSet = new HashSet<>();

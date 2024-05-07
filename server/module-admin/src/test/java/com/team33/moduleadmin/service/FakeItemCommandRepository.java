@@ -35,4 +35,9 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 		}
 		return items;
 	}
+
+	@Override
+	public Item incrementView(long itemId) {
+		return null;
+	}
 }

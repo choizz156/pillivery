@@ -9,9 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,8 +37,9 @@ public class Category extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CategoryName categoryName;
 
-    @OneToMany(mappedBy = "category")
-    private Set<ItemCategory> itemCategories = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     private Category(CategoryName categoryName) {
         this.categoryName = categoryName;
@@ -44,22 +48,4 @@ public class Category extends BaseEntity {
     public static Category of(CategoryName name) {
         return new Category(name);
     }
-
-    public static Category of(CategoryName name, List<Item> items) {
-
-        ItemCategory itemCategory = new ItemCategory();
-        Category category = new Category(name);
-
-        category.getItemCategories().add(itemCategory);
-        itemCategory.addCategory(category);
-
-        items.forEach(item -> {
-                itemCategory.addItem(item);
-                item.getItemCategories().add(itemCategory);
-            }
-        );
-
-        return category;
-    }
-
 }

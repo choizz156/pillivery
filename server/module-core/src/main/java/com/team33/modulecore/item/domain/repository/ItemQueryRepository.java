@@ -28,6 +28,10 @@ public interface ItemQueryRepository {
 
 	Page<ItemQueryDto> findItemsOnSale(String keyword,  PriceFilterDto priceFilterDto, ItemPageDto pageDto);
 
-	Page<ItemQueryDto> findItemsByCategory(CategoryName categoryName, String keyword, PriceFilterDto priceFilterDto,
-		ItemPageDto pageDto);
+	Page<ItemQueryDto> findItemsByCategory(
+		CategoryName categoryName,
+		String keyword,
+		PriceFilterDto priceFilterDto,
+		ItemPageDto pageDto
+	);
 }

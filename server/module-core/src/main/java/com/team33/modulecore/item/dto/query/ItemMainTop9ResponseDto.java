@@ -1,36 +1,20 @@
 package com.team33.modulecore.item.dto.query;
 
-import com.team33.modulecore.item.dto.ItemResponseDto;
 import java.util.List;
-import java.util.stream.Collectors;
-import lombok.AccessLevel;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMainTop9ResponseDto {
 
-    private List<ItemResponseDto> discountRateItem;
-    private List<ItemResponseDto> saleItem;
+    private List<ItemQueryDto> discountRateItem;
+    private List<ItemQueryDto> saleItem;
 
-    private ItemMainTop9ResponseDto(
-        List<ItemResponseDto> saleItem,
-        List<ItemResponseDto> discountRateItem
+    public ItemMainTop9ResponseDto(
+        List<ItemQueryDto> saleItem,
+        List<ItemQueryDto> discountRateItem
     ) {
         this.saleItem = saleItem;
         this.discountRateItem = discountRateItem;
-    }
-
-    public static ItemMainTop9ResponseDto from(List<ItemQueryDto> sales, List<ItemQueryDto> discountRate) {
-        List<ItemResponseDto> top9Sales = sales.stream()
-            .map(ItemResponseDto::from)
-            .collect(Collectors.toList());
-
-        List<ItemResponseDto> top9discount = discountRate.stream()
-            .map(ItemResponseDto::from)
-            .collect(Collectors.toList());
-
-        return new ItemMainTop9ResponseDto(top9Sales, top9discount);
     }
 }
