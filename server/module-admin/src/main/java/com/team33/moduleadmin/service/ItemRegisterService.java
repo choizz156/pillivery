@@ -39,7 +39,7 @@ public class ItemRegisterService {
 	private void inputCategoryToItem(final Map<Set<CategoryName>, List<Item>> categorizedItems) {
 		for (Map.Entry<Set<CategoryName>, List<Item>> entry : categorizedItems.entrySet()) {
 			entry.getValue().forEach(item -> {
-				item.getIncludedCategories().addAll(entry.getKey());
+				item.getCategoryNames().addAll(entry.getKey());
 				item.addIncludedCategory(entry.getKey());
 			});
 		}

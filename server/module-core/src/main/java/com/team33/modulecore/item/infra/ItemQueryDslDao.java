@@ -9,14 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.category.domain.QCategory;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.ItemSortOption;
@@ -146,7 +144,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	) {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.where(
-				item.includedCategories.contains(categoryName),
+				item.categoryNames.contains(categoryName),
 				titleContainsKeyword(keyword),
 				priceBetween(priceFilter)
 			)
@@ -160,7 +158,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		JPAQuery<Long> count = queryFactory
 			.select(item.count())
 			.from(item)
-			.where(item.includedCategories.contains(categoryName));
+			.where(item.categoryNames.contains(categoryName));
 
 		return PageableExecutionUtils.getPage(
 			fetch,
@@ -203,6 +201,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	private JPAQuery<ItemQueryDto> selectItemQueryDto() {
+		// return null;
 		return queryFactory
 			.select(
 				new QItemQueryDto(
@@ -217,8 +216,10 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 					item.information.price.discountPrice,
 					item.statistics.sales,
 					item.statistics.starAvg,
-					item.statistics.reviewCount
-				))
+					item.statistics.reviewCount,
+					item.categories
+				)
+			)
 			.from(item);
 	}
 }
