@@ -201,7 +201,6 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	private JPAQuery<ItemQueryDto> selectItemQueryDto() {
-		// return null;
 		return queryFactory
 			.select(
 				new QItemQueryDto(

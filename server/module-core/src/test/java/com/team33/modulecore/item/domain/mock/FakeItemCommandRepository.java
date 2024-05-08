@@ -1,14 +1,11 @@
 package com.team33.modulecore.item.domain.mock;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 
-import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 
@@ -19,11 +16,6 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 
 	public FakeItemCommandRepository(EntityManager em) {
 		this.em = em;
-		this.items = new HashMap<>();
-		Item item = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
-			.set("id", 1L)
-			.sample();
-		this.items.put(item.getId(), item);
 	}
 
 	@Override

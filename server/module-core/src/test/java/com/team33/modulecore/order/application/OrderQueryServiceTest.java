@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import com.team33.modulecore.MockEntityFactory;
+import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.common.OrderPageDto;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.order.domain.Order;
@@ -30,8 +30,7 @@ public class OrderQueryServiceTest {
 
     @BeforeAll
     void beforeAll() {
-        MockEntityFactory mockEntityFactory = MockEntityFactory.of();
-        user = mockEntityFactory.getMockUser();
+        user = getMockUser();
         orderRepository = new FakeOrderQueryDslDao();
     }
 
@@ -86,5 +85,12 @@ public class OrderQueryServiceTest {
         //then
         assertThat(allSubscriptions1).hasSize(7);
 
+    }
+
+    private User getMockUser() {
+        return FixtureMonkeyFactory.get().giveMeBuilder(User.class)
+            .set("id", null)
+            .set("cart", null)
+            .sample();
     }
 }
