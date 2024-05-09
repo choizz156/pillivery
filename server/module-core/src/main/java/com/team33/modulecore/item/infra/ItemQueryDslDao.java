@@ -11,6 +11,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -143,8 +144,9 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		ItemPageDto pageDto
 	) {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
+			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, "itemCategory"))
 			.where(
-				item.categoryNames.contains(categoryName),
+				Expressions.enumPath(CategoryName.class, "itemCategory").eq(categoryName),
 				titleContainsKeyword(keyword),
 				priceBetween(priceFilter)
 			)
@@ -158,7 +160,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		JPAQuery<Long> count = queryFactory
 			.select(item.count())
 			.from(item)
-			.where(item.categoryNames.contains(categoryName));
+			.where(item.itemCategory.contains(categoryName));
 
 		return PageableExecutionUtils.getPage(
 			fetch,

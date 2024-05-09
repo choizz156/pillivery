@@ -22,7 +22,6 @@ import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.Categories;
 import com.team33.modulecore.item.domain.Information;
-import com.team33.modulecore.item.domain.Price;
 import com.team33.modulecore.item.domain.Statistic;
 import com.team33.modulecore.item.infra.CategoryNameConverter;
 
@@ -51,7 +50,8 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @ElementCollection
     @CollectionTable(name = "item_category", joinColumns = @JoinColumn(name = "item_id"))
-    private Set<CategoryName> categoryNames = new HashSet<>();
+    @Column(name = "category_name")
+    private Set<CategoryName> itemCategory = new HashSet<>();
 
     @Column(name = "categories")
     @Convert(converter = CategoryNameConverter.class)

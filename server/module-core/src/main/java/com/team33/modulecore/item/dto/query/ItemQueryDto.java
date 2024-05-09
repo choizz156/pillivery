@@ -1,9 +1,6 @@
 package com.team33.modulecore.item.dto.query;
 
-import java.util.Set;
-
 import com.querydsl.core.annotations.QueryProjection;
-import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.Categories;
 
 import lombok.Builder;

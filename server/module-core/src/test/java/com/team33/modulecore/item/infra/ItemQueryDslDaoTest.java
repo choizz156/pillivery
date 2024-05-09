@@ -409,7 +409,7 @@ class ItemQueryDslDaoTest {
 			.setLazy("information.price.realPrice", () -> value.intValue() * 1000)
 			.setLazy("information.productName", () -> "title" + value)
 			.set("categories", new Categories(Set.of(BONE,EYE)))
-			.set("categoryNames", Set.of(EYE, BONE))
+			.set("itemCategory", Set.of(EYE, BONE))
 			.sampleList(15);
 
 		var value2 = new AtomicInteger(9);
@@ -419,7 +419,7 @@ class ItemQueryDslDaoTest {
 			.set("information.price.discountRate", 0D)
 			.set("information.price.realPrice", 1)
 			.set("categories", null)
-			.set("categoryNames", Set.of(ETC))
+			.set("itemCategory", Set.of(ETC))
 			.setLazy("information.productName", () -> "test" + value2.addAndGet(1))
 			.sampleList(3);
 
