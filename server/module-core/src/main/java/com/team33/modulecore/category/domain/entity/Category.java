@@ -1,10 +1,9 @@
-package com.team33.modulecore.category.domain;
+package com.team33.modulecore.category.domain.entity;
 
+import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.entity.Item;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,7 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

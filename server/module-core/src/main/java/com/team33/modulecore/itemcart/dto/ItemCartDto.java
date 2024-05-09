@@ -1,27 +1,17 @@
 package com.team33.modulecore.itemcart.dto;
 
+import java.time.ZonedDateTime;
+
+import javax.validation.constraints.Positive;
 
 import com.team33.modulecore.item.dto.query.ItemSimpleResponseDto;
-import java.time.ZonedDateTime;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class ItemCartDto {
-
-    @Getter
-    public static class Post {
-
-        @Min(value = 1, message = "수량은 1개 이상 선택해주세요.")
-        private Integer quantity;
-
-        private Integer period;
-//        private boolean buyNow; 장바구니에 담을 경우 디폴트 == 장바구니에서 선택된 상태
-        private boolean subscription;
-    }
 
     @Getter
     @Builder

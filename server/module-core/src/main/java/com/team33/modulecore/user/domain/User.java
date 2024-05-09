@@ -1,14 +1,5 @@
 package com.team33.modulecore.user.domain;
 
-import com.team33.modulecore.cart.domain.Cart;
-import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.order.domain.Address;
-import com.team33.modulecore.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.user.dto.UserServicePatchDto;
-import com.team33.modulecore.user.dto.UserServicePostDto;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -17,10 +8,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.dto.OAuthUserServiceDto;
+import com.team33.modulecore.user.dto.UserServicePatchDto;
+import com.team33.modulecore.user.dto.UserServicePostDto;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,12 +57,14 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 
-    @OneToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    private Long normalCartId;
+
+    private Long subscriptionCartId;
+
 
     @Builder
-    private User(final Long id, String email,
+    private User(
+        Long id, String email,
         String displayName,
         String password,
         Address address,
@@ -108,8 +105,12 @@ public class User extends BaseEntity {
         this.password = encryptedPwd;
     }
 
-    public void addCart(Cart cart) {
-        this.cart = cart;
+    public void addNormalCart(Long id) {
+        this.normalCartId = id;
+    }
+
+    public void addSubscriptionCart(Long id) {
+        this.subscriptionCartId= id;
     }
 
     public void addAdditionalOauthUserInfo(OAuthUserServiceDto userDto) {

@@ -8,7 +8,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.category.domain.Category;
+import com.team33.modulecore.category.domain.entity.Category;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.category.domain.repository.CategoryQueryRepository;
 import com.team33.modulecore.category.domain.repository.CategoryRepository;

@@ -1,6 +1,6 @@
 package com.team33.modulecore.category.domain.repository;
 
-import com.team33.modulecore.category.domain.Category;
+import com.team33.modulecore.category.domain.entity.Category;
 import com.team33.modulecore.category.domain.CategoryName;
 import java.util.List;
 import org.springframework.data.repository.Repository;

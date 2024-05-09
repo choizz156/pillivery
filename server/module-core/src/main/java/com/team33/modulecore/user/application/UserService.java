@@ -1,22 +1,22 @@
 package com.team33.modulecore.user.application;
 
-import com.team33.modulecore.cart.domain.Cart;
-import com.team33.modulecore.cart.repository.CartRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.team33.modulecore.cart.domain.NormalCart;
+import com.team33.modulecore.cart.domain.SubscriptionCart;
+import com.team33.modulecore.cart.repository.NormalCartRepository;
+import com.team33.modulecore.cart.repository.SubscriptionCartRepository;
 import com.team33.modulecore.common.UserFindHelper;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;
-import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
@@ -24,21 +24,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 public class UserService {
+    private final SubscriptionCartRepository subscriptionCartRepository;
 
     private final UserFindHelper helper;
     private final UserRepository userRepository;
-    private final CartRepository cartRepository;
+    private final NormalCartRepository normalCartRepository;
     private final PasswordEncoder passwordEncoder;
     private final DuplicationVerifier duplicationVerifier;
 
-    public long join(UserServicePostDto userServicePostDto) {
+    public User join(UserServicePostDto userServicePostDto) {
         duplicationVerifier.checkUserInfo(userServicePostDto);
 
         String encryptedPassword = encryptPassword(userServicePostDto.getPassword());
         User user = User.createUser(userServicePostDto, encryptedPassword);
         makeCart(user);
 
-        return userRepository.save(user).getId();
+        return userRepository.save(user);
     }
 
     public User updateUser(UserServicePatchDto userDto, long userId) {
@@ -70,8 +71,14 @@ public class UserService {
 //    }
 
     private void makeCart(User user) {
-        Cart cart = Cart.createCart(user);
-        cartRepository.save(cart);
+        NormalCart normalCart = NormalCart.create();
+        SubscriptionCart subscriptionCart = SubscriptionCart.create();
+
+        normalCartRepository.save(normalCart);
+        subscriptionCartRepository.save(subscriptionCart);
+
+        user.addNormalCart(normalCart.getId());
+        user.addSubscriptionCart(subscriptionCart.getId());
     }
 
     private String encryptPassword(String password) {
