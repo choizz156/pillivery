@@ -4,12 +4,10 @@ import java.util.Optional;
 
 import org.springframework.data.repository.Repository;
 
-import com.team33.modulecore.cart.domain.SubscriptionCart;
+import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
 
 public interface SubscriptionCartRepository extends Repository<SubscriptionCart, Long> {
 
-	Optional<SubscriptionCart> findById(long id);
-
 	void save(SubscriptionCart subscriptionCart);
-	//    Cart findByUser(User user);
+	Optional<SubscriptionCart> findById(long id);
 }

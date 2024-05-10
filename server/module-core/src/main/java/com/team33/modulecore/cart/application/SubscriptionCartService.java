@@ -6,17 +6,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.cart.domain.entity.NormalCart;
+import com.team33.modulecore.cart.domain.SubscriptionCartItem;
 import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
-import com.team33.modulecore.cart.repository.NormalCartRepository;
 import com.team33.modulecore.cart.repository.SubscriptionCartRepository;
-import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.cart.domain.NormalCartItem;
-import com.team33.modulecore.cart.domain.SubscriptionCartItem;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
 
 import lombok.RequiredArgsConstructor;
@@ -24,13 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class CartService {
+public class SubscriptionCartService {
 
-	private final NormalCartRepository normalCartRepository;
 	private final SubscriptionCartRepository subscriptionCartRepository;
-	// private final ItemCartService itemCartService;
-	private final UserFindHelper userFindHelper;
-	private final ItemQueryRepository itemQueryRepository;
 
 	// public void refreshCart(List<NormalCartItem> normalCartItems, boolean subscription) { // 가격과 아이템 종류 갱신
 	// 	normalCartItems.forEach(ic -> {
@@ -42,11 +33,6 @@ public class CartService {
 
 	public SubscriptionCart findSubscriptionCart(Long cartId) {
 		return subscriptionCartRepository.findById(cartId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
-	}
-
-	public NormalCart findNormalCart(Long cartId) {
-		return normalCartRepository.findById(cartId)
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 	}
 
@@ -105,49 +91,23 @@ public class CartService {
 	// 	return totalPrice;
 	// }
 	//
-	public void addItem(Long normalCartId, Item item, int quantity) {
-		NormalCart normalCart = normalCartRepository.findById(normalCartId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 
-		normalCart.addItem(item, quantity);
-	}
-
-	public void addSubscriptionItem(
-		Long subscriptionCartId,
+	public void addItem(
+		Long cartId,
 		Item item,
 		SubscriptionInfo subscriptionInfo,
 		int quantity
 	) {
-		SubscriptionCart subscriptionCart = subscriptionCartRepository.findById(subscriptionCartId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
+		SubscriptionCart subscriptionCart = findSubscriptionCart(cartId);
 
 		subscriptionCart.addItem(item, quantity, subscriptionInfo);
 	}
 
-	public NormalCart correctNormalCart(Long cartId, Item item) {
-
-		NormalCart normalCart = normalCartRepository.findById(cartId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
-
-		normalCart.removeCartItem(getRemovedItem(item, normalCart));
-		return normalCart;
-	}
-
 	public SubscriptionCart correctSubscriptionCart(Long cartId, Item item) {
-		SubscriptionCart subscriptionCart = subscriptionCartRepository.findById(cartId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
+		SubscriptionCart subscriptionCart =findSubscriptionCart(cartId);
 
 		subscriptionCart.removeCartItem(getRemovedItem(item, subscriptionCart));
 		return subscriptionCart;
-	}
-
-	private NormalCartItem getRemovedItem(Item item, NormalCart normalCart) {
-
-		return normalCart.getNormalCartItems().stream().filter(
-				normalCartItem -> Objects.equals(normalCartItem.getItem().getId(), item.getId())
-			)
-			.findFirst()
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
 	}
 
 	private SubscriptionCartItem getRemovedItem(Item item, SubscriptionCart subscriptionCart) {

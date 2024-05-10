@@ -1,4 +1,4 @@
-package com.team33.modulecore.itemcart.domain;
+package com.team33.modulecore.cart.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

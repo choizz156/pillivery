@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
-import com.team33.modulecore.cart.domain.NormalCart;
-import com.team33.modulecore.cart.domain.SubscriptionCart;
+import com.team33.modulecore.cart.domain.entity.NormalCart;
+import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
 import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
 import com.team33.moduleapi.ui.cart.dto.CartItemResponseDto;
 

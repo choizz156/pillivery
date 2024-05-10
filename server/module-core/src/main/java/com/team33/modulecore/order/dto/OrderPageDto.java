@@ -1,8 +1,10 @@
-package com.team33.modulecore.common;
+package com.team33.modulecore.order.dto;
 
 import javax.validation.constraints.NotNull;
-import lombok.Data;
+
 import org.springframework.data.domain.Sort.Direction;
+
+import lombok.Data;
 
 @Data
 public class OrderPageDto {

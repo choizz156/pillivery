@@ -1,4 +1,4 @@
-package com.team33.modulecore.cart.domain;
+package com.team33.modulecore.cart.domain.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,14 +6,16 @@ import java.util.List;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
+import com.team33.modulecore.cart.domain.CartPrice;
+import com.team33.modulecore.cart.domain.NormalCartItem;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.itemcart.domain.NormalCartItem;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,30 +31,28 @@ public class NormalCart {
 	@Column(name = "cart_id")
 	private Long id;
 
-	private int totalItemCount;
-
-	private int totalPrice;
-
-	private int totalDiscountPrice;
+	@Embedded
+	private CartPrice price;
 
 	@ElementCollection
 	@CollectionTable(name = "normal_cart_item", joinColumns = @JoinColumn(name = "cart_id"))
 	private List<NormalCartItem> normalCartItems = new ArrayList<>();
 
-	public void addItem(Item item, int quantity){
+	public void addItem(Item item, int quantity) {
 		this.normalCartItems.add(NormalCartItem.of(item, quantity));
+		this.price = this.price.addPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
-	// 회원 한 명이 하나의 장바구니를 가지므로 회원당 1회만 장바구니 생성
 	public static NormalCart create() {
 		return new NormalCart();
 	}
 
-	public void changeTotalPrice(int totalPrice) {
-		this.totalPrice = totalPrice;
-	}
+	public void removeCartItem(NormalCartItem removedItem) {
+		this.normalCartItems.remove(removedItem);
 
-	public void changeTotalItems(int totalItems) {
-		this.totalItemCount = totalItems;
+		Item item = removedItem.getItem();
+		int quantity = removedItem.getQuantity();
+
+		this.price = this.price.subtractPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 }

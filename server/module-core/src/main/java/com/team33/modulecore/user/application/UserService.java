@@ -4,8 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.cart.domain.NormalCart;
-import com.team33.modulecore.cart.domain.SubscriptionCart;
+import com.team33.modulecore.cart.domain.entity.NormalCart;
+import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
 import com.team33.modulecore.cart.repository.NormalCartRepository;
 import com.team33.modulecore.cart.repository.SubscriptionCartRepository;
 import com.team33.modulecore.common.UserFindHelper;

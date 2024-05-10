@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.cart.domain.NormalCart;
+import com.team33.modulecore.cart.domain.entity.NormalCart;
 import com.team33.modulecore.cart.domain.ItemId;
 import com.team33.modulecore.cart.repository.NormalCartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
@@ -17,7 +17,7 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.itemcart.domain.NormalCartItem;
+import com.team33.modulecore.cart.domain.NormalCartItem;
 import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;

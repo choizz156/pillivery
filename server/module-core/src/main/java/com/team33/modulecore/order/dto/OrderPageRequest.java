@@ -1,6 +1,5 @@
 package com.team33.modulecore.order.dto;
 
-import com.team33.modulecore.common.OrderPageDto;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Sort.Direction;

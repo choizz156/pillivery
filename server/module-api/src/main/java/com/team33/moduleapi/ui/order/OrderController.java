@@ -4,7 +4,7 @@ package com.team33.moduleapi.ui.order;
 import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.cart.application.CartService;
-import com.team33.modulecore.common.OrderPageDto;
+import com.team33.modulecore.order.dto.OrderPageDto;
 import com.team33.modulecore.itemcart.application.ItemCartService;
 import com.team33.modulecore.itemcart.domain.ItemCart;
 import com.team33.modulecore.order.application.OrderItemService;

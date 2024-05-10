@@ -1,11 +1,11 @@
 package com.team33.modulecore.itemcart.repository;
 
-import com.team33.modulecore.cart.domain.NormalCart;
+import com.team33.modulecore.cart.domain.entity.NormalCart;
 import com.team33.modulecore.item.domain.entity.Item;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.team33.modulecore.itemcart.domain.NormalCartItem;
+import com.team33.modulecore.cart.domain.NormalCartItem;
 
 import org.springframework.data.jpa.repository.Query;
 
