@@ -21,7 +21,7 @@ public class CartResponseMapper {
 			.totalDiscountPrice(normalCart.getTotalDiscountPrice())
 			.totalPrice(normalCart.getTotalPrice())
 			.totalItemCount(normalCart.getTotalItemCount())
-			.expectPrice(normalCart.getTotalPrice() - normalCart.getTotalDiscountPrice())
+			.expectPrice(normalCart.getExpectedPrice())
 			.cartItems(toNormalCartItemResponse(normalCart))
 			.build();
 	}
@@ -32,7 +32,7 @@ public class CartResponseMapper {
 			.totalDiscountPrice(subscriptionCart.getTotalDiscountPrice())
 			.totalPrice(subscriptionCart.getTotalPrice())
 			.totalItemCount(subscriptionCart.getTotalItemCount())
-			.expectPrice(subscriptionCart.getTotalPrice() - subscriptionCart.getTotalDiscountPrice())
+			.expectPrice(subscriptionCart.getExpectedPrice())
 			.cartItems(toSubscriptionCartItemResponse(subscriptionCart))
 			.build();
 

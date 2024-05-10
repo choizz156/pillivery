@@ -55,4 +55,20 @@ public class SubscriptionCart {
 
 		this.price = this.price.subtractPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
+
+	public int getTotalDiscountPrice() {
+		return this.price.getTotalDiscountPrice();
+	}
+
+	public int getTotalPrice() {
+		return this.price.getTotalPrice();
+	}
+
+	public int getTotalItemCount() {
+		return this.price.getTotalItemCount();
+	}
+
+	public int getExpectedPrice(){
+		return this.price.getTotalPrice() - this.price.getTotalDiscountPrice();
+	}
 }
