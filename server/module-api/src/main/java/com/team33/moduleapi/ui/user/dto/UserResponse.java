@@ -1,7 +1,9 @@
-package com.team33.modulecore.user.dto;
+package com.team33.moduleapi.ui.user.dto;
+
+import java.time.ZonedDateTime;
 
 import com.team33.modulecore.user.domain.User;
-import java.time.ZonedDateTime;
+
 import lombok.Builder;
 import lombok.Data;
 

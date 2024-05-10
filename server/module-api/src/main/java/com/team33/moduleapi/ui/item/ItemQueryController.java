@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.moduleapi.ui.item.dto.ItemDetailResponseDto;
+import com.team33.moduleapi.ui.item.dto.ItemMainResponseDto;
+import com.team33.moduleapi.ui.item.dto.ItemPriceRequstDto;
+import com.team33.moduleapi.ui.item.mapper.ItemQueryServiceMapper;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.application.ItemQueryService;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.dto.ItemPageRequestDto;
-import com.team33.modulecore.item.dto.ItemPriceRequstDto;
-import com.team33.modulecore.item.dto.query.ItemDetailResponseDto;
-import com.team33.modulecore.item.dto.query.ItemMainTop9ResponseDto;
-import com.team33.modulecore.item.dto.query.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPage;
+import com.team33.moduleapi.ui.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
-import com.team33.modulecore.item.dto.query.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.PriceFilter;
 import com.team33.modulecore.review.application.ReviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,19 +36,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/items")
 public class ItemQueryController {
 
+	private final ItemQueryServiceMapper mapper;
 	private final ItemCommandService itemCommandService;
 	private final ReviewService reviewService;
 	private final ItemQueryService itemQueryService;
 	//    private final TalkService talkService;
 	//    private final ReviewMapper reviewMapper;
 
+
 	@GetMapping("/main")
-	public SingleResponseDto<ItemMainTop9ResponseDto> getMainItem() {
+	public SingleResponseDto<ItemMainResponseDto> getMainItem() {
 
 		List<ItemQueryDto> mainDiscountItems = itemQueryService.findMainDiscountItems();
 		List<ItemQueryDto> mainSaleItems = itemQueryService.findMainSaleItems();
 
-		return new SingleResponseDto<>(new ItemMainTop9ResponseDto(mainSaleItems, mainDiscountItems));
+		return new SingleResponseDto<>(new ItemMainResponseDto(mainSaleItems, mainDiscountItems));
 	}
 
 	@GetMapping("/{itemId}")
@@ -62,12 +65,12 @@ public class ItemQueryController {
 		ItemPageRequestDto pageDto,
 		ItemPriceRequstDto itemPriceRequstDto
 	) {
+		PriceFilter priceFilter = mapper.toPriceFilterDto(itemPriceRequstDto);
+		ItemPage searchDto = mapper.toItemPageDto(pageDto);
 
-		PriceFilterDto priceFilterDto = PriceFilterDto.from(itemPriceRequstDto);
-		ItemPageDto searchDto = ItemPageDto.from(pageDto);
 		Page<ItemQueryDto> itemsPage = itemQueryService.findFilteredItem(
 			keyword.replace("_", ""),
-			priceFilterDto,
+			priceFilter,
 			searchDto
 		);
 
@@ -77,13 +80,14 @@ public class ItemQueryController {
 	@GetMapping("/on-sale")
 	public MultiResponseDto<ItemQueryDto> searchSaleItems(
 		@RequestParam(required = false) String keyword,
-		ItemPageRequestDto pageRequestDto,
+		ItemPageRequestDto pageDto,
 		ItemPriceRequstDto itemPriceRequstDto
 	) {
 
-		ItemPageDto pageDto = ItemPageDto.from(pageRequestDto);
-		PriceFilterDto priceFilterDto = PriceFilterDto.from(itemPriceRequstDto);
-		Page<ItemQueryDto> itemsPage = itemQueryService.findItemOnSale(keyword, pageDto, priceFilterDto);
+		PriceFilter priceFilter = mapper.toPriceFilterDto(itemPriceRequstDto);
+		ItemPage searchDto = mapper.toItemPageDto(pageDto);
+
+		Page<ItemQueryDto> itemsPage = itemQueryService.findItemOnSale(keyword, searchDto, priceFilter);
 
 		return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
 	}
@@ -92,16 +96,17 @@ public class ItemQueryController {
 	public MultiResponseDto<com.team33.modulecore.item.dto.query.ItemQueryDto> searchCategories(
 		@RequestParam CategoryName categoryName,
 		@RequestParam(required = false) String keyword,
-		ItemPageRequestDto pageRequestDto,
+		ItemPageRequestDto pageDto,
 		ItemPriceRequstDto itemPriceRequstDto
 	) {
-		ItemPageDto pageDto = ItemPageDto.from(pageRequestDto);
-		PriceFilterDto priceFilterDto = PriceFilterDto.from(itemPriceRequstDto);
+		PriceFilter priceFilter = mapper.toPriceFilterDto(itemPriceRequstDto);
+		ItemPage searchDto = mapper.toItemPageDto(pageDto);
+
 		Page<ItemQueryDto> itemsPage = itemQueryService.findByCategory(
 			categoryName,
 			keyword,
-			priceFilterDto,
-			pageDto
+			priceFilter,
+			searchDto
 		);
 
 		return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);

@@ -23,10 +23,7 @@ public class NormalCartItem extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private NormalCartItem(
-        int quantity,
-        Item item
-    ) {
+    private NormalCartItem(int quantity, Item item) {
         this.quantity = quantity;
         this.item = item;
     }

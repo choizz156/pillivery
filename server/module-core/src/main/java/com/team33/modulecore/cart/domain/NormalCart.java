@@ -29,7 +29,7 @@ public class NormalCart {
 	@Column(name = "cart_id")
 	private Long id;
 
-	private int totalItems;
+	private int totalItemCount;
 
 	private int totalPrice;
 
@@ -53,6 +53,6 @@ public class NormalCart {
 	}
 
 	public void changeTotalItems(int totalItems) {
-		this.totalItems = totalItems;
+		this.totalItemCount = totalItems;
 	}
 }

@@ -1,24 +1,23 @@
 package com.team33.modulecore.item.dto.query;
 
-import com.team33.modulecore.item.dto.ItemPriceRequstDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class PriceFilterDto {
+public class PriceFilter {
 
     private int lowPrice;
     private int highPrice;
 
-    private PriceFilterDto(int lowPrice, int highPrice) {
+    public PriceFilter(int lowPrice, int highPrice) {
         this.lowPrice = lowPrice;
         this.highPrice = highPrice;
     }
 
-    public static PriceFilterDto from(ItemPriceRequstDto dto) {
-        return new PriceFilterDto(dto.getLow(), dto.getHigh());
-    }
+    // public static PriceFilterDto from(ItemPriceRequstDto dto) {
+    //     return new PriceFilterDto(dto.getLow(), dto.getHigh());
+    // }
 
     public boolean isSamePriceEach() {
         return this.lowPrice == this.highPrice && this.lowPrice != 0;

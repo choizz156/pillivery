@@ -1,8 +1,10 @@
-package com.team33.modulecore.order.dto;
+package com.team33.moduleapi.ui.order.dto;
 
-import com.team33.modulecore.item.dto.query.ItemSimpleResponseDto;
-import com.team33.modulecore.order.domain.OrderItem;
 import java.time.ZonedDateTime;
+
+import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
+import com.team33.modulecore.order.domain.OrderItem;
+
 import lombok.Builder;
 import lombok.Getter;
 

@@ -25,9 +25,6 @@ public class SubscriptionCartItem extends BaseEntity {
 	@Embedded
 	private SubscriptionInfo subscriptionInfo;
 
-	@Column(nullable = false)
-	private boolean buyNow;
-
 	@ManyToOne
 	@JoinColumn(name = "item_id")
 	private Item item;
@@ -47,7 +44,7 @@ public class SubscriptionCartItem extends BaseEntity {
 		return SubscriptionCartItem.builder()
 			.quantity(quantity)
 			.item(item)
-			.subscriptionItemInfo(subscriptionInfo)
+			.subscriptionInfo(subscriptionInfo)
 			.build();
 	}
 

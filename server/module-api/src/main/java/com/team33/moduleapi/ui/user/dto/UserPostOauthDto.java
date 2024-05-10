@@ -1,4 +1,4 @@
-package com.team33.modulecore.user.dto;
+package com.team33.moduleapi.ui.user.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

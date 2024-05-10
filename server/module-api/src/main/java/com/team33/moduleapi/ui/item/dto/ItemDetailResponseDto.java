@@ -1,4 +1,4 @@
-package com.team33.modulecore.item.dto.query;
+package com.team33.moduleapi.ui.item.dto;
 
 import java.util.ArrayList;
 import java.util.List;

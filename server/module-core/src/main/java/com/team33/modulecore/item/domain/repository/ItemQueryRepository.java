@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.dto.query.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
-import com.team33.modulecore.item.dto.query.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.PriceFilter;
 
 @Repository
 public interface ItemQueryRepository {
@@ -22,16 +22,16 @@ public interface ItemQueryRepository {
 
 	Page<ItemQueryDto> findFilteredItems(
 		String keyword,
-		PriceFilterDto priceFilter,
-		ItemPageDto pageDto
+		PriceFilter priceFilter,
+		ItemPage pageDto
 	);
 
-	Page<ItemQueryDto> findItemsOnSale(String keyword,  PriceFilterDto priceFilterDto, ItemPageDto pageDto);
+	Page<ItemQueryDto> findItemsOnSale(String keyword,  PriceFilter priceFilter, ItemPage pageDto);
 
 	Page<ItemQueryDto> findItemsByCategory(
 		CategoryName categoryName,
 		String keyword,
-		PriceFilterDto priceFilterDto,
-		ItemPageDto pageDto
+		PriceFilter priceFilter,
+		ItemPage pageDto
 	);
 }

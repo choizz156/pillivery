@@ -22,9 +22,9 @@ import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.entity.QItem;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.query.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
-import com.team33.modulecore.item.dto.query.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.PriceFilter;
 import com.team33.modulecore.item.dto.query.QItemQueryDto;
 
 import lombok.RequiredArgsConstructor;
@@ -77,8 +77,8 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	@Override
 	public Page<ItemQueryDto> findFilteredItems(
 		String keyword,
-		PriceFilterDto priceFilter,
-		ItemPageDto pageDto
+		PriceFilter priceFilter,
+		ItemPage pageDto
 	) {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.from(item)
@@ -106,7 +106,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	@Override
-	public Page<ItemQueryDto> findItemsOnSale(String keyword, PriceFilterDto priceFilter, ItemPageDto pageDto) {
+	public Page<ItemQueryDto> findItemsOnSale(String keyword, PriceFilter priceFilter, ItemPage pageDto) {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.where(
 				discountRateEqNot0(),
@@ -140,8 +140,8 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	public Page<ItemQueryDto> findItemsByCategory(
 		CategoryName categoryName,
 		String keyword,
-		PriceFilterDto priceFilter,
-		ItemPageDto pageDto
+		PriceFilter priceFilter,
+		ItemPage pageDto
 	) {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, "itemCategory"))
@@ -169,7 +169,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		);
 	}
 
-	private BooleanExpression priceBetween(PriceFilterDto priceFilter) {
+	private BooleanExpression priceBetween(PriceFilter priceFilter) {
 		if (priceFilter.isSumZero()) {
 			return null;
 		}

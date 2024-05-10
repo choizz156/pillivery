@@ -1,4 +1,4 @@
-package com.team33.modulecore.item.dto.query;
+package com.team33.moduleapi.ui.item.dto;
 
 import com.team33.modulecore.item.domain.entity.Item;
 import lombok.Builder;

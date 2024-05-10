@@ -34,7 +34,7 @@ public class OrderItem extends BaseEntity {
     private int quantity;
 
     @Embedded
-    private SubscriptionItemInfo subscriptionItemInfo;
+    private SubscriptionInfo subscriptionInfo;
 
     private ZonedDateTime nextDelivery;
 
@@ -51,14 +51,14 @@ public class OrderItem extends BaseEntity {
     @Builder
     private OrderItem(int quantity, int period, boolean subscription, Item item) {
         this.quantity = quantity;
-        this.subscriptionItemInfo = new SubscriptionItemInfo(period, subscription);
+        this.subscriptionInfo = new SubscriptionInfo(period, subscription);
         this.item = item;
     }
 
     public OrderItem(OrderItem origin) {
-        this.subscriptionItemInfo = new SubscriptionItemInfo(
-            origin.getSubscriptionItemInfo().getPeriod(),
-            origin.getSubscriptionItemInfo().isSubscription()
+        this.subscriptionInfo = new SubscriptionInfo(
+            origin.getSubscriptionInfo().getPeriod(),
+            origin.getSubscriptionInfo().isSubscription()
         );
         this.quantity = origin.getQuantity();
         this.nextDelivery = origin.getNextDelivery();
@@ -69,14 +69,14 @@ public class OrderItem extends BaseEntity {
 
     public static OrderItem create(
         Item item,
-        SubscriptionItemInfo subscriptionItemInfo,
+        SubscriptionInfo subscriptionInfo,
         int quantity
     ) {
         return OrderItem.builder()
             .item(item)
             .quantity(quantity)
-            .period(subscriptionItemInfo.getPeriod())
-            .subscription(subscriptionItemInfo.isSubscription())
+            .period(subscriptionInfo.getPeriod())
+            .subscription(subscriptionInfo.isSubscription())
             .build();
     }
 
@@ -85,19 +85,19 @@ public class OrderItem extends BaseEntity {
     }
 
     public void addPeriod(int period){
-        this.subscriptionItemInfo.addPeriod(period);
+        this.subscriptionInfo.addPeriod(period);
     }
 
     public void cancelSubscription(){
-        this.subscriptionItemInfo.cancelSubscription();
+        this.subscriptionInfo.cancelSubscription();
     }
 
     public int getPeriod(){
-        return subscriptionItemInfo.getPeriod();
+        return subscriptionInfo.getPeriod();
     }
 
     public boolean isSubscription(){
-        return subscriptionItemInfo.isSubscription();
+        return subscriptionInfo.isSubscription();
     }
 
     public void changeQuantity(int quantity) {

@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.dto;
+package com.team33.moduleapi.ui.order.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

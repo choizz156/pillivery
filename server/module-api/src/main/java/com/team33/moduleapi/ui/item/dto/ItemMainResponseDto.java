@@ -1,16 +1,18 @@
-package com.team33.modulecore.item.dto.query;
+package com.team33.moduleapi.ui.item.dto;
 
 import java.util.List;
+
+import com.team33.modulecore.item.dto.query.ItemQueryDto;
 
 import lombok.Data;
 
 @Data
-public class ItemMainTop9ResponseDto {
+public class ItemMainResponseDto {
 
     private List<ItemQueryDto> discountRateItem;
     private List<ItemQueryDto> saleItem;
 
-    public ItemMainTop9ResponseDto(
+    public ItemMainResponseDto(
         List<ItemQueryDto> saleItem,
         List<ItemQueryDto> discountRateItem
     ) {

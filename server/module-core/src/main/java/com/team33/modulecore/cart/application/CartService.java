@@ -1,102 +1,162 @@
 package com.team33.modulecore.cart.application;
 
+import java.util.Objects;
 
-import com.team33.modulecore.cart.domain.Cart;
-import com.team33.modulecore.itemcart.application.ItemCartService;
-import com.team33.modulecore.itemcart.domain.ItemCart;
-import com.team33.modulecore.cart.repository.CartRepository;
-import com.team33.modulecore.user.application.UserService;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
-import java.util.List;
-import java.util.Optional;
 import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
+import com.team33.modulecore.cart.domain.NormalCart;
+import com.team33.modulecore.cart.domain.SubscriptionCart;
+import com.team33.modulecore.cart.repository.NormalCartRepository;
+import com.team33.modulecore.cart.repository.SubscriptionCartRepository;
+import com.team33.modulecore.common.UserFindHelper;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
+import com.team33.modulecore.itemcart.domain.NormalCartItem;
+import com.team33.modulecore.itemcart.domain.SubscriptionCartItem;
+import com.team33.modulecore.order.domain.SubscriptionInfo;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class CartService {
 
-    private final CartRepository cartRepository;
-    private final ItemCartService itemCartService;
-    private final UserService userService;
+	private final NormalCartRepository normalCartRepository;
+	private final SubscriptionCartRepository subscriptionCartRepository;
+	// private final ItemCartService itemCartService;
+	private final UserFindHelper userFindHelper;
+	private final ItemQueryRepository itemQueryRepository;
 
+	// public void refreshCart(List<NormalCartItem> normalCartItems, boolean subscription) { // 가격과 아이템 종류 갱신
+	// 	normalCartItems.forEach(ic -> {
+	// 		NormalCart normalCart = findCart(ic.getNormalCart().getId());
+	// 		calculatePriceAndItemSize(subscription, normalCartItems, normalCart);
+	// 		normalCartRepository.save(normalCart);
+	// 	});
+	// }
 
-    public void refreshCart(List<ItemCart> itemCarts, boolean subscription) { // 가격과 아이템 종류 갱신
-        itemCarts.forEach(ic -> {
-            Cart cart = findCart(ic.getCart().getCartId());
-            calculatePriceAndItemSize(subscription, itemCarts, cart);
-            cartRepository.save(cart);
-        });
-    }
+	public SubscriptionCart findSubscriptionCart(Long cartId) {
+		return subscriptionCartRepository.findById(cartId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
+	}
 
-//    public Cart findMyCart() {
-//        User user = userService.getLoginUser();
-//        return cartRepository.findByUser(user);
-//    }
+	public NormalCart findNormalCart(Long cartId) {
+		return normalCartRepository.findById(cartId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
+	}
 
-    public Cart findCart(long cartId) {
-        Optional<Cart> optionalCart = cartRepository.findById(cartId);
-        return optionalCart.orElseThrow(
-            () -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
-    }
+	// public int countTotalDiscountPrice(long cartId, boolean subscription) {
+	// 	NormalCart normalCart = findCart(cartId);
+	// 	List<NormalCartItem> normalCartItems = itemCartService.findItemCarts(normalCart, subscription, true);
+	//
+	// 	if (normalCartItems == null) {
+	// 		return 0;
+	// 	}
+	//
+	// 	int totalDiscountPrice = 0;
+	//
+	// 	for (NormalCartItem normalCartItem : normalCartItems) {
+	// 		int quantity = normalCartItem.getItem().getOriginPrice();
+	// 		int price = normalCartItem.getQuantity();
+	// 		double discountRate = normalCartItem.getItem().getDiscountRate();
+	//
+	// 		totalDiscountPrice += (int)(quantity * price * discountRate / 100);
+	// 	}
+	//
+	// 	return totalDiscountPrice;
+	// }
+	//
+	// private void calculatePriceAndItemSize(
+	// 	boolean subscription,
+	// 	List<NormalCartItem> normalCartItems,
+	// 	NormalCart normalCart
+	// ) {
+	// 	int totalPrice = countTotalPrice(normalCartItems);
+	// 	int totalItems = normalCartItems.size();
+	//
+	// 	if (subscription) {
+	// 		normalCart.changeSubTotalPrice(totalPrice);
+	// 		normalCart.changeSubTotalItems(totalItems);
+	// 		return;
+	// 	}
+	//
+	// 	normalCart.changeTotalPrice(totalPrice);
+	// 	normalCart.changeTotalItems(totalItems);
+	// }
+	//
+	// private int countTotalPrice(List<NormalCartItem> normalCartItems) {
+	//
+	// 	if (normalCartItems.isEmpty()) {
+	// 		return 0;
+	// 	}
+	// 	int totalPrice = 0;
+	//
+	// 	for (NormalCartItem normalCartItem : normalCartItems) {
+	// 		int quantity = normalCartItem.getItem().getOriginPrice();
+	// 		int price = normalCartItem.getQuantity();
+	// 		totalPrice += (quantity * price);
+	// 	}
+	//
+	// 	return totalPrice;
+	// }
+	//
+	public void addItem(Long normalCartId, Item item, int quantity) {
+		NormalCart normalCart = normalCartRepository.findById(normalCartId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 
-    public int countTotalDiscountPrice(long cartId, boolean subscription) {
-        Cart cart = findCart(cartId);
-        List<ItemCart> itemCarts = itemCartService.findItemCarts(cart, subscription, true);
+		normalCart.addItem(item, quantity);
 
-        if (itemCarts == null) {
-            return 0;
-        }
+	}
 
-        int totalDiscountPrice = 0;
+	public void addSubscriptionItem(
+		Long subscriptionCartId,
+		Item item,
+		SubscriptionInfo subscriptionInfo,
+		int quantity
+	) {
+		SubscriptionCart subscriptionCart = subscriptionCartRepository.findById(subscriptionCartId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 
-        for (ItemCart itemCart : itemCarts) {
-            int quantity = itemCart.getItem().getOriginPrice();
-            int price = itemCart.getQuantity();
-            double discountRate = itemCart.getItem().getDiscountRate();
+		subscriptionCart.addItem(item, quantity, subscriptionInfo);
+	}
 
-            totalDiscountPrice += (int) (quantity * price * discountRate / 100);
-        }
+	public NormalCart correctNormalCart(Long cartId, Item item) {
 
-        return totalDiscountPrice;
-    }
+		NormalCart normalCart = normalCartRepository.findById(cartId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 
+		normalCart.getNormalCartItems().remove(getRemovedItem(item, normalCart));
+		return normalCart;
+	}
 
-    private void calculatePriceAndItemSize(
-        boolean subscription,
-        List<ItemCart> itemCarts,
-        Cart cart
-    ) {
-        int totalPrice = countTotalPrice(itemCarts);
-        int totalItems = itemCarts.size();
+	public SubscriptionCart correctSubscriptionCart(Long cartId, Item item) {
+		SubscriptionCart subscriptionCart = subscriptionCartRepository.findById(cartId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 
-        if (subscription) {
-            cart.changeSubTotalPrice(totalPrice);
-            cart.changeSubTotalItems(totalItems);
-            return;
-        }
+		subscriptionCart.getSubscriptionCartItems().remove(getRemovedItem(item, subscriptionCart));
+		return subscriptionCart;
+	}
 
-        cart.changeTotalPrice(totalPrice);
-        cart.changeTotalItems(totalItems);
-    }
+	private NormalCartItem getRemovedItem(Item item, NormalCart normalCart) {
 
-    private int countTotalPrice(List<ItemCart> itemCarts) {
+		return normalCart.getNormalCartItems().stream().filter(
+				normalCartItem -> !Objects.equals(normalCartItem.getItem().getId(), item.getId())
+			)
+			.findFirst()
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
+	}
 
-        if (itemCarts.isEmpty()) {
-            return 0;
-        }
-        int totalPrice = 0;
+	private SubscriptionCartItem getRemovedItem(Item item, SubscriptionCart subscriptionCart) {
 
-        for (ItemCart itemCart : itemCarts) {
-            int quantity = itemCart.getItem().getOriginPrice();
-            int price = itemCart.getQuantity();
-            totalPrice += (quantity * price);
-        }
-
-        return totalPrice;
-    }
+		return subscriptionCart.getSubscriptionCartItems().stream().filter(
+				subscriptionCartItem -> !Objects.equals(subscriptionCartItem.getItem().getId(), item.getId())
+			)
+			.findFirst()
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
+	}
 }

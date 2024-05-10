@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.query.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
-import com.team33.modulecore.item.dto.query.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.PriceFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,27 +32,27 @@ public class ItemQueryService {
 
 	public Page<ItemQueryDto> findFilteredItem(
 		String keyword,
-		PriceFilterDto priceFilterDto,
-		ItemPageDto pageDto
+		PriceFilter priceFilter,
+		ItemPage pageDto
 	) {
-		return 	itemQueryRepository.findFilteredItems(keyword, priceFilterDto, pageDto);
+		return 	itemQueryRepository.findFilteredItems(keyword, priceFilter, pageDto);
 	}
 
 	public Page<ItemQueryDto> findItemOnSale(
 		String keyword,
-		ItemPageDto pageDto,
-		PriceFilterDto priceFilterDto
+		ItemPage pageDto,
+		PriceFilter priceFilter
 	) {
-		return itemQueryRepository.findItemsOnSale(keyword, priceFilterDto, pageDto);
+		return itemQueryRepository.findItemsOnSale(keyword, priceFilter, pageDto);
 	}
 
 	public Page<com.team33.modulecore.item.dto.query.ItemQueryDto> findByCategory(
 		CategoryName categoryName,
 		String keyword,
-		PriceFilterDto priceFilterDto,
-		ItemPageDto pageDto
+		PriceFilter priceFilter,
+		ItemPage pageDto
 	) {
-		return itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilterDto, pageDto);
+		return itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilter, pageDto);
 	}
 
 	public Item findItem(Long itemId) {

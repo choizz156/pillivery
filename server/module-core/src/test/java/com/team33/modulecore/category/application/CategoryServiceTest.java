@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import com.team33.modulecore.category.domain.Category;
+import com.team33.modulecore.category.domain.entity.Category;
 import com.team33.modulecore.category.domain.repository.CategoryQueryRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
