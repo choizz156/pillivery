@@ -1,7 +1,7 @@
 package com.team33.modulecore.cart.domain.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -15,7 +15,9 @@ import javax.persistence.JoinColumn;
 
 import com.team33.modulecore.cart.domain.CartPrice;
 import com.team33.modulecore.cart.domain.NormalCartItem;
+import com.team33.modulecore.cart.domain.SubscriptionCartItem;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.order.domain.SubscriptionInfo;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class NormalCart {
+public class Cart {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,19 +38,39 @@ public class NormalCart {
 
 	@ElementCollection
 	@CollectionTable(name = "normal_cart_item", joinColumns = @JoinColumn(name = "cart_id"))
-	private List<NormalCartItem> normalCartItems = new ArrayList<>();
+	private Set<NormalCartItem> normalCartItems = new HashSet<>();
 
-	public void addItem(Item item, int quantity) {
+
+	@ElementCollection
+	@CollectionTable(name = "subs_cart_item", joinColumns = @JoinColumn(name = "cart_id"))
+	private Set<SubscriptionCartItem> subscriptionCartItems = new HashSet<>();
+
+
+	public static Cart create() {
+		return new Cart();
+	}
+
+	public void addNormalItem(Item item, int quantity) {
 		this.normalCartItems.add(NormalCartItem.of(item, quantity));
 		this.price = this.price.addPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
-	public static NormalCart create() {
-		return new NormalCart();
+	public void removeNormalCartItem(NormalCartItem removedItem) {
+		this.normalCartItems.remove(removedItem);
+
+		Item item = removedItem.getItem();
+		int quantity = removedItem.getTotalQuantity();
+
+		this.price = this.price.subtractPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
-	public void removeCartItem(NormalCartItem removedItem) {
-		this.normalCartItems.remove(removedItem);
+	public void addSubscriptionItem(Item item, int quantity, SubscriptionInfo subscriptionInfo) {
+		this.subscriptionCartItems.add(SubscriptionCartItem.of(item, quantity, subscriptionInfo));
+		this.price = this.price.addPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
+	}
+
+	public void removeSubscriptionCartItem(SubscriptionCartItem removedItem) {
+		this.subscriptionCartItems.remove(removedItem);
 
 		Item item = removedItem.getItem();
 		int quantity = removedItem.getTotalQuantity();

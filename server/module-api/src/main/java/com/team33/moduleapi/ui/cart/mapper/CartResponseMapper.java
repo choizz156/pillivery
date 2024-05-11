@@ -5,42 +5,41 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
-import com.team33.modulecore.cart.domain.entity.NormalCart;
-import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
-import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
 import com.team33.moduleapi.ui.cart.dto.CartItemResponseDto;
+import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
+import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
+import com.team33.modulecore.cart.domain.entity.Cart;
 
 @Component
 public class CartResponseMapper {
 
 
-	public CartResponseDto cartResponseDto(NormalCart normalCart){
+	public CartResponseDto cartNormalResponseDto(Cart cart){
 
 		return CartResponseDto.builder()
-			.cartId(normalCart.getId())
-			.totalDiscountPrice(normalCart.getTotalDiscountPrice())
-			.totalPrice(normalCart.getTotalPrice())
-			.totalItemCount(normalCart.getTotalItemCount())
-			.expectPrice(normalCart.getExpectedPrice())
-			.cartItems(toNormalCartItemResponse(normalCart))
+			.cartId(cart.getId())
+			.totalDiscountPrice(cart.getTotalDiscountPrice())
+			.totalPrice(cart.getTotalPrice())
+			.totalItemCount(cart.getTotalItemCount())
+			.expectPrice(cart.getExpectedPrice())
+			.cartItems(toNormalCartItemResponse(cart))
 			.build();
 	}
 
-	public CartResponseDto cartResponseDto(SubscriptionCart subscriptionCart) {
+	public CartResponseDto cartSubscriptionResponseDto(Cart cart) {
 		return CartResponseDto.builder()
-			.cartId(subscriptionCart.getId())
-			.totalDiscountPrice(subscriptionCart.getTotalDiscountPrice())
-			.totalPrice(subscriptionCart.getTotalPrice())
-			.totalItemCount(subscriptionCart.getTotalItemCount())
-			.expectPrice(subscriptionCart.getExpectedPrice())
-			.cartItems(toSubscriptionCartItemResponse(subscriptionCart))
+			.cartId(cart.getId())
+			.totalDiscountPrice(cart.getTotalDiscountPrice())
+			.totalPrice(cart.getTotalPrice())
+			.totalItemCount(cart.getTotalItemCount())
+			.expectPrice(cart.getExpectedPrice())
+			.cartItems(toSubscriptionCartItemResponse(cart))
 			.build();
 
 	}
 
-	private  List<CartItemResponseDto> toNormalCartItemResponse(NormalCart normalCart) {
-		return normalCart.getNormalCartItems().stream()
+	private  List<CartItemResponseDto> toNormalCartItemResponse(Cart cart) {
+		return cart.getNormalCartItems().stream()
 			.map(normalCartItem ->
 				CartItemResponseDto.builder()
 					.createdAt(normalCartItem.getCreatedAt())
@@ -52,8 +51,8 @@ public class CartResponseMapper {
 			.collect(Collectors.toList());
 	}
 
-	private  List<CartItemResponseDto> toSubscriptionCartItemResponse(SubscriptionCart subscriptionCart) {
-		return subscriptionCart.getSubscriptionCartItems().stream()
+	private  List<CartItemResponseDto> toSubscriptionCartItemResponse(Cart cart) {
+		return cart.getSubscriptionCartItems().stream()
 			.map(subscriptionCartItem ->
 				CartItemResponseDto.builder()
 					.period(subscriptionCartItem.getSubscriptionInfo().getPeriod())

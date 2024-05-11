@@ -7,8 +7,8 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.cart.domain.NormalCartItem;
-import com.team33.modulecore.cart.domain.entity.NormalCart;
-import com.team33.modulecore.cart.repository.NormalCartRepository;
+import com.team33.modulecore.cart.domain.entity.Cart;
+import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
@@ -20,47 +20,38 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class NormalCartService {
 
-	private final NormalCartRepository normalCartRepository;
+	private final CartRepository cartRepository;
 
-	// public void refreshCart(List<NormalCartItem> normalCartItems, boolean subscription) { // 가격과 아이템 종류 갱신
-	// 	normalCartItems.forEach(ic -> {
-	// 		NormalCart normalCart = findCart(ic.getNormalCart().getId());
-	// 		calculatePriceAndItemSize(subscription, normalCartItems, normalCart);
-	// 		normalCartRepository.save(normalCart);
-	// 	});
-	// }
-
-	public NormalCart findNormalCart(Long cartId) {
-		return normalCartRepository.findById(cartId)
+	public Cart findCart(Long cartId) {
+		return cartRepository.findById(cartId)
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 	}
 
 	public void addItem(Long cartId, Item item, int quantity) {
-		NormalCart normalCart = findNormalCart(cartId);
+		Cart cart = findCart(cartId);
 
-		normalCart.addItem(item, quantity);
+		cart.addNormalItem(item, quantity);
 	}
 
-	public NormalCart correctNormalCart(Long cartId, Item item) {
+	public void removeCartItem(Long cartId, Item item) {
+		Cart cart = findCart(cartId);
 
-		NormalCart normalCart = findNormalCart(cartId);
-
-		normalCart.removeCartItem(getCartItem(item, normalCart));
-		return normalCart;
+		cart.removeNormalCartItem(getNormalCartItem(item, cart));
 	}
 
-	private NormalCartItem getCartItem(Item item, NormalCart normalCart) {
+	public void changeQuantity(Long cartId, Item item, int quantity) {
+		Cart cart = findCart(cartId);
 
-		return normalCart.getNormalCartItems().stream().filter(
+		getNormalCartItem(item, cart).changeQuantity(quantity);
+	}
+
+	private NormalCartItem getNormalCartItem(Item item, Cart cart) {
+
+		return cart.getNormalCartItems().stream()
+			.filter(
 				normalCartItem -> Objects.equals(normalCartItem.getItem().getId(), item.getId())
 			)
 			.findFirst()
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
-	}
-
-	public void changeQuantity(Long cartId, Item item, int quantity) {
-		NormalCart normalCart = findNormalCart(cartId);
-		NormalCartItem cartItem = getCartItem(item, normalCart);
-		cartItem.changeQuantity(quantity);
 	}
 }

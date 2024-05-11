@@ -18,7 +18,7 @@ import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.cart.mapper.CartResponseMapper;
 import com.team33.moduleapi.ui.cart.mapper.CartServiceMapper;
 import com.team33.modulecore.cart.application.NormalCartService;
-import com.team33.modulecore.cart.domain.entity.NormalCart;
+import com.team33.modulecore.cart.domain.entity.Cart;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +33,16 @@ public class NormalCartController {
 	private final CartServiceMapper cartServiceMapper;
 	private final CartResponseMapper cartResponseMapper;
 
+	@GetMapping("/carts/normal/{cartId}")
+	public SingleResponseDto<CartResponseDto> getNormalCart(
+		@PathVariable Long cartId
+	) {
+		Cart cart = normalCartService.findCart(cartId);
+		CartResponseDto cartResponseDto = cartResponseMapper.cartNormalResponseDto(cart);
+
+		return new SingleResponseDto<>(cartResponseDto);
+	}
+
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/carts/{normalCartId}")
 	public SingleResponseDto<Long> postNormalItemCart(
@@ -45,23 +55,13 @@ public class NormalCartController {
 		return new SingleResponseDto<>(itemId);
 	}
 
-	@GetMapping("/carts/normal/{cartId}")
-	public SingleResponseDto<CartResponseDto> getNormalCart(
-		@PathVariable Long cartId
-	) {
-		NormalCart normalCart = normalCartService.findNormalCart(cartId);
-		CartResponseDto cartResponseDto = cartResponseMapper.cartResponseDto(normalCart);
-
-		return new SingleResponseDto<>(cartResponseDto);
-	}
-
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/carts/normal/{cartId}")
-	public void patchNormalCart(
+	public void removeNormalCart(
 		@PathVariable Long cartId,
 		@RequestParam Long itemId
 	) {
-		normalCartService.correctNormalCart(cartId, cartServiceMapper.toItem(itemId));
+		normalCartService.removeCartItem(cartId, cartServiceMapper.toItem(itemId));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
