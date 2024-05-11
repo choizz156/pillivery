@@ -1,11 +1,13 @@
 package com.team33.moduleapi.ui.cart;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,6 +66,7 @@ public class SubscriptionCartController {
 		return new SingleResponseDto<>(cartResponseDto);
 	}
 
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/carts/subscription/{cartId}")
 	public SingleResponseDto<CartResponseDto> patchSubscriptionCart(
 		@PathVariable Long cartId,
@@ -78,5 +81,26 @@ public class SubscriptionCartController {
 
 		return new SingleResponseDto<>(cartResponseDto);
 	}
+
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PatchMapping("/carts/subscription/{cartId}")
+	public void patchNormalCart(
+		@PathVariable Long cartId,
+		@RequestParam int quantity,
+		@RequestParam Long itemId
+	) {
+		subscriptionCartService.changeQuantity(cartId, cartServiceMapper.toItem(itemId), quantity);
+	}
+
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PatchMapping("/carts/subscription/{cartId}")
+	public void patchPeriod(
+		@PathVariable Long cartId,
+		@Min(30) @RequestParam int period,
+		@RequestParam Long itemId
+	) {
+		subscriptionCartService.changePeriod(cartId, cartServiceMapper.toItem(itemId), period);
+	}
+
 }
 

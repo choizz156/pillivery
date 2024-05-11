@@ -1,7 +1,7 @@
 package com.team33.modulecore;
 
 import com.team33.modulecore.category.application.CategoryService;
-import com.team33.modulecore.category.domain.repository.CategoryRepository;
+import com.team33.modulecore.category.domain.CategoryRepository;
 import com.team33.modulecore.config.QueryDslConfig;
 import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.application.ItemQueryService;

@@ -9,5 +9,4 @@ import com.team33.modulecore.cart.domain.entity.NormalCart;
 public interface NormalCartRepository extends Repository<NormalCart, Long> {
 	void save(NormalCart cart);
 	Optional<NormalCart> findById(long id);
-//    Cart findByUser(User user);
 }

@@ -16,6 +16,7 @@ public class CartResponseMapper {
 
 
 	public CartResponseDto cartResponseDto(NormalCart normalCart){
+
 		return CartResponseDto.builder()
 			.cartId(normalCart.getId())
 			.totalDiscountPrice(normalCart.getTotalDiscountPrice())
@@ -42,11 +43,9 @@ public class CartResponseMapper {
 		return normalCart.getNormalCartItems().stream()
 			.map(normalCartItem ->
 				CartItemResponseDto.builder()
-					.period(0)
 					.createdAt(normalCartItem.getCreatedAt())
 					.updatedAt(normalCartItem.getUpdatedAt())
-					.quantity(normalCartItem.getQuantity())
-					.subscription(false)
+					.quantity(normalCartItem.getTotalQuantity())
 					.item(ItemSimpleResponseDto.of(normalCartItem.getItem()))
 					.build()
 			)
@@ -60,7 +59,7 @@ public class CartResponseMapper {
 					.period(subscriptionCartItem.getSubscriptionInfo().getPeriod())
 					.createdAt(subscriptionCartItem.getCreatedAt())
 					.updatedAt(subscriptionCartItem.getUpdatedAt())
-					.quantity(subscriptionCartItem.getQuantity())
+					.quantity(subscriptionCartItem.getTotalQuantity())
 					.subscription(subscriptionCartItem.getSubscriptionInfo().isSubscription())
 					.item(ItemSimpleResponseDto.of(subscriptionCartItem.getItem()))
 					.build()

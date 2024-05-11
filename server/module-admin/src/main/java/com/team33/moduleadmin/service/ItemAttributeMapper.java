@@ -1,4 +1,4 @@
-package com.team33.moduleadmin.controller;
+package com.team33.moduleadmin.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Component
-class ItemAttributeMapper {
+public class ItemAttributeMapper {
 
 
     public static List<Information> toInformation(List<ItemDto> items) {

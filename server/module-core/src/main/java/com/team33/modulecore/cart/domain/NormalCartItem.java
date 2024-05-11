@@ -17,14 +17,14 @@ import lombok.NoArgsConstructor;
 public class NormalCartItem extends BaseEntity {
 
     @Column(nullable = false)
-    private int quantity;
+    private int totalQuantity;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private NormalCartItem(int quantity, Item item) {
-        this.quantity = quantity;
+    private NormalCartItem(int totalQuantity, Item item) {
+        this.totalQuantity = totalQuantity;
         this.item = item;
     }
 
@@ -32,7 +32,7 @@ public class NormalCartItem extends BaseEntity {
         return new NormalCartItem(quantity, item);
     }
 
-    public void addQuantity(int quantity) {
-        this.quantity += quantity;
-    }
+	public void changeQuantity(int quantity) {
+       this.totalQuantity = quantity;
+	}
 }

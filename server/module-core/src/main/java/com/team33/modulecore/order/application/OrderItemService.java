@@ -96,7 +96,7 @@ public class OrderItemService {
 		OrderItem orderItem = OrderItem.create(
 			normalCartItem.getItem(),
 			normalCartItem.getSubscriptionItemInfo(),
-			normalCartItem.getQuantity()
+			normalCartItem.getTotalQuantity()
 		);
 		orderItemList.add(orderItem);
 	}

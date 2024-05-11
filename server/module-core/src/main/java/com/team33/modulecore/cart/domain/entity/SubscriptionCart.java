@@ -51,7 +51,7 @@ public class SubscriptionCart {
 		this.subscriptionCartItems.remove(removedItem);
 
 		Item item = removedItem.getItem();
-		int quantity = removedItem.getQuantity();
+		int quantity = removedItem.getTotalQuantity();
 
 		this.price = this.price.subtractPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}

@@ -35,61 +35,6 @@ public class NormalCartService {
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 	}
 
-	// public int countTotalDiscountPrice(long cartId, boolean subscription) {
-	// 	NormalCart normalCart = findCart(cartId);
-	// 	List<NormalCartItem> normalCartItems = itemCartService.findItemCarts(normalCart, subscription, true);
-	//
-	// 	if (normalCartItems == null) {
-	// 		return 0;
-	// 	}
-	//
-	// 	int totalDiscountPrice = 0;
-	//
-	// 	for (NormalCartItem normalCartItem : normalCartItems) {
-	// 		int quantity = normalCartItem.getItem().getOriginPrice();
-	// 		int price = normalCartItem.getQuantity();
-	// 		double discountRate = normalCartItem.getItem().getDiscountRate();
-	//
-	// 		totalDiscountPrice += (int)(quantity * price * discountRate / 100);
-	// 	}
-	//
-	// 	return totalDiscountPrice;
-	// }
-	//
-	// private void calculatePriceAndItemSize(
-	// 	boolean subscription,
-	// 	List<NormalCartItem> normalCartItems,
-	// 	NormalCart normalCart
-	// ) {
-	// 	int totalPrice = countTotalPrice(normalCartItems);
-	// 	int totalItems = normalCartItems.size();
-	//
-	// 	if (subscription) {
-	// 		normalCart.changeSubTotalPrice(totalPrice);
-	// 		normalCart.changeSubTotalItems(totalItems);
-	// 		return;
-	// 	}
-	//
-	// 	normalCart.changeTotalPrice(totalPrice);
-	// 	normalCart.changeTotalItems(totalItems);
-	// }
-	//
-	// private int countTotalPrice(List<NormalCartItem> normalCartItems) {
-	//
-	// 	if (normalCartItems.isEmpty()) {
-	// 		return 0;
-	// 	}
-	// 	int totalPrice = 0;
-	//
-	// 	for (NormalCartItem normalCartItem : normalCartItems) {
-	// 		int quantity = normalCartItem.getItem().getOriginPrice();
-	// 		int price = normalCartItem.getQuantity();
-	// 		totalPrice += (quantity * price);
-	// 	}
-	//
-	// 	return totalPrice;
-	// }
-	//
 	public void addItem(Long cartId, Item item, int quantity) {
 		NormalCart normalCart = findNormalCart(cartId);
 
@@ -100,16 +45,22 @@ public class NormalCartService {
 
 		NormalCart normalCart = findNormalCart(cartId);
 
-		normalCart.removeCartItem(getRemovedItem(item, normalCart));
+		normalCart.removeCartItem(getCartItem(item, normalCart));
 		return normalCart;
 	}
 
-	private NormalCartItem getRemovedItem(Item item, NormalCart normalCart) {
+	private NormalCartItem getCartItem(Item item, NormalCart normalCart) {
 
 		return normalCart.getNormalCartItems().stream().filter(
 				normalCartItem -> Objects.equals(normalCartItem.getItem().getId(), item.getId())
 			)
 			.findFirst()
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
+	}
+
+	public void changeQuantity(Long cartId, Item item, int quantity) {
+		NormalCart normalCart = findNormalCart(cartId);
+		NormalCartItem cartItem = getCartItem(item, normalCart);
+		cartItem.changeQuantity(quantity);
 	}
 }

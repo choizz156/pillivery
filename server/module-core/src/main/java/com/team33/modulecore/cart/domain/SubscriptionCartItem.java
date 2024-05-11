@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class SubscriptionCartItem extends BaseEntity {
 
 	@Column(nullable = false)
-	private int quantity;
+	private int totalQuantity;
 
 	@Embedded
 	private SubscriptionInfo subscriptionInfo;
@@ -31,26 +31,21 @@ public class SubscriptionCartItem extends BaseEntity {
 
 	@Builder
 	public SubscriptionCartItem(
-		int quantity,
+		int totalQuantity,
 		SubscriptionInfo subscriptionInfo,
 		Item item
 	) {
-		this.quantity = quantity;
+		this.totalQuantity = totalQuantity;
 		this.subscriptionInfo = subscriptionInfo;
 		this.item = item;
 	}
 
-	public static SubscriptionCartItem of(Item item, int quantity, SubscriptionInfo subscriptionInfo) {
+	public static SubscriptionCartItem of(Item item, int totalQuantity, SubscriptionInfo subscriptionInfo) {
 		return SubscriptionCartItem.builder()
-			.quantity(quantity)
+			.totalQuantity(totalQuantity)
 			.item(item)
 			.subscriptionInfo(subscriptionInfo)
 			.build();
-	}
-
-	// 장바구니에 같은 상품을 또 담을 경우 수량만 증가
-	public void addQuantity(int quantity) {
-		this.quantity += quantity;
 	}
 
 	public int getPeriod() {
@@ -59,5 +54,13 @@ public class SubscriptionCartItem extends BaseEntity {
 
 	public boolean getSubscription() {
 		return subscriptionInfo.isSubscription();
+	}
+
+	public void changeQuantity(int quantity) {
+		this.totalQuantity = quantity;
+	}
+
+	public void changePeriod(int period) {
+		this.subscriptionInfo = SubscriptionInfo.of(true, period);
 	}
 }

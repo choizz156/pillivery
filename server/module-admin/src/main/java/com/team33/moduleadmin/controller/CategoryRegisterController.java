@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleadmin.dto.CategoryPostDto;
-import com.team33.modulecore.category.application.CategoryService;
+import com.team33.moduleadmin.service.CategoryRegisterService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,10 +17,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/categories", method = RequestMethod.POST)
 public class CategoryRegisterController {
 
-	private final CategoryService categoryService;
+	private final CategoryRegisterService categoryRegisterService;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	public void registerCategory(@RequestBody CategoryPostDto postDto) {
-		categoryService.save(postDto.getCategoryName());
+		categoryRegisterService.save(postDto.getCategoryName());
 	}
 }

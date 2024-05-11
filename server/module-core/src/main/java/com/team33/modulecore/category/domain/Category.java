@@ -1,8 +1,4 @@
-package com.team33.modulecore.category.domain.entity;
-
-import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.entity.Item;
+package com.team33.modulecore.category.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,10 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.item.domain.entity.Item;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
 
 @Getter

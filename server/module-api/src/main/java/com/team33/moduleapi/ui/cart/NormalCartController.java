@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +45,6 @@ public class NormalCartController {
 		return new SingleResponseDto<>(itemId);
 	}
 
-
 	@GetMapping("/carts/normal/{cartId}")
 	public SingleResponseDto<CartResponseDto> getNormalCart(
 		@PathVariable Long cartId
@@ -55,16 +55,23 @@ public class NormalCartController {
 		return new SingleResponseDto<>(cartResponseDto);
 	}
 
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/carts/normal/{cartId}")
-	public SingleResponseDto<CartResponseDto> patchNormalCart(
+	public void patchNormalCart(
 		@PathVariable Long cartId,
 		@RequestParam Long itemId
 	) {
+		normalCartService.correctNormalCart(cartId, cartServiceMapper.toItem(itemId));
+	}
 
-		NormalCart normalCart = normalCartService.correctNormalCart(cartId, cartServiceMapper.toItem(itemId));
-		CartResponseDto cartResponseDto = cartResponseMapper.cartResponseDto(normalCart);
-
-		return new SingleResponseDto<>(cartResponseDto);
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PatchMapping("/carts/normal/{cartId}")
+	public void patchNormalCart(
+		@PathVariable Long cartId,
+		@RequestParam int quantity,
+		@RequestParam Long itemId
+	) {
+		normalCartService.changeQuantity(cartId, cartServiceMapper.toItem(itemId), quantity);
 	}
 
 }
