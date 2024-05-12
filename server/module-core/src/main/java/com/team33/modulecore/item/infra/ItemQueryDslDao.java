@@ -83,7 +83,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.from(item)
 			.where(
-				titleContainsKeyword(keyword),
+				productNameContainsKeyword(keyword),
 				priceBetween(priceFilter)
 			)
 			.limit(pageDto.getSize())
@@ -110,7 +110,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.where(
 				discountRateEqNot0(),
-				titleContainsKeyword(keyword),
+				productNameContainsKeyword(keyword),
 				priceBetween(priceFilter)
 			)
 			.limit(pageDto.getSize())
@@ -147,7 +147,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, "itemCategory"))
 			.where(
 				Expressions.enumPath(CategoryName.class, "itemCategory").eq(categoryName),
-				titleContainsKeyword(keyword),
+				productNameContainsKeyword(keyword),
 				priceBetween(priceFilter)
 			)
 			.limit(pageDto.getSize())
@@ -169,6 +169,39 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		);
 	}
 
+	@Override
+	public Page<ItemQueryDto> findByBrand(String keyword, ItemPage pageDto, PriceFilter priceFilter) {
+		List<ItemQueryDto> fetch = selectItemQueryDto().
+			where(
+				keywordContainsEnterprise(keyword),
+				priceBetween(priceFilter)
+			)
+			.limit(pageDto.getSize())
+			.offset(pageDto.getOffset())
+			.orderBy(getItemSort(pageDto.getSortOption()))
+			.fetch();
+
+		checkEmptyList(fetch);
+
+		JPAQuery<Long> count = queryFactory
+			.select(item.count())
+			.from(item)
+			.where(
+				keywordContainsEnterprise(keyword),
+				priceBetween(priceFilter)
+			);
+
+		return PageableExecutionUtils.getPage(
+			fetch,
+			PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
+			count::fetchOne
+		);
+	}
+
+	private BooleanExpression keywordContainsEnterprise(String keyword) {
+		return StringUtils.isNullOrEmpty(keyword) ? null : item.information.enterprise.contains(keyword);
+	}
+
 	private BooleanExpression priceBetween(PriceFilter priceFilter) {
 		if (priceFilter.isSumZero()) {
 			return null;
@@ -186,7 +219,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		);
 	}
 
-	private BooleanExpression titleContainsKeyword(String keyword) {
+	private BooleanExpression productNameContainsKeyword(String keyword) {
 		return StringUtils.isNullOrEmpty(keyword)
 			? null
 			: item.information.productName.contains(keyword);

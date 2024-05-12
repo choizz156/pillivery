@@ -27,14 +27,4 @@ public class UserServicePatchDto {
         this.realName = realName;
         this.password = password;
     }
-
-    public static UserServicePatchDto to(UserPatchDto userDto) {
-        return UserServicePatchDto.builder()
-            .password(userDto.getPassword())
-            .address(new Address(userDto.getCity(), userDto.getDetailAddress()))
-            .displayName(userDto.getDisplayName())
-            .realName(userDto.getRealName())
-            .phone(userDto.getPhone())
-            .build();
-    }
 }

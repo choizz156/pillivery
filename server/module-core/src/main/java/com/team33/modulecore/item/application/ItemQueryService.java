@@ -58,4 +58,8 @@ public class ItemQueryService {
 	public Item findItem(Long itemId) {
 		return itemQueryRepository.findById(itemId);
 	}
+
+	public Page<ItemQueryDto> findByBrand(String keyword, ItemPage searchDto, PriceFilter priceFilter) {
+		return itemQueryRepository.findByBrand(keyword, searchDto, priceFilter);
+	}
 }

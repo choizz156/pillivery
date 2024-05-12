@@ -1,5 +1,7 @@
 package com.team33.modulecore.cart.application;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.transaction.Transactional;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.team33.modulecore.cart.domain.NormalCartItem;
 import com.team33.modulecore.cart.domain.entity.Cart;
 import com.team33.modulecore.cart.repository.CartRepository;
+import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
@@ -21,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class NormalCartService {
 
 	private final CartRepository cartRepository;
+	private final UserFindHelper userFindHelper;
 
 	public Cart findCart(Long cartId) {
 		return cartRepository.findById(cartId)
@@ -53,5 +57,11 @@ public class NormalCartService {
 			)
 			.findFirst()
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
+	}
+
+	public List<NormalCartItem> findCartItem(Long cartId) {
+		Cart cart = findCart(cartId);
+
+		return new ArrayList<>(cart.getNormalCartItems());
 	}
 }

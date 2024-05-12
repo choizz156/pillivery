@@ -57,10 +57,7 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 
-    private Long normalCartId;
-
-    private Long subscriptionCartId;
-
+    private Long cartId;
 
     @Builder
     private User(
@@ -105,12 +102,8 @@ public class User extends BaseEntity {
         this.password = encryptedPwd;
     }
 
-    public void addNormalCart(Long id) {
-        this.normalCartId = id;
-    }
-
-    public void addSubscriptionCart(Long id) {
-        this.subscriptionCartId= id;
+    public void addCart(Long id) {
+        this.cartId = id;
     }
 
     public void addAdditionalOauthUserInfo(OAuthUserServiceDto userDto) {

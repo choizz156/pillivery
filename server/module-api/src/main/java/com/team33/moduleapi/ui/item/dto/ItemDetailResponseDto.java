@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.review.dto.ReviewResponseDto;
+import com.team33.moduleapi.ui.review.ReviewResponseDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;

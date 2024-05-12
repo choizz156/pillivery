@@ -19,13 +19,4 @@ public class OAuthUserServiceDto {
         this.phone = phone;
         this.displayName = displayName;
     }
-
-    public static OAuthUserServiceDto to(UserPostOauthDto userDto) {
-        return OAuthUserServiceDto.builder()
-            .email(userDto.getEmail())
-            .address(new Address(userDto.getCity(), userDto.getDetailAddress()))
-            .displayName(userDto.getDisplayName())
-            .phone(userDto.getPhone())
-            .build();
-    }
 }

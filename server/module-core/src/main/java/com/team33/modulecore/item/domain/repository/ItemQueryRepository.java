@@ -34,4 +34,6 @@ public interface ItemQueryRepository {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	);
+
+	Page<ItemQueryDto> findByBrand(String keyword, ItemPage searchDto, PriceFilter priceFilter);
 }

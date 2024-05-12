@@ -1,8 +1,7 @@
 package com.team33.modulecore.order.domain;
 
-import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.entity.Item;
 import java.time.ZonedDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -12,6 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.item.domain.entity.Item;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,9 +52,9 @@ public class OrderItem extends BaseEntity {
     private Order order;
 
     @Builder
-    private OrderItem(int quantity, int period, boolean subscription, Item item) {
+    private OrderItem(int quantity, SubscriptionInfo subscriptionInfo, Item item) {
         this.quantity = quantity;
-        this.subscriptionInfo = new SubscriptionInfo(period, subscription);
+        this.subscriptionInfo = subscriptionInfo;
         this.item = item;
     }
 
@@ -74,9 +77,8 @@ public class OrderItem extends BaseEntity {
     ) {
         return OrderItem.builder()
             .item(item)
+            .subscriptionInfo(subscriptionInfo)
             .quantity(quantity)
-            .period(subscriptionInfo.getPeriod())
-            .subscription(subscriptionInfo.isSubscription())
             .build();
     }
 

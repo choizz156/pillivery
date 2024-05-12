@@ -21,13 +21,4 @@ public class OrderItemServiceDto {
         this.quantity = quantity;
         this.period = period;
     }
-
-    public static OrderItemServiceDto to(OrderPostDto orderPostDto) {
-        return OrderItemServiceDto.builder()
-            .itemId(orderPostDto.getItemId())
-            .isSubscription(orderPostDto.isSubscription())
-            .quantity(orderPostDto.getQuantity())
-            .period(orderPostDto.getPeriod())
-            .build();
-    }
 }

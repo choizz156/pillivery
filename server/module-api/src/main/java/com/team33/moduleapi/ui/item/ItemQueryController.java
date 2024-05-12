@@ -15,6 +15,7 @@ import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.item.dto.ItemDetailResponseDto;
 import com.team33.moduleapi.ui.item.dto.ItemMainResponseDto;
+import com.team33.moduleapi.ui.item.dto.ItemPageRequestDto;
 import com.team33.moduleapi.ui.item.dto.ItemPriceRequstDto;
 import com.team33.moduleapi.ui.item.mapper.ItemQueryServiceMapper;
 import com.team33.modulecore.category.domain.CategoryName;
@@ -22,7 +23,6 @@ import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.application.ItemQueryService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.query.ItemPage;
-import com.team33.moduleapi.ui.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.item.dto.query.PriceFilter;
 import com.team33.modulecore.review.application.ReviewService;
@@ -42,7 +42,6 @@ public class ItemQueryController {
 	private final ItemQueryService itemQueryService;
 	//    private final TalkService talkService;
 	//    private final ReviewMapper reviewMapper;
-
 
 	@GetMapping("/main")
 	public SingleResponseDto<ItemMainResponseDto> getMainItem() {
@@ -93,7 +92,7 @@ public class ItemQueryController {
 	}
 
 	@GetMapping("/categories")
-	public MultiResponseDto<com.team33.modulecore.item.dto.query.ItemQueryDto> searchCategories(
+	public MultiResponseDto<ItemQueryDto> searchCategories(
 		@RequestParam CategoryName categoryName,
 		@RequestParam(required = false) String keyword,
 		ItemPageRequestDto pageDto,
@@ -109,6 +108,18 @@ public class ItemQueryController {
 			searchDto
 		);
 
+		return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
+	}
+
+	@GetMapping("/brand")
+	public MultiResponseDto<ItemQueryDto> searchBrand(
+		@RequestParam String keyword,
+		ItemPageRequestDto pageDto,
+		ItemPriceRequstDto itemPriceRequstDto
+	) {
+		PriceFilter priceFilter = mapper.toPriceFilterDto(itemPriceRequstDto);
+		ItemPage searchDto = mapper.toItemPageDto(pageDto);
+		Page<ItemQueryDto> itemsPage = itemQueryService.findByBrand(keyword, searchDto, priceFilter);
 		return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
 	}
 }

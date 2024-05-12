@@ -31,15 +31,4 @@ public class UserServicePostDto {
         this.phone = phone;
         this.address = address;
     }
-
-    public static UserServicePostDto to(UserPostDto userDto) {
-        Address address = new Address(userDto.getCity(), userDto.getDetailAddress());
-        return UserServicePostDto.builder().email(userDto.getEmail())
-            .displayName(userDto.getDisplayName())
-            .address(address)
-            .password(userDto.getPassword())
-            .realName(userDto.getRealName())
-            .phone(userDto.getPhone())
-            .build();
-    }
 }

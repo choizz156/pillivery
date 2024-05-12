@@ -1,11 +1,13 @@
-package com.team33.modulecore.review.dto;
+package com.team33.moduleapi.ui.review;
 
 import java.time.ZonedDateTime;
+
+import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.team33.modulecore.item.dto.query.ItemSimpleResponseDto;
 
 
 @Getter

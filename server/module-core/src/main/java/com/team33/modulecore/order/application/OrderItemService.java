@@ -1,28 +1,23 @@
 package com.team33.modulecore.order.application;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.cart.domain.entity.NormalCart;
-import com.team33.modulecore.cart.domain.ItemId;
-import com.team33.modulecore.cart.repository.NormalCartRepository;
+import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.cart.domain.NormalCartItem;
-import com.team33.modulecore.itemcart.repository.ItemCartRepository;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
-import com.team33.modulecore.order.domain.repository.OrderItemRepository;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 
@@ -35,78 +30,30 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class OrderItemService {
 
-	private final ItemCartRepository itemCartRepository;
-	private final OrderItemRepository orderItemRepository;
 	private final ItemCommandRepository itemCommandRepository;
 	private final OrderRepository orderRepository;
-	private final NormalCartRepository normalCartRepository;
+	private final CartRepository cartRepository;
 	private final ItemQueryRepository itemQueryRepository;
 
 	@Transactional(readOnly = true)
 	public List<OrderItem> getOrderItemSingle(OrderItemServiceDto dto) {
 		Item item = findItem(dto.getItemId());
 
-		SubscriptionInfo subscriptionInfo =
-			SubscriptionInfo.of(dto.isSubscription(), dto.getPeriod());
-
 		OrderItem orderItem = OrderItem.create(
 			item,
-			subscriptionInfo,
+			SubscriptionInfo.of(dto.isSubscription(), dto.getPeriod()),
 			dto.getQuantity()
 		);
 
-		return makeOrderItems(orderItem);
+		return Stream.of(orderItem).collect(Collectors.toList());
 	}
 
-	public List<OrderItem> getOrderItemsInCart1(Long cartId) {
-		NormalCart normalCart = normalCartRepository.findById(cartId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
-
-		List<ItemId> itemIds = normalCart.getItemIds();
-		List<Item> items = itemIds.stream()
-			.map(itemId -> itemCommandRepository.findById(itemId.getId())
-				.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND))
-			)
+	@Transactional(readOnly = true)
+	public List<OrderItem> getOrderItemsInCart(List<OrderItemServiceDto> dtos) {
+		return dtos.stream()
+			.map(this::getOrderItemSingle)
+			.flatMap(List::stream)
 			.collect(Collectors.toList());
-
-		List<OrderItem> orderItemList = new ArrayList<>();
-
-		items.stream().map(item -> {
-			createOrderItem1(item);
-			return
-		});
-
-		return orderItemList;
-	}
-
-	private OrderItem createOrderItem1(Item item) {
-		OrderItem.create(item,,)
-	}
-
-	public List<OrderItem> getOrderItemsInCart(List<NormalCartItem> normalCartItems) {
-		List<OrderItem> orderItemList = new ArrayList<>();
-		normalCartItems.forEach(itemCart -> {
-			createOrderItem(itemCart, orderItemList);
-			itemCartRepository.deleteById(itemCart.getItemCartId());
-		});
-		return orderItemList;
-	}
-
-	private void createOrderItem(NormalCartItem normalCartItem, List<OrderItem> orderItemList) {
-		OrderItem orderItem = OrderItem.create(
-			normalCartItem.getItem(),
-			normalCartItem.getSubscriptionItemInfo(),
-			normalCartItem.getTotalQuantity()
-		);
-		orderItemList.add(orderItem);
-	}
-
-	public OrderItem findOrderItem(long orderItemId) {
-		Optional<OrderItem> optionalItemOrder = orderItemRepository.findById(orderItemId);
-
-		return optionalItemOrder.orElseThrow(
-			() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND)
-		);
 	}
 
 	//    public OrderItem changeSubQuantity(long itemOrderId, int upDown) {
@@ -159,8 +106,6 @@ public class OrderItemService {
 		if (orderEntity.isPresent()) {
 			OrderItem orderItem = new OrderItem(getItemOrder(io, orderEntity));
 			orderItem.setOrder(newOrder);
-			//            addSales(orderItem);
-			orderItemRepository.save(orderItem);
 			return orderItem;
 		}
 		throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
@@ -175,17 +120,9 @@ public class OrderItemService {
 		}
 	}
 
-	private List<OrderItem> makeOrderItems(OrderItem orderItem) {
-		List<OrderItem> orderItems = new ArrayList<>();
-		orderItems.add(orderItem);
-		return orderItems;
-	}
 
 	private Item findItem(long id) {
-		Optional<Item> optionalItem = itemCommandRepository.findById(id);
-		return optionalItem.orElseThrow(
-			() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND)
-		);
+		return itemQueryRepository.findById(id);
 	}
 
 	//TODO: 리팩토링 -> optional 제거
@@ -194,4 +131,7 @@ public class OrderItemService {
 		return order.get().getOrderItems().get(i);
 	}
 
+	public OrderItem findOrderItem(Long itemOrderId) {
+		return null;
+	}
 }

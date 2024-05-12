@@ -1,4 +1,4 @@
-package com.team33.modulecore.review.dto;
+package com.team33.moduleapi.ui.review;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
