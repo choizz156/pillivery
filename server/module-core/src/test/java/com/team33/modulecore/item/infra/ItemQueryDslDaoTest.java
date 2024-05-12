@@ -26,18 +26,13 @@ import org.springframework.data.domain.Page;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.Categories;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.ItemPageRequestDto;
-import com.team33.modulecore.item.dto.ItemPriceRequstDto;
-import com.team33.modulecore.item.dto.query.ItemPageDto;
+import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
-import com.team33.modulecore.item.dto.query.PriceFilterDto;
+import com.team33.modulecore.item.dto.query.PriceFilter;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class ItemQueryDslDaoTest {
@@ -112,18 +107,20 @@ class ItemQueryDslDaoTest {
 	@Test
 	void 세일_아이템_조회() throws Exception {
 		//given
-		var dto = new ItemPageRequestDto();
-		dto.setPage(1);
-		dto.setSize(14);
+		PriceFilter priceFilter = new PriceFilter();
+		ItemPage itemPage = ItemPage.builder()
+			.page(1)
+			.size(14)
+			.build();
 
 		//when
 		Page<ItemQueryDto> items = itemQueryRepository.findItemsOnSale(
 			null,
-			new PriceFilterDto(),
-			ItemPageDto.from(dto)
+			priceFilter,
+			itemPage
 		);
 		//then
-		assertThat(items.getContent()).hasSize(15)
+		assertThat(items.getContent()).hasSize(14)
 			.isSortedAccordingTo(comparing(ItemQueryDto::getSales).reversed());
 	}
 
@@ -131,20 +128,22 @@ class ItemQueryDslDaoTest {
 	@Test
 	void 카테고리_아이템_조회() throws Exception {
 		//given
-		var dto = new ItemPageRequestDto();
-		dto.setPage(1);
-		dto.setSize(14);
+		PriceFilter priceFilter = new PriceFilter();
+		ItemPage itemPage = ItemPage.builder()
+			.page(1)
+			.size(14)
+			.build();
 
 		//when
 		Page<ItemQueryDto> items = itemQueryRepository.findItemsByCategory(
 			BONE,
 			null,
-			new PriceFilterDto(),
-			ItemPageDto.from(dto)
+			priceFilter,
+			itemPage
 		);
 
 		//then
-		assertThat(items.getContent()).hasSize(15)
+		assertThat(items.getContent()).hasSize(14)
 			.extracting("categories.categoryNameSet")
 			.containsOnly(Set.of(EYE, BONE));
 
@@ -157,126 +156,134 @@ class ItemQueryDslDaoTest {
 		@DisplayName("이름이 포함된 아이템을 조회할 수 있다.")
 		@Test
 		void 아이템_이름_조회() throws Exception {
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(14);
+			PriceFilter priceFilter = new PriceFilter();
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.build();
 
 			//when
-			Page<ItemQueryDto> tes = itemQueryRepository.findFilteredItems(
+			Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
 				"tit",
-				new PriceFilterDto(),
-				ItemPageDto.from(dto)
+				priceFilter,
+				itemPage
 			);
 
 			//then
-			assertThat(tes.getContent())
-				.hasSize(15)
+			assertThat(items.getContent())
+				.hasSize(14)
 				.extracting("productName")
 				.contains("title12", Index.atIndex(3));
-			assertThat(tes.getSize()).isEqualTo(16);
-			assertThat(tes.getTotalElements()).isEqualTo(15);
-			assertThat(tes.getTotalPages()).isEqualTo(1);
+			assertThat(items.getSize()).isEqualTo(14);
+			assertThat(items.getTotalElements()).isEqualTo(15);
+			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 
 		@DisplayName("이름을 통해 조회된 아이템들을 판매량 순으로 정렬할 수 있다.")
 		@Test
 		void 판매량_순() throws Exception {
 			//given
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(14);
-			dto.setSortOption(ItemSortOption.SALES);
+			PriceFilter priceFilter = new PriceFilter();
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.build();
 
 			//when
 			Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
 				"title",
-				new PriceFilterDto(),
-				ItemPageDto.from(dto)
+				priceFilter,
+				itemPage
 			);
 
 			//then
 			assertThat(items.getContent())
-				.hasSize(15)
+				.hasSize(14)
 				.isSortedAccordingTo(comparing(ItemQueryDto::getSales).reversed());
 
 			assertThat(items.getTotalElements()).isEqualTo(15);
-			assertThat(items.getTotalPages()).isEqualTo(1);
+			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 
 		@DisplayName("이름을 통해 조회된 아이템들을 할인율 순으로 내림차순 할 수 있다.")
 		@Test
 		void 할인율_순() throws Exception {
 			//given
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(14);
-			dto.setSortOption(ItemSortOption.DISCOUNT_RATE_H);
+			PriceFilter priceFilter = new PriceFilter();
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.sortOption(ItemSortOption.DISCOUNT_RATE_H)
+				.build();
 
 			//when
 			Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
 				"title",
-				new PriceFilterDto(),
-				ItemPageDto.from(dto)
+				priceFilter,
+				itemPage
 			);
 
 			//then
 			assertThat(items.getContent())
-				.hasSize(15)
+				.hasSize(14)
 				.isSortedAccordingTo(comparing(ItemQueryDto::getDiscountRate).reversed());
 
 			assertThat(items.getTotalElements()).isEqualTo(15);
-			assertThat(items.getTotalPages()).isEqualTo(1);
+			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 
 		@DisplayName("이름을 통해 조회된 아이템들을 가격순으로 오름차순 정렬할 수 있다.")
 		@Test
 		void 최저가_순() throws Exception {
 			//given
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(14);
-			dto.setSortOption(ItemSortOption.PRICE_L);
+			PriceFilter priceFilter = new PriceFilter();
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.sortOption(ItemSortOption.PRICE_L)
+				.build();
 
 			//when
 			Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
 				"title",
-				new PriceFilterDto(),
-				ItemPageDto.from(dto)
+				priceFilter,
+				itemPage
 			);
 
 			//then
 			assertThat(items.getContent())
-				.hasSize(15)
+				.hasSize(14)
 				.isSortedAccordingTo(comparing(ItemQueryDto::getRealPrice));
 
 			assertThat(items.getTotalElements()).isEqualTo(15);
-			assertThat(items.getTotalPages()).isEqualTo(1);
+			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 
 		@DisplayName("이름을 통해 조회된 아이템들을 가격순으로 내림차순 정렬할 수 있다.")
 		@Test
 		void 최고가_순() throws Exception {
 			//given
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(14);
-			dto.setSortOption(ItemSortOption.PRICE_H);
+			PriceFilter priceFilter = new PriceFilter();
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.sortOption(ItemSortOption.PRICE_H)
+				.build();
 
 			//when
 			Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
 				"title",
-				new PriceFilterDto(),
-				ItemPageDto.from(dto)
+				priceFilter,
+				itemPage
 			);
 
 			//then
 			assertThat(items.getContent())
-				.hasSize(15)
+				.hasSize(14)
 				.isSortedAccordingTo(comparing(ItemQueryDto::getRealPrice).reversed());
 
 			assertThat(items.getTotalElements()).isEqualTo(15);
-			assertThat(items.getTotalPages()).isEqualTo(1);
-
+			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 	}
 
@@ -288,17 +295,23 @@ class ItemQueryDslDaoTest {
 		@Test
 		void 가격_필터링1() throws Exception {
 			//given
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(16);
-			dto.setSortOption(ItemSortOption.PRICE_H);
+			PriceFilter priceFilter = PriceFilter.builder()
+				.highPrice(15000)
+				.lowPrice(10000)
+				.build();
+
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.sortOption(ItemSortOption.PRICE_H)
+				.build();
 
 			//when
 			Page<ItemQueryDto> itemsByPrice =
 				itemQueryRepository.findFilteredItems(
 					null,
-					PriceFilterDto.from(new ItemPriceRequstDto(10000, 15000)),
-					ItemPageDto.from(dto)
+					priceFilter,
+					itemPage
 				);
 
 			//then
@@ -323,17 +336,23 @@ class ItemQueryDslDaoTest {
 		@Test
 		void 가격_필터링2() throws Exception {
 			//given
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(10);
-			dto.setSortOption(ItemSortOption.PRICE_L);
+			PriceFilter priceFilter = PriceFilter.builder()
+				.highPrice(1000)
+				.lowPrice(14999)
+				.build();
+
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.sortOption(ItemSortOption.PRICE_L)
+				.build();
 
 			//when
 			Page<ItemQueryDto> itemsByPrice =
 				itemQueryRepository.findFilteredItems(
 					null,
-					PriceFilterDto.from(new ItemPriceRequstDto(1000, 14999)),
-					ItemPageDto.from(dto)
+					priceFilter,
+					itemPage
 				);
 
 			//then
@@ -351,17 +370,22 @@ class ItemQueryDslDaoTest {
 		@Test
 		void 가격_필터링3() throws Exception {
 			//given
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(10);
-			dto.setSortOption(ItemSortOption.PRICE_L);
+			PriceFilter priceFilter = PriceFilter.builder()
+				.highPrice(1000)
+				.lowPrice(1000)
+				.build();
+
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.build();
 
 			//when
 			Page<ItemQueryDto> itemsByPrice =
 				itemQueryRepository.findFilteredItems(
 					null,
-					PriceFilterDto.from(new ItemPriceRequstDto(1000, 1000)),
-					ItemPageDto.from(dto)
+					priceFilter,
+					itemPage
 				);
 
 			//then
@@ -379,21 +403,25 @@ class ItemQueryDslDaoTest {
 		@Test
 		void 가격_필터링4() throws Exception {
 			//given
-			var dto = new ItemPageRequestDto();
-			dto.setPage(1);
-			dto.setSize(10);
-			dto.setSortOption(ItemSortOption.PRICE_L);
+			PriceFilter priceFilter = PriceFilter.builder()
+				.highPrice(100110)
+				.lowPrice(100110)
+				.build();
 
-			//when//then
-			assertThatThrownBy(() ->
-				itemQueryRepository.findFilteredItems(
-					null,
-					PriceFilterDto.from(new ItemPriceRequstDto(11111, 11111)),
-					ItemPageDto.from(dto)
-				)
-			)
-				.isInstanceOf(BusinessLogicException.class)
-				.hasMessageContaining(ExceptionCode.ITEM_NOT_FOUND.getMessage());
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.build();
+
+			//when
+			Page<ItemQueryDto> filteredItems = itemQueryRepository.findFilteredItems(
+				null,
+				priceFilter,
+				itemPage
+			);
+
+			// then
+			assertThat(filteredItems).isEmpty();
 		}
 	}
 
@@ -408,7 +436,7 @@ class ItemQueryDslDaoTest {
 			.setLazy("information.price.discountRate", () -> value1.getAndSet(value1.get() + 1D))
 			.setLazy("information.price.realPrice", () -> value.intValue() * 1000)
 			.setLazy("information.productName", () -> "title" + value)
-			.set("categories", new Categories(Set.of(BONE,EYE)))
+			.set("categories", new Categories(Set.of(BONE, EYE)))
 			.set("itemCategory", Set.of(EYE, BONE))
 			.sampleList(15);
 
