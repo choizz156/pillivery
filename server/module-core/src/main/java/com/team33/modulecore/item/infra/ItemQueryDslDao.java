@@ -39,7 +39,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		Item item = queryFactory
 			.selectFrom(QItem.item)
 			.where(QItem.item.id.eq(id))
-			.fetchOne();
+			.fetchFirst();
 
 		if (item == null) {
 			throw new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND);
@@ -56,7 +56,9 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			.limit(9)
 			.fetch();
 
-		checkEmptyList(fetch);
+		if (isEmpty(fetch)) {
+			return List.of();
+		}
 
 		return fetch;
 	}
@@ -69,7 +71,9 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			.orderBy(item.information.price.discountRate.desc())
 			.fetch();
 
-		checkEmptyList(fetch);
+		if (isEmpty(fetch)) {
+			return List.of();
+		}
 
 		return fetch;
 	}
@@ -80,23 +84,31 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
+		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
+		BooleanExpression priceBetween = priceBetween(priceFilter);
+
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.from(item)
 			.where(
-				productNameContainsKeyword(keyword),
-				priceBetween(priceFilter)
+				productNameContainsKeyword,
+				priceBetween
 			)
 			.limit(pageDto.getSize())
 			.offset(pageDto.getOffset())
 			.orderBy(getItemSort(pageDto.getSortOption()))
 			.fetch();
 
-		checkEmptyList(fetch);
+		if (isEmpty(fetch)) {
+			return Page.empty();
+		}
 
 		JPAQuery<Long> count = queryFactory
 			.select(item.count())
 			.from(item)
-			.where(priceBetween(priceFilter));
+			.where(
+				productNameContainsKeyword,
+				priceBetween
+			);
 
 		return PageableExecutionUtils.getPage(
 			fetch,
@@ -107,23 +119,33 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 	@Override
 	public Page<ItemQueryDto> findItemsOnSale(String keyword, PriceFilter priceFilter, ItemPage pageDto) {
+		BooleanExpression discountRateEqNot0 = discountRateEqNot0();
+		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
+		BooleanExpression priceBetween = priceBetween(priceFilter);
+
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.where(
-				discountRateEqNot0(),
-				productNameContainsKeyword(keyword),
-				priceBetween(priceFilter)
+				discountRateEqNot0,
+				productNameContainsKeyword,
+				priceBetween
 			)
 			.limit(pageDto.getSize())
 			.offset(pageDto.getOffset())
 			.orderBy(getItemSort(pageDto.getSortOption()))
 			.fetch();
 
-		checkEmptyList(fetch);
+		if (isEmpty(fetch)) {
+			return Page.empty();
+		}
 
 		JPAQuery<Long> count = queryFactory
 			.select(item.count())
 			.from(item)
-			.where(discountRateEqNot0());
+			.where(
+				discountRateEqNot0,
+				productNameContainsKeyword,
+				priceBetween
+			);
 
 		return PageableExecutionUtils.getPage(
 			fetch,
@@ -143,24 +165,35 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
+		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
+		BooleanExpression priceBetween = priceBetween(priceFilter);
+		BooleanExpression categoryNameEq = Expressions.enumPath(CategoryName.class, "itemCategory").eq(categoryName);
+
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, "itemCategory"))
 			.where(
 				Expressions.enumPath(CategoryName.class, "itemCategory").eq(categoryName),
-				productNameContainsKeyword(keyword),
-				priceBetween(priceFilter)
+				productNameContainsKeyword,
+				priceBetween
 			)
 			.limit(pageDto.getSize())
 			.offset(pageDto.getOffset())
 			.orderBy(getItemSort(pageDto.getSortOption()))
 			.fetch();
 
-		checkEmptyList(fetch);
+		if (isEmpty(fetch)) {
+			return Page.empty();
+		}
 
 		JPAQuery<Long> count = queryFactory
 			.select(item.count())
 			.from(item)
-			.where(item.itemCategory.contains(categoryName));
+			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, "itemCategory"))
+			.where(
+				categoryNameEq,
+				productNameContainsKeyword,
+				priceBetween
+			);
 
 		return PageableExecutionUtils.getPage(
 			fetch,
@@ -169,26 +202,35 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		);
 	}
 
+	private static boolean isEmpty(List<ItemQueryDto> fetch) {
+		return fetch.isEmpty();
+	}
+
 	@Override
 	public Page<ItemQueryDto> findByBrand(String keyword, ItemPage pageDto, PriceFilter priceFilter) {
+		BooleanExpression keywordContainsEnterprise = keywordContainsEnterprise(keyword);
+		BooleanExpression priceBetween = priceBetween(priceFilter);
+
 		List<ItemQueryDto> fetch = selectItemQueryDto().
 			where(
-				keywordContainsEnterprise(keyword),
-				priceBetween(priceFilter)
+				keywordContainsEnterprise,
+				priceBetween
 			)
 			.limit(pageDto.getSize())
 			.offset(pageDto.getOffset())
 			.orderBy(getItemSort(pageDto.getSortOption()))
 			.fetch();
 
-		checkEmptyList(fetch);
+		if (isEmpty(fetch)) {
+			return Page.empty();
+		}
 
 		JPAQuery<Long> count = queryFactory
 			.select(item.count())
 			.from(item)
 			.where(
-				keywordContainsEnterprise(keyword),
-				priceBetween(priceFilter)
+				keywordContainsEnterprise,
+				priceBetween
 			);
 
 		return PageableExecutionUtils.getPage(
