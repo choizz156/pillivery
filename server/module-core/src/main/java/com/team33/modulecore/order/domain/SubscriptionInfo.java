@@ -28,9 +28,9 @@ public class SubscriptionInfo {
         this.isSubscription = isSubscription;
     }
 
-    public static SubscriptionInfo of(boolean subscription, int period) {
+    public static SubscriptionInfo of(boolean isSubscription, int period) {
         return SubscriptionInfo.builder()
-            .isSubscription(subscription)
+            .isSubscription(isSubscription)
             .period(period)
             .build();
     }

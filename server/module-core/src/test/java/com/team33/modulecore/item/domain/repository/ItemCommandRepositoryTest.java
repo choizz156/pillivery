@@ -46,7 +46,7 @@ class ItemCommandRepositoryTest {
 		Item item = FixtureMonkeyFactory.get()
 			.giveMeBuilder(Item.class)
 			.set("id", null)
-			.set("categoryNames", null)
+			.set("itemCategory", null)
 			.set("statistics.view", 0L)
 			.set("information.price.discountPrice", 1)
 			.set("categories", null)

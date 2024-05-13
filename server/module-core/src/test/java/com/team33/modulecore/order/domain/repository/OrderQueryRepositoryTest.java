@@ -24,13 +24,13 @@ import org.springframework.data.domain.Page;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.common.OrderPageDto;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.domain.SubscriptionItemInfo;
+import com.team33.modulecore.order.domain.SubscriptionInfo;
 import com.team33.modulecore.order.dto.OrderFindCondition;
+import com.team33.modulecore.order.dto.OrderPageDto;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.order.infra.OrderQueryDslDao;
 import com.team33.modulecore.user.domain.User;
@@ -126,7 +126,7 @@ class OrderQueryRepositoryTest {
 	private User getMockUser() {
 		return FixtureMonkeyFactory.get().giveMeBuilder(User.class)
 			.set("id", null)
-			.set("cart", null)
+			.set("cartId", null)
 			.sample();
 	}
 
@@ -140,7 +140,7 @@ class OrderQueryRepositoryTest {
 			.setLazy("information.price.discountRate", () -> value1.getAndSet(value1.get() + 1D))
 			.setLazy("information.price.realPrice", () -> value.intValue() * 1000)
 			.setLazy("information.productName", () -> "title" + value)
-			.set("categoryNames", Set.of(EYE))
+			.set("itemCategory", Set.of(EYE))
 			.set("categories", null)
 			.sampleList(8);
 
@@ -149,7 +149,7 @@ class OrderQueryRepositoryTest {
 			.set("statistics.sales", 0)
 			.set("information.price.discountRate", 0D)
 			.set("information.price.realPrice", 1)
-			.set("categoryNames", Set.of(BONE))
+			.set("itemCategory", Set.of(BONE))
 			.set("categories", null)
 			.setLazy("information.productName", () -> "test" + value.addAndGet(1))
 			.sampleList(8);
@@ -162,10 +162,11 @@ class OrderQueryRepositoryTest {
 		mockItems.stream()
 			.takeWhile(item -> item.getId() <= 8)
 			.map(item -> OrderItem.create(
-				item,
-				SubscriptionItemInfo.of(false, 60),
-				1
-			))
+					item,
+					SubscriptionInfo.of(false, 60),
+					1
+				)
+			)
 			.map(orderItem -> Order.create(List.of(orderItem), false, user))
 			.forEach(order -> {
 				order.changeOrderStatus(OrderStatus.COMPLETE);
@@ -176,7 +177,7 @@ class OrderQueryRepositoryTest {
 			.dropWhile(item -> item.getId() <= 8)
 			.map(item -> OrderItem.create(
 				item,
-				SubscriptionItemInfo.of(true, 60),
+				SubscriptionInfo.of(true, 60),
 				1
 			))
 			.map(orderItem -> Order.create(List.of(orderItem), true, user))

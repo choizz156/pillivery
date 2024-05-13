@@ -9,11 +9,9 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.cart.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;
@@ -30,9 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class OrderItemService {
 
-	private final ItemCommandRepository itemCommandRepository;
 	private final OrderRepository orderRepository;
-	private final CartRepository cartRepository;
 	private final ItemQueryRepository itemQueryRepository;
 
 	@Transactional(readOnly = true)
@@ -55,22 +51,6 @@ public class OrderItemService {
 			.flatMap(List::stream)
 			.collect(Collectors.toList());
 	}
-
-	//    public OrderItem changeSubQuantity(long itemOrderId, int upDown) {
-	//        OrderItem orderItem = findItemOrder(itemOrderId);
-	//
-	//
-	//        orderItem.setQuantity(orderItem.getQuantity() + upDown);
-	//        orderItemRepository.save(orderItem);
-	//
-	//        return orderItem;
-	//    }
-
-	//    public void addSales(OrderItem orderItem) { // 주문 요청할 경우 아이템 판매량 증가
-	//        int sales = orderItem.getQuantity();
-	//
-	//        itemRepository.save(orderItem.getItem());
-	//    }
 
 	public void setItemPeriod(int period, OrderItem orderItem) {
 		orderItem.addPeriod(period);
@@ -119,7 +99,6 @@ public class OrderItemService {
 			log.warn("is subsucription = {}", orderInOrderItem.isSubscription());
 		}
 	}
-
 
 	private Item findItem(long id) {
 		return itemQueryRepository.findById(id);
