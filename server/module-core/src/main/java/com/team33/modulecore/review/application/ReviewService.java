@@ -1,110 +1,114 @@
 package com.team33.modulecore.review.application;
 
-import com.team33.modulecore.review.domain.Review;
-import com.team33.modulecore.review.repository.ReviewRepository;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
+import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import java.util.Optional;
-import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.application.ItemCommandService;
+import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
+import com.team33.modulecore.review.domain.Review;
+import com.team33.modulecore.review.domain.ReviewContext;
+import com.team33.modulecore.review.repository.ReviewCommandRepository;
+import com.team33.modulecore.user.domain.ReviewId;
 import com.team33.modulecore.user.domain.User;
 
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ReviewService {
-    private final ItemCommandRepository itemRepository;
 
-    private final ReviewRepository reviewRepository;
-    private final ItemCommandService itemCommandService;
+	private final ItemQueryRepository itemQueryRepository;
+	private final ReviewCommandRepository reviewCommandRepository;
+	private final ItemCommandService itemCommandService;
+	private final UserFindHelper userFindHelper;
 
-//    public Review createReview(Review review) {
-//        reviewRepository.save(review);
-//        refreshStarAvg(review.getItem().getId());
-//        return review;
-//    }
+	public Review createReview(ReviewContext context) {
+		Review review = Review.create(context);
 
-    public Review findReview(long reviewId) {
-        Review review = findVerifiedReview(reviewId);
-        reviewRepository.save(review);
-        return review;
-    }
+		reviewCommandRepository.save(review);
 
-    public Page<Review> findReviews(User user, int page, int size, String sort) {
+		User user = userFindHelper.findUser(context.getUserId());
+		user.addReviewId(review.getId());
 
-        Page<Review> pageReviews = reviewRepository.findAllByUser(
-                PageRequest.of(page, size, Sort.by(sort).descending()), user);
+		Item item = itemQueryRepository.findById(context.getItemId());
+		item.addReviewId(review.getId());
+		item.updateStars(context.getStar());
 
-        return pageReviews;
-    }
+		return review;
+	}
 
-    public Page<Review> findItemReviews(Item item, int page, int size) {
+	public Review updateReview(Long reviewId, ReviewContext context) {
+		Review review = findReview(reviewId);
+		return review.update(context);
+	}
 
-        Page<Review> pageReview = reviewRepository.findAllByItem(
-                PageRequest.of(page, size, Sort.by("reviewId").descending()), item);
+	public void deleteReview(Long reviewId, ReviewContext context) {
+		Review review = findReview(reviewId);
+		review.delete(context);
 
-        return pageReview;
-    }
+		User user = userFindHelper.findUser(context.getUserId());
+		user.getReviewIds().remove(new ReviewId(reviewId));
 
-    public long findReviewWriter(long reviewId) { // 작성자만 수정, 삭제를 할 수 있도록 리뷰의 작성자 찾기
-        Review review = findVerifiedReview(reviewId);
-        return review.getUser().getId();
-    }
+		Item item = itemQueryRepository.findById(context.getItemId());
+		item.getReviewIds().remove(new ReviewId(reviewId));
+	}
 
-//    public Review updateReview(Review review) {
-//        Review findReview = findVerifiedReview(review.getReviewId());
-//
-//        Optional.ofNullable(review.getContent())
-//                .ifPresent(findReview::setContent);
-//
-//        Optional.ofNullable(review.getStar())
-//                .ifPresent(findReview::setStar);
-//
-//        Review updatedReview = reviewRepository.save(findReview);
-//        refreshStarAvg(findReview.getItem().getId());
-//        return updatedReview;
-//    }
+	public Review findReview(long reviewId) {
+		return reviewCommandRepository.findById(reviewId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.REVIEW_NOT_FOUND));
+	}
 
-    public Review findVerifiedReview(long reviewId) {
-        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
-        Review findReview = optionalReview.orElseThrow(
-                () -> new BusinessLogicException(ExceptionCode.REVIEW_NOT_FOUND));
+	// public Page<Review> findReviews(User user, int page, int size, String sort) {
+	//
+	// 	Page<Review> pageReviews = reviewCommandRepository.findAllByUser(
+	// 		PageRequest.of(page, size, Sort.by(sort).descending()), user);
+	//
+	// 	return pageReviews;
+	// }
+	//
+	// public Page<Review> findItemReviews(Item item, int page, int size) {
+	//
+	// 	Page<Review> pageReview = reviewCommandRepository.findAllByItem(
+	// 		PageRequest.of(page, size, Sort.by("reviewId").descending()), item);
+	//
+	// 	return pageReview;
+	// }
 
-        return findReview;
-    }
+	//    public Review updateReview(Review review) {
+	//        Review findReview = findVerifiedReview(review.getReviewId());
+	//
+	//        Optional.ofNullable(review.getContent())
+	//                .ifPresent(findReview::setContent);
+	//
+	//        Optional.ofNullable(review.getStar())
+	//                .ifPresent(findReview::setStar);
+	//
+	//        Review updatedReview = reviewRepository.save(findReview);
+	//        refreshStarAvg(findReview.getItem().getId());
+	//        return updatedReview;
+	//    }
 
-//    public void deleteReview(long reviewId, long userId) {
-//        Review review = findVerifiedReview(reviewId);
-//        long writerId = findReviewWriter(reviewId);
-//
-//        if(userId != writerId) {
-//            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED_USER);
-//        }
-//
-//        reviewRepository.delete(review);
-//        refreshStarAvg(review.getItem().getId());
-//    }
+	//    public void deleteReview(long reviewId, long userId) {
+	//        Review review = findVerifiedReview(reviewId);
+	//        long writerId = findReviewWriter(reviewId);
+	//
+	//        if(userId != writerId) {
+	//            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED_USER);
+	//        }
+	//
+	//        reviewRepository.delete(review);
+	//        refreshStarAvg(review.getItem().getId());
+	//    }
 
-    public double getStarAvg(long itemId) {
-        Optional<Double> optionalStarAvg = reviewRepository.findReviewAvg(itemId);
-        double starAvg = optionalStarAvg.orElse((double)0);
-        return starAvg;
-    }
-
-
-    // 리뷰 등록, 수정, 삭제 하는 경우 평균 별점을 갱신하는 로직
-//    public void refreshStarAvg(long itemId) {
-//        Item item = itemService.findVerifiedItem(itemId);
-//        item.setStarAvg(getStarAvg(itemId));
-//        itemRepository.save(item);
-//    }
-
+	// public double getStarAvg(long itemId) {
+	// 	Optional<Double> optionalStarAvg = reviewCommandRepository.findReviewAvg(itemId);
+	// 	double starAvg = optionalStarAvg.orElse((double)0);
+	// 	return starAvg;
+	// }
 }

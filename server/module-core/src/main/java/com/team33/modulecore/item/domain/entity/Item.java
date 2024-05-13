@@ -24,6 +24,7 @@ import com.team33.modulecore.item.domain.Categories;
 import com.team33.modulecore.item.domain.Information;
 import com.team33.modulecore.item.domain.Statistic;
 import com.team33.modulecore.item.infra.CategoryNameConverter;
+import com.team33.modulecore.user.domain.ReviewId;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -53,12 +54,13 @@ public class Item extends BaseEntity {
     @Column(name = "category_name")
     private Set<CategoryName> itemCategory = new HashSet<>();
 
+    @ElementCollection
+    @CollectionTable(name = "item_review", joinColumns = @JoinColumn(name = "item_id"))
+    private Set<ReviewId> reviewIds = new HashSet<>();
+
     @Column(name = "categories")
     @Convert(converter = CategoryNameConverter.class)
     private Categories categories;
-
-//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Review> reviews = new ArrayList<>();
 
     @Builder
     private Item(
@@ -76,9 +78,6 @@ public class Item extends BaseEntity {
             .build();
     }
 
-    // public void addView() {
-    //     this.statistics.addView();
-    // }
 
     public String getThumbnailUrl() {
         return this.information.getImage().getThumbnail();
@@ -126,5 +125,13 @@ public class Item extends BaseEntity {
 
     public void addIncludedCategory(Set<CategoryName> categoryNames) {
         this.categories = new Categories(categoryNames);
+    }
+
+    public void addReviewId(Long id) {
+        this.reviewIds.add(new ReviewId(id));
+    }
+
+    public void updateStars(double star) {
+        this.statistics.calculateStarAvg(star);
     }
 }

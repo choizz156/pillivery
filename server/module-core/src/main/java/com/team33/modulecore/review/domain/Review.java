@@ -1,50 +1,98 @@
 package com.team33.modulecore.review.domain;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
+
+import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
+
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.user.domain.User;
 
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Builder
 public class Review extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "review_id")
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "ITEM_ID")
-    @OnDelete(action = OnDeleteAction.CASCADE) // 아이템 삭제시 해당 itemId 를 참조하는 리뷰 삭제
-    private Item item;
+	private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
+	private double star;
 
-    private int quantity; // 리뷰를 작성하는 주문의 아이템 구매 수량
+	@Enumerated(value = EnumType.STRING)
+	private ReviewStatus reviewStatus;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+	// @ManyToOne
+	// @JoinColumn(name = "item_id")
+	// @OnDelete(action = OnDeleteAction.CASCADE)
+	// private Item item;
 
-    @Column(nullable = false)
-    private int star;
+	private Long itemId;
+
+	private Long userId;
+
+	//
+	// @ManyToOne
+	// @JoinColumn(name = "user_id")
+	// private User user;
+	//
+	@Builder
+	private Review(String content, double star, Long userId, Long itemId, ReviewStatus reviewStatus) {
+		this.content = content;
+		this.star = star;
+		this.userId = userId;
+		this.itemId = itemId;
+		this.reviewStatus = reviewStatus;
+	}
+
+	public static Review create(ReviewContext context) {
+		return Review.builder()
+			.content(context.getContent())
+			.star(context.getStar())
+			.itemId(context.getItemId())
+			.userId(context.getUserId())
+			.reviewStatus(ReviewStatus.ACTIVE)
+			.build();
+	}
+
+	public Review update(ReviewContext context) {
+
+		checkWriter(context);
+		checkReviewToItem(context);
+
+		this.content = context.getContent();
+		this.star = context.getStar();
+		return this;
+	}
+
+	public void delete(ReviewContext context) {
+		checkWriter(context);
+		checkReviewToItem(context);
+
+		this.reviewStatus = ReviewStatus.INACTIVE;
+	}
+
+	private void checkReviewToItem(ReviewContext context) {
+		if (!this.itemId.equals(context.getItemId())) {
+			throw new IllegalArgumentException("리뷰와 상품이 일치하지 않습니다.");
+		}
+	}
+
+	private void checkWriter(ReviewContext context) {
+		if (!this.userId.equals(context.getUserId())) {
+			throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED_USER);
+		}
+	}
 }

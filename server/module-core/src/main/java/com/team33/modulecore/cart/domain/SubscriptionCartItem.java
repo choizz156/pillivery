@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @Embeddable
 public class SubscriptionCartItem extends BaseEntity {
 

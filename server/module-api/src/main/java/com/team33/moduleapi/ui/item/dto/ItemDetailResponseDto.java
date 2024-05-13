@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.moduleapi.ui.review.ReviewResponseDto;
+import com.team33.modulecore.review.dto.query.ReviewQueryDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,7 +38,7 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
 	private int sales;
 	private double starAvg;
 	private List<CategoryName> categories;
-	private List<ReviewResponseDto> reviews;
+	private List<ReviewQueryDto> reviews;
 
 	@Builder
 	private ItemDetailResponseDto(
@@ -63,7 +63,7 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
 		int sales,
 		double starAvg,
 		List<CategoryName> categories,
-		List<ReviewResponseDto> reviews
+		List<ReviewQueryDto> reviews
 	) {
 		this.itemId = itemId;
 		this.thumbnail = thumbnail;
