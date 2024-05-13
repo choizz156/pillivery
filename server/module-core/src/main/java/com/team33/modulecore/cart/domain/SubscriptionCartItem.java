@@ -11,11 +11,13 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Embeddable
 public class SubscriptionCartItem extends BaseEntity {
 

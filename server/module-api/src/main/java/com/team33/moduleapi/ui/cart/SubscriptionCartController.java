@@ -1,7 +1,6 @@
 package com.team33.moduleapi.ui.cart;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -50,16 +49,16 @@ public class SubscriptionCartController {
 	@PostMapping("/carts/{subscriptionCartId}")
 	public SingleResponseDto<Long> postSubscriptionItemCart(
 		@PathVariable Long subscriptionCartId,
-		@Positive @RequestParam int quantity,
+		@Min(1) @RequestParam int quantity,
 		@RequestParam Long itemId,
 		SubscriptionCartItemPostDto postDto
 	) {
 
 		subscriptionCartService.addItem(
 			subscriptionCartId,
+			quantity,
 			cartServiceMapper.toItem(itemId),
-			cartServiceMapper.toSubscriptionInfo(postDto),
-			quantity
+			cartServiceMapper.toSubscriptionInfo(postDto)
 		);
 
 		return new SingleResponseDto<>(itemId);
@@ -71,29 +70,25 @@ public class SubscriptionCartController {
 		@PathVariable Long cartId,
 		@RequestParam Long itemId
 	) {
-
-		subscriptionCartService.removeCartItem(
-			cartId,
-			cartServiceMapper.toItem(itemId)
-		);
+		subscriptionCartService.removeCartItem(cartId, cartServiceMapper.toItem(itemId));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PatchMapping("/carts/subscription/{cartId}")
-	public void patchNormalCart(
+	public void patchItemQuantity(
 		@PathVariable Long cartId,
-		@RequestParam int quantity,
-		@RequestParam Long itemId
+		@RequestParam Long itemId,
+		@Min(1) @RequestParam int quantity
 	) {
-		subscriptionCartService.changePeriod(cartId, cartServiceMapper.toItem(itemId), quantity);
+		subscriptionCartService.changeQuantity(cartId, cartServiceMapper.toItem(itemId), quantity);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PatchMapping("/carts/subscription/{cartId}")
 	public void patchPeriod(
 		@PathVariable Long cartId,
-		@Min(30) @RequestParam int period,
-		@RequestParam Long itemId
+		@RequestParam Long itemId,
+		@Min(30) @RequestParam int period
 	) {
 		subscriptionCartService.changePeriod(cartId, cartServiceMapper.toItem(itemId), period);
 	}

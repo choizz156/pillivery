@@ -1,6 +1,6 @@
 package com.team33.moduleapi.ui.cart;
 
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.Min;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -47,7 +47,7 @@ public class NormalCartController {
 	@PostMapping("/carts/{normalCartId}")
 	public SingleResponseDto<Long> postNormalItemCart(
 		@PathVariable Long normalCartId,
-		@Positive @RequestParam int quantity,
+		@Min(1) @RequestParam int quantity,
 		@RequestParam Long itemId
 	) {
 		normalCartService.addItem(normalCartId, cartServiceMapper.toItem(itemId), quantity);
@@ -66,9 +66,9 @@ public class NormalCartController {
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PatchMapping("/carts/normal/{cartId}")
-	public void patchNormalCart(
+	public void changeItemQauntity(
 		@PathVariable Long cartId,
-		@RequestParam int quantity,
+		@Min(1)@RequestParam int quantity,
 		@RequestParam Long itemId
 	) {
 		normalCartService.changeQuantity(cartId, cartServiceMapper.toItem(itemId), quantity);

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.cart.domain.entity.Cart;
-import com.team33.modulecore.cart.repository.CartRepository;
+import com.team33.modulecore.cart.domain.repository.CartRepository;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;

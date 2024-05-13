@@ -22,14 +22,22 @@ public class CartPrice {
 	@Builder
 	public CartPrice(int totalItemCount, int totalPrice, int totalDiscountPrice) {
 		if (isPositive(totalItemCount, totalPrice, totalDiscountPrice)) {
-			throw new IllegalArgumentException("모든 수량은 음수여서는 안됩니다.");
+			throw new IllegalArgumentException("모든 가격 정보는 음수여서는 안됩니다.");
 		}
 		this.totalItemCount = totalItemCount;
 		this.totalPrice = totalPrice;
 		this.totalDiscountPrice = totalDiscountPrice;
 	}
 
-	public CartPrice addPrice(int price, int discountPrice, int quantity) {
+	public static CartPrice of(int price, int discountPrice, int quantity) {
+		return CartPrice.builder()
+			.totalItemCount(quantity)
+			.totalPrice(price * quantity)
+			.totalDiscountPrice(discountPrice * quantity)
+			.build();
+	}
+
+	public CartPrice addPriceInfo(int price, int discountPrice, int quantity) {
 		int sumPrice = price * quantity;
 		int sumDiscountPrice = discountPrice * quantity;
 
@@ -40,7 +48,7 @@ public class CartPrice {
 			.build();
 	}
 
-	public CartPrice subtractPrice(int price, int discountPrice, int quantity) {
+	public CartPrice subtractPriceInfo(int price, int discountPrice, int quantity) {
 		int sumPrice = price * quantity;
 		int sumDiscountPrice = discountPrice * quantity;
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.cart.domain.SubscriptionCartItem;
 import com.team33.modulecore.cart.domain.entity.Cart;
-import com.team33.modulecore.cart.repository.CartRepository;
+import com.team33.modulecore.cart.domain.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
@@ -30,9 +30,9 @@ public class SubscriptionCartService {
 
 	public void addItem(
 		Long cartId,
+		int quantity,
 		Item item,
-		SubscriptionInfo subscriptionInfo,
-		int quantity
+		SubscriptionInfo subscriptionInfo
 	) {
 		Cart cart = findCart(cartId);
 
@@ -48,7 +48,7 @@ public class SubscriptionCartService {
 	public void changeQuantity(Long cartId, Item item, int quantity) {
 		Cart cart = findCart(cartId);
 
-		getSubscriptionCartItem(item, cart).changeQuantity(quantity);
+		cart.changeSubscriptionCartItemQuantity(getSubscriptionCartItem(item, cart), quantity);
 	}
 
 	public void changePeriod(Long cartId, Item item, int period) {

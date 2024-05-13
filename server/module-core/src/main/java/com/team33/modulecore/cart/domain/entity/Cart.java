@@ -34,17 +34,15 @@ public class Cart {
 	private Long id;
 
 	@Embedded
-	private CartPrice price;
+	private CartPrice price = new CartPrice(0, 0, 0);
 
 	@ElementCollection
 	@CollectionTable(name = "normal_cart_item", joinColumns = @JoinColumn(name = "cart_id"))
 	private Set<NormalCartItem> normalCartItems = new HashSet<>();
 
-
 	@ElementCollection
 	@CollectionTable(name = "subs_cart_item", joinColumns = @JoinColumn(name = "cart_id"))
 	private Set<SubscriptionCartItem> subscriptionCartItems = new HashSet<>();
-
 
 	public static Cart create() {
 		return new Cart();
@@ -52,7 +50,7 @@ public class Cart {
 
 	public void addNormalItem(Item item, int quantity) {
 		this.normalCartItems.add(NormalCartItem.of(item, quantity));
-		this.price = this.price.addPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
+		this.price = this.price.addPriceInfo(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
 	public void removeNormalCartItem(NormalCartItem removedItem) {
@@ -61,12 +59,12 @@ public class Cart {
 		Item item = removedItem.getItem();
 		int quantity = removedItem.getTotalQuantity();
 
-		this.price = this.price.subtractPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
+		this.price = this.price.subtractPriceInfo(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
 	public void addSubscriptionItem(Item item, int quantity, SubscriptionInfo subscriptionInfo) {
 		this.subscriptionCartItems.add(SubscriptionCartItem.of(item, quantity, subscriptionInfo));
-		this.price = this.price.addPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
+		this.price = this.price.addPriceInfo(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
 	public void removeSubscriptionCartItem(SubscriptionCartItem removedItem) {
@@ -75,7 +73,21 @@ public class Cart {
 		Item item = removedItem.getItem();
 		int quantity = removedItem.getTotalQuantity();
 
-		this.price = this.price.subtractPrice(item.getRealPrice(), item.getDiscountPrice(), quantity);
+		this.price = this.price.subtractPriceInfo(item.getRealPrice(), item.getDiscountPrice(), quantity);
+	}
+
+	public void changeNormalCartItemQuantity(NormalCartItem normalCartItem, int quantity) {
+		Item item = normalCartItem.getItem();
+
+		this.price = CartPrice.of(item.getRealPrice(), item.getDiscountPrice(), quantity);
+		normalCartItem.changeQuantity(quantity);
+	}
+
+	public void changeSubscriptionCartItemQuantity(SubscriptionCartItem subscriptionCartItem, int quantity) {
+		Item item = subscriptionCartItem.getItem();
+
+		this.price = CartPrice.of(item.getRealPrice(), item.getDiscountPrice(), quantity);
+		subscriptionCartItem.changeQuantity(quantity);
 	}
 
 	public int getTotalDiscountPrice() {
@@ -90,7 +102,7 @@ public class Cart {
 		return this.price.getTotalItemCount();
 	}
 
-	public int getExpectedPrice(){
+	public int getExpectedPrice() {
 		return this.price.getTotalPrice() - this.price.getTotalDiscountPrice();
 	}
 }

@@ -1,4 +1,4 @@
-package com.team33.modulecore.cart.repository;
+package com.team33.modulecore.cart.domain.repository;
 
 import java.util.Optional;
 

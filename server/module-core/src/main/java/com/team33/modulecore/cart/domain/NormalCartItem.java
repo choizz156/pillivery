@@ -8,11 +8,13 @@ import javax.persistence.ManyToOne;
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.entity.Item;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Embeddable
 public class NormalCartItem extends BaseEntity {
 
