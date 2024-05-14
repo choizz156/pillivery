@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.team33.modulecore.review.domain.Review;
+import com.team33.modulecore.review.domain.entity.Review;
 import com.team33.modulecore.review.repository.ReviewCommandRepository;
 
 public class FakeReviewRepository implements ReviewCommandRepository {

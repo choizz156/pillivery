@@ -5,10 +5,12 @@ import static java.util.Comparator.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.LongStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -33,9 +35,10 @@ import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.item.dto.query.PriceFilter;
+import com.team33.modulecore.user.domain.ReviewId;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class ItemQueryDslDaoTest {
+class ItemQueryTest {
 
 	private EntityManagerFactory emf;
 	private EntityManager em;
@@ -179,7 +182,7 @@ class ItemQueryDslDaoTest {
 			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 
-		@DisplayName("이름을 통해 조회된 아이템들을 판매량 순으로 정렬할 수 있다.")
+		@DisplayName("조회된 아이템들을 판매량 순으로 정렬할 수 있다.")
 		@Test
 		void 판매량_순() throws Exception {
 			//given
@@ -205,7 +208,7 @@ class ItemQueryDslDaoTest {
 			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 
-		@DisplayName("이름을 통해 조회된 아이템들을 할인율 순으로 내림차순 할 수 있다.")
+		@DisplayName("조회된 아이템들을 할인율 순으로 내림차순 할 수 있다.")
 		@Test
 		void 할인율_순() throws Exception {
 			//given
@@ -232,7 +235,7 @@ class ItemQueryDslDaoTest {
 			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 
-		@DisplayName("이름을 통해 조회된 아이템들을 가격순으로 오름차순 정렬할 수 있다.")
+		@DisplayName("조회된 아이템들을 가격순으로 오름차순 정렬할 수 있다.")
 		@Test
 		void 최저가_순() throws Exception {
 			//given
@@ -259,7 +262,7 @@ class ItemQueryDslDaoTest {
 			assertThat(items.getTotalPages()).isEqualTo(2);
 		}
 
-		@DisplayName("이름을 통해 조회된 아이템들을 가격순으로 내림차순 정렬할 수 있다.")
+		@DisplayName("조회된 아이템들을 가격순으로 내림차순 정렬할 수 있다.")
 		@Test
 		void 최고가_순() throws Exception {
 			//given
@@ -284,6 +287,34 @@ class ItemQueryDslDaoTest {
 
 			assertThat(items.getTotalElements()).isEqualTo(15);
 			assertThat(items.getTotalPages()).isEqualTo(2);
+		}
+
+		@DisplayName("조회된 아이템들을 리뷰가 많은 순으로 정렬할 수 있다.")
+		@Test
+		void 리뷰_순() throws Exception {
+			//given
+			PriceFilter priceFilter = new PriceFilter();
+			ItemPage itemPage = ItemPage.builder()
+				.page(1)
+				.size(14)
+				.sortOption(ItemSortOption.REVIEW_COUNT)
+				.build();
+
+			//when
+			Page<ItemQueryDto> items = itemQueryRepository.findFilteredItems(
+				"title",
+				priceFilter,
+				itemPage
+			);
+
+			//then
+			assertThat(items.getContent())
+				.hasSize(14)
+				.isSortedAccordingTo(comparing(ItemQueryDto::getReviewSize).reversed());
+
+			assertThat(items.getTotalElements()).isEqualTo(15);
+			assertThat(items.getTotalPages()).isEqualTo(2);
+			assertThat(items.getNumberOfElements()).isEqualTo(14);
 		}
 	}
 
@@ -436,9 +467,16 @@ class ItemQueryDslDaoTest {
 			.setLazy("information.price.discountRate", () -> value1.getAndSet(value1.get() + 1D))
 			.setLazy("information.price.realPrice", () -> value.intValue() * 1000)
 			.setLazy("information.productName", () -> "title" + value)
+			.set("reviewIds", new HashSet<>())
 			.set("categories", new Categories(Set.of(BONE, EYE)))
 			.set("itemCategory", Set.of(EYE, BONE))
 			.sampleList(15);
+
+		LongStream.range(1, 16).forEach(i ->
+			{
+				items.forEach(item -> item.getReviewIds().add(new ReviewId(i)));
+			}
+		);
 
 		var value2 = new AtomicInteger(9);
 		var items2 = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)

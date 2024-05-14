@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.team33.modulecore.review.domain.entity.Review;
+
 class ReviewTest {
 
 	private Review review;
@@ -16,6 +18,7 @@ class ReviewTest {
 			ReviewContext.builder()
 				.content("content")
 				.star(5)
+				.displayName("test")
 				.userId(1L)
 				.itemId(1L)
 				.build()
@@ -30,6 +33,7 @@ class ReviewTest {
 		Review review = Review.create(
 			ReviewContext.builder()
 				.content("content")
+				.displayName("test")
 				.star(5)
 				.userId(1L)
 				.itemId(1L)
@@ -39,6 +43,7 @@ class ReviewTest {
 		//then
 		assertThat(review.getUserId()).isEqualTo(1L);
 		assertThat(review.getItemId()).isEqualTo(1L);
+		assertThat(review.getDisplayName()).isEqualTo("test");
 		assertThat(review.getContent()).isEqualTo("content");
 		assertThat(review.getStar()).isEqualTo(5);
 	}
