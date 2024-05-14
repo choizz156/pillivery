@@ -32,4 +32,9 @@ public class Statistic {
        this.reviewCount = reviewCount.incrementAndGet();
        this.starAvg = starAvg.updateAndGet(v -> (v * this.reviewCount + star) / reviewCount.get());
    }
+
+    public void subtractReviewCount() {
+        AtomicInteger reviewCount = new AtomicInteger(this.reviewCount);
+        this.reviewCount = reviewCount.decrementAndGet();
+    }
 }

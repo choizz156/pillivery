@@ -103,9 +103,9 @@ public class Item extends BaseEntity {
         return this.information.getPrice().getRealPrice();
     }
 
-    public void minusSales(int quantity) {
-        this.statistics.reduceSales(quantity);
-    }
+    // public void minusSales(int quantity) {
+    //     this.statistics.reduceSales(quantity);
+    // }
 
     public String getDescriptionImage() {
         return this.getInformation().getImage().getDescriptionImage();
@@ -133,5 +133,9 @@ public class Item extends BaseEntity {
 
     public void updateStars(double star) {
         this.statistics.calculateStarAvg(star);
+    }
+
+    public void subtractReviewCount() {
+        this.statistics.subtractReviewCount();
     }
 }
