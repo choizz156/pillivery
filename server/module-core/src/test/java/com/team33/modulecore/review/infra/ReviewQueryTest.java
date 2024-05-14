@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.FixtureMonkeyFactory;
+import com.team33.modulecore.review.domain.ReviewStatus;
 import com.team33.modulecore.review.domain.entity.Review;
 import com.team33.modulecore.review.dto.query.ReviewPage;
 import com.team33.modulecore.review.dto.query.ReviewQueryDto;
@@ -50,6 +51,21 @@ class ReviewQueryTest {
 		emf.close();
 	}
 
+	@DisplayName("특정 리뷰를 조회할 수 있다.")
+	@Test
+	void 리뷰_조회() throws Exception{
+		//given
+		//when
+		ReviewQueryDto review = reviewQueryRepository.findById(1L);
+
+		//then
+		assertThat(review.getReviewId()).isEqualTo(1L);
+		assertThat(review.getReviewStatus()).isEqualByComparingTo(ReviewStatus.ACTIVE);
+		assertThat(review).extracting(
+			"itemId", "userId", "content", "displayName", "star", "createdAt", "updatedAt"
+		).doesNotContainNull();
+	}
+
 	@DisplayName("특정 아이템의 리뷰를 조회할 수 있다")
 	@Test
 	void 리뷰_조회1() throws Exception {
@@ -61,7 +77,7 @@ class ReviewQueryTest {
 			.build();
 
 		//when
-		Page<ReviewQueryDto> reviews = reviewQueryRepository.findByItemId(1L, reviewPage);
+		Page<ReviewQueryDto> reviews = reviewQueryRepository.findAllByItemId(1L, reviewPage);
 
 		//then
 		List<ReviewQueryDto> content = reviews.getContent();
@@ -92,7 +108,7 @@ class ReviewQueryTest {
 			.build();
 
 		//when
-		Page<ReviewQueryDto> reviews = reviewQueryRepository.findByUserId(1L, reviewPage);
+		Page<ReviewQueryDto> reviews = reviewQueryRepository.findAllByUserId(1L, reviewPage);
 
 		//then
 		List<ReviewQueryDto> content = reviews.getContent();
@@ -123,7 +139,7 @@ class ReviewQueryTest {
 			.build();
 
 		//when
-		Page<ReviewQueryDto> reviews = reviewQueryRepository.findByItemId(2L, reviewPage);
+		Page<ReviewQueryDto> reviews = reviewQueryRepository.findAllByItemId(2L, reviewPage);
 
 		//then
 		assertThat(reviews).isEmpty();
@@ -140,7 +156,7 @@ class ReviewQueryTest {
 			.build();
 
 		//when
-		Page<ReviewQueryDto> reviews = reviewQueryRepository.findByUserId(2L, reviewPage);
+		Page<ReviewQueryDto> reviews = reviewQueryRepository.findAllByUserId(2L, reviewPage);
 
 		//then
 		assertThat(reviews).isEmpty();
@@ -160,7 +176,7 @@ class ReviewQueryTest {
 				.build();
 
 			//when
-			Page<ReviewQueryDto> reviews = reviewQueryRepository.findByItemId(1L, reviewPage);
+			Page<ReviewQueryDto> reviews = reviewQueryRepository.findAllByItemId(1L, reviewPage);
 
 			//then
 			List<ReviewQueryDto> content = reviews.getContent();
@@ -178,7 +194,7 @@ class ReviewQueryTest {
 				.build();
 
 			//when
-			Page<ReviewQueryDto> reviews = reviewQueryRepository.findByItemId(1L, reviewPage);
+			Page<ReviewQueryDto> reviews = reviewQueryRepository.findAllByItemId(1L, reviewPage);
 
 			//then
 			List<ReviewQueryDto> content = reviews.getContent();
@@ -196,7 +212,7 @@ class ReviewQueryTest {
 				.build();
 
 			//when
-			Page<ReviewQueryDto> reviews = reviewQueryRepository.findByItemId(1L, reviewPage);
+			Page<ReviewQueryDto> reviews = reviewQueryRepository.findAllByItemId(1L, reviewPage);
 
 			//then
 			List<ReviewQueryDto> content = reviews.getContent();
@@ -211,6 +227,7 @@ class ReviewQueryTest {
 			.setNull("id")
 			.set("itemId", 1L)
 			.set("userId", 1L)
+			.set("reviewStatus", ReviewStatus.ACTIVE)
 			.setLazy("star", () -> value.getAndSet(getNewValue(value)))
 			.sampleList(10);
 

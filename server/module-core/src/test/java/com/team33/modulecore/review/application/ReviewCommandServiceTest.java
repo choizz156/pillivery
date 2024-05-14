@@ -19,7 +19,7 @@ import com.team33.modulecore.review.mock.FakeReviewRepository;
 import com.team33.modulecore.user.domain.ReviewId;
 import com.team33.modulecore.user.domain.User;
 
-class ReviewServiceTest {
+class ReviewCommandServiceTest {
 
 	@DisplayName("리뷰 생성를 저장할 수 있다.")
 	@Test
@@ -53,10 +53,10 @@ class ReviewServiceTest {
 		when(userFindHelper.findUser(anyLong())).thenReturn(user);
 		when(itemFindHelper.findItem(anyLong())).thenReturn(item);
 
-		ReviewService reviewService = new ReviewService(new FakeReviewRepository(), itemFindHelper, userFindHelper);
+		ReviewCommandService reviewCommandService = new ReviewCommandService(new FakeReviewRepository(), itemFindHelper, userFindHelper);
 
 		//when
-		Review review = reviewService.createReview(context);
+		Review review = reviewCommandService.createReview(context);
 
 		//then
 		assertThat(review.getContent()).isEqualTo("Test review");
@@ -86,6 +86,7 @@ class ReviewServiceTest {
 
 		ReviewContext context = ReviewContext.builder()
 			.userId(1L)
+			.reviewId(1L)
 			.itemId(1L)
 			.content("new content")
 			.star(3.5)
@@ -93,10 +94,10 @@ class ReviewServiceTest {
 
 		FakeReviewRepository reviewCommandRepository = new FakeReviewRepository();
 		reviewCommandRepository.save(review);
-		ReviewService reviewService = new ReviewService(reviewCommandRepository, null, null);
+		ReviewCommandService reviewCommandService = new ReviewCommandService(reviewCommandRepository, null, null);
 
 		//when
-		Review update = reviewService.updateReview(1L, context);
+		Review update = reviewCommandService.updateReview( context);
 
 		//then
 		assertThat(update.getContent()).isEqualTo("new content");
@@ -146,10 +147,10 @@ class ReviewServiceTest {
 
 		FakeReviewRepository reviewCommandRepository = new FakeReviewRepository();
 		reviewCommandRepository.save(review);
-		ReviewService reviewService = new ReviewService(reviewCommandRepository, itemFindHelper, userFindHelper);
+		ReviewCommandService reviewCommandService = new ReviewCommandService(reviewCommandRepository, itemFindHelper, userFindHelper);
 
 		//when
-		reviewService.deleteReview(1L, context);
+		reviewCommandService.deleteReview(context);
 
 		//then
 		assertThat(review.getReviewStatus()).isEqualByComparingTo(ReviewStatus.INACTIVE);
