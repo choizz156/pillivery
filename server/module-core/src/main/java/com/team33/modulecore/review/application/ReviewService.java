@@ -4,12 +4,11 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.team33.modulecore.common.ItemFindHelper;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.review.domain.Review;
 import com.team33.modulecore.review.domain.ReviewContext;
 import com.team33.modulecore.review.repository.ReviewCommandRepository;
@@ -23,9 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewService {
 
-	private final ItemQueryRepository itemQueryRepository;
 	private final ReviewCommandRepository reviewCommandRepository;
-	private final ItemCommandService itemCommandService;
+	private final ItemFindHelper itemFindHelper;
 	private final UserFindHelper userFindHelper;
 
 	public Review createReview(ReviewContext context) {
@@ -36,7 +34,7 @@ public class ReviewService {
 		User user = userFindHelper.findUser(context.getUserId());
 		user.addReviewId(review.getId());
 
-		Item item = itemQueryRepository.findById(context.getItemId());
+		Item item = itemFindHelper.findItem(context.getItemId());
 		item.addReviewId(review.getId());
 		item.updateStars(context.getStar());
 
@@ -55,8 +53,9 @@ public class ReviewService {
 		User user = userFindHelper.findUser(context.getUserId());
 		user.getReviewIds().remove(new ReviewId(reviewId));
 
-		Item item = itemQueryRepository.findById(context.getItemId());
+		Item item = itemFindHelper.findItem(context.getItemId());
 		item.getReviewIds().remove(new ReviewId(reviewId));
+		item.subtractReviewCount();
 	}
 
 	public Review findReview(long reviewId) {

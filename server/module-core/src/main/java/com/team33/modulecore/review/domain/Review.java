@@ -7,6 +7,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.security.sasl.AuthenticationException;
+
+import org.springframework.security.authentication.AuthenticationServiceException;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.exception.BusinessLogicException;
@@ -34,20 +37,10 @@ public class Review extends BaseEntity {
 	@Enumerated(value = EnumType.STRING)
 	private ReviewStatus reviewStatus;
 
-	// @ManyToOne
-	// @JoinColumn(name = "item_id")
-	// @OnDelete(action = OnDeleteAction.CASCADE)
-	// private Item item;
-
 	private Long itemId;
 
 	private Long userId;
 
-	//
-	// @ManyToOne
-	// @JoinColumn(name = "user_id")
-	// private User user;
-	//
 	@Builder
 	private Review(String content, double star, Long userId, Long itemId, ReviewStatus reviewStatus) {
 		this.content = content;
@@ -92,7 +85,7 @@ public class Review extends BaseEntity {
 
 	private void checkWriter(ReviewContext context) {
 		if (!this.userId.equals(context.getUserId())) {
-			throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED_USER);
+			throw new IllegalArgumentException("리뷰 작성자만이 수정할 수 있습니다.");
 		}
 	}
 }

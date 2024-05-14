@@ -36,8 +36,8 @@ public class OrderService {
 
         order.changeOrderStatus(CANCEL);
 
-        order.getOrderItems()
-            .forEach(orderItem -> orderItem.getItem().minusSales(orderItem.getQuantity()));
+        // order.getOrderItems()
+        //     .forEach(orderItem -> orderItem.getItem().minusSales(orderItem.getQuantity()));
     }
 
     public void changeOrderStatusToComplete(Long orderId) {
