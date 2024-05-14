@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.review.dto;
+package com.team33.moduleapi.ui.review;
 
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.MultiResponseDto;
+import com.team33.moduleapi.ui.review.dto.ReviewPageDto;
+import com.team33.moduleapi.ui.review.mapper.ReviewPageMapper;
 import com.team33.modulecore.review.dto.query.ReviewPage;
 import com.team33.modulecore.review.dto.query.ReviewQueryDto;
 import com.team33.modulecore.review.repository.ReviewQueryRepository;

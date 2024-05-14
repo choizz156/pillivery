@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.review;
+package com.team33.moduleapi.ui.review.mapper;
 
 import org.springframework.stereotype.Component;
 

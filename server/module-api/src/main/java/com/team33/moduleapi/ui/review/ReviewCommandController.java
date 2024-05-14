@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.review.dto.ReviewDetailResponseDto;
 import com.team33.moduleapi.ui.review.dto.ReviewDto;
-import com.team33.moduleapi.ui.review.ReviewServiceMapper;
+import com.team33.moduleapi.ui.review.mapper.ReviewServiceMapper;
 import com.team33.modulecore.review.application.ReviewCommandService;
 import com.team33.modulecore.review.domain.ReviewContext;
 import com.team33.modulecore.review.domain.entity.Review;
