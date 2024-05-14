@@ -40,8 +40,6 @@ public class ItemQueryController {
 	private final ItemCommandService itemCommandService;
 	private final ReviewService reviewService;
 	private final ItemQueryService itemQueryService;
-	//    private final TalkService talkService;
-	//    private final ReviewMapper reviewMapper;
 
 	@GetMapping("/main")
 	public SingleResponseDto<ItemMainResponseDto> getMainItem() {

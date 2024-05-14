@@ -16,8 +16,8 @@ public class ReviewQueryDto {
     private long reviewId;
     private long itemId;
     private long userId;
-    private String displayName;
     private String content;
+    private String displayName;
     private double star;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
@@ -29,19 +29,21 @@ public class ReviewQueryDto {
         long reviewId,
         long itemId,
         long userId,
-        String displayName,
         String content,
+        String displayName,
         double star,
         ZonedDateTime createdAt,
-        ZonedDateTime updatedAt
+        ZonedDateTime updatedAt,
+        ReviewStatus reviewStatus
     ) {
         this.reviewId = reviewId;
         this.itemId = itemId;
         this.userId = userId;
-        this.displayName = displayName;
         this.content = content;
-        this.star = star;
+		this.displayName = displayName;
+		this.star = star;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.reviewStatus = reviewStatus;
     }
 }

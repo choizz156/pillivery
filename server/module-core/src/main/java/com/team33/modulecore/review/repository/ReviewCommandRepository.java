@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.repository.Repository;
 
-import com.team33.modulecore.review.domain.Review;
+import com.team33.modulecore.review.domain.entity.Review;
 
 public interface ReviewCommandRepository extends Repository<Review, Long> {
 

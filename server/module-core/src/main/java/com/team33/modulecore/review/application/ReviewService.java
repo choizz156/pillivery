@@ -9,7 +9,7 @@ import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.review.domain.Review;
+import com.team33.modulecore.review.domain.entity.Review;
 import com.team33.modulecore.review.domain.ReviewContext;
 import com.team33.modulecore.review.repository.ReviewCommandRepository;
 import com.team33.modulecore.user.domain.ReviewId;

@@ -1,4 +1,4 @@
-package com.team33.modulecore.review.domain;
+package com.team33.modulecore.review.domain.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,13 +7,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.security.sasl.AuthenticationException;
-
-import org.springframework.security.authentication.AuthenticationServiceException;
 
 import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.review.domain.ReviewContext;
+import com.team33.modulecore.review.domain.ReviewStatus;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,18 +29,28 @@ public class Review extends BaseEntity {
 
 	private String content;
 
-	private double star;
+	private String displayName;
 
-	@Enumerated(value = EnumType.STRING)
-	private ReviewStatus reviewStatus;
+	private double star;
 
 	private Long itemId;
 
 	private Long userId;
 
+	@Enumerated(value = EnumType.STRING)
+	private ReviewStatus reviewStatus;
+
 	@Builder
-	private Review(String content, double star, Long userId, Long itemId, ReviewStatus reviewStatus) {
+	private Review(
+		String content,
+		String displayName,
+		double star,
+		Long userId,
+		Long itemId,
+		ReviewStatus reviewStatus
+	) {
 		this.content = content;
+		this.displayName = displayName;
 		this.star = star;
 		this.userId = userId;
 		this.itemId = itemId;
@@ -56,6 +63,7 @@ public class Review extends BaseEntity {
 			.star(context.getStar())
 			.itemId(context.getItemId())
 			.userId(context.getUserId())
+			.displayName(context.getDisplayName())
 			.reviewStatus(ReviewStatus.ACTIVE)
 			.build();
 	}

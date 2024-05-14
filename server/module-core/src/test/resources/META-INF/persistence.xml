@@ -5,7 +5,7 @@
   <persistence-unit name="test" transaction-type="RESOURCE_LOCAL">
     <class>com.team33.modulecore.item.domain.entity.Item</class>
     <class>com.team33.modulecore.item.domain.entity.NutritionFact</class>
-    <class>com.team33.modulecore.review.domain.Review</class>
+    <class>com.team33.modulecore.review.domain.entity.Review</class>
     <class>com.team33.modulecore.user.domain.User</class>
     <class>com.team33.modulecore.wish.domain.Wish</class>
     <class>com.team33.modulecore.cart.domain.Cart</class>
