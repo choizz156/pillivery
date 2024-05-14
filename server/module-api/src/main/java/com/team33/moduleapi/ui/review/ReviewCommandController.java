@@ -1,4 +1,4 @@
-package com.team33.moduleapi.controller.review;
+package com.team33.moduleapi.ui.review;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;

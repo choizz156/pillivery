@@ -9,10 +9,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.review.domain.ReviewStatus;
 import com.team33.modulecore.review.dto.query.QReviewQueryDto;
 import com.team33.modulecore.review.dto.query.ReviewPage;
 import com.team33.modulecore.review.dto.query.ReviewQueryDto;
@@ -28,7 +30,10 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 	@Override
 	public ReviewQueryDto findById(Long reviewId) {
 		ReviewQueryDto reviewQueryDto = selectReviewQeuryDtoFromReview()
-			.where(review.id.eq(reviewId))
+			.where(
+				review.id.eq(reviewId),
+				getStatusActive()
+			)
 			.fetchFirst();
 
 		if (reviewQueryDto == null) {
@@ -40,8 +45,13 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 
 	@Override
 	public Page<ReviewQueryDto> findAllByItemId(Long itemId, ReviewPage reviewPage) {
+		BooleanExpression statusActive = getStatusActive();
+
 		List<ReviewQueryDto> fetch = selectReviewQeuryDtoFromReview()
-			.where(review.itemId.eq(itemId))
+			.where(
+				review.itemId.eq(itemId),
+				statusActive
+			)
 			.orderBy(getOrderSort(reviewPage.getSortOption()))
 			.offset(reviewPage.getOffset())
 			.limit(reviewPage.getSize())
@@ -54,7 +64,10 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 		JPAQuery<Long> count = queryFactory.
 			select(review.count())
 			.from(review)
-			.where(review.itemId.eq(itemId));
+			.where(
+				review.itemId.eq(itemId),
+				statusActive
+			);
 
 		return PageableExecutionUtils.getPage(
 			fetch,
@@ -65,6 +78,8 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 
 	@Override
 	public Page<ReviewQueryDto> findAllByUserId(Long userId, ReviewPage reviewPage) {
+		BooleanExpression statusActive = getStatusActive();
+
 		List<ReviewQueryDto> fetch = queryFactory.select(new QReviewQueryDto(
 					review.id,
 					review.itemId,
@@ -78,7 +93,10 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 				)
 			)
 			.from(review)
-			.where(review.userId.eq(userId))
+			.where(
+				review.userId.eq(userId),
+				statusActive
+			)
 			.orderBy(getOrderSort(reviewPage.getSortOption()))
 			.offset(reviewPage.getOffset())
 			.limit(reviewPage.getSize())
@@ -91,13 +109,20 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 		JPAQuery<Long> count = queryFactory.
 			select(review.count())
 			.from(review)
-			.where(review.userId.eq(userId));
+			.where(
+				review.userId.eq(userId),
+				statusActive
+			);
 
 		return PageableExecutionUtils.getPage(
 			fetch,
 			PageRequest.of(reviewPage.getPage() - 1, reviewPage.getSize()),
 			count::fetchOne
 		);
+	}
+
+	private BooleanExpression getStatusActive() {
+		return review.reviewStatus.eq(ReviewStatus.ACTIVE);
 	}
 
 	private JPAQuery<ReviewQueryDto> selectReviewQeuryDtoFromReview() {
