@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ReviewService {
+public class ReviewCommandService {
 
 	private final ReviewCommandRepository reviewCommandRepository;
 	private final ItemFindHelper itemFindHelper;
@@ -41,12 +41,14 @@ public class ReviewService {
 		return review;
 	}
 
-	public Review updateReview(Long reviewId, ReviewContext context) {
-		Review review = findReview(reviewId);
+	public Review updateReview(ReviewContext context) {
+		Review review = findReview(context.getReviewId());
 		return review.update(context);
 	}
 
-	public void deleteReview(Long reviewId, ReviewContext context) {
+	public void deleteReview(ReviewContext context) {
+		Long reviewId = context.getReviewId();
+
 		Review review = findReview(reviewId);
 		review.delete(context);
 

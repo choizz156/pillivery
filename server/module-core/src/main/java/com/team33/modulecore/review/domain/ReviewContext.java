@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 public class ReviewContext {
 
+	private Long reviewId;
 	private String content;
 	private double star;
 	private Long itemId;
@@ -13,7 +14,8 @@ public class ReviewContext {
 	private String displayName;
 
 	@Builder
-	public ReviewContext(String content, double star, Long itemId, Long userId, String displayName) {
+	public ReviewContext(Long reviewId, String content, double star, Long itemId, Long userId, String displayName) {
+		this.reviewId = reviewId;
 		this.content = content;
 		this.star = star;
 		this.itemId = itemId;

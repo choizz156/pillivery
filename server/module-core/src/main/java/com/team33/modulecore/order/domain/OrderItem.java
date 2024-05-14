@@ -105,4 +105,8 @@ public class OrderItem extends BaseEntity {
     public void changeQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public boolean containsItem(Long id) {
+        return item.getId().equals(id);
+    }
 }

@@ -25,7 +25,7 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.item.dto.query.PriceFilter;
-import com.team33.modulecore.review.application.ReviewService;
+import com.team33.modulecore.review.application.ReviewCommandService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class ItemQueryController {
 
 	private final ItemQueryServiceMapper mapper;
 	private final ItemCommandService itemCommandService;
-	private final ReviewService reviewService;
+	private final ReviewCommandService reviewCommandService;
 	private final ItemQueryService itemQueryService;
 
 	@GetMapping("/main")

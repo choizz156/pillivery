@@ -13,7 +13,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.review.domain.entity.Review;
 import com.team33.modulecore.review.dto.query.QReviewQueryDto;
 import com.team33.modulecore.review.dto.query.ReviewPage;
 import com.team33.modulecore.review.dto.query.ReviewQueryDto;
@@ -27,21 +26,21 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Review findById(Long reviewId) {
-		Review fetch = queryFactory.selectFrom(review)
+	public ReviewQueryDto findById(Long reviewId) {
+		ReviewQueryDto reviewQueryDto = selectReviewQeuryDtoFromReview()
 			.where(review.id.eq(reviewId))
 			.fetchFirst();
 
-		if (fetch == null) {
+		if (reviewQueryDto == null) {
 			throw new BusinessLogicException(ExceptionCode.REVIEW_NOT_FOUND);
 		}
 
-		return fetch;
+		return reviewQueryDto;
 	}
 
 	@Override
-	public Page<ReviewQueryDto> findByItemId(Long itemId, ReviewPage reviewPage) {
-		List<ReviewQueryDto> fetch = getReviewQeuryDtoFromReview()
+	public Page<ReviewQueryDto> findAllByItemId(Long itemId, ReviewPage reviewPage) {
+		List<ReviewQueryDto> fetch = selectReviewQeuryDtoFromReview()
 			.where(review.itemId.eq(itemId))
 			.orderBy(getOrderSort(reviewPage.getSortOption()))
 			.offset(reviewPage.getOffset())
@@ -65,7 +64,7 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 	}
 
 	@Override
-	public Page<ReviewQueryDto> findByUserId(Long userId, ReviewPage reviewPage) {
+	public Page<ReviewQueryDto> findAllByUserId(Long userId, ReviewPage reviewPage) {
 		List<ReviewQueryDto> fetch = queryFactory.select(new QReviewQueryDto(
 					review.id,
 					review.itemId,
@@ -101,7 +100,7 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 		);
 	}
 
-	private JPAQuery<ReviewQueryDto> getReviewQeuryDtoFromReview() {
+	private JPAQuery<ReviewQueryDto> selectReviewQeuryDtoFromReview() {
 		return queryFactory.select(new QReviewQueryDto(
 					review.id,
 					review.itemId,
