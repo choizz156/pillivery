@@ -117,6 +117,7 @@ class ReviewCommandServiceTest {
 			.sample();
 
 		ReviewContext context = ReviewContext.builder()
+			.reviewId(1L)
 			.userId(1L)
 			.itemId(1L)
 			.build();

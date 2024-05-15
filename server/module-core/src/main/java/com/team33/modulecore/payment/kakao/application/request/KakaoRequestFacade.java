@@ -1,4 +1,4 @@
-package com.team33.modulecore.payment.kakao.application;
+package com.team33.modulecore.payment.kakao.application.request;
 
 import java.util.Optional;
 

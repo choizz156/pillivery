@@ -1,4 +1,4 @@
-package com.team33.modulecore.payment.kakao.application;
+package com.team33.modulecore.payment.kakao.application.approve;
 
 import java.util.Optional;
 
@@ -9,6 +9,7 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.payment.application.ApproveFacade;
 import com.team33.modulecore.payment.application.NormalApprove;
 import com.team33.modulecore.payment.kakao.dto.KaKaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
@@ -17,8 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoApproveFacade implements
-	com.team33.modulecore.payment.application.ApproveFacade<KaKaoApproveResponse, KakaoApproveOneTimeRequest> {
+public class KakaoApproveFacade implements ApproveFacade<KaKaoApproveResponse, KakaoApproveOneTimeRequest> {
 
 	private final OrderRepository orderRepository;
 	private final OrderService orderService;

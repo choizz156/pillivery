@@ -13,7 +13,7 @@
 //
 // import com.team33.moduleapi.ui.payment.KaKaoPayRequestDto;
 // import com.team33.moduleapi.ui.payment.KaKaoResponseApproveDto;
-// import com.team33.moduleapi.ui.payment.KakaoFailResponse;
+// import com.team33.moduleapi.ui.payment.KakaoFailResponseDto;
 // import com.team33.moduleapi.ui.payment.PayController;
 // import com.team33.modulecore.payment.kakao.application.KakaoPaymentFacade;
 //
@@ -113,7 +113,7 @@
 //     @Test
 //     void test4() throws Exception {
 //
-//         KakaoFailResponse kakaoFailResponse = fixtureMonkey.giveMeBuilder(KakaoFailResponse.class)
+//         KakaoFailResponseDto kakaoFailResponse = fixtureMonkey.giveMeBuilder(KakaoFailResponseDto.class)
 //             .set("code", -780)
 //             .set("msg", "approval failure!").sample();
 //
@@ -134,7 +134,7 @@
 //     @Test
 //     void test5() throws Exception {
 //
-//         KakaoFailResponse kakaoFailResponse = fixtureMonkey.giveMeBuilder(KakaoFailResponse.class)
+//         KakaoFailResponseDto kakaoFailResponse = fixtureMonkey.giveMeBuilder(KakaoFailResponseDto.class)
 //             .set("code", -780)
 //             .set("msg", "approval failure!").sample();
 //

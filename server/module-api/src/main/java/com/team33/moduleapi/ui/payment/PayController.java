@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team33.moduleapi.ui.payment.dto.KaKaoApproveResponseDto;
+import com.team33.moduleapi.ui.payment.dto.KaKaoPayNextUrlDto;
+import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.payment.application.ApproveFacade;
 import com.team33.modulecore.payment.application.RequestFacade;
 import com.team33.modulecore.payment.kakao.dto.KaKaoApproveResponse;
@@ -26,10 +29,10 @@ public class PayController {
     private final PaymentMapper paymentMapper;
 
     @PostMapping("/{orderId}")
-    public KaKaoPayNextUrl request(@PathVariable("orderId") Long orderId) {
+    public KaKaoPayNextUrlDto request(@PathVariable("orderId") Long orderId) {
         KakaoRequestResponse requestResponse = requestFacade.request(orderId);
 
-        return KaKaoPayNextUrl.from(requestResponse);
+        return KaKaoPayNextUrlDto.from(requestResponse);
     }
 
     @GetMapping("/approve/{orderId}")

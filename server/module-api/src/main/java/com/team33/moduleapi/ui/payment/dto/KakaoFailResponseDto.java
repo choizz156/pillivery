@@ -1,11 +1,11 @@
-package com.team33.moduleapi.ui.payment;
+package com.team33.moduleapi.ui.payment.dto;
 
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 
 @Getter
-public class KakaoFailResponse {
+public class KakaoFailResponseDto {
 
     private int code;
     private String msg;

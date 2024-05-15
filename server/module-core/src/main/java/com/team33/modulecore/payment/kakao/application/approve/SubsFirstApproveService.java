@@ -1,10 +1,9 @@
-package com.team33.modulecore.payment.kakao.application;
+package com.team33.modulecore.payment.kakao.application.approve;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.dto.KaKaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
@@ -12,7 +11,7 @@ import com.team33.modulecore.payment.kakao.infra.ParameterProvider;
 
 // @RequiredArgsConstructor
 @Component
-public class SubsFirstApproveService extends KaKaoTemplate {
+public class SubsFirstApproveService extends KaKaoApproveTemplate {
 
 	private final ParameterProvider parameterProvider;
 
@@ -34,11 +33,6 @@ public class SubsFirstApproveService extends KaKaoTemplate {
 		//
 		// return getResponseDtoAboutApprove(firstSubscriptionApproveParams);
 		return super.approve(approveRequest);
-	}
-
-	@Override
-	public MultiValueMap<String, String> getRequestParams(Order order) {
-		return null;
 	}
 
 	@Override
