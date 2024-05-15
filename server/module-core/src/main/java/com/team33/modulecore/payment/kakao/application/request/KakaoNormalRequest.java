@@ -5,19 +5,19 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.payment.application.NormalRequest;
+import com.team33.modulecore.payment.application.request.NormalRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
-import com.team33.modulecore.payment.kakao.infra.ParameterProvider;
+import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 
 
 @Service
-public class NormalRequestService
-	extends RequestTemplate
+public class KakaoNormalRequest
+	extends KakaoRequestTemplate
 	implements NormalRequest<KakaoRequestResponse> {
 
 	private final ParameterProvider parameterProvider;
 
-	public NormalRequestService(ParameterProvider parameterProvider, RestTemplate restTemplate) {
+	public KakaoNormalRequest(ParameterProvider parameterProvider, RestTemplate restTemplate) {
 		super(restTemplate);
 		this.parameterProvider = parameterProvider;
 	}

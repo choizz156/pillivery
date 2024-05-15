@@ -1,4 +1,4 @@
-package com.team33.modulecore.payment.kakao.infra;
+package com.team33.modulecore.payment.kakao.application;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -27,5 +27,4 @@ public abstract class ParamsConst {
     protected static final String TAX_FREE_AMOUNT = "tax_free_amount";
     protected static final String CANCEL_URL = "cancel_url";
     protected static final String FAIL_URL = "fail_url";
-    protected static final int NAME_INDEX = 0;
 }

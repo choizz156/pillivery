@@ -1,4 +1,4 @@
-package com.team33.modulecore.payment.application;
+package com.team33.modulecore.payment.application.approve;
 
 import com.team33.modulecore.payment.dto.ApproveRequest;
 

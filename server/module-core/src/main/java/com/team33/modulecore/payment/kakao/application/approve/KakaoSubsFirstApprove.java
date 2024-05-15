@@ -7,15 +7,14 @@ import org.springframework.web.client.RestTemplate;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.dto.KaKaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.modulecore.payment.kakao.infra.ParameterProvider;
+import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 
-// @RequiredArgsConstructor
 @Component
-public class SubsFirstApproveService extends KaKaoApproveTemplate {
+public class KakaoSubsFirstApprove extends KaKaoApproveTemplate {
 
 	private final ParameterProvider parameterProvider;
 
-	public SubsFirstApproveService(RestTemplate restTemplate, ParameterProvider parameterProvider) {
+	public KakaoSubsFirstApprove(RestTemplate restTemplate, ParameterProvider parameterProvider) {
 		super(restTemplate);
 		this.parameterProvider = parameterProvider;
 	}

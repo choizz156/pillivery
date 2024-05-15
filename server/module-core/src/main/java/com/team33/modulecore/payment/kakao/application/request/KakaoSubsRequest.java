@@ -5,18 +5,18 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.payment.application.SubscriptionRequest;
+import com.team33.modulecore.payment.application.request.SubscriptionRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
-import com.team33.modulecore.payment.kakao.infra.ParameterProvider;
+import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 
 @Service
-public class SubsRequestService
-	extends RequestTemplate
+public class KakaoSubsRequest
+	extends KakaoRequestTemplate
 	implements SubscriptionRequest<KakaoRequestResponse>
 {
 	private final ParameterProvider parameterProvider;
 
-	public SubsRequestService(RestTemplate restTemplate, ParameterProvider parameterProvider) {
+	public KakaoSubsRequest(RestTemplate restTemplate, ParameterProvider parameterProvider) {
 		super(restTemplate);
 		this.parameterProvider = parameterProvider;
 	}

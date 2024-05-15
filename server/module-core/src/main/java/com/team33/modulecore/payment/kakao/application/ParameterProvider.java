@@ -1,4 +1,4 @@
-package com.team33.modulecore.payment.kakao.infra;
+package com.team33.modulecore.payment.kakao.application;
 
 
 import org.springframework.stereotype.Component;

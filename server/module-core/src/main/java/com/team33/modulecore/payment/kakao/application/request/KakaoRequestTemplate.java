@@ -12,7 +12,7 @@ import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class RequestTemplate {
+public abstract class KakaoRequestTemplate {
 
 	private final RestTemplate restTemplate;
 	private static final String READY_URL = "https//kapi.kakao.com/v1/payment/ready";

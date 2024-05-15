@@ -1,17 +1,17 @@
 package com.team33.modulecore.payment.kakao.application.approve;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.team33.modulecore.payment.application.NormalApprove;
+import com.team33.modulecore.payment.application.approve.NormalApprove;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.dto.KaKaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.modulecore.payment.kakao.infra.ParameterProvider;
+import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 
-@Service
-public class NormalApproveService
+@Component
+public class KakaoNormalApprove
 	extends KaKaoApproveTemplate
 	implements NormalApprove<KaKaoApproveResponse, KakaoApproveOneTimeRequest>
 {
@@ -19,7 +19,7 @@ public class NormalApproveService
 	// private final RestTemplate restTemplate;
 	// private static final String KAKAO_APPROVE_URL = "https://kapi.kakao.com/v1/payment/approve";
 
-	public NormalApproveService(RestTemplate restTemplate, ParameterProvider parameterProvider) {
+	public KakaoNormalApprove(RestTemplate restTemplate, ParameterProvider parameterProvider) {
 		super(restTemplate);
 		this.parameterProvider = parameterProvider;
 	}
