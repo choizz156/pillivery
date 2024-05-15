@@ -3,7 +3,7 @@ package com.team33.modulecore.payment.kakao.dto;
 import lombok.Getter;
 
 @Getter
-public class KaKaoResponseApproveDto {
+public class KaKaoApproveResponse {
 
 	private String aid;
 	private String tid;
@@ -21,7 +21,7 @@ public class KaKaoResponseApproveDto {
 	private int quantity;
 
 	@Getter
-	private static class Amount {
+	public static class Amount {
 
 		private int total;
 		private int tax_free;

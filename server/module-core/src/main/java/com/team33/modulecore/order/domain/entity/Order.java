@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.domain;
+package com.team33.modulecore.order.domain.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,9 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.OrderPrice;
+import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.user.domain.User;
 
 import lombok.AccessLevel;
@@ -56,8 +59,6 @@ public class Order extends BaseEntity {
 
     private String sid;
 
-    private String tid;
-
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.REQUEST;
 
@@ -86,7 +87,6 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.SUBSCRIBE;
         this.totalQuantity = origin.getTotalQuantity();
         this.sid = origin.getSid();
-        this.tid = origin.getTid();
     }
 
     @Builder
@@ -127,10 +127,6 @@ public class Order extends BaseEntity {
 
     public void addSid(String sid) {
         this.sid = sid;
-    }
-
-    public void addTid(String tid) {
-        this.tid = tid;
     }
 
     public String getOrdererCity() {

@@ -3,7 +3,7 @@ package com.team33.moduleapi.ui.review.mapper;
 import org.springframework.stereotype.Component;
 
 import com.team33.moduleapi.ui.review.dto.ReviewDto;
-import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.review.domain.ReviewContext;
 

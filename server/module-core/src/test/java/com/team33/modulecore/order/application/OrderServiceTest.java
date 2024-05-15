@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;

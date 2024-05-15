@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 
 import lombok.Builder;

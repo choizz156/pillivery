@@ -15,7 +15,7 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderService;
-import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.user.domain.User;

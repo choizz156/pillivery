@@ -1,9 +1,17 @@
 package com.team33.modulecore.order.infra;
 
-import static com.team33.modulecore.order.domain.OrderStatus.REQUEST;
-import static com.team33.modulecore.order.domain.OrderStatus.SUBSCRIBE;
-import static com.team33.modulecore.order.domain.QOrder.order;
-import static com.team33.modulecore.order.domain.QOrderItem.orderItem;
+import static com.team33.modulecore.order.domain.OrderStatus.*;
+import static com.team33.modulecore.order.domain.QOrderItem.*;
+import static com.team33.modulecore.order.domain.entity.QOrder.*;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -11,21 +19,15 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.order.domain.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
-import java.util.Collections;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.support.PageableExecutionUtils;
 
 
 @RequiredArgsConstructor

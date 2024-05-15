@@ -4,7 +4,7 @@ package com.team33.modulecore.payment.kakao.infra;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.kakao.dto.PaymentParams;
 
 @Component

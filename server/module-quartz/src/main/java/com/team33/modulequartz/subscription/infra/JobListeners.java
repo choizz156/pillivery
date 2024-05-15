@@ -4,7 +4,7 @@ import static org.quartz.JobKey.jobKey;
 
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.domain.OrderItem;
-import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.user.domain.User;

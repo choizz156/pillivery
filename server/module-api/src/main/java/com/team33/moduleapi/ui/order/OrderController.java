@@ -30,7 +30,7 @@ import com.team33.modulecore.cart.application.NormalCartService;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderService;
-import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 import com.team33.modulecore.order.dto.OrderPageDto;

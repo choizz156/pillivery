@@ -1,7 +1,7 @@
 package com.team33.modulecore.order.domain.repository;
 
 
-import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.entity.Order;
 import java.util.Optional;
 import org.springframework.data.repository.Repository;
 

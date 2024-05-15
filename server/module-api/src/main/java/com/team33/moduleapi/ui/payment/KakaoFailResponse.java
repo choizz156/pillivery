@@ -1,4 +1,4 @@
-package com.team33.modulecore.payment.kakao.dto;
+package com.team33.moduleapi.ui.payment;
 
 import java.util.HashMap;
 import java.util.Map;

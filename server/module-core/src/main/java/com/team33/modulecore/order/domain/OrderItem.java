@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.order.domain.entity.Order;
 
 import lombok.AccessLevel;
 import lombok.Builder;
