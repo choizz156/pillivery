@@ -1,7 +1,8 @@
 package com.team33.modulecore.payment.kakao.application;
 
+import static com.team33.modulecore.payment.kakao.application.KakaoHeader.*;
+
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,18 +34,11 @@ public abstract class KaKaoTemplate {
 		return getResponseDtoAboutApprove(approveParams);
 	}
 
-	public HttpHeaders getHeaders() {
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add("Authorization", "KakaoAK 15fe252b3ce1d6da44b790e005f40964");
-		httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-		return httpHeaders;
-	}
-
 	private KakaoRequestResponse getResponseDtoAboutRequest(
 		MultiValueMap<String, String> params
 	) {
 		HttpEntity<MultiValueMap<String, String>> kakaoRequestEntity
-			= new HttpEntity<>(params, getHeaders());
+			= new HttpEntity<>(params, HTTP_HEADERS.getHeaders());
 
 		return restTemplate.postForObject(READY_URL, kakaoRequestEntity, KakaoRequestResponse.class);
 	}
@@ -52,7 +46,7 @@ public abstract class KaKaoTemplate {
 	private KaKaoApproveResponse getResponseDtoAboutApprove(
 		MultiValueMap<String, String> params
 	) {
-		var entity = new HttpEntity<>(params, getHeaders());
+		var entity = new HttpEntity<>(params, HTTP_HEADERS.getHeaders());
 
 		return restTemplate.postForObject(
 			KAKAO_APPROVE_URL,
