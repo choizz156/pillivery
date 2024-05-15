@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.payment.kakao.application.PaymentFacade;
-import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto;
+import com.team33.modulecore.payment.application.PaymentFacade;
+import com.team33.modulecore.payment.kakao.dto.KaKaoPayRequestDto;
+import com.team33.modulecore.payment.kakao.dto.KaKaoResponseApproveDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,23 +26,23 @@ public class PayController {
     private final PaymentFacade paymentFacade;
 
     @PostMapping("/{orderId}")
-    public KakaoResponseDto.Request request(@PathVariable("orderId") Long orderId) {
-        return ofNullable(paymentFacade.request(orderId))
+    public KaKaoPayRequestDto request(@PathVariable("orderId") Long orderId) {
+        return (KaKaoPayRequestDto)ofNullable(paymentFacade.request(orderId))
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.PAYMENT_FAIL));
     }
 
     @GetMapping("/approve/{orderId}")
-    public KakaoResponseDto.Approve approve(
+    public KaKaoResponseApproveDto approve(
         @RequestParam("pg_token") String pgToken,
         @PathVariable("orderId") Long orderId
     ) {
-        return ofNullable(paymentFacade.approve(pgToken, orderId))
+        return (KaKaoResponseApproveDto)ofNullable(paymentFacade.approve(pgToken, orderId))
             .orElseThrow(() -> new BusinessLogicException(ExceptionCode.PAYMENT_FAIL));
     }
 
     //    @CrossOrigin(origins = "pillivery.s3-website.ap-northeast-2.amazonaws.com")
     @PostMapping("/kakao/subscription")
-    public KakaoResponseDto.Approve subscription(@RequestParam Long orderId) {
+    public KaKaoResponseApproveDto subscription(@RequestParam Long orderId) {
         return paymentFacade.approveSubscription(orderId);
     }
 

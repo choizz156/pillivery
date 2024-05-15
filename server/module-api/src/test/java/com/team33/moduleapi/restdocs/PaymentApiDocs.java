@@ -1,30 +1,28 @@
 package com.team33.moduleapi.restdocs;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
-import com.team33.moduleapi.ui.payment.PayController;
-import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Approve;
-import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Request;
-import com.team33.modulecore.payment.kakao.application.KakaoPaymentFacade;
-import com.team33.modulecore.payment.kakao.application.PaymentFacade;
-import io.restassured.module.mockmvc.response.MockMvcResponse;
-import io.restassured.response.ExtractableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
+
+import com.team33.moduleapi.ui.payment.PayController;
+import com.team33.modulecore.payment.application.PaymentFacade;
+import com.team33.modulecore.payment.kakao.application.KakaoPaymentFacade;
+import com.team33.modulecore.payment.kakao.dto.KaKaoPayRequestDto;
+import com.team33.modulecore.payment.kakao.dto.KaKaoResponseApproveDto;
+
+import io.restassured.module.mockmvc.response.MockMvcResponse;
+import io.restassured.response.ExtractableResponse;
+
+import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 
 
 class PaymentApiDocs extends MockRestDocsSupport {
@@ -42,7 +40,7 @@ class PaymentApiDocs extends MockRestDocsSupport {
     @Test
     void test1() throws Exception {
 
-        Request request = fixtureMonkey.giveMeBuilder(Request.class)
+        KaKaoPayRequestDto request = fixtureMonkey.giveMeBuilder(KaKaoPayRequestDto.class)
             .set("tid", "testTid")
             .set("next_redirect_pc_url", "url")
             .sample();
@@ -84,7 +82,7 @@ class PaymentApiDocs extends MockRestDocsSupport {
     @Test
     void test2() throws Exception {
 
-        Approve approve = fixtureMonkey.giveMeOne(Approve.class);
+        KaKaoResponseApproveDto approve = fixtureMonkey.giveMeOne(KaKaoResponseApproveDto.class);
 
         given(paymentFacade.approve(anyString(), anyLong()))
             .willReturn(approve);
@@ -126,7 +124,7 @@ class PaymentApiDocs extends MockRestDocsSupport {
     @WithMockUser
     @Test
     void test3() throws Exception {
-        Approve approve = fixtureMonkey.giveMeOne(Approve.class);
+        KaKaoResponseApproveDto approve = fixtureMonkey.giveMeOne(KaKaoResponseApproveDto.class);
 
         given(paymentFacade.approveSubscription(anyLong()))
             .willReturn(approve);

@@ -1,11 +1,8 @@
 package com.team33.modulecore.order.domain;
 
-
-import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.user.domain.User;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -20,11 +17,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.user.domain.User;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @DynamicUpdate
@@ -161,5 +164,13 @@ public class Order extends BaseEntity {
             this.orderItems.stream()
                 .map(OrderItem::getQuantity)
                 .reduce(0, Integer::sum);
+    }
+
+    public String getFirstProductname() {
+        return this.orderItems.get(0).getItem().getProductName();
+    }
+
+    public int getTotalPrice() {
+        return this.orderPrice.getTotalPrice();
     }
 }

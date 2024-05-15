@@ -5,7 +5,7 @@ import java.util.Map;
 import lombok.Getter;
 
 @Getter
-public class FailResponse {
+public class KakaoFailResponse {
 
     private int code;
     private String msg;

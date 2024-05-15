@@ -1,50 +1,57 @@
 package com.team33.modulecore.payment.kakao.application;
 
-
 import java.net.URI;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import com.team33.modulecore.order.domain.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
-import com.team33.modulecore.order.application.OrderService;
-import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Approve;
-import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Request;
+
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.order.application.OrderService;
+import com.team33.modulecore.order.domain.Order;
+import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.payment.application.PayApprove;
+import com.team33.modulecore.payment.application.PayRequest;
+import com.team33.modulecore.payment.application.PaymentFacade;
+import com.team33.modulecore.payment.kakao.dto.KaKaoPayRequestDto;
+import com.team33.modulecore.payment.kakao.dto.KaKaoResponseApproveDto;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
 public class KakaoPaymentFacade implements PaymentFacade {
 
-    private final PayRequest kakaoPayRequest;
-    private final PayApprove kakaoPayApprove;
+    private final PayRequest<KaKaoPayRequestDto> kakaoPayRequest;
+    private final PayApprove<KaKaoResponseApproveDto> kakaoPayApprove;
     private final OrderService orderService;
     private final RestTemplate restTemplate;
     private final OrderRepository orderRepository;
 
-    @Override
-    public Request request(long orderId) {
+	@SuppressWarnings("unchecked")
+	@Override
+    public KaKaoPayRequestDto request(long orderId) {
         Order order = findOrder(orderId);
         if(order.isSubscription()){
             return kakaoPayRequest.requestSubscription(order);
         }
 
-        Request request = kakaoPayRequest.requestOneTime(order);
+        KaKaoPayRequestDto request = kakaoPayRequest.requestOneTime(order);
         order.addTid(request.getTid());
         return request;
     }
 
-    @Override
-    public Approve approve(String pgToken, Long orderId) {
+    @SuppressWarnings("unchecked")
+	@Override
+    public KaKaoResponseApproveDto approve(String pgToken, Long orderId) {
         Order order = findOrder(orderId);
         String tid = order.getTid();
         if (order.isSubscription()) {
-            Approve approve =
+            KaKaoResponseApproveDto approve =
                 kakaoPayApprove.approveFirstSubscription(tid, pgToken, orderId);
 
             order.addSid(approve.getSid());
@@ -53,13 +60,13 @@ public class KakaoPaymentFacade implements PaymentFacade {
             return approve;
         }
 
-        Approve approve = kakaoPayApprove.approveOneTime(tid, pgToken, orderId);
+        KaKaoResponseApproveDto approve = kakaoPayApprove.approveOneTime(tid, pgToken, orderId);
         orderService.changeOrderStatusToComplete(orderId);
         return approve;
     }
 
     @Override
-    public Approve approveSubscription(final Long orderId) {
+    public KaKaoResponseApproveDto approveSubscription(final Long orderId) {
         Order order = findOrder(orderId);
         String sid = order.getSid();
 

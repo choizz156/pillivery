@@ -10,9 +10,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 import com.team33.moduleapi.ui.payment.PayController;
-import com.team33.modulecore.payment.kakao.dto.FailResponse;
-import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Approve;
-import com.team33.modulecore.payment.kakao.dto.KakaoResponseDto.Request;
+import com.team33.modulecore.payment.kakao.dto.KakaoFailResponse;
+import com.team33.modulecore.payment.kakao.dto.KaKaoResponseApproveDto;
+import com.team33.modulecore.payment.kakao.dto.KaKaoPayRequestDto;
 import com.team33.modulecore.payment.kakao.application.KakaoPaymentFacade;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
@@ -45,7 +45,7 @@ class PaymentApiTest {
     @Test
     void test1() throws Exception {
         //given
-        Request request = fixtureMonkey.giveMeBuilder(Request.class)
+        KaKaoPayRequestDto request = fixtureMonkey.giveMeBuilder(KaKaoPayRequestDto.class)
             .set("tid", "testTid")
             .set("next_redirect_pc_url", "url")
             .sample();
@@ -68,7 +68,7 @@ class PaymentApiTest {
     @DisplayName("카카오 단건, 정기 결제 승인(최초 시도) 테스트")
     @Test
     void test2() throws Exception {
-        Approve approve = fixtureMonkey.giveMeOne(Approve.class);
+        KaKaoResponseApproveDto approve = fixtureMonkey.giveMeOne(KaKaoResponseApproveDto.class);
 
         given(paymentFacade.approve(anyString(), anyLong())).willReturn(approve);
 
@@ -88,8 +88,8 @@ class PaymentApiTest {
     @DisplayName("정기 결제 승인(두 번째 이후) 테스트")
     @Test
     void test3() throws Exception {
-        Approve approve = fixtureMonkey
-            .giveMeBuilder(Approve.class)
+        KaKaoResponseApproveDto approve = fixtureMonkey
+            .giveMeBuilder(KaKaoResponseApproveDto.class)
             .set("approved_at", "test_approve")
             .sample();
 
@@ -112,13 +112,13 @@ class PaymentApiTest {
     @Test
     void test4() throws Exception {
 
-        FailResponse failResponse = fixtureMonkey.giveMeBuilder(FailResponse.class)
+        KakaoFailResponse kakaoFailResponse = fixtureMonkey.giveMeBuilder(KakaoFailResponse.class)
             .set("code", -780)
             .set("msg", "approval failure!").sample();
 
         //@formatter:off
             given
-                    .body(failResponse)
+                    .body(kakaoFailResponse)
             .when()
                     .get("/payments/kakao/cancel")
             .then()
@@ -133,13 +133,13 @@ class PaymentApiTest {
     @Test
     void test5() throws Exception {
 
-        FailResponse failResponse = fixtureMonkey.giveMeBuilder(FailResponse.class)
+        KakaoFailResponse kakaoFailResponse = fixtureMonkey.giveMeBuilder(KakaoFailResponse.class)
             .set("code", -780)
             .set("msg", "approval failure!").sample();
 
         //@formatter:off
             given
-                    .body(failResponse)
+                    .body(kakaoFailResponse)
             .when()
                     .get("/payments/kakao/fail")
             .then()
