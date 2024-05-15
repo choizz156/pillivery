@@ -1,12 +1,12 @@
 package com.team33.moduleapi.security.config;
 
 
+import com.team33.moduleapi.security.application.LogoutService;
 import com.team33.moduleapi.security.infra.filter.JwtLoginFilter;
 import com.team33.moduleapi.security.infra.filter.JwtVerificationFilter;
 import com.team33.moduleapi.security.infra.handler.UserAuthFailureHandler;
 import com.team33.moduleapi.security.infra.handler.UserAuthSuccessHandler;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.moduleapi.security.application.Logout;
 import com.team33.moduleapi.security.application.ResponseTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +21,7 @@ public class CustomFilterConfigurer extends
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ResponseTokenService responseTokenService;
-    private final Logout logout;
+    private final LogoutService logoutService;
 
     @Override
     public void configure(HttpSecurity builder) {
@@ -37,7 +37,7 @@ public class CustomFilterConfigurer extends
         );
 
         JwtVerificationFilter jwtVerificationFilter =
-            new JwtVerificationFilter(jwtTokenProvider, responseTokenService, logout);
+            new JwtVerificationFilter(jwtTokenProvider, responseTokenService, logoutService);
 
         builder.addFilter(jwtLoginFilter)
             .addFilterAfter(jwtVerificationFilter, JwtLoginFilter.class);

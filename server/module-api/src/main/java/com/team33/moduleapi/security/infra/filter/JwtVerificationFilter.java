@@ -3,7 +3,7 @@ package com.team33.moduleapi.security.infra.filter;
 
 import com.team33.moduleapi.security.application.ResponseTokenService;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.moduleapi.security.application.Logout;
+import com.team33.moduleapi.security.application.LogoutService;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -37,7 +37,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ResponseTokenService responseTokenService;
-    private final Logout logout;
+    private final LogoutService logoutService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -69,7 +69,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     private boolean checkLogout(final HttpServletRequest request, final String authorization) {
-        if (logout.isLogoutAlready(request)) {
+        if (logoutService.isLogoutAlready(request)) {
             log.error(ExpiredJwtException.class.getSimpleName());
             request.setAttribute(EXCEPTION_KEY, new BusinessLogicException(ExceptionCode.ALREADY_LOGOUT));
             return true;

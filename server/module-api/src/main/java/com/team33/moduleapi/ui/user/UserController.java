@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.SingleResponseDto;
-import com.team33.moduleapi.security.application.Logout;
+import com.team33.moduleapi.security.application.LogoutService;
 import com.team33.moduleapi.security.application.ResponseTokenService;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
 import com.team33.moduleapi.ui.user.dto.UserIdDto;
@@ -43,7 +43,7 @@ public class UserController {
 
 	private static final String LOGOUT_COMPLETE = "로그아웃 완료";
 
-	private final Logout logout;
+	private final LogoutService logoutService;
 	private final UserService userService;
 	private final UserServiceMapper userServiceMapper;
 	private final JwtTokenProvider jwtTokenProvider;
@@ -89,7 +89,7 @@ public class UserController {
 	@PostMapping("/logout")
 	public SingleResponseDto<String> handleLogout(HttpServletRequest request) {
 		String jws = getJws(request);
-		logout.doLogout(jws);
+		logoutService.doLogout(jws);
 		return new SingleResponseDto<>(LOGOUT_COMPLETE);
 	}
 
@@ -97,7 +97,7 @@ public class UserController {
 	public SingleResponseDto<String> deleteUser(@PathVariable Long userId, HttpServletRequest request) {
 		User user = userService.deleteUser(userId);
 		String jws = getJws(request);
-		logout.doLogout(jws);
+		logoutService.doLogout(jws);
 		return new SingleResponseDto<>(user.getUserStatus().name());
 	}
 

@@ -1,21 +1,26 @@
 package com.team33.moduleapi.security.application;
 
-import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.moduleapi.security.infra.SecretKey;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
 import javax.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Component;
+
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.springframework.stereotype.Component;
+
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.moduleapi.security.infra.SecretKey;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class Logout {
+public class LogoutService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final SecretKey secretKey;

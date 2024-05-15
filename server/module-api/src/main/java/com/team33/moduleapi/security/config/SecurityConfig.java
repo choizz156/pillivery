@@ -11,7 +11,7 @@ import com.team33.moduleapi.security.infra.handler.UserAuthFailureHandler;
 import com.team33.moduleapi.security.infra.handler.UserAuthenticationEntryPoint;
 import com.team33.moduleapi.security.infra.handler.UserOAuthSuccessHandler;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.moduleapi.security.application.Logout;
+import com.team33.moduleapi.security.application.LogoutService;
 import com.team33.moduleapi.security.repository.RefreshTokenRepository;
 import com.team33.moduleapi.security.application.ResponseTokenService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @RequiredArgsConstructor
@@ -33,7 +31,7 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final ResponseTokenService responseTokenService;
     private final RefreshTokenRepository repository;
-    private final Logout logout;
+    private final LogoutService logoutService;
     private static final String USER_URL = "/users/**";
     private static final String CART_URL = "/carts/**";
     private static final String WISHS_URL = "/wishes/**";
@@ -58,7 +56,7 @@ public class SecurityConfig {
             .authenticationEntryPoint(new UserAuthenticationEntryPoint(responseTokenService))
 
             .and()
-            .apply(new CustomFilterConfigurer(jwtTokenProvider, responseTokenService, logout))
+            .apply(new CustomFilterConfigurer(jwtTokenProvider, responseTokenService, logoutService))
 
             .and()
             .oauth2Login()
