@@ -14,7 +14,7 @@
 //
 // @RequiredArgsConstructor
 // @Service
-// public class KaKaoApproveService extends KaKaoHeader implements PayApprove<KaKaoApproveResponse> {
+// public class KaKaoApproveService extends KaKaoTemplate implements PayApprove<KaKaoApproveResponse> {
 //
 //     private final ParameterProvider parameterProvider;
 //     private final RestTemplate restTemplate;
