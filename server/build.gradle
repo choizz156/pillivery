@@ -28,7 +28,6 @@ subprojects {
     }
 
     dependencies {
-
         //lombok
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
@@ -52,6 +51,7 @@ project(':module-core') {
     jar { enabled = true }
 
     dependencies {
+        implementation project(':module-external-api')
     }
 }
 
@@ -90,6 +90,5 @@ project(':module-external-api'){
     jar { enabled = true }
 
     dependencies {
-        implementation project(':module-core')
     }
 }

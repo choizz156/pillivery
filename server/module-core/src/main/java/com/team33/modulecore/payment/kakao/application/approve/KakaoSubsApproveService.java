@@ -7,8 +7,8 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.approve.SubscriptionApprove;
 import com.team33.modulecore.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.payment.dto.ApproveRequest;
-import com.team33.modulecore.payment.kakao.dto.KaKaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
 
 import lombok.RequiredArgsConstructor;
 

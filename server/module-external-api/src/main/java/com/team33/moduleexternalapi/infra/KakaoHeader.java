@@ -1,4 +1,4 @@
-package com.team33.modulecore.payment.kakao.application;
+package com.team33.moduleexternalapi.infra;
 
 import java.util.function.Supplier;
 

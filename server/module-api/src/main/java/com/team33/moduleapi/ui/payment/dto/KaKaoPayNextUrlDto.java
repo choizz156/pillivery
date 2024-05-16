@@ -3,7 +3,7 @@ package com.team33.moduleapi.ui.payment.dto;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
+import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.team33.moduleapi.ui.payment.dto;
 
-import com.team33.modulecore.payment.kakao.dto.KaKaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
 
 import lombok.Builder;
 import lombok.Getter;

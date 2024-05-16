@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 	"com.team33.moduleapi",
 	"com.team33.modulequartz",
 	"com.team33.modulecore",
-	"com.team33.moduleadmin"
+	"com.team33.moduleadmin",
+	"com.team33.moduleexternalapi"
 }
 )
 public class ModuleApiApplication {

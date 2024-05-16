@@ -11,10 +11,9 @@ import com.team33.moduleapi.ui.payment.dto.KaKaoPayNextUrlDto;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.payment.application.request.RequestFacade;
-import com.team33.modulecore.payment.kakao.dto.KaKaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
-import com.team33.modulecore.user.application.UserService;
+import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 import lombok.RequiredArgsConstructor;
 

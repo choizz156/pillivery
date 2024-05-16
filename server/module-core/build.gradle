@@ -15,15 +15,9 @@ dependencies {
     //jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    //mapstruct
-    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.0.Beta1'
-
     //db
     runtimeOnly 'com.h2database:h2'
     implementation 'mysql:mysql-connector-java'
-
-
 
     //password-seucirty
     implementation 'org.springframework.security:spring-security-crypto'
