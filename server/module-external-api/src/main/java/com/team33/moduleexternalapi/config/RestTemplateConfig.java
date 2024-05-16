@@ -1,13 +1,13 @@
-package com.team33.modulecore.config.resttemplate;
-
+package com.team33.moduleexternalapi.config;
 
 import org.apache.http.client.HttpClient;
-import lombok.RequiredArgsConstructor;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration

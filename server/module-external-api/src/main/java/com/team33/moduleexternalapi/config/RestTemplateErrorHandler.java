@@ -1,12 +1,14 @@
-package com.team33.modulecore.config.resttemplate;
+package com.team33.moduleexternalapi.config;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RestTemplateErrorHandler implements ResponseErrorHandler {

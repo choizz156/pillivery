@@ -60,9 +60,10 @@ project(':module-api') {
     jar { enabled = false }
 
     dependencies {
-        api project(':module-core')
-        api project(':module-quartz')
-        api project(':module-admin')
+        implementation project(':module-core')
+        implementation project(':module-quartz')
+        implementation project(':module-admin')
+        implementation project(':module-external-api')
     }
 }
 
@@ -71,7 +72,7 @@ project(':module-quartz') {
     jar { enabled = true }
 
     dependencies {
-        api project(':module-core')
+        implementation project(':module-core')
     }
 }
 
@@ -80,7 +81,15 @@ project(':module-admin'){
     jar { enabled = true }
 
     dependencies {
-        api project(':module-core')
+        implementation project(':module-core')
     }
 }
 
+project(':module-external-api'){
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        implementation project(':module-core')
+    }
+}

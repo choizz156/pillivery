@@ -23,7 +23,7 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     implementation 'mysql:mysql-connector-java'
 
-    implementation 'org.apache.httpcomponents:httpclient'
+
 
     //password-seucirty
     implementation 'org.springframework.security:spring-security-crypto'
