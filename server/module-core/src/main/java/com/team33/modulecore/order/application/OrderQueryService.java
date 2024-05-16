@@ -7,14 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.common.UserFindHelper;
-import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.user.domain.User;
-import com.team33.modulecore.user.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,17 +23,14 @@ import lombok.RequiredArgsConstructor;
 public class OrderQueryService {
 
 	private final OrderQueryRepository orderQueryRepository;
-	private final UserRepository userRepository;
 	private final UserFindHelper userFindHelper;
 
 	public Page<Order> findAllOrders(Long userId, OrderPageRequest orderPageRequest) {
 		User user = userFindHelper.findUser(userId);
-		OrderFindCondition orderFindCondition =
-			OrderFindCondition.to(user, OrderStatus.REQUEST);
 
 		return orderQueryRepository.searchOrders(
 			orderPageRequest,
-			orderFindCondition
+			OrderFindCondition.to(user, OrderStatus.REQUEST)
 		);
 	}
 
@@ -43,11 +39,11 @@ public class OrderQueryService {
 		OrderPageRequest orderPageRequest
 	) {
 		User user = userFindHelper.findUser(userId);
+
 		return orderQueryRepository.findSubscriptionOrderItem(
 			orderPageRequest,
 			OrderFindCondition.to(user, OrderStatus.SUBSCRIBE)
 		);
-
 	}
 
 	public Order findOrder(Long orderId) {
