@@ -1,8 +1,6 @@
-package com.team33.moduleapi.ui.order;
+package com.team33.moduleapi.ui.order.dto;
 
 import java.util.List;
-
-import com.team33.moduleapi.ui.order.dto.OrderPostDto;
 
 import lombok.Data;
 

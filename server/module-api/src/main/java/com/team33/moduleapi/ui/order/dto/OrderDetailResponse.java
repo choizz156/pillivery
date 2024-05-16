@@ -71,7 +71,7 @@ public class OrderDetailResponse {
             .orderId(order.getId())
             .name(order.getName())
             .phone(order.getPhone())
-            .totalItems(order.getTotalItems())
+            .totalItems(order.getTotalItemsCount())
             .totalPrice(order.getOrderPrice().getTotalPrice())
             .totalDiscountPrice(order.getOrderPrice().getTotalDiscountPrice())
             .expectPrice(order.getOrderPrice().getTotalPrice())

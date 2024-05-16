@@ -9,16 +9,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderItemServiceDto {
 
-    private Long itemId;
-    private boolean isSubscription;
-    private int quantity;
-    private int period;
+	private long itemId;
+	private int quantity;
+	private int period;
+	private boolean isSubscription;
 
-    @Builder
-    private OrderItemServiceDto(Long itemId, boolean isSubscription, int quantity, int period) {
-        this.itemId = itemId;
-        this.isSubscription = isSubscription;
-        this.quantity = quantity;
-        this.period = period;
-    }
+	@Builder
+	public OrderItemServiceDto(
+		long itemId,
+		int quantity,
+		int period,
+		boolean isSubscription
+	) {
+		this.itemId = itemId;
+		this.quantity = quantity;
+		this.period = period;
+		this.isSubscription = isSubscription;
+	}
 }

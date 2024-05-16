@@ -32,20 +32,7 @@ public class OrderItemService {
 	private final ItemQueryRepository itemQueryRepository;
 
 	@Transactional(readOnly = true)
-	public List<OrderItem> getOrderItemSingle(OrderItemServiceDto dto) {
-		Item item = findItem(dto.getItemId());
-
-		OrderItem orderItem = OrderItem.create(
-			item,
-			SubscriptionInfo.of(dto.isSubscription(), dto.getPeriod()),
-			dto.getQuantity()
-		);
-
-		return Stream.of(orderItem).collect(Collectors.toList());
-	}
-
-	@Transactional(readOnly = true)
-	public List<OrderItem> getOrderItemsInCart(List<OrderItemServiceDto> dtos) {
+	public List<OrderItem> toOrderItems(List<OrderItemServiceDto> dtos) {
 		return dtos.stream()
 			.map(this::getOrderItemSingle)
 			.flatMap(List::stream)
@@ -105,12 +92,21 @@ public class OrderItemService {
 	}
 
 	//TODO: 리팩토링 -> optional 제거
+
 	private OrderItem getItemOrder(OrderItem io, Optional<Order> order) {
 		int i = order.get().getOrderItems().indexOf(io);
 		return order.get().getOrderItems().get(i);
 	}
 
-	public OrderItem findOrderItem(Long itemOrderId) {
-		return null;
+	private List<OrderItem> getOrderItemSingle(OrderItemServiceDto dto) {
+		Item item = findItem(dto.getItemId());
+
+		OrderItem orderItem = OrderItem.create(
+			item,
+			SubscriptionInfo.of(dto.isSubscription(), dto.getPeriod()),
+			dto.getQuantity()
+		);
+
+		return Stream.of(orderItem).collect(Collectors.toList());
 	}
 }

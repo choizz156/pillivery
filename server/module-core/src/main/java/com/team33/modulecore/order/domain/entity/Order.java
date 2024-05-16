@@ -25,6 +25,8 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.domain.Receiver;
+import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.user.domain.User;
 
 import lombok.AccessLevel;
@@ -38,135 +40,136 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "order_id")
+	private Long id;
 
-    @Column(nullable = false)
-    private String name;
+	private boolean isSubscription;
 
-    @Column(nullable = false)
-    private String phone;
+	@Column(name = "cart_request")
+	private boolean isOrderedAtCart;
 
-    @Column(nullable = false, name = "subscription")
-    private boolean isSubscription;
+	private int totalItemsCount;
 
-    @Embedded
-    private OrderPrice orderPrice;
+	private String sid;
 
-    private int totalItems;
+	@Embedded
+	private OrderPrice orderPrice;
 
-    private String sid;
+	@Embedded
+	private Receiver receiver;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.REQUEST;
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus = OrderStatus.REQUEST;
 
-    @Transient
-    private int totalQuantity;
+	@Transient
+	private int totalQuantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<OrderItem> orderItems = new ArrayList<>();
 
-    public Order(Order origin) {
+	public Order(Order origin) {
 
-        this.name = origin.getName();
-        this.phone = origin.getPhone();
-        this.isSubscription = origin.isSubscription();
-        this.totalItems = origin.getTotalItems();
-        this.orderPrice = new OrderPrice(
-            origin.getOrderPrice().getTotalPrice(),
-            origin.getOrderPrice().getTotalDiscountPrice()
-        );
-        this.user = origin.getUser();
-        this.orderItems = origin.getOrderItems();
-        this.orderStatus = OrderStatus.SUBSCRIBE;
-        this.totalQuantity = origin.getTotalQuantity();
-        this.sid = origin.getSid();
-    }
+		this.receiver = origin.getReceiver();
+		this.isSubscription = origin.isSubscription();
+		this.totalItemsCount = origin.getTotalItemsCount();
+		this.orderPrice = new OrderPrice(
+			origin.getOrderPrice().getTotalPrice(),
+			origin.getOrderPrice().getTotalDiscountPrice()
+		);
+		this.user = origin.getUser();
+		this.orderItems = origin.getOrderItems();
+		this.orderStatus = OrderStatus.SUBSCRIBE;
+		this.totalQuantity = origin.getTotalQuantity();
+		this.sid = origin.getSid();
+	}
 
-    @Builder
-    private Order(
-        String name,
-        String phone,
-        boolean isSubscription,
-        int totalItems,
-        User user,
-        List<OrderItem> orderItems,
-        OrderStatus orderStatus,
-        int totalQuantity
-    ) {
-        this.name = name;
-        this.phone = phone;
-        this.isSubscription = isSubscription;
-        this.totalItems = totalItems;
-        this.user = user;
-        this.orderItems = orderItems;
-        this.orderStatus = orderStatus;
-        this.totalQuantity = totalQuantity;
-    }
+	@Builder
+	public Order(
+		boolean isSubscription,
+		boolean isOrderedAtCart,
+		int totalItemsCount,
+		OrderPrice orderPrice,
+		Receiver receiver,
+		OrderStatus orderStatus,
+		int totalQuantity,
+		User user,
+		List<OrderItem> orderItems
+	) {
+		this.isSubscription = isSubscription;
+		this.isOrderedAtCart = isOrderedAtCart;
+		this.totalItemsCount = totalItemsCount;
+		this.orderPrice = orderPrice;
+		this.receiver = receiver;
+		this.orderStatus = orderStatus;
+		this.totalQuantity = totalQuantity;
+		this.user = user;
+		this.orderItems = orderItems;
+	}
 
-    public static Order create(List<OrderItem> orderItems, boolean subscription, User user) {
-        Order order = Order.builder()
-            .name(user.getRealName())
-            .phone(user.getPhone())
-            .isSubscription(subscription)
-            .user(user)
-            .orderStatus(OrderStatus.REQUEST)
-            .orderItems(orderItems)
-            .totalItems(orderItems.size())
-            .build();
-        order.addPrice(order.getOrderItems());
-        order.getOrderItems().forEach(orderItem -> orderItem.addOrder(order));
-        return order;
-    }
+	public static Order create(List<OrderItem> orderItems, OrderContext orderContext, User user) {
+		Order order = Order.builder()
+			.receiver(orderContext.getReceiver())
+			.isSubscription(orderContext.isSubscription())
+			.isOrderedAtCart(orderContext.isOrderedCart())
+			.user(user)
+			.orderStatus(OrderStatus.REQUEST)
+			.orderItems(orderItems)
+			.totalItemsCount(orderItems.size())
+			.build();
 
-    public void addSid(String sid) {
-        this.sid = sid;
-    }
+		order.addPrice(order.getOrderItems());
+		order.getOrderItems().forEach(orderItem -> orderItem.addOrder(order));
+		return order;
+	}
 
-    public String getOrdererCity() {
-        return this.user.getCityAtAddress();
-    }
+	public void addSid(String sid) {
+		this.sid = sid;
+	}
 
-    public String getOrdererDetailAddress() {
-        return this.user.getDetailAddress();
-    }
+	public String getOrdererCity() {
+		return this.user.getCityAtAddress();
+	}
 
-    public Item getFirstItem() {
-        return orderItems.get(0).getItem();
-    }
+	public String getOrdererDetailAddress() {
+		return this.user.getDetailAddress();
+	}
 
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+	public Item getFirstItem() {
+		return orderItems.get(0).getItem();
+	}
 
-    private void addPrice(List<OrderItem> orderItems) {
-        this.orderPrice = new OrderPrice(orderItems);
-    }
+	public void changeOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
-    private void countQuantity() { // 주문의 담긴 상품의 총량을 구하는 메서드
+	private void addPrice(List<OrderItem> orderItems) {
+		this.orderPrice = new OrderPrice(orderItems);
+	}
 
-        if (this.orderItems.isEmpty()) {
-            this.totalQuantity = 0;
-            return;
-        }
+	private void countQuantity() { // 주문의 담긴 상품의 총량을 구하는 메서드
 
-        this.totalQuantity =
-            this.orderItems.stream()
-                .map(OrderItem::getQuantity)
-                .reduce(0, Integer::sum);
-    }
+		if (this.orderItems.isEmpty()) {
+			this.totalQuantity = 0;
+			return;
+		}
 
-    public String getFirstProductname() {
-        return this.orderItems.get(0).getItem().getProductName();
-    }
+		this.totalQuantity =
+			this.orderItems.stream()
+				.map(OrderItem::getQuantity)
+				.reduce(0, Integer::sum);
+	}
 
-    public int getTotalPrice() {
-        return this.orderPrice.getTotalPrice();
-    }
+	public String getFirstProductname() {
+		return this.orderItems.get(0).getItem().getProductName();
+	}
+
+	public int getTotalPrice() {
+		return this.orderPrice.getTotalPrice();
+	}
 }

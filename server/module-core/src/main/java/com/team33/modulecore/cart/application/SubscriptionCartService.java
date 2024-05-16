@@ -1,6 +1,8 @@
 package com.team33.modulecore.cart.application;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -12,6 +14,7 @@ import com.team33.modulecore.cart.domain.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
 
 import lombok.RequiredArgsConstructor;
@@ -66,4 +69,23 @@ public class SubscriptionCartService {
 			.findFirst()
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
 	}
+
+	public void refreshSubscriptionCart(Long cartId, List<OrderItem> orderItems) {
+		Cart cart = findCart(cartId);
+
+		if(cart.getSubscriptionCartItems().isEmpty()){
+			return;
+		}
+		
+		List<Long> orderedItemId = orderItems
+			.stream()
+			.map(orderItem -> orderItem.getItem().getId())
+			.collect(Collectors.toList());
+
+		cart.getSubscriptionCartItems()
+			.stream()
+			.filter(subscriptionCartItem -> orderedItemId.contains(subscriptionCartItem.getItem().getId()))
+			.forEach(cart::removeSubscriptionCartItem);
+	}
+
 }

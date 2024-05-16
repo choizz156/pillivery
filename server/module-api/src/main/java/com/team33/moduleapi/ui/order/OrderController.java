@@ -24,18 +24,17 @@ import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.order.dto.OrderDetailResponse;
 import com.team33.moduleapi.ui.order.dto.OrderItemSimpleResponse;
-import com.team33.moduleapi.ui.order.dto.OrderPostDto;
+import com.team33.moduleapi.ui.order.dto.OrderPostListDto;
 import com.team33.moduleapi.ui.order.dto.OrderSimpleResponse;
-import com.team33.modulecore.cart.application.NormalCartService;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderService;
-import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 import com.team33.modulecore.order.dto.OrderPageDto;
 import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.user.application.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,55 +52,27 @@ public class OrderController {
 	private final OrderService orderService;
 	private final OrderQueryService orderQueryService;
 	private final OrderItemService orderItemService;
-	private final NormalCartService normalCartService;
 	private final OrderItemServiceMapper orderItemServiceMapper;
-	private final UserService userService;
-	//    private final ItemMapper itemMapper;
-
-	/**
-	 * 단건 주문 정보를 생성합니다.
-	 *
-	 * @param userId       the user id
-	 * @param orderPostDto the order post dto
-	 * @return the single response dto
-	 */
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/single")
-	public SingleResponseDto<?> postSingleOrder(
-		@RequestParam Long userId,
-		@RequestBody OrderPostDto orderPostDto
-	) {
-		OrderItemServiceDto orderItemPostDto = orderItemServiceMapper.toOrderItemPostDto(orderPostDto);
-
-		List<OrderItem> orderItems =
-			orderItemService.getOrderItemSingle(orderItemPostDto);
-
-		Order order = orderService.callOrder(orderItems, orderPostDto.isSubscription(), userId);
-
-		return new SingleResponseDto<>(OrderDetailResponse.of(order));
-	}
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public SingleResponseDto<OrderDetailResponse> postNormalOrderInCart(
-		@RequestParam Long userId,
-		CartOrderPostDto cartOrderPostDto
+	public SingleResponseDto<OrderDetailResponse> postSingleOrder(
+		@RequestBody OrderPostListDto orderPostDtoList
 	) {
-		List<OrderItemServiceDto> cartItemPostList = orderItemServiceMapper.toCartItemPostList(cartOrderPostDto);
-		List<OrderItem> orderItems = orderItemService.getOrderItemsInCart(cartItemPostList);
 
-		Order order = orderService.callOrder(orderItems, cartOrderPostDto.isSubscription(), userId);
+		List<OrderItemServiceDto> orderItemServiceDto =
+			orderItemServiceMapper.toOrderItemPostDto(orderPostDtoList.getOrderPostDtoList());
+
+		List<OrderItem> orderItems =
+			orderItemService.toOrderItems(orderItemServiceDto);
+
+		OrderContext orderContext = orderItemServiceMapper.toOrderContext(orderPostDtoList);
+		Order order = orderService.callOrder(orderItems, orderContext);
 
 		return new SingleResponseDto<>(OrderDetailResponse.of(order));
 	}
 
-	/**
-	 * 주문(일반, 정기) 목록을 불러 옵니다.(상세 x)
-	 *
-	 * @param userId  the user id
-	 * @param pageDto the page dto
-	 * @return the orders
-	 */
+
 	@GetMapping
 	public MultiResponseDto<?> getOrders(
 		@RequestParam Long userId,
@@ -117,13 +88,6 @@ public class OrderController {
 		return new MultiResponseDto<>(ordersDto, allOrders);
 	}
 
-	/**
-	 * Gets subscriptions order.
-	 *
-	 * @param userId  the user id
-	 * @param pageDto the page dto
-	 * @return the subscriptions order
-	 */
 	@GetMapping("/subscriptions")
 	public MultiResponseDto<?> getSubscriptionsOrder(
 		@RequestParam Long userId,
