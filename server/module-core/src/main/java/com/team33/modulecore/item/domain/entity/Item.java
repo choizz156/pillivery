@@ -138,4 +138,8 @@ public class Item extends BaseEntity {
     public void subtractReviewCount() {
         this.statistics.subtractReviewCount();
     }
+
+    public void addSales() {
+        this.statistics.addSales();
+    }
 }

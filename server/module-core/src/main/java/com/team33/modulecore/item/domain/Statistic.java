@@ -37,4 +37,9 @@ public class Statistic {
         AtomicInteger reviewCount = new AtomicInteger(this.reviewCount);
         this.reviewCount = reviewCount.decrementAndGet();
     }
+
+    public void addSales() {
+        AtomicInteger sales = new AtomicInteger(this.sales);
+        this.sales = sales.incrementAndGet();
+    }
 }

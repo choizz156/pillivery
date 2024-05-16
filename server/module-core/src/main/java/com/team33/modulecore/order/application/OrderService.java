@@ -30,6 +30,7 @@ public class OrderService {
 	private final SubscriptionCartService subscriptionCartService;
 	private final NormalCartService normalCartService;
 	private final UserFindHelper userFindHelper;
+	private final OrderItemService orderItemService;
 
 	public Order callOrder(List<OrderItem> orderItems, OrderContext orderContext) {
 		Order order = createOrder(orderItems, orderContext);
@@ -49,9 +50,7 @@ public class OrderService {
 		Order order = findOrder(orderId);
 
 		order.changeOrderStatus(OrderStatus.COMPLETE);
-		if(order.isOrderedAtCart()){
-			normalCartService.refresh(order.getUser().getCartId(), order.getOrderItems());
-		}
+		refreshNormalCart(order);
 	}
 
 	public void changeOrderStatusToSubscribe(Long orderId, String sid) {
@@ -60,9 +59,9 @@ public class OrderService {
 		order.addSid(sid);
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
 
-		if(order.isOrderedAtCart()){
-			subscriptionCartService.refresh(order.getUser().getCartId(), order.getOrderItems());
-		}
+		refreshSubscriptionCart(order);
+
+		orderItemService.addSalses(order.getOrderItems());
 	}
 
 	public Order deepCopy(Order order) {
@@ -91,14 +90,20 @@ public class OrderService {
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
 	}
 
-	//    private void plusSalesOfItem(OrderItem oi) {
-	//        oi.getItem().plusSales(oi.getItem().getSales() + oi.getQuantity());
-	//    }
-	//Todo: 주문 완료되면 판매량을 올려야함.
-
 	private Order createOrder(List<OrderItem> orderItems, OrderContext orderContext) {
 		User user = userFindHelper.findUser(orderContext.getUserId());
 		return Order.create(orderItems, orderContext, user);
 	}
 
+	private void refreshSubscriptionCart(Order order) {
+		if (order.isOrderedAtCart()) {
+			subscriptionCartService.refresh(order.getUser().getCartId(), order.getOrderItems());
+		}
+	}
+
+	private void refreshNormalCart(Order order) {
+		if (order.isOrderedAtCart()) {
+			normalCartService.refresh(order.getUser().getCartId(), order.getOrderItems());
+		}
+	}
 }
