@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.cart.domain.entity.Cart;
 import com.team33.modulecore.cart.domain.repository.CartRepository;
-import com.team33.modulecore.common.UserFindHelper;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
@@ -22,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UserService {
 
-	private final UserFindHelper helper;
 	private final UserRepository userRepository;
 	private final CartRepository cartRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -51,8 +51,9 @@ public class UserService {
 		return addOauthUserInfo(userDto);
 	}
 
-	public User getLoginUser1(long userId) {
-		return helper.findUser(userId);
+	public User findUser(long userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 	}
 
 	//    public User getLoginUser() {
@@ -78,20 +79,22 @@ public class UserService {
 	}
 
 	private User addOauthUserInfo(OAuthUserServiceDto userDto) {
-		User user = helper.findUserByEmail(userDto.getEmail());
+		User user = userRepository.findByEmail(userDto.getEmail())
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
 		makeCart(user);
 		user.addAdditionalOauthUserInfo(userDto);
 		return user;
 	}
 
 	private User withdrawal(long userId) {
-		User user = helper.findUser(userId);
+		User user = findUser(userId);
 		user.withdrawal();
 		return user;
 	}
 
 	private User updateUserInfo(UserServicePatchDto userDto, long userId) {
-		User user = helper.findUser(userId);
+		User user = findUser(userId);
 		user.updateUserInfo(userDto);
 		String encodedPwd = passwordEncoder.encode(userDto.getPassword());
 		user.applyEncryptPassword(encodedPwd);
@@ -99,8 +102,17 @@ public class UserService {
 	}
 
 	private User getUpdatedUser(UserServicePatchDto userDto, long userId) {
-		User user = helper.findUser(userId);
+		User user = findUser(userId);
 		duplicationVerifier.checkDuplicationOnUpdate(userDto, user);
 		return updateUserInfo(userDto, userId);
+	}
+
+	public void addReviewId(Long userId, Long id) {
+		User user = findUser(userId);
+		user.addReviewId(id);
+	}
+
+	public void deleteReviewId(Long userId, Long reviewId) {
+		findUser(userId).deleteReviewId(reviewId);
 	}
 }

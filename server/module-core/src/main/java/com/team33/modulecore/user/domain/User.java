@@ -143,6 +143,10 @@ public class User extends BaseEntity {
 	public void addReviewId(Long id) {
 		this.reviewIds.add(new ReviewId(id));
 	}
+
+	public void deleteReviewId(Long reviewId) {
+		this.reviewIds.remove(reviewId);
+	}
 }
 
 

@@ -82,7 +82,7 @@ public class UserController {
 
 	@GetMapping("/{userId}")
 	public SingleResponseDto<UserResponse> getUserInfo(@PathVariable Long userId) {
-		User loginUser = userService.getLoginUser1(userId);
+		User loginUser = userService.findUser(userId);
 		return new SingleResponseDto<>(UserResponse.of(loginUser));
 	}
 

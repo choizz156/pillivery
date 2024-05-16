@@ -24,6 +24,7 @@ import com.team33.modulecore.item.domain.Categories;
 import com.team33.modulecore.item.domain.Information;
 import com.team33.modulecore.item.domain.Statistic;
 import com.team33.modulecore.item.infra.CategoryNameConverter;
+import com.team33.modulecore.review.domain.entity.Review;
 import com.team33.modulecore.user.domain.ReviewId;
 
 import lombok.AccessLevel;
@@ -131,15 +132,15 @@ public class Item extends BaseEntity {
         this.reviewIds.add(new ReviewId(id));
     }
 
-    public void updateStars(double star) {
-        this.statistics.calculateStarAvg(star);
+    public void updateCountAndStars(double star) {
+        this.statistics.addStarAvg(star);
     }
 
-    public void subtractReviewCount() {
-        this.statistics.subtractReviewCount();
+    public void deleteReviewId(Long reviewId) {
+        this.reviewIds.remove(new ReviewId(reviewId));
     }
 
-    public void addSales() {
-        this.statistics.addSales();
+    public void substractCountAndStars(double star) {
+        this.statistics.subtractStarAvg(star);
     }
 }

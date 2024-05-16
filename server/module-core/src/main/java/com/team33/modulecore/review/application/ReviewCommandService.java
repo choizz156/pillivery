@@ -4,16 +4,13 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.common.ItemFindHelper;
-import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.review.domain.entity.Review;
+import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.review.domain.ReviewContext;
+import com.team33.modulecore.review.domain.entity.Review;
 import com.team33.modulecore.review.repository.ReviewCommandRepository;
-import com.team33.modulecore.user.domain.ReviewId;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.application.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,20 +20,16 @@ import lombok.RequiredArgsConstructor;
 public class ReviewCommandService {
 
 	private final ReviewCommandRepository reviewCommandRepository;
-	private final ItemFindHelper itemFindHelper;
-	private final UserFindHelper userFindHelper;
+	private final UserService userService;
+	private final ItemCommandService itemCommandService;
 
 	public Review createReview(ReviewContext context) {
 		Review review = Review.create(context);
 
 		reviewCommandRepository.save(review);
 
-		User user = userFindHelper.findUser(context.getUserId());
-		user.addReviewId(review.getId());
-
-		Item item = itemFindHelper.findItem(context.getItemId());
-		item.addReviewId(review.getId());
-		item.updateStars(context.getStar());
+		userService.addReviewId(context.getUserId(), review.getId());
+		itemCommandService.addReviewId(context.getItemId(), review.getId(), context.getStar());
 
 		return review;
 	}
@@ -52,64 +45,13 @@ public class ReviewCommandService {
 		Review review = findReview(reviewId);
 		review.delete(context);
 
-		User user = userFindHelper.findUser(context.getUserId());
-		user.getReviewIds().remove(new ReviewId(reviewId));
+		userService.deleteReviewId(context.getUserId(), review.getId());
+		itemCommandService.deleteReviewId(context.getItemId(), review);
 
-		Item item = itemFindHelper.findItem(context.getItemId());
-		item.getReviewIds().remove(new ReviewId(reviewId));
-		item.subtractReviewCount();
 	}
 
 	public Review findReview(long reviewId) {
 		return reviewCommandRepository.findById(reviewId)
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.REVIEW_NOT_FOUND));
 	}
-
-	// public Page<Review> findReviews(User user, int page, int size, String sort) {
-	//
-	// 	Page<Review> pageReviews = reviewCommandRepository.findAllByUser(
-	// 		PageRequest.of(page, size, Sort.by(sort).descending()), user);
-	//
-	// 	return pageReviews;
-	// }
-	//
-	// public Page<Review> findItemReviews(Item item, int page, int size) {
-	//
-	// 	Page<Review> pageReview = reviewCommandRepository.findAllByItem(
-	// 		PageRequest.of(page, size, Sort.by("reviewId").descending()), item);
-	//
-	// 	return pageReview;
-	// }
-
-	//    public Review updateReview(Review review) {
-	//        Review findReview = findVerifiedReview(review.getReviewId());
-	//
-	//        Optional.ofNullable(review.getContent())
-	//                .ifPresent(findReview::setContent);
-	//
-	//        Optional.ofNullable(review.getStar())
-	//                .ifPresent(findReview::setStar);
-	//
-	//        Review updatedReview = reviewRepository.save(findReview);
-	//        refreshStarAvg(findReview.getItem().getId());
-	//        return updatedReview;
-	//    }
-
-	//    public void deleteReview(long reviewId, long userId) {
-	//        Review review = findVerifiedReview(reviewId);
-	//        long writerId = findReviewWriter(reviewId);
-	//
-	//        if(userId != writerId) {
-	//            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED_USER);
-	//        }
-	//
-	//        reviewRepository.delete(review);
-	//        refreshStarAvg(review.getItem().getId());
-	//    }
-
-	// public double getStarAvg(long itemId) {
-	// 	Optional<Double> optionalStarAvg = reviewCommandRepository.findReviewAvg(itemId);
-	// 	double starAvg = optionalStarAvg.orElse((double)0);
-	// 	return starAvg;
-	// }
 }

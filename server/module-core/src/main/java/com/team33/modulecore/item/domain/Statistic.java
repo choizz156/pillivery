@@ -1,9 +1,10 @@
 package com.team33.modulecore.item.domain;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,29 +18,34 @@ import lombok.ToString;
 @Embeddable
 public class Statistic {
 
-    private long view;
+	private long view;
 
-    private int sales;
+	private int sales;
 
-    private double starAvg;
+	private double starAvg;
 
-    private int reviewCount;
+	private int reviewCount;
 
-   public void calculateStarAvg(double star) {
-       AtomicReference<Double> starAvg = new AtomicReference<>(this.starAvg);
-       AtomicInteger reviewCount = new AtomicInteger(this.reviewCount);
+	@Transient
+	private ReadWriteLock lock = new ReentrantReadWriteLock();
 
-       this.reviewCount = reviewCount.incrementAndGet();
-       this.starAvg = starAvg.updateAndGet(v -> (v * this.reviewCount + star) / reviewCount.get());
-   }
+	public void addStarAvg(double star) {
+		lock.writeLock().lock();
+		try {
+			this.starAvg = (this.reviewCount * this.starAvg + star) / reviewCount + 1;
+			this.reviewCount++;
+		} finally {
+			lock.writeLock().unlock();
+		}
+	}
 
-    public void subtractReviewCount() {
-        AtomicInteger reviewCount = new AtomicInteger(this.reviewCount);
-        this.reviewCount = reviewCount.decrementAndGet();
-    }
-
-    public void addSales() {
-        AtomicInteger sales = new AtomicInteger(this.sales);
-        this.sales = sales.incrementAndGet();
-    }
+	public void subtractStarAvg(double star) {
+		lock.writeLock().lock();
+		try {
+			this.starAvg = (this.reviewCount * this.starAvg - star) / reviewCount - 1;
+			this.reviewCount--;
+		} finally {
+			lock.writeLock().unlock();
+		}
+	}
 }

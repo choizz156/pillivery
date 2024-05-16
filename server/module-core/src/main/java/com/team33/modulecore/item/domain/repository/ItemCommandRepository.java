@@ -21,4 +21,8 @@ public interface ItemCommandRepository extends Repository<Item, Long> {
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE Item i SET i.statistics.view = i.statistics.view + 1L WHERE i.id = :itemId")
 	Item incrementView(@Param("itemId") long itemId);
+
+	@Modifying(clearAutomatically = true, flushAutomatically = true)
+	@Query("UPDATE Item i SET i.statistics.sales = i.statistics.sales + 1L WHERE i.id = :itemId")
+	Item incrementSales(@Param("itemId") long itemId);
 }
