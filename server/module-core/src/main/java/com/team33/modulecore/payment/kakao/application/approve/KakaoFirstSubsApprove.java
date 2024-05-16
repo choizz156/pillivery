@@ -10,11 +10,11 @@ import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 
 @Component
-public class KakaoSubsFirstApprove extends KaKaoApproveTemplate {
+public class KakaoFirstSubsApprove extends KaKaoApproveTemplate {
 
 	private final ParameterProvider parameterProvider;
 
-	public KakaoSubsFirstApprove(RestTemplate restTemplate, ParameterProvider parameterProvider) {
+	public KakaoFirstSubsApprove(RestTemplate restTemplate, ParameterProvider parameterProvider) {
 		super(restTemplate);
 		this.parameterProvider = parameterProvider;
 	}

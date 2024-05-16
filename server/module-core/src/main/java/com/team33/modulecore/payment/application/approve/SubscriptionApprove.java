@@ -1,9 +1,9 @@
 package com.team33.modulecore.payment.application.approve;
 
-import com.team33.modulecore.payment.dto.ApproveRequest;
+import com.team33.modulecore.order.domain.entity.Order;
 
-public interface SubscriptionApprove<T, S extends ApproveRequest> {
+public interface SubscriptionApprove<T> {
 
-	T approveSubscription(S approveRequest);
+	T approveSubscription(Order order);
 
 }

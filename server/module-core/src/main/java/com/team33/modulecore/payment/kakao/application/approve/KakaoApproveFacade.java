@@ -20,13 +20,21 @@ public class KakaoApproveFacade implements ApproveFacade<KaKaoApproveResponse, K
 
 
 	@Override
-	public KaKaoApproveResponse approve(KakaoApproveOneTimeRequest approveRequest) {
+	public KaKaoApproveResponse approveFirstTime(KakaoApproveOneTimeRequest approveRequest) {
 		Long orderId = approveRequest.getOrderId();
 		Order order = orderFindHelper.findOrder(orderId);
 
 		return order.isSubscription()
 			? kakaoSubsApproveService.approveFirstTime(orderId, approveRequest)
 			: kakaoNormalApproveService.approveOneTime(orderId, approveRequest);
+	}
+
+	@Override
+	public KaKaoApproveResponse approveSubscription(Long orderId) {
+		Order order = orderFindHelper.findOrder(orderId);
+		kakaoSubsApproveService.approveSubscribe(order);
+
+		return null;
 	}
 
 }

@@ -47,9 +47,9 @@ public class ParameterProvider extends ParamsConst {
         return commonSubsParams;
     }
 
-    public MultiValueMap<String, String> getSubscriptionApproveParams(String sid, Order order) {
+    public MultiValueMap<String, String> getSubscriptionApproveParams(Order order) {
         var subsApproveParams = getRequestParams(order);
-        subsApproveParams.add(SID, sid);
+        subsApproveParams.add(SID, order.getSid());
         subsApproveParams.add(CID, SUBSCRIP_CID);
 
         return subsApproveParams;
