@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.team33.modulecore.order.domain.Receiver;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderStatus;
 
@@ -14,10 +15,6 @@ import lombok.Data;
 public class OrderDetailResponse {
 
     private long orderId;
-    private String name;
-    private String city;
-    private String detailAddress;
-    private String phone;
     private int totalItems;
     private int totalPrice;
     private int totalDiscountPrice;
@@ -28,14 +25,11 @@ public class OrderDetailResponse {
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
     private int totalQuantity;
+    private Receiver receiver;
 
     @Builder
     private OrderDetailResponse(
         long orderId,
-        String name,
-        String city,
-        String detailAddress,
-        String phone,
         int totalItems,
         int totalPrice,
         int totalDiscountPrice,
@@ -45,13 +39,10 @@ public class OrderDetailResponse {
         OrderStatus orderStatus,
         ZonedDateTime createdAt,
         ZonedDateTime updatedAt,
-        int totalQuantity
+        int totalQuantity,
+        Receiver receiver
     ) {
         this.orderId = orderId;
-        this.name = name;
-        this.city = city;
-        this.detailAddress = detailAddress;
-        this.phone = phone;
         this.totalItems = totalItems;
         this.totalPrice = totalPrice;
         this.totalDiscountPrice = totalDiscountPrice;
@@ -62,15 +53,13 @@ public class OrderDetailResponse {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.totalQuantity = totalQuantity;
+        this.receiver = receiver;
     }
 
     public static OrderDetailResponse of(Order order) {
         return OrderDetailResponse.builder()
-            .city(order.getOrdererCity())
-            .detailAddress(order.getOrdererDetailAddress())
+            .receiver(order.getReceiver())
             .orderId(order.getId())
-            .name(order.getName())
-            .phone(order.getPhone())
             .totalItems(order.getTotalItemsCount())
             .totalPrice(order.getOrderPrice().getTotalPrice())
             .totalDiscountPrice(order.getOrderPrice().getTotalDiscountPrice())

@@ -60,6 +60,32 @@ public class SubscriptionCartService {
 		getSubscriptionCartItem(item, cart).changePeriod(period);
 	}
 
+	public void refresh(Long cartId, List<OrderItem> orderItems) {
+		Cart cart = findCart(cartId);
+
+		if (cart.getSubscriptionCartItems().isEmpty()) {
+			return;
+		}
+
+		List<Long> orderedItemId = getOrderedItemId(orderItems);
+
+		removeOrderedItem(cart, orderedItemId);
+	}
+
+	private void removeOrderedItem(Cart cart, List<Long> orderedItemId) {
+		cart.getSubscriptionCartItems()
+			.stream()
+			.filter(subscriptionCartItem -> orderedItemId.contains(subscriptionCartItem.getItem().getId()))
+			.forEach(cart::removeSubscriptionCartItem);
+	}
+
+	private List<Long> getOrderedItemId(List<OrderItem> orderItems) {
+		return orderItems
+			.stream()
+			.map(orderItem -> orderItem.getItem().getId())
+			.collect(Collectors.toList());
+	}
+
 	private SubscriptionCartItem getSubscriptionCartItem(Item item, Cart cart) {
 
 		return cart.getSubscriptionCartItems().stream()
@@ -69,23 +95,4 @@ public class SubscriptionCartService {
 			.findFirst()
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
 	}
-
-	public void refreshSubscriptionCart(Long cartId, List<OrderItem> orderItems) {
-		Cart cart = findCart(cartId);
-
-		if(cart.getSubscriptionCartItems().isEmpty()){
-			return;
-		}
-		
-		List<Long> orderedItemId = orderItems
-			.stream()
-			.map(orderItem -> orderItem.getItem().getId())
-			.collect(Collectors.toList());
-
-		cart.getSubscriptionCartItems()
-			.stream()
-			.filter(subscriptionCartItem -> orderedItemId.contains(subscriptionCartItem.getItem().getId()))
-			.forEach(cart::removeSubscriptionCartItem);
-	}
-
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.cart.application.NormalCartService;
 import com.team33.modulecore.cart.application.SubscriptionCartService;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
@@ -27,6 +28,7 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 	private final SubscriptionCartService subscriptionCartService;
+	private final NormalCartService normalCartService;
 	private final UserFindHelper userFindHelper;
 
 	public Order callOrder(List<OrderItem> orderItems, OrderContext orderContext) {
@@ -47,6 +49,9 @@ public class OrderService {
 		Order order = findOrder(orderId);
 
 		order.changeOrderStatus(OrderStatus.COMPLETE);
+		if(order.isOrderedAtCart()){
+			normalCartService.refresh(order.getUser().getCartId(), order.getOrderItems());
+		}
 	}
 
 	public void changeOrderStatusToSubscribe(Long orderId, String sid) {
@@ -54,7 +59,10 @@ public class OrderService {
 
 		order.addSid(sid);
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
-		subscriptionCartService.refreshSubscriptionCart(order.getUser().getCartId(), order.getOrderItems());
+
+		if(order.isOrderedAtCart()){
+			subscriptionCartService.refresh(order.getUser().getCartId(), order.getOrderItems());
+		}
 	}
 
 	public Order deepCopy(Order order) {
