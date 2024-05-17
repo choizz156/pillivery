@@ -2,12 +2,15 @@ package com.team33.modulecore.item.domain.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashSet;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -39,6 +42,11 @@ class ItemCommandRepositoryTest {
 		emf.close();
 	}
 
+	@BeforeEach
+	void setUp() {
+		em.clear();
+	}
+
 	@DisplayName("조회수를 늘릴 수 있다.")
 	@Test
 	void 조회수_증가() throws Exception {
@@ -55,9 +63,32 @@ class ItemCommandRepositoryTest {
 		em.persist(item);
 
 		//when
-		Item item1 = itemCommandRepository.incrementView(item.getId());
+		Item updateItem = itemCommandRepository.incrementView(item.getId());
 
 		//then
-		assertThat(item1.getStatistics().getView()).isEqualTo(1L);
+		assertThat(updateItem.getStatistics().getView()).isEqualTo(1L);
+	}
+
+	@DisplayName("아이템 판매량을 증가시킬 수 있다.")
+	@Test
+	void 아이템_판매량_증가() throws Exception {
+		//given
+		Item item = FixtureMonkeyFactory.get()
+			.giveMeBuilder(Item.class)
+			.set("id", null)
+			.set("itemCategory", null)
+			.set("statistics.sales", 0)
+			.set("categories", null)
+			.set("reviewIds", new HashSet<>())
+			.sample();
+
+		em.persist(item);
+
+		//when
+		Long updateItemId = itemCommandRepository.incrementSales(item.getId());
+
+		//then
+		Item updateItem = em.find(Item.class, updateItemId);
+		assertThat(updateItem.getStatistics().getSales()).isEqualTo(1L);
 	}
 }

@@ -3,21 +3,18 @@ package com.team33.modulecore.review.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.HashSet;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.common.ItemFindHelper;
-import com.team33.modulecore.common.UserFindHelper;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.review.domain.entity.Review;
+import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.review.domain.ReviewContext;
 import com.team33.modulecore.review.domain.ReviewStatus;
-import com.team33.modulecore.review.mock.FakeReviewRepository;
-import com.team33.modulecore.user.domain.ReviewId;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.review.domain.entity.Review;
+import com.team33.modulecore.review.repository.ReviewCommandRepository;
+import com.team33.modulecore.user.application.UserService;
 
 class ReviewCommandServiceTest {
 
@@ -32,44 +29,32 @@ class ReviewCommandServiceTest {
 			.userId(1L)
 			.build();
 
-		UserFindHelper userFindHelper = mock(UserFindHelper.class);
-		ItemFindHelper itemFindHelper = mock(ItemFindHelper.class);
-
-		User user = FixtureMonkeyFactory.get()
-			.giveMeBuilder(User.class)
+		Review reviewSample = FixtureMonkeyFactory.get()
+			.giveMeBuilder(Review.class)
 			.set("id", 1L)
-			.set("reviewIds", new HashSet<>())
+			.set("content", "Test review")
+			.set("userId", 1L)
+			.set("itemId", 1L)
+			.set("star", 4.5)
+			.set("reviewStatus", ReviewStatus.ACTIVE)
 			.sample();
 
-		Item item = FixtureMonkeyFactory.get()
-			.giveMeBuilder(Item.class)
-			.set("id", 1L)
-			.set("information", null)
-			.set("reviewIds", new HashSet<>())
-			.set("statistics.starAvg", 0D)
-			.set("statistics.reviewCount", 0)
-			.sample();
+		ReviewCommandRepository reviewCommandRepository = mock(ReviewCommandRepository.class);
+		UserService userService = mock(UserService.class);
+		ItemCommandService itemCommandService = mock(ItemCommandService.class);
 
-		when(userFindHelper.findUser(anyLong())).thenReturn(user);
-		when(itemFindHelper.findItem(anyLong())).thenReturn(item);
+		when(reviewCommandRepository.save(any(Review.class))).thenReturn(reviewSample);
 
-		ReviewCommandService reviewCommandService = new ReviewCommandService(new FakeReviewRepository(), itemFindHelper, userFindHelper);
+		ReviewCommandService reviewCommandService = new ReviewCommandService(reviewCommandRepository, userService,
+			itemCommandService);
 
 		//when
-		Review review = reviewCommandService.createReview(context);
+		reviewCommandService.createReview(context);
 
 		//then
-		assertThat(review.getContent()).isEqualTo("Test review");
-		assertThat(review.getStar()).isEqualTo(4.5D);
-		assertThat(review.getUserId()).isEqualTo(1L);
-		assertThat(review.getItemId()).isEqualTo(1L);
-		assertThat(review.getStar()).isEqualTo(4.5);
-		assertThat(review.getUserId()).isEqualTo(1L);
-		assertThat(review.getItemId()).isEqualTo(1L);
-
-		assertThat(user.getReviewIds()).hasSize(1);
-		assertThat(item.getReviewIds()).hasSize(1);
-		assertThat(item.getStarAvg()).isEqualTo(4.5);
+		verify(reviewCommandRepository, times(1)).save(any(Review.class));
+		verify(userService, times(1)).addReviewId(anyLong(), anyLong());
+		verify(itemCommandService, times(1)).addReviewId(anyLong(), anyLong(), anyDouble());
 	}
 
 	@DisplayName("리뷰를 수정할 수 있다.")
@@ -92,16 +77,19 @@ class ReviewCommandServiceTest {
 			.star(3.5)
 			.build();
 
-		FakeReviewRepository reviewCommandRepository = new FakeReviewRepository();
-		reviewCommandRepository.save(review);
+		ReviewCommandRepository reviewCommandRepository = mock(ReviewCommandRepository.class);
+		when(reviewCommandRepository.findById(anyLong())).thenReturn(Optional.of(review));
+
 		ReviewCommandService reviewCommandService = new ReviewCommandService(reviewCommandRepository, null, null);
 
 		//when
-		Review update = reviewCommandService.updateReview( context);
+		Review update = reviewCommandService.updateReview(context);
 
 		//then
 		assertThat(update.getContent()).isEqualTo("new content");
-		assertThat(update.getStar()).isEqualTo(3.5D);
+		assertThat(update.getStar()).isEqualTo(3.5);
+
+		verify(reviewCommandRepository, times(1)).findById(anyLong());
 	}
 
 	@DisplayName("리뷰를 삭제할 수 있다.")
@@ -122,42 +110,25 @@ class ReviewCommandServiceTest {
 			.itemId(1L)
 			.build();
 
-		UserFindHelper userFindHelper = mock(UserFindHelper.class);
-		ItemFindHelper itemFindHelper = mock(ItemFindHelper.class);
+		ReviewCommandRepository reviewCommandRepository = mock(ReviewCommandRepository.class);
+		when(reviewCommandRepository.findById(anyLong())).thenReturn(Optional.of(review));
+		UserService userService = mock(UserService.class);
+		ItemCommandService itemCommandService = mock(ItemCommandService.class);
 
-		User user = FixtureMonkeyFactory.get()
-			.giveMeBuilder(User.class)
-			.set("id", 1L)
-			.set("reviewIds", new HashSet<>())
-			.sample();
-		user.getReviewIds().add(new ReviewId(1L));
-
-		Item item = FixtureMonkeyFactory.get()
-			.giveMeBuilder(Item.class)
-			.set("id", 1L)
-			.set("information", null)
-			.set("reviewIds", new HashSet<>())
-			.set("statistics.starAvg", 4.5D)
-			.set("statistics.reviewCount", 1)
-			.sample();
-
-		item.getReviewIds().add(new ReviewId(1L));
-
-		when(userFindHelper.findUser(anyLong())).thenReturn(user);
-		when(itemFindHelper.findItem(anyLong())).thenReturn(item);
-
-		FakeReviewRepository reviewCommandRepository = new FakeReviewRepository();
-		reviewCommandRepository.save(review);
-		ReviewCommandService reviewCommandService = new ReviewCommandService(reviewCommandRepository, itemFindHelper, userFindHelper);
+		ReviewCommandService reviewCommandService = new ReviewCommandService(
+			reviewCommandRepository,
+			userService,
+			itemCommandService
+		);
 
 		//when
 		reviewCommandService.deleteReview(context);
 
 		//then
 		assertThat(review.getReviewStatus()).isEqualByComparingTo(ReviewStatus.INACTIVE);
-		assertThat(user.getReviewIds()).hasSize(0);
-		assertThat(item.getReviewIds()).hasSize(0);
-		assertThat(item.getStatistics().getReviewCount()).isEqualTo(0);
+
+		verify(userService, times(1)).deleteReviewId(anyLong(), anyLong());
+		verify(itemCommandService, times(1)).deleteReviewId(anyLong(), any(Review.class));
 	}
 
 }

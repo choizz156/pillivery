@@ -28,16 +28,20 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 	}
 
 	@Override
-	public List<Item> saveAll(final Iterable<Item> entities) {
+	public void saveAll(final Iterable<Item> entities) {
 		final List<Item> items = new ArrayList<>();
 		for (Item entity : entities) {
 			items.add(save(entity));
 		}
-		return items;
 	}
 
 	@Override
-	public Item incrementView(long itemId) {
+	public Item incrementView(Long itemId) {
+		return null;
+	}
+
+	@Override
+	public Long incrementSales(Long itemId) {
 		return null;
 	}
 }
