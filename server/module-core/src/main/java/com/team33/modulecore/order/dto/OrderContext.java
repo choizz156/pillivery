@@ -7,10 +7,10 @@ import lombok.Getter;
 
 @Getter
 public class OrderContext {
-	private boolean isOrderedCart;
-	private boolean isSubscription;
-	private Long userId;
-	private Receiver receiver;
+	private final boolean isOrderedCart;
+	private final boolean isSubscription;
+	private final Long userId;
+	private final Receiver receiver;
 
 	@Builder
 	public OrderContext(boolean isOrderedCart, boolean isSubscription, Long userId, Receiver receiver) {

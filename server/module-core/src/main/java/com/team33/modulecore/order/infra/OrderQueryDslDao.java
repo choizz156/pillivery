@@ -29,102 +29,110 @@ import com.team33.modulecore.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RequiredArgsConstructor
 public class OrderQueryDslDao implements OrderQueryRepository {
 
-    private final JPAQueryFactory queryFactory;
+	private final JPAQueryFactory queryFactory;
 
-    @Override
-    public Page<Order> searchOrders(
-        OrderPageRequest pageRequest,
-        OrderFindCondition orderFindCondition
-    ) {
-        List<Order> contents = queryFactory
-            .selectFrom(order)
-            .where(
-                userEq(orderFindCondition.getUser()),
-                notOrderStatusRequest(orderFindCondition.getOrderStatus())
-            )
-            .limit(pageRequest.getSize())
-            .offset(pageRequest.getOffset())
-            .orderBy(getOrderSort(pageRequest.getSort()))
-            .fetch();
+	@Override
+	public Page<Order> findOrders(
+		OrderPageRequest pageRequest,
+		OrderFindCondition orderFindCondition
+	) {
+		List<Order> contents = queryFactory
+			.selectFrom(order)
+			.where(
+				userEq(orderFindCondition.getUser()),
+				notOrderStatusRequest(orderFindCondition.getOrderStatus())
+			)
+			.limit(pageRequest.getSize())
+			.offset(pageRequest.getOffset())
+			.orderBy(getOrderSort(pageRequest.getSort()))
+			.fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
-            .select(order.count())
-            .from(order)
-            .where(
-                userEq(orderFindCondition.getUser()),
-                notOrderStatusRequest(orderFindCondition.getOrderStatus())
-            );
+		if (contents.isEmpty()) {
+			return Page.empty();
+		}
 
-        return PageableExecutionUtils.getPage(
-            contents,
-            PageRequest.of(
-                pageRequest.getPage() - 1,
-                pageRequest.getSize(),
-                Sort.by(pageRequest.getSort(), "id")
-            ),
-            countQuery::fetchOne
-        );
-    }
+		JPAQuery<Long> countQuery = queryFactory
+			.select(order.count())
+			.from(order)
+			.where(
+				userEq(orderFindCondition.getUser()),
+				notOrderStatusRequest(orderFindCondition.getOrderStatus())
+			);
 
-    @Override
-    public List<OrderItem> findSubscriptionOrderItem(
-        OrderPageRequest pageRequest,
-        OrderFindCondition orderFindCondition
-    ) {
-        List<OrderItem> fetch = queryFactory
-            .select(orderItem).
-            from(orderItem)
-            .innerJoin(orderItem.order, order)
-            .where(
-                orderUserAndOrderItemUserEq(),
-                subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
-            )
-            .limit(pageRequest.getSize())
-            .offset(pageRequest.getOffset())
-            .orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
-            .fetch();
+		return PageableExecutionUtils.getPage(
+			contents,
+			PageRequest.of(
+				pageRequest.getPage() - 1,
+				pageRequest.getSize(),
+				Sort.by(pageRequest.getSort(), "id")
+			),
+			countQuery::fetchOne
+		);
+	}
 
-        return Collections.unmodifiableList(fetch);
-    }
+	@Override
+	public List<OrderItem> findSubscriptionOrderItem(
+		OrderPageRequest pageRequest,
+		OrderFindCondition orderFindCondition
+	) {
 
-    @Override
-    public Order findById(Long id) {
-        Order fetch = queryFactory.selectFrom(order).where(order.id.eq(id)).fetchOne();
-        if (fetch == null) {
-            throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
-        }
-        return fetch;
-    }
+		List<OrderItem> fetch = queryFactory
+		    .select(orderItem).
+		    from(orderItem)
+		    .innerJoin(orderItem.order, order)
+		    .where(
+		        orderUserAndOrderItemUserEq(),
+		        subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
+		    )
+		    .limit(pageRequest.getSize())
+		    .offset(pageRequest.getOffset())
+		    .orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
+		    .fetch();
 
-    private  BooleanExpression orderUserAndOrderItemUserEq() {
-        return orderItem.order.user.id.eq(order.user.id);
-    }
+		if (fetch.isEmpty()) {
+			return List.of();
+		}
 
-    private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {
-        return orderStatus == SUBSCRIBE
-            ? order.orderStatus.eq(orderStatus)
-            : null;
-    }
+		return Collections.unmodifiableList(fetch);
+	}
 
-    private BooleanExpression userEq(User user) {
-        return user == null ? null : order.user.eq(user);
-    }
+	@Override
+	public Order findById(Long id) {
+		Order fetch = queryFactory.selectFrom(order).where(order.id.eq(id)).fetchOne();
+		if (fetch == null) {
+			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
+		}
+		return fetch;
+	}
 
-    private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {
-        return orderStatus == REQUEST
-            ? order.orderStatus.eq(orderStatus).not()
-            : null;
-    }
+	private BooleanExpression orderUserAndOrderItemUserEq() {
+		return orderItem.order.user.id.eq(order.user.id);
+	}
 
-    private OrderSpecifier<Long> getOrderSort(Direction pageRequest) {
-        return pageRequest == Direction.DESC ? order.id.desc() : order.id.asc();
-    }
+	private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {
+		return orderStatus == SUBSCRIBE
+			? order.orderStatus.eq(orderStatus)
+			: null;
+	}
 
-    private OrderSpecifier<Long> getSubscriptionOrderSort(Direction pageRequest) {
-        return pageRequest == Direction.DESC ? orderItem.id.desc() : orderItem.id.asc();
-    }
+	private BooleanExpression userEq(User user) {
+		return user == null ? null : order.user.eq(user);
+	}
+
+	private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {
+		return orderStatus == REQUEST
+			? order.orderStatus.eq(orderStatus).not()
+			: null;
+	}
+
+	private OrderSpecifier<Long> getOrderSort(Direction pageRequest) {
+		return pageRequest == Direction.DESC ? order.id.desc() : order.id.asc();
+	}
+
+	private OrderSpecifier<Long> getSubscriptionOrderSort(Direction pageRequest) {
+		return pageRequest == Direction.DESC ? orderItem.id.desc() : orderItem.id.asc();
+	}
 }

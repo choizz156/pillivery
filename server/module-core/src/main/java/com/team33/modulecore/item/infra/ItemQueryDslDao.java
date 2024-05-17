@@ -2,7 +2,6 @@ package com.team33.modulecore.item.infra;
 
 import static com.team33.modulecore.item.domain.entity.QItem.*;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -269,12 +268,6 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 	private OrderSpecifier<? extends Number> getItemSort(ItemSortOption itemSortOption) {
 		return itemSortOption.getSort();
-	}
-
-	private void checkEmptyList(Collection<?> fetch) {
-		if (fetch.isEmpty()) {
-			throw new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND);
-		}
 	}
 
 	private JPAQuery<ItemQueryDto> selectItemQueryDto() {

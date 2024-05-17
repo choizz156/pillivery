@@ -28,7 +28,7 @@ public class OrderQueryService {
 	public Page<Order> findAllOrders(Long userId, OrderPageRequest orderPageRequest) {
 		User user = userFindHelper.findUser(userId);
 
-		return orderQueryRepository.searchOrders(
+		return orderQueryRepository.findOrders(
 			orderPageRequest,
 			OrderFindCondition.to(user, OrderStatus.REQUEST)
 		);

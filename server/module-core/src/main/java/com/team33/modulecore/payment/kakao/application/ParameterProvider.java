@@ -113,6 +113,6 @@ public class ParameterProvider extends ParamsConst {
     }
 
     private String getTitle(final Order order) {
-        return order.getFirstProductname();
+        return order.getFirstProductName();
     }
 }

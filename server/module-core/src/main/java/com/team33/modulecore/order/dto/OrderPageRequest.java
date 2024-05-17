@@ -1,8 +1,9 @@
 package com.team33.modulecore.order.dto;
 
+import org.springframework.data.domain.Sort.Direction;
+
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Sort.Direction;
 
 @Getter
 public class OrderPageRequest {
@@ -23,7 +24,7 @@ public class OrderPageRequest {
         this.sort = sort;
     }
 
-    public static OrderPageRequest of(OrderPageDto dto) {
+    public static OrderPageRequest of(OrderPage dto) {
         return OrderPageRequest.builder()
             .page(Math.max(dto.getPage(), MIN_SIZE))
             .size(getSize(dto.getSize()))

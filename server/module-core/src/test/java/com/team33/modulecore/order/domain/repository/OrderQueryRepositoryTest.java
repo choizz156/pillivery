@@ -31,8 +31,9 @@ import com.team33.modulecore.order.domain.SubscriptionInfo;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderFindCondition;
-import com.team33.modulecore.order.dto.OrderPageDto;
+import com.team33.modulecore.order.dto.OrderPage;
 import com.team33.modulecore.order.dto.OrderPageRequest;
+import com.team33.modulecore.order.dto.query.OrderSubsQueryDto;
 import com.team33.modulecore.order.infra.OrderQueryDslDao;
 import com.team33.modulecore.user.domain.User;
 
@@ -67,7 +68,7 @@ class OrderQueryRepositoryTest {
 	@Test
 	void 주문_조회() throws Exception {
 		//given
-		var orderPageDto = new OrderPageDto();
+		var orderPageDto = new OrderPage();
 		orderPageDto.setPage(1);
 		orderPageDto.setSize(10);
 
@@ -78,7 +79,7 @@ class OrderQueryRepositoryTest {
 
 		//when
 		Page<Order> allOrders =
-			orderQueryRepository.searchOrders(orderPageRequest, orderFindCondition);
+			orderQueryRepository.findOrders(orderPageRequest, orderFindCondition);
 
 		//then
 		List<Order> content = allOrders.getContent();
@@ -94,7 +95,7 @@ class OrderQueryRepositoryTest {
 	@Test
 	void 정기_주문_목록_조회() throws Exception {
 		//given
-		var orderPageDto1 = new OrderPageDto();
+		var orderPageDto1 = new OrderPage();
 		orderPageDto1.setPage(1);
 		orderPageDto1.setSize(10);
 

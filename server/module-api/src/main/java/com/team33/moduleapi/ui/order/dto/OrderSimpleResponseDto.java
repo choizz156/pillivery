@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class OrderSimpleResponse { // 주문 목록 조회
+public class OrderSimpleResponseDto { // 주문 목록 조회
 
     private long orderId;
     private OrderStatus orderStatus;
@@ -24,7 +24,7 @@ public class OrderSimpleResponse { // 주문 목록 조회
     private ZonedDateTime updatedAt;
 
     @Builder
-    private OrderSimpleResponse(
+    private OrderSimpleResponseDto(
         long orderId,
         OrderStatus orderStatus,
         int totalItems,
@@ -44,14 +44,14 @@ public class OrderSimpleResponse { // 주문 목록 조회
         this.updatedAt = updatedAt;
     }
 
-    public static List<OrderSimpleResponse> toList(List<Order> orders) {
+    public static List<OrderSimpleResponseDto> toList(List<Order> orders) {
         return orders.stream()
-            .map(OrderSimpleResponse::of)
+            .map(OrderSimpleResponseDto::of)
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private static OrderSimpleResponse of(Order order) {
-        return OrderSimpleResponse.builder()
+    private static OrderSimpleResponseDto of(Order order) {
+        return OrderSimpleResponseDto.builder()
             .orderId(order.getId())
             .orderStatus(order.getOrderStatus())
             .totalItems(order.getTotalItemsCount())

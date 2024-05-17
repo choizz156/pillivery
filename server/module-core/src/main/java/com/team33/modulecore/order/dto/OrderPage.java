@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort.Direction;
 import lombok.Data;
 
 @Data
-public class OrderPageDto {
+public class OrderPage {
 
     @NotNull
     private int page;

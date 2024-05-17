@@ -17,12 +17,12 @@ import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.order.dto.OrderDetailResponse;
 import com.team33.moduleapi.ui.order.dto.OrderItemSimpleResponse;
-import com.team33.moduleapi.ui.order.dto.OrderSimpleResponse;
+import com.team33.moduleapi.ui.order.dto.OrderSimpleResponseDto;
 import com.team33.moduleapi.ui.order.mapper.OrderItemServiceMapper;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.dto.OrderPageDto;
+import com.team33.modulecore.order.dto.OrderPage;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -42,14 +42,14 @@ public class OrderQueryController {
 	@GetMapping
 	public MultiResponseDto<?> getOrders(
 		@RequestParam Long userId,
-		OrderPageDto pageDto
+		OrderPage pageDto
 	) {
 		OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
 
 		Page<Order> allOrders = orderQueryService.findAllOrders(userId, orderPageRequest);
 		List<Order> orders = allOrders.getContent();
 
-		List<OrderSimpleResponse> ordersDto = OrderSimpleResponse.toList(orders);
+		List<OrderSimpleResponseDto> ordersDto = OrderSimpleResponseDto.toList(orders);
 
 		return new MultiResponseDto<>(ordersDto, allOrders);
 	}
@@ -57,7 +57,7 @@ public class OrderQueryController {
 	@GetMapping("/subscriptions")
 	public MultiResponseDto<?> getSubscriptionsOrder(
 		@RequestParam Long userId,
-		OrderPageDto pageDto
+		OrderPage pageDto
 	) {
 		OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
 

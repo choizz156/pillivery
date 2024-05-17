@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.proxy.HibernateProxy;
@@ -157,7 +156,7 @@ public class Order extends BaseEntity {
 		countQuantity();
 	}
 
-	public String getFirstProductname() {
+	public String getFirstProductName() {
 		return this.orderItems.get(0).getItem().getProductName();
 	}
 

@@ -94,4 +94,10 @@ public class OrderItemService {
 			dto.getQuantity()
 		);
 	}
+
+	//TODO: subscriptionservice에서 사용
+
+	public OrderItem findOrderItem(Long itemOrderId) {
+		return null;
+	}
 }
