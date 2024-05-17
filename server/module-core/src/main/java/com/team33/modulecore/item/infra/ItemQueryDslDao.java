@@ -49,7 +49,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	@Override
-	public List<ItemQueryDto> findItemsWithSalesTop9() {
+	public List<ItemQueryDto> findItemsWithSalesMain() {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.from(item)
 			.orderBy(item.statistics.sales.desc())
@@ -64,7 +64,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	@Override
-	public List<ItemQueryDto> findItemsWithDiscountRateTop9() {
+	public List<ItemQueryDto> findItemsWithDiscountRateMain() {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.from(item)
 			.limit(9)

@@ -65,7 +65,7 @@ class ItemQueryTest {
 	void 판매량_9() throws Exception {
 		//given
 		//when
-		List<ItemQueryDto> itemsWithSalesTop9 = itemQueryRepository.findItemsWithSalesTop9();
+		List<ItemQueryDto> itemsWithSalesTop9 = itemQueryRepository.findItemsWithSalesMain();
 
 		//then
 		assertThat(itemsWithSalesTop9).hasSize(9)
@@ -88,7 +88,7 @@ class ItemQueryTest {
 	void 할인율_9() throws Exception {
 		//given
 		//when
-		List<ItemQueryDto> top9SaleItems = itemQueryRepository.findItemsWithDiscountRateTop9();
+		List<ItemQueryDto> top9SaleItems = itemQueryRepository.findItemsWithDiscountRateMain();
 
 		//then
 		assertThat(top9SaleItems).hasSize(9)

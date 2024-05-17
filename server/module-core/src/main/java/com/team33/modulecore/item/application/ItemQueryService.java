@@ -23,11 +23,11 @@ public class ItemQueryService {
 	private final ItemQueryRepository itemQueryRepository;
 
 	public List<ItemQueryDto> findMainDiscountItems() {
-		return itemQueryRepository.findItemsWithDiscountRateTop9();
+		return itemQueryRepository.findItemsWithDiscountRateMain();
 	}
 
 	public List<ItemQueryDto> findMainSaleItems() {
-		return itemQueryRepository.findItemsWithSalesTop9();
+		return itemQueryRepository.findItemsWithSalesMain();
 	}
 
 	public Page<ItemQueryDto> findFilteredItem(
@@ -53,10 +53,6 @@ public class ItemQueryService {
 		ItemPage pageDto
 	) {
 		return itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilter, pageDto);
-	}
-
-	public Item findItem(Long itemId) {
-		return itemQueryRepository.findById(itemId);
 	}
 
 	public Page<ItemQueryDto> findByBrand(String keyword, ItemPage searchDto, PriceFilter priceFilter) {

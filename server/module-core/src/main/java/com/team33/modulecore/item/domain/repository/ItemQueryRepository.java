@@ -16,9 +16,9 @@ public interface ItemQueryRepository {
 
 	Item findById(long id);
 
-	List<ItemQueryDto> findItemsWithSalesTop9();
+	List<ItemQueryDto> findItemsWithSalesMain();
 
-	List<ItemQueryDto> findItemsWithDiscountRateTop9();
+	List<ItemQueryDto> findItemsWithDiscountRateMain();
 
 	Page<ItemQueryDto> findFilteredItems(
 		String keyword,
