@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.cart.application.CartService;
 import com.team33.modulecore.cart.domain.entity.Cart;
 import com.team33.modulecore.cart.domain.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
@@ -24,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 
 	private final UserRepository userRepository;
-	private final CartRepository cartRepository;
+	private final CartService cartService;
 	private final PasswordEncoder passwordEncoder;
 	private final DuplicationVerifier duplicationVerifier;
 
@@ -68,9 +69,7 @@ public class UserService {
 	//    }
 
 	private void makeCart(User user) {
-		Cart cart = Cart.create();
-		cartRepository.save(cart);
-
+		Cart cart = cartService.create();
 		user.addCart(cart.getId());
 	}
 
