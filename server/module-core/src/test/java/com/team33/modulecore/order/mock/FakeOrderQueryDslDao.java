@@ -18,7 +18,6 @@ import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.order.dto.query.OrderSubsQueryDto;
 
 public class FakeOrderQueryDslDao implements OrderQueryRepository {
 
