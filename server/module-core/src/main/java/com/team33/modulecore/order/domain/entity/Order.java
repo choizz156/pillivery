@@ -2,6 +2,7 @@ package com.team33.modulecore.order.domain.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.proxy.HibernateProxy;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.entity.Item;
@@ -52,6 +54,8 @@ public class Order extends BaseEntity {
 
 	private int totalItemsCount;
 
+	private int totalQuantity;
+
 	private String sid;
 
 	@Embedded
@@ -63,8 +67,6 @@ public class Order extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus = OrderStatus.REQUEST;
 
-	@Transient
-	private int totalQuantity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -74,19 +76,16 @@ public class Order extends BaseEntity {
 	private List<OrderItem> orderItems = new ArrayList<>();
 
 	public Order(Order origin) {
-
-		this.receiver = origin.getReceiver();
 		this.isSubscription = origin.isSubscription();
+		this.isOrderedAtCart = origin.isOrderedAtCart();
 		this.totalItemsCount = origin.getTotalItemsCount();
-		this.orderPrice = new OrderPrice(
-			origin.getOrderPrice().getTotalPrice(),
-			origin.getOrderPrice().getTotalDiscountPrice()
-		);
-		this.user = origin.getUser();
-		this.orderItems = origin.getOrderItems();
-		this.orderStatus = OrderStatus.SUBSCRIBE;
 		this.totalQuantity = origin.getTotalQuantity();
 		this.sid = origin.getSid();
+		this.orderPrice = 	origin.getOrderPrice();
+		this.receiver = origin.getReceiver();
+		this.orderStatus = origin.getOrderStatus();
+		this.user = origin.getUser();
+		this.orderItems = origin.getOrderItems();
 	}
 
 	@Builder
@@ -121,6 +120,7 @@ public class Order extends BaseEntity {
 			.orderStatus(OrderStatus.REQUEST)
 			.orderItems(orderItems)
 			.totalItemsCount(orderItems.size())
+			.totalQuantity(orderItems.stream().mapToInt(OrderItem::getQuantity).sum())
 			.build();
 
 		order.addPrice(order.getOrderItems());
@@ -148,11 +148,24 @@ public class Order extends BaseEntity {
 		this.orderStatus = orderStatus;
 	}
 
-	private void addPrice(List<OrderItem> orderItems) {
+	public void addPrice(List<OrderItem> orderItems) {
 		this.orderPrice = new OrderPrice(orderItems);
 	}
 
-	private void countQuantity() { // 주문의 담긴 상품의 총량을 구하는 메서드
+	public void adjustPriceAndQuantity(List<OrderItem> orderItems) {
+		this.orderPrice = new OrderPrice(orderItems);
+		countQuantity();
+	}
+
+	public String getFirstProductname() {
+		return this.orderItems.get(0).getItem().getProductName();
+	}
+
+	public int getTotalPrice() {
+		return this.orderPrice.getTotalPrice();
+	}
+
+	private void countQuantity() {
 
 		if (this.orderItems.isEmpty()) {
 			this.totalQuantity = 0;
@@ -165,11 +178,27 @@ public class Order extends BaseEntity {
 				.reduce(0, Integer::sum);
 	}
 
-	public String getFirstProductname() {
-		return this.orderItems.get(0).getItem().getProductName();
+	@Override
+	public final boolean equals(Object object) {
+		if (this == object)
+			return true;
+		if (object == null)
+			return false;
+		Class<?> oEffectiveClass = object instanceof HibernateProxy ?
+			((HibernateProxy)object).getHibernateLazyInitializer().getPersistentClass() :
+			object.getClass();
+		Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+		if (thisEffectiveClass != oEffectiveClass)
+			return false;
+		Order order = (Order)object;
+		return getId() != null && Objects.equals(getId(), order.getId());
 	}
 
-	public int getTotalPrice() {
-		return this.orderPrice.getTotalPrice();
+	@Override
+	public final int hashCode() {
+		return this instanceof HibernateProxy ?
+			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
+			getClass().hashCode();
 	}
 }

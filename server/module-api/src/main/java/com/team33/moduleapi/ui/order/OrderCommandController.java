@@ -76,10 +76,4 @@ public class OrderCommandController {
 	) {
 		orderService.changeSubscriptionItemQuantity(orderId, orderItemId, quantity);
 	}
-
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/{orderId}") // 특정 주문 취소
-	public void cancelOrder(@NotNull @PathVariable Long orderId) {
-		orderService.cancelOrder(orderId);
-	}
 }

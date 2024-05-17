@@ -3,7 +3,6 @@ package com.team33.modulecore.order.application;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class OrderItemService {
 
+	private final ItemCommandService itemCommandService;
 	private final OrderFindHelper orderFindHelper;
 	private final ItemFindHelper itemFindHelper;
-	private final ItemCommandService itemCommandService;
 
 	@Transactional(readOnly = true)
 	public List<OrderItem> toOrderItems(List<OrderItemServiceDto> dtos) {
 		return dtos.stream()
-			.map(this::getOrderItemSingle)
-			.flatMap(List::stream)
+			.map(this::makeOrderItem)
 			.collect(Collectors.toList());
 	}
 
@@ -77,13 +75,6 @@ public class OrderItemService {
 		orderInOrderItem.cancelSubscription();
 	}
 
-	public void addSalses(List<OrderItem> orderItems) {
-		List<Long> orderedItemsId = orderItems.stream()
-			.map(orderItem -> orderItem.getItem().getId())
-			.collect(Collectors.toUnmodifiableList());
-
-		itemCommandService.addSales(orderedItemsId);
-	}
 
 	private Item findItem(long id) {
 		return itemFindHelper.findItem(id);
@@ -94,15 +85,13 @@ public class OrderItemService {
 		return order.getOrderItems().get(i);
 	}
 
-	private List<OrderItem> getOrderItemSingle(OrderItemServiceDto dto) {
+	private OrderItem makeOrderItem(OrderItemServiceDto dto) {
 		Item item = findItem(dto.getItemId());
 
-		OrderItem orderItem = OrderItem.create(
+		return OrderItem.create(
 			item,
 			SubscriptionInfo.of(dto.isSubscription(), dto.getPeriod()),
 			dto.getQuantity()
 		);
-
-		return Stream.of(orderItem).collect(Collectors.toList());
 	}
 }

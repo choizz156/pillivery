@@ -1,7 +1,5 @@
 package com.team33.modulecore.order.application;
 
-import static com.team33.modulecore.order.domain.OrderStatus.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +11,7 @@ import com.team33.modulecore.cart.application.SubscriptionCartService;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
@@ -28,23 +27,14 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
+	private final ItemCommandService itemCommandService;
 	private final SubscriptionCartService subscriptionCartService;
 	private final NormalCartService normalCartService;
 	private final UserFindHelper userFindHelper;
-	private final OrderItemService orderItemService;
 
 	public Order callOrder(List<OrderItem> orderItems, OrderContext orderContext) {
 		Order order = createOrder(orderItems, orderContext);
 		return orderRepository.save(order);
-	}
-
-	public void cancelOrder(Long orderId) {
-		Order order = findOrder(orderId);
-
-		order.changeOrderStatus(CANCEL);
-
-		// order.getOrderItems()
-		//     .forEach(orderItem -> orderItem.getItem().minusSales(orderItem.getQuantity()));
 	}
 
 	public void changeOrderStatusToComplete(Long orderId) {
@@ -52,6 +42,8 @@ public class OrderService {
 
 		order.changeOrderStatus(OrderStatus.COMPLETE);
 		refreshNormalCart(order);
+
+		itemCommandService.addSales(getOrderedItemsId(order));
 	}
 
 	public void changeOrderStatusToSubscribe(Long orderId, String sid) {
@@ -62,7 +54,7 @@ public class OrderService {
 
 		refreshSubscriptionCart(order);
 
-		orderItemService.addSalses(order.getOrderItems());
+		itemCommandService.addSales(getOrderedItemsId(order));
 	}
 
 	public Order deepCopy(Order order) {
@@ -75,7 +67,9 @@ public class OrderService {
 	public void changeSubscriptionItemQuantity(long orderId, long orderItemId, int quantity) {
 		Order findOrder = findOrder(orderId);
 
-		findOrder.getOrderItems().stream()
+		List<OrderItem> orderItems = findOrder.getOrderItems();
+
+		orderItems.stream()
 			.filter(orderItem -> orderItem.getId() == orderItemId)
 			.findFirst()
 			.ifPresentOrElse(
@@ -84,6 +78,8 @@ public class OrderService {
 					throw new BusinessLogicException(ExceptionCode.NOT_ORDERED_ITEM);
 				}
 			);
+
+		findOrder.adjustPriceAndQuantity(orderItems);
 	}
 
 	public Order findOrder(long orderId) {
@@ -116,5 +112,11 @@ public class OrderService {
 
 			normalCartService.refresh(order.getUser().getCartId(), orderedItemsId);
 		}
+	}
+
+	private List<Long> getOrderedItemsId(Order order) {
+		return order.getOrderItems().stream()
+			.map(orderItem -> orderItem.getItem().getId())
+			.collect(Collectors.toUnmodifiableList());
 	}
 }

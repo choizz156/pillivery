@@ -1,4 +1,4 @@
-package com.team33.modulecore.item.domain.mock;
+package com.team33.modulecore.item.mock;
 
 import java.util.Map;
 import java.util.Optional;
