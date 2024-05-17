@@ -78,11 +78,11 @@ public class OrderItemService {
 	}
 
 	public void addSalses(List<OrderItem> orderItems) {
-		List<Item> orderedItems = orderItems.stream()
-			.map(OrderItem::getItem)
+		List<Long> orderedItemsId = orderItems.stream()
+			.map(orderItem -> orderItem.getItem().getId())
 			.collect(Collectors.toUnmodifiableList());
 
-		itemCommandService.addSales(orderedItems);
+		itemCommandService.addSales(orderedItemsId);
 	}
 
 	private Item findItem(long id) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Validated
 @RequiredArgsConstructor
+@RequestMapping("/carts/normal")
 @RestController
 public class NormalCartController {
 
@@ -33,7 +35,7 @@ public class NormalCartController {
 	private final CartServiceMapper cartServiceMapper;
 	private final CartResponseMapper cartResponseMapper;
 
-	@GetMapping("/carts/normal/{cartId}")
+	@GetMapping("/{cartId}")
 	public SingleResponseDto<CartResponseDto> getNormalCart(
 		@PathVariable Long cartId
 	) {
@@ -44,19 +46,19 @@ public class NormalCartController {
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/carts/{normalCartId}")
+	@PostMapping("/{cartId}")
 	public SingleResponseDto<Long> postNormalItemCart(
-		@PathVariable Long normalCartId,
+		@PathVariable Long cartId,
 		@Min(1) @RequestParam int quantity,
 		@RequestParam Long itemId
 	) {
-		normalCartService.addItem(normalCartId, cartServiceMapper.toItem(itemId), quantity);
+		normalCartService.addItem(cartId, cartServiceMapper.toItem(itemId), quantity);
 
 		return new SingleResponseDto<>(itemId);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/carts/normal/{cartId}")
+	@DeleteMapping("/{cartId}")
 	public void removeNormalCart(
 		@PathVariable Long cartId,
 		@RequestParam Long itemId
@@ -65,7 +67,7 @@ public class NormalCartController {
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PatchMapping("/carts/normal/{cartId}")
+	@PatchMapping("/{cartId}")
 	public void changeItemQauntity(
 		@PathVariable Long cartId,
 		@Min(1)@RequestParam int quantity,

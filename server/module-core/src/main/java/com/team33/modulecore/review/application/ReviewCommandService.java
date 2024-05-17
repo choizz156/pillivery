@@ -24,9 +24,8 @@ public class ReviewCommandService {
 	private final ItemCommandService itemCommandService;
 
 	public Review createReview(ReviewContext context) {
-		Review review = Review.create(context);
 
-		reviewCommandRepository.save(review);
+		Review review = reviewCommandRepository.save(Review.create(context));
 
 		userService.addReviewId(context.getUserId(), review.getId());
 		itemCommandService.addReviewId(context.getItemId(), review.getId(), context.getStar());

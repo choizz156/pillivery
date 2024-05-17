@@ -3,6 +3,7 @@ package com.team33.modulecore.order.application;
 import static com.team33.modulecore.order.domain.OrderStatus.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,13 +98,23 @@ public class OrderService {
 
 	private void refreshSubscriptionCart(Order order) {
 		if (order.isOrderedAtCart()) {
-			subscriptionCartService.refresh(order.getUser().getCartId(), order.getOrderItems());
+			List<Long> orderedItemsId = order.getOrderItems()
+				.stream()
+				.map(orderItem -> orderItem.getItem().getId())
+				.collect(Collectors.toList());
+
+			subscriptionCartService.refresh(order.getUser().getCartId(), orderedItemsId);
 		}
 	}
 
 	private void refreshNormalCart(Order order) {
 		if (order.isOrderedAtCart()) {
-			normalCartService.refresh(order.getUser().getCartId(), order.getOrderItems());
+			List<Long> orderedItemsId = order.getOrderItems()
+				.stream()
+				.map(orderItem -> orderItem.getItem().getId())
+				.collect(Collectors.toList());
+
+			normalCartService.refresh(order.getUser().getCartId(), orderedItemsId);
 		}
 	}
 }

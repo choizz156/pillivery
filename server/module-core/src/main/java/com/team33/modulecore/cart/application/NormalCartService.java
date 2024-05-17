@@ -1,6 +1,5 @@
 package com.team33.modulecore.cart.application;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +13,6 @@ import com.team33.modulecore.cart.domain.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.OrderItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,22 +48,14 @@ public class NormalCartService {
 		changeQuantity(quantity, normalCartItem, cart);
 	}
 
-	public List<NormalCartItem> findCartItem(Long cartId) {
-		Cart cart = findCart(cartId);
-
-		return new ArrayList<>(cart.getNormalCartItems());
-	}
-
-	public void refresh(Long cartId, List<OrderItem> orderItems) {
+	public void refresh(Long cartId, List<Long> orderedItemsId) {
 		Cart cart = findCart(cartId);
 
 		if (cart.getNormalCartItems().isEmpty()) {
 			return;
 		}
 
-		List<Long> orderedItemId = getOrderedItemId(orderItems);
-
-		removeOrderedItem(cart, orderedItemId);
+		removeOrderedItem(cart, orderedItemsId);
 	}
 
 	private NormalCartItem getNormalCartItem(Item item, Cart cart) {
@@ -87,17 +77,11 @@ public class NormalCartService {
 	}
 
 	private void removeOrderedItem(Cart cart, List<Long> orderedItemId) {
-		cart.getNormalCartItems()
+		List<NormalCartItem> removedItems = cart.getNormalCartItems()
 			.stream()
 			.filter(normalCartItem -> orderedItemId.contains(normalCartItem.getItem().getId()))
-			.forEach(cart::removeNormalCartItem);
-	}
+			.collect(Collectors.toUnmodifiableList());
 
-	private List<Long> getOrderedItemId(List<OrderItem> orderItems) {
-		List<Long> orderedItemId = orderItems
-			.stream()
-			.map(orderItem -> orderItem.getItem().getId())
-			.collect(Collectors.toList());
-		return orderedItemId;
+		removedItems.forEach(cart::removeNormalCartItem);
 	}
 }

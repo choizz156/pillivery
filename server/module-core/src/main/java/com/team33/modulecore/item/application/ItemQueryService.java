@@ -22,11 +22,11 @@ public class ItemQueryService {
 
 	private final ItemQueryRepository itemQueryRepository;
 
-	public List<com.team33.modulecore.item.dto.query.ItemQueryDto> findMainDiscountItems() {
+	public List<ItemQueryDto> findMainDiscountItems() {
 		return itemQueryRepository.findItemsWithDiscountRateTop9();
 	}
 
-	public List<com.team33.modulecore.item.dto.query.ItemQueryDto> findMainSaleItems() {
+	public List<ItemQueryDto> findMainSaleItems() {
 		return itemQueryRepository.findItemsWithSalesTop9();
 	}
 
@@ -46,7 +46,7 @@ public class ItemQueryService {
 		return itemQueryRepository.findItemsOnSale(keyword, priceFilter, pageDto);
 	}
 
-	public Page<com.team33.modulecore.item.dto.query.ItemQueryDto> findByCategory(
+	public Page<ItemQueryDto> findByCategory(
 		CategoryName categoryName,
 		String keyword,
 		PriceFilter priceFilter,

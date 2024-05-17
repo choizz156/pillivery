@@ -26,7 +26,7 @@ public class CartResponseMapper {
 			.build();
 	}
 
-	public CartResponseDto cartSubscriptionResponseDto(Cart cart) {
+	public CartResponseDto toCartSubscriptionResponseDto(Cart cart) {
 		return CartResponseDto.builder()
 			.cartId(cart.getId())
 			.totalDiscountPrice(cart.getTotalDiscountPrice())

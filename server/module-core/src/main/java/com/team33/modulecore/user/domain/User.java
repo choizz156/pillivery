@@ -145,7 +145,7 @@ public class User extends BaseEntity {
 	}
 
 	public void deleteReviewId(Long reviewId) {
-		this.reviewIds.remove(reviewId);
+		this.reviewIds.remove(new ReviewId(reviewId));
 	}
 }
 

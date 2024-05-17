@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.review.domain.entity.Review;
@@ -20,12 +18,12 @@ public class ItemCommandService {
 
 	private final ItemCommandRepository itemCommandRepository;
 
-	public Item increaseView(long itemId) {
+	public Item increaseView(Long itemId) {
 		return itemCommandRepository.incrementView(itemId);
 	}
 
-	public void addSales(List<Item> orderedItems) {
-		orderedItems.forEach(item -> itemCommandRepository.incrementSales(item.getId()));
+	public void addSales(List<Long> orderedItemsId) {
+		orderedItemsId.forEach(itemCommandRepository::incrementSales);
 	}
 
 	public void addReviewId(Long itemId, Long reviewId, double star) {
@@ -38,12 +36,13 @@ public class ItemCommandService {
 	}
 
 	public void deleteReviewId(Long itemId, Review review) {
-		Item item = itemCommandRepository
+		itemCommandRepository
 			.findById(itemId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
-
-		item.deleteReviewId(review.getId());
-		item.substractCountAndStars(review.getStar());
+			.ifPresent(item -> {
+					item.deleteReviewId(review.getId());
+					item.subtractCountAndStars(review.getStar());
+				}
+			);
 	}
 
 }

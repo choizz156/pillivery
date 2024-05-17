@@ -30,20 +30,50 @@ public class Statistic {
 	private ReadWriteLock lock = new ReentrantReadWriteLock();
 
 	public void addStarAvg(double star) {
+		if (isFirst(star))
+			return;
+
+		calculateAvgToAdd(star);
+	}
+
+	public void subtractStarAvg(double star) {
+		if (isOneReviewOnly())
+			return;
+
+		calculateAvgToSubtract(star);
+	}
+
+	private boolean isFirst(double star) {
+		if (reviewCount == 0) {
+			this.starAvg = star;
+			this.reviewCount = 1;
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isOneReviewOnly() {
+		if (this.reviewCount == 1) {
+			this.starAvg = 0.0;
+			this.reviewCount = 0;
+			return true;
+		}
+		return false;
+	}
+
+	private void calculateAvgToAdd(double star) {
 		lock.writeLock().lock();
 		try {
-			this.starAvg = (this.reviewCount * this.starAvg + star) / reviewCount + 1;
-			this.reviewCount++;
+			this.starAvg = (this.reviewCount * this.starAvg + star) / ++this.reviewCount;
 		} finally {
 			lock.writeLock().unlock();
 		}
 	}
 
-	public void subtractStarAvg(double star) {
+	private void calculateAvgToSubtract(double star) {
 		lock.writeLock().lock();
 		try {
-			this.starAvg = (this.reviewCount * this.starAvg - star) / reviewCount - 1;
-			this.reviewCount--;
+			this.starAvg = (this.reviewCount * this.starAvg - star) / --this.reviewCount;
 		} finally {
 			lock.writeLock().unlock();
 		}

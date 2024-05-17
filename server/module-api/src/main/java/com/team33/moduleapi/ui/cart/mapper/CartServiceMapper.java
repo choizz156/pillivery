@@ -2,6 +2,7 @@ package com.team33.moduleapi.ui.cart.mapper;
 
 import org.springframework.stereotype.Component;
 
+import com.team33.modulecore.cart.SubscriptionContext;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.moduleapi.ui.cart.dto.SubscriptionCartItemPostDto;
@@ -19,9 +20,15 @@ public class CartServiceMapper {
 		return itemQueryRepository.findById(itemId);
 	}
 
-	public SubscriptionInfo toSubscriptionInfo(SubscriptionCartItemPostDto postDto) {
+	private SubscriptionInfo toSubscriptionInfo(SubscriptionCartItemPostDto postDto) {
 		return SubscriptionInfo.of(postDto.isSubscription(), postDto.getPeriod());
 	}
 
-
+	public SubscriptionContext toSubscriptionContext(SubscriptionCartItemPostDto postDto) {
+		return SubscriptionContext.builder()
+			.item(toItem(postDto.getItemId()))
+			.subscriptionInfo(toSubscriptionInfo(postDto))
+			.quantity(postDto.getQuantity())
+			.build();
+	}
 }

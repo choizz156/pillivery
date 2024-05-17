@@ -8,14 +8,13 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.team33.modulecore.cart.SubscriptionContext;
 import com.team33.modulecore.cart.domain.SubscriptionCartItem;
 import com.team33.modulecore.cart.domain.entity.Cart;
 import com.team33.modulecore.cart.domain.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.OrderItem;
-import com.team33.modulecore.order.domain.SubscriptionInfo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,15 +30,14 @@ public class SubscriptionCartService {
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 	}
 
-	public void addItem(
-		Long cartId,
-		int quantity,
-		Item item,
-		SubscriptionInfo subscriptionInfo
-	) {
+	public void addItem(Long cartId, SubscriptionContext subscriptionContext) {
 		Cart cart = findCart(cartId);
 
-		cart.addSubscriptionItem(item, quantity, subscriptionInfo);
+		cart.addSubscriptionItem(
+			subscriptionContext.getItem(),
+			subscriptionContext.getQuantity(),
+			subscriptionContext.getSubscriptionInfo()
+		);
 	}
 
 	public void removeCartItem(Long cartId, Item item) {
@@ -51,39 +49,35 @@ public class SubscriptionCartService {
 	public void changeQuantity(Long cartId, Item item, int quantity) {
 		Cart cart = findCart(cartId);
 
-		cart.changeSubscriptionCartItemQuantity(getSubscriptionCartItem(item, cart), quantity);
+		SubscriptionCartItem subscriptionCartItem = getSubscriptionCartItem(item, cart);
+		changeQuantity(quantity, subscriptionCartItem, cart);
 	}
 
 	public void changePeriod(Long cartId, Item item, int period) {
 		Cart cart = findCart(cartId);
 
-		getSubscriptionCartItem(item, cart).changePeriod(period);
+		SubscriptionCartItem subscriptionCartItem = getSubscriptionCartItem(item, cart);
+
+		subscriptionCartItem.changePeriod(period);
 	}
 
-	public void refresh(Long cartId, List<OrderItem> orderItems) {
+	public void refresh(Long cartId, List<Long> orderItemsId) {
 		Cart cart = findCart(cartId);
 
 		if (cart.getSubscriptionCartItems().isEmpty()) {
 			return;
 		}
 
-		List<Long> orderedItemId = getOrderedItemId(orderItems);
-
-		removeOrderedItem(cart, orderedItemId);
+		removeOrderedItem(cart, orderItemsId);
 	}
 
 	private void removeOrderedItem(Cart cart, List<Long> orderedItemId) {
-		cart.getSubscriptionCartItems()
+		List<SubscriptionCartItem> removeItems = cart.getSubscriptionCartItems()
 			.stream()
 			.filter(subscriptionCartItem -> orderedItemId.contains(subscriptionCartItem.getItem().getId()))
-			.forEach(cart::removeSubscriptionCartItem);
-	}
+			.collect(Collectors.toUnmodifiableList());
 
-	private List<Long> getOrderedItemId(List<OrderItem> orderItems) {
-		return orderItems
-			.stream()
-			.map(orderItem -> orderItem.getItem().getId())
-			.collect(Collectors.toList());
+		removeItems.forEach(cart::removeSubscriptionCartItem);
 	}
 
 	private SubscriptionCartItem getSubscriptionCartItem(Item item, Cart cart) {
@@ -94,5 +88,12 @@ public class SubscriptionCartService {
 			)
 			.findFirst()
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
+	}
+
+	private void changeQuantity(int quantity, SubscriptionCartItem subscriptionCartItem, Cart cart) {
+		if (subscriptionCartItem.getTotalQuantity() == quantity) {
+			return;
+		}
+		cart.changeSubscriptionCartItemQuantity(subscriptionCartItem, quantity);
 	}
 }
