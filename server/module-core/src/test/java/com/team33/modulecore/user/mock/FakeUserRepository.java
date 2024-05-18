@@ -1,6 +1,7 @@
-package com.team33.modulecore.user;
+package com.team33.modulecore.user.mock;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ public class FakeUserRepository implements UserRepository {
 			.set("address", new Address("서울시 부평구 송도동", "101 번지"))
 			.set("realName", "홍길동")
 			.set("cartId", 1L)
+			.set("reviewIds", new HashSet<>())
 			.sample();
 
 		users.put(user.getId(), user);

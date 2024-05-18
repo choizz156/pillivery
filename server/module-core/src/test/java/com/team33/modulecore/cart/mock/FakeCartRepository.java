@@ -20,6 +20,11 @@ public class FakeCartRepository implements CartRepository {
 		return Optional.ofNullable(store.get(id));
 	}
 
+	@Override
+	public void deleteById(Long cartId) {
+		store.remove(cartId);
+	}
+
 	public void clear() {
 		store.clear();
 	}
