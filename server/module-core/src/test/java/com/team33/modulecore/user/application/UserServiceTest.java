@@ -64,17 +64,6 @@ class UserServiceTest {
 		verify(cartService, times(1)).create();
 	}
 
-	private static UserServicePostDto getUserServicePostDto(String email, String displayName, String phone) {
-		return UserServicePostDto.builder()
-			.email(email)
-			.displayName(displayName)
-			.phone(phone)
-			.password("1234")
-			.address(new Address("서울시 부평구 송도동", "101 번지"))
-			.realName("홍길동")
-			.build();
-	}
-
 	private static Stream<Arguments> provideDuplicateUserInfoOnJoinDto() {
 		var duplicateEmail = getUserServicePostDto("test1@gmail.com", "test", "010-0000-0000");
 		var duplicateDisplayName = getUserServicePostDto("test1@test1.com", "test22", "010-0000-0000");
@@ -265,5 +254,16 @@ class UserServiceTest {
 		User user = userRepository.findById(1L).orElse(null);
 
 		assertThat(user.getReviewIds()).hasSize(0);
+	}
+
+	private static UserServicePostDto getUserServicePostDto(String email, String displayName, String phone) {
+		return UserServicePostDto.builder()
+			.email(email)
+			.displayName(displayName)
+			.phone(phone)
+			.password("1234")
+			.address(new Address("서울시 부평구 송도동", "101 번지"))
+			.realName("홍길동")
+			.build();
 	}
 }

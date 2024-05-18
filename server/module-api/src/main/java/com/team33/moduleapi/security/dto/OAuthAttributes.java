@@ -1,10 +1,11 @@
 package com.team33.moduleapi.security.dto;
 
+import java.util.Map;
 
 import com.team33.modulecore.user.domain.User;
 import com.team33.modulecore.user.domain.UserRoles;
 import com.team33.modulecore.user.domain.UserStatus;
-import java.util.Map;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,8 @@ public class OAuthAttributes {
         return ofGoogle(userNameAttributeName, attributes);
     }
 
-    private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
+    @SuppressWarnings("unchecked")
+	private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 

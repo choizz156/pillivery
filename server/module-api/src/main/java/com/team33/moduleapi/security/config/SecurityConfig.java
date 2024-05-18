@@ -1,20 +1,7 @@
 package com.team33.moduleapi.security.config;
 
+import static org.springframework.http.HttpMethod.*;
 
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.PATCH;
-import static org.springframework.http.HttpMethod.POST;
-
-import com.team33.moduleapi.security.infra.handler.UserAccessDeniedHandler;
-import com.team33.moduleapi.security.infra.handler.UserAuthFailureHandler;
-import com.team33.moduleapi.security.infra.handler.UserAuthenticationEntryPoint;
-import com.team33.moduleapi.security.infra.handler.UserOAuthSuccessHandler;
-import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.moduleapi.security.application.LogoutService;
-import com.team33.moduleapi.security.repository.RefreshTokenRepository;
-import com.team33.moduleapi.security.application.ResponseTokenService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -22,6 +9,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.moduleapi.security.application.LogoutService;
+import com.team33.moduleapi.security.application.ResponseTokenService;
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.moduleapi.security.infra.handler.ErrorResponser;
+import com.team33.moduleapi.security.infra.handler.UserAccessDeniedHandler;
+import com.team33.moduleapi.security.infra.handler.UserAuthFailureHandler;
+import com.team33.moduleapi.security.infra.handler.UserAuthenticationEntryPoint;
+import com.team33.moduleapi.security.infra.handler.UserOAuthSuccessHandler;
+import com.team33.moduleapi.security.repository.RefreshTokenRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -32,6 +32,9 @@ public class SecurityConfig {
     private final ResponseTokenService responseTokenService;
     private final RefreshTokenRepository repository;
     private final LogoutService logoutService;
+    private final ErrorResponser errorResponser;
+    private final ObjectMapper objectMapper;
+
     private static final String USER_URL = "/users/**";
     private static final String CART_URL = "/carts/**";
     private static final String WISHS_URL = "/wishes/**";
@@ -52,16 +55,16 @@ public class SecurityConfig {
             .csrf().disable()
             .cors(Customizer.withDefaults())
             .exceptionHandling()
-            .accessDeniedHandler(new UserAccessDeniedHandler())
-            .authenticationEntryPoint(new UserAuthenticationEntryPoint(responseTokenService))
+            .accessDeniedHandler(new UserAccessDeniedHandler(errorResponser))
+            .authenticationEntryPoint(new UserAuthenticationEntryPoint(responseTokenService,errorResponser))
 
             .and()
-            .apply(new CustomFilterConfigurer(jwtTokenProvider, responseTokenService, logoutService))
+            .apply(new CustomFilterConfigurer(jwtTokenProvider, responseTokenService, logoutService, objectMapper, errorResponser))
 
             .and()
             .oauth2Login()
             .successHandler(new UserOAuthSuccessHandler(jwtTokenProvider, repository))
-            .failureHandler(new UserAuthFailureHandler())
+            .failureHandler(new UserAuthFailureHandler(errorResponser))
 
             .and()
             .authorizeHttpRequests(authorize -> authorize
