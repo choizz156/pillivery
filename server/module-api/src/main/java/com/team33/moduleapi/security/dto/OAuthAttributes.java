@@ -2,7 +2,7 @@ package com.team33.moduleapi.security.dto;
 
 import java.util.Map;
 
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.domain.UserRoles;
 import com.team33.modulecore.user.domain.UserStatus;
 

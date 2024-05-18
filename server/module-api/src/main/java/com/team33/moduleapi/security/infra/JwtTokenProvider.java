@@ -1,7 +1,7 @@
 package com.team33.moduleapi.security.infra;
 
 
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

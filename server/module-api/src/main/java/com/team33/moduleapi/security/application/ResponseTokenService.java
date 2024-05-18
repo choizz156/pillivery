@@ -5,7 +5,7 @@ import com.team33.moduleapi.security.infra.JwtTokenProvider;
 import com.team33.moduleapi.security.repository.RefreshTokenRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;

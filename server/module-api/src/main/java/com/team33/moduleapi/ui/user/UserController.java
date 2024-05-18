@@ -26,7 +26,7 @@ import com.team33.moduleapi.ui.user.dto.UserPostDto;
 import com.team33.moduleapi.ui.user.dto.UserPostOauthDto;
 import com.team33.moduleapi.ui.user.dto.UserResponse;
 import com.team33.modulecore.user.application.UserService;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;

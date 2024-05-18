@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.order.domain.Address;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 
 public class FakeUserRepository implements UserRepository {

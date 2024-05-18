@@ -34,7 +34,7 @@ import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPage;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 import com.team33.modulecore.order.infra.OrderQueryDslDao;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 
 import lombok.extern.slf4j.Slf4j;
 

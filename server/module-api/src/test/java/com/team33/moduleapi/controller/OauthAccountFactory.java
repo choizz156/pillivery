@@ -1,7 +1,7 @@
 package com.team33.moduleapi.controller;
 
 import com.team33.modulecore.order.domain.Address;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.domain.UserRoles;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

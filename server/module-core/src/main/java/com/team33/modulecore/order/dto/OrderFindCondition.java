@@ -1,7 +1,7 @@
 package com.team33.modulecore.order.dto;
 
 import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

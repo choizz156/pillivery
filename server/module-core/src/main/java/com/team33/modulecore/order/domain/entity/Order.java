@@ -28,7 +28,7 @@ import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.Receiver;
 import com.team33.modulecore.order.dto.OrderContext;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 
 import lombok.AccessLevel;
 import lombok.Builder;

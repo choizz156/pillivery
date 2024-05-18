@@ -2,7 +2,7 @@ package com.team33.moduleapi.restdocs;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.domain.repository.UserRepository;
 import com.team33.modulecore.user.application.UserService;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;

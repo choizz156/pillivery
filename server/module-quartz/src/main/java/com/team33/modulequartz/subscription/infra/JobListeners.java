@@ -7,7 +7,7 @@ import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderService;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulequartz.subscription.application.JobDetailService;

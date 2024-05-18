@@ -13,7 +13,7 @@ import com.team33.modulecore.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.dto.UserPatchDto;
 import com.team33.modulecore.user.dto.UserPostDto;
 import com.team33.modulecore.user.dto.UserPostOauthDto;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.domain.UserRoles;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

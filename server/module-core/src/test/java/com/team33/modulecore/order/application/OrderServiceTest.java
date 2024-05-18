@@ -27,7 +27,7 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.mock.FakeOrderRepository;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class OrderServiceTest {

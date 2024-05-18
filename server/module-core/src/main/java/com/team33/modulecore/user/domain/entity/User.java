@@ -1,4 +1,4 @@
-package com.team33.modulecore.user.domain;
+package com.team33.modulecore.user.domain.entity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,11 +13,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.domain.ReviewId;
+import com.team33.modulecore.user.domain.UserRoles;
+import com.team33.modulecore.user.domain.UserStatus;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;
@@ -32,7 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+	@Index(name = "idx_email", columnList = "email"),
+	@Index(name = "idx_phone", columnList = "phone"),
+	@Index(name = "idx_display_name", columnList = "display_name")
+})
 public class User extends BaseEntity {
 
 	@Id
@@ -40,7 +48,6 @@ public class User extends BaseEntity {
 	@Column(name = "user_id")
 	private Long id;
 
-	@Column(updatable = false)
 	private String email;
 
 	private String displayName;

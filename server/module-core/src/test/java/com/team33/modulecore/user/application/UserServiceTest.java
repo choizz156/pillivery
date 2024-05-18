@@ -19,7 +19,7 @@ import com.team33.modulecore.cart.domain.entity.Cart;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.order.domain.Address;
 import com.team33.modulecore.user.mock.FakeUserRepository;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.domain.UserStatus;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;

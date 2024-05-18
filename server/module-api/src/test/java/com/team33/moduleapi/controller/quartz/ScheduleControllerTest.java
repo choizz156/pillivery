@@ -18,7 +18,7 @@ import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.ZoneId;

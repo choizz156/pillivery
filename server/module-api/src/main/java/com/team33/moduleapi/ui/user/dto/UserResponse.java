@@ -2,7 +2,7 @@ package com.team33.moduleapi.ui.user.dto;
 
 import java.time.ZonedDateTime;
 
-import com.team33.modulecore.user.domain.User;
+import com.team33.modulecore.user.domain.entity.User;
 
 import lombok.Builder;
 import lombok.Data;
