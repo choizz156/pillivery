@@ -1,27 +1,31 @@
 package com.team33.moduleapi.security.infra.filter;
 
-
-import com.team33.moduleapi.security.dto.LoginDto;
 import java.io.IOException;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.team33.modulecore.utils.Mapper;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.moduleapi.security.dto.LoginDto;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Authentication attemptAuthentication(
@@ -50,7 +54,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private LoginDto getLoginDto(HttpServletRequest request) {
         try {
-            return Mapper.getInstance().readValue(request.getInputStream(), LoginDto.class);
+            return objectMapper.readValue(request.getInputStream(), LoginDto.class);
         } catch (IOException e) {
             throw new AuthenticationServiceException(e.getMessage());
         }

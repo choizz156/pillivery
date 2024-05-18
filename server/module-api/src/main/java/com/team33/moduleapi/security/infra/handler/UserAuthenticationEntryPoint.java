@@ -1,18 +1,21 @@
 package com.team33.moduleapi.security.infra.handler;
 
-
-import com.team33.moduleapi.security.application.ResponseTokenService;
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import com.team33.moduleapi.security.application.ResponseTokenService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ import org.springframework.util.StringUtils;
 public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ResponseTokenService responseTokenService;
+    private final ErrorResponser errorResponser;
 
     @Override
     public void commence( HttpServletRequest request, HttpServletResponse response, AuthenticationException authException ) throws IOException, ServletException{
@@ -30,6 +34,6 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
             return;
         }
 
-        ErrorResponser.errorToJson(response, authException, HttpStatus.UNAUTHORIZED);
+        errorResponser.errorToJson(response, authException, HttpStatus.UNAUTHORIZED);
     }
 }

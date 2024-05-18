@@ -1,20 +1,27 @@
 package com.team33.moduleapi.security.infra.handler;
 
-import com.team33.moduleapi.exception.dto.ErrorResponse;
-import com.team33.modulecore.utils.Mapper;
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletResponse;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.moduleapi.exception.dto.ErrorResponse;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+@Component
 public class ErrorResponser {
 
-    public static void errorToJson(
+    private final ObjectMapper objectMapper;
+
+    public void errorToJson(
         HttpServletResponse response,
         Exception exception,
         HttpStatus status
@@ -31,8 +38,9 @@ public class ErrorResponser {
 
         log.error("{}", exceptions.getMessage());
 
-        String errorResponse = Mapper.getInstance().writeValueAsString(exceptions);
+        String errorResponse = objectMapper.writeValueAsString(exceptions);
 
         response.getWriter().write(errorResponse);
     }
 }
+
