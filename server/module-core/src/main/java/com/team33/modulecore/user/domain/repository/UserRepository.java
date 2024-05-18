@@ -17,4 +17,6 @@ public interface UserRepository extends Repository<User, Long> {
     Optional<User> findByDisplayName(String displayName);
 
     Optional<User> findByPhone(String phoneNumber);
+
+    void deleteAll();
 }

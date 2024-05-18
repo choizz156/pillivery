@@ -1,7 +1,9 @@
 package com.team33.moduleexternalapi.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Getter
 public class KakaoRequestResponse {
 
