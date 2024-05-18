@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.cart.application.CartService;
 import com.team33.modulecore.cart.domain.entity.Cart;
-import com.team33.modulecore.cart.domain.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.user.domain.User;
@@ -57,17 +56,6 @@ public class UserService {
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 	}
 
-	//    public User getLoginUser() {
-	//        String principal = (String) SecurityContextHolder
-	//            .getContext()
-	//            .getAuthentication()
-	//            .getPrincipal();
-	//
-	//        Optional<User> userOptional = userRepository.findByEmail(principal);
-	//        return userOptional.orElseThrow(
-	//            () -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-	//    }
-
 	private void makeCart(User user) {
 		Cart cart = cartService.create();
 		user.addCart(cart.getId());
@@ -88,15 +76,21 @@ public class UserService {
 
 	private User withdrawal(long userId) {
 		User user = findUser(userId);
+
+		cartService.deleteCart(user.getCartId());
 		user.withdrawal();
+
 		return user;
 	}
 
 	private User updateUserInfo(UserServicePatchDto userDto, long userId) {
 		User user = findUser(userId);
+
 		user.updateUserInfo(userDto);
+
 		String encodedPwd = passwordEncoder.encode(userDto.getPassword());
 		user.applyEncryptPassword(encodedPwd);
+
 		return user;
 	}
 
@@ -106,9 +100,9 @@ public class UserService {
 		return updateUserInfo(userDto, userId);
 	}
 
-	public void addReviewId(Long userId, Long id) {
+	public void addReviewId(Long userId, Long reviewId) {
 		User user = findUser(userId);
-		user.addReviewId(id);
+		user.addReviewId(reviewId);
 	}
 
 	public void deleteReviewId(Long userId, Long reviewId) {

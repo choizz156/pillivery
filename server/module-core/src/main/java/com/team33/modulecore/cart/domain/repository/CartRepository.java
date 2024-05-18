@@ -9,4 +9,5 @@ import com.team33.modulecore.cart.domain.entity.Cart;
 public interface CartRepository extends Repository<Cart, Long> {
 	void save(Cart cart);
 	Optional<Cart> findById(long id);
+	void deleteById(Long cartId);
 }
