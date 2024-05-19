@@ -47,7 +47,7 @@ public class OrderItemService {
 
 		OrderItem orderItem = getItemOrder(orderItem1, order);
 		ZonedDateTime nextDelivery = orderItem.getNextDelivery().plusDays(delay);
-		orderItem.setNextDelivery(nextDelivery);
+		// orderItem.setNextDelivery(nextDelivery);
 		return orderItem;
 	}
 
@@ -56,8 +56,8 @@ public class OrderItemService {
 		ZonedDateTime nextDelivery,
 		OrderItem orderItem
 	) {
-		orderItem.setPaymentDay(paymentDay);
-		orderItem.setNextDelivery(nextDelivery);
+		// orderItem.setPaymentDay(paymentDay);
+		// orderItem.setNextDelivery(nextDelivery);
 		return orderItem;
 	}
 
@@ -65,7 +65,7 @@ public class OrderItemService {
 		Order order = orderFindHelper.findOrder(lastOrderId);
 
 		OrderItem orderItem = new OrderItem(getItemOrder(itemOrder, order));
-		orderItem.setOrder(newOrder);
+		// orderItem.setOrder(newOrder);
 		return orderItem;
 	}
 

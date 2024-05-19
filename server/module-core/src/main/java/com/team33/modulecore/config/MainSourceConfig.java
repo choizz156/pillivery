@@ -1,10 +1,9 @@
 package com.team33.modulecore.config;
 
-
-import com.team33.modulecore.item.infra.ItemQueryDslDao;
-import com.team33.modulecore.order.infra.OrderQueryDslDao;
 import java.util.Properties;
+
 import javax.sql.DataSource;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +16,12 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Import({ItemQueryDslDao.class, OrderQueryDslDao.class})
+import com.team33.modulecore.item.infra.ItemQueryDslDao;
+import com.team33.modulecore.order.infra.OrderQueryDslDao;
+import com.team33.modulecore.review.infra.ReviewQueryDslDao;
+
+// @Profile("prod")
+@Import({ItemQueryDslDao.class, OrderQueryDslDao.class, ReviewQueryDslDao.class})
 @EnableJpaRepositories(
     entityManagerFactoryRef = "mainEntityManager",
     transactionManagerRef = "mainTransactionManager",

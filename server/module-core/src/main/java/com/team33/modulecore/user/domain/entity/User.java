@@ -50,6 +50,7 @@ public class User extends BaseEntity {
 
 	private String email;
 
+	@Column(name = "display_name")
 	private String displayName;
 
 	private String password;

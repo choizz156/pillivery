@@ -15,7 +15,8 @@ import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 
 @Component
-public class OrderItemServiceMapper {
+public class OrderItemMapper {
+
 	public OrderItemServiceDto toOrderItemPostDto(OrderPostDto orderPostDto) {
 
 		return OrderItemServiceDto.builder()

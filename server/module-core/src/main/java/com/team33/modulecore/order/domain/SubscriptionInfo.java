@@ -1,9 +1,9 @@
 package com.team33.modulecore.order.domain;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import org.hibernate.annotations.ColumnDefault;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,23 +14,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
+@Access(AccessType.FIELD)
 public class SubscriptionInfo {
 
-    @ColumnDefault("0")
     private int period;
 
     @Column(name = "subscription")
-    private boolean isSubscription;
+    private boolean subscription;
 
     @Builder
-    public SubscriptionInfo(int period, boolean isSubscription) {
+    public SubscriptionInfo(int period, boolean subscription) {
         this.period = period;
-        this.isSubscription = isSubscription;
+        this.subscription = subscription;
     }
 
     public static SubscriptionInfo of(boolean isSubscription, int period) {
         return SubscriptionInfo.builder()
-            .isSubscription(isSubscription)
+            .subscription(isSubscription)
             .period(period)
             .build();
     }
@@ -40,6 +40,6 @@ public class SubscriptionInfo {
     }
 
     public void cancelSubscription() {
-        this.isSubscription = false;
+        this.subscription = false;
     }
 }

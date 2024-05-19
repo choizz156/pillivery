@@ -46,10 +46,10 @@ class ItemRegisterServiceTest {
 		Item item2 = itemCommandRepository.findById(3L).orElse(null);
 
 		assertThat(item1.getCategories().getCategoryNameSet()).contains(EYE);
-		assertThat(item1.getIncludedCategories()).contains(EYE);
+		assertThat(item1.getItemCategory()).contains(EYE);
 
 		assertThat(item2.getCategories().getCategoryNameSet()).contains(BRAIN);
-		assertThat(item2.getIncludedCategories()).contains(BRAIN);
+		assertThat(item2.getItemCategory()).contains(BRAIN);
 	}
 
 }

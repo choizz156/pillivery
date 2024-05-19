@@ -5,7 +5,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.MultiResponseDto;
@@ -35,9 +34,9 @@ public class ReviewQueryController {
 		return reviewQueryRepository.findById(reviewId);
 	}
 
-	@GetMapping
+	@GetMapping("/items/{itemId}")
 	public MultiResponseDto<ReviewQueryDto> getReviewByItemId(
-		@RequestParam("itemId") Long itemId,
+		@PathVariable Long itemId,
 		ReviewPageDto reviewPageDto
 	) {
 		ReviewPage reviewPage = reviewPageMapper.toReviewPage(reviewPageDto);
@@ -46,9 +45,9 @@ public class ReviewQueryController {
 		return new MultiResponseDto<>(reviewsPage.getContent(), reviewsPage);
 	}
 
-	@GetMapping
+	@GetMapping("users/{userId}")
 	public MultiResponseDto<ReviewQueryDto> getReviewByUserId(
-		@RequestParam("userId") Long userId,
+		@PathVariable Long userId,
 		ReviewPageDto reviewPageDto
 	) {
 		ReviewPage reviewPage = reviewPageMapper.toReviewPage(reviewPageDto);

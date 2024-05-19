@@ -71,7 +71,7 @@ public class SubscriptionCartController {
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PatchMapping("/{cartId}")
+	@PatchMapping("/{cartId}/quantity")
 	public void patchItemQuantity(
 		@PathVariable Long cartId,
 		@RequestParam Long itemId,
@@ -81,7 +81,7 @@ public class SubscriptionCartController {
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PatchMapping("/{cartId}")
+	@PatchMapping("/{cartId}/period")
 	public void patchPeriod(
 		@PathVariable Long cartId,
 		@RequestParam Long itemId,
