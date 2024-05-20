@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.payment;
+package com.team33.moduleapi.ui.payment.dto;
 
 import lombok.Builder;
 import lombok.Getter;

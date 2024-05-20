@@ -5,6 +5,8 @@ import static com.team33.moduleexternalapi.infra.KakaoHeader.*;
 import java.util.Map;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,10 +30,12 @@ public class KakaoApproveClient implements PaymentClient<KaKaoApproveResponse> {
 		String approveBody = objectMapper.writeValueAsString(params);
 		var entity = new HttpEntity<>(approveBody, HTTP_HEADERS.getHeaders());
 
-		return restTemplate.postForObject(
-			url,
-			entity,
-			KaKaoApproveResponse.class
-		);
+		ResponseEntity<KaKaoApproveResponse> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, KaKaoApproveResponse.class);
+
+		if (!exchange.getStatusCode().is2xxSuccessful()) {
+			throw new RuntimeException("Kakao Approve API Error");
+		}
+
+		return exchange.getBody();
 	}
 }

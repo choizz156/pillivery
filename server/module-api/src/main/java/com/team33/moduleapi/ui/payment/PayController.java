@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleapi.ui.payment.dto.KaKaoApproveResponseDto;
 import com.team33.moduleapi.ui.payment.dto.KaKaoPayNextUrlDto;
+import com.team33.moduleapi.ui.payment.dto.PaymentData;
+import com.team33.moduleapi.ui.payment.mapper.PaymentDataService;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.payment.application.request.RequestFacade;
@@ -76,14 +77,15 @@ public class PayController {
 
 	}
 
-	//    @GetMapping("/kakao/cancel")
-	//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-	//    public FailResponse cancel(@RequestBody String cancel) throws JsonProcessingException {
-	//        return Mapper.getInstance().readValue(cancel, FailResponse.class);
-	//    }
+	   @GetMapping("/cancel")
+	   @ResponseStatus(HttpStatus.BAD_REQUEST)
+	   public void cancel() {
+		   System.out.println("=================");
+	   }
 	//
 	   @GetMapping("/fail")
 	   @ResponseStatus(HttpStatus.BAD_REQUEST)
-	   public void fail() throws JsonProcessingException {
+	   public void fail(){
+		   System.out.println("========================");
 	   }
 }

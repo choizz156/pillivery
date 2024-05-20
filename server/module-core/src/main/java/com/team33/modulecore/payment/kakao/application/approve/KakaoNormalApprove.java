@@ -36,7 +36,7 @@ public class KakaoNormalApprove
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest) approveRequest;
 
 		return parameterProvider.getOneTimeApproveParams(
-			request.getTid(),
+			request.getTid() ,
 			request.getPgtoken(),
 			request.getOrderId()
 		);
