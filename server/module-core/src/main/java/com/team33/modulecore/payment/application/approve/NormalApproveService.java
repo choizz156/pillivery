@@ -4,5 +4,5 @@ import com.team33.modulecore.payment.dto.ApproveRequest;
 
 public interface NormalApproveService<T> {
 
-	T approveOneTime(Long orderId, ApproveRequest approveRequest);
+	T approveOneTime(ApproveRequest approveRequest);
 }

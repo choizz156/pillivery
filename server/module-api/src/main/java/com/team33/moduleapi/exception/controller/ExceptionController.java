@@ -1,10 +1,7 @@
 package com.team33.moduleapi.exception.controller;
 
-
-import com.team33.moduleapi.exception.dto.ErrorResponse;
-import com.team33.modulecore.exception.BusinessLogicException;
 import javax.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -12,6 +9,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.team33.moduleapi.exception.dto.ErrorResponse;
+import com.team33.modulecore.exception.BusinessLogicException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
@@ -51,11 +53,11 @@ public class ExceptionController {
         return ErrorResponse.of(e.getMessage());
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
-        return ErrorResponse.of(e.getMessage());
-    }
+    // @ExceptionHandler(RuntimeException.class)
+    // @ResponseStatus(HttpStatus.BAD_REQUEST)
+    // public ErrorResponse illegalArgumentExceptionHandler(RuntimeException e) {
+    //     return ErrorResponse.of(e.getMessage());
+    // }
 }
 
 

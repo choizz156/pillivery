@@ -18,4 +18,8 @@ public class OrderFindHelper {
 		return orderRepository.findById(id)
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
 	}
+
+	public boolean checkSubscription(Long orderId){
+		return orderRepository.findIsSubscriptionById(orderId);
+	}
 }

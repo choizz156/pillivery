@@ -37,6 +37,6 @@ public interface ItemCommandRepository extends Repository<Item, Long> {
 	 */
 	@Modifying(clearAutomatically = true, flushAutomatically = true)
 	@Query("UPDATE Item i SET i.statistics.sales = i.statistics.sales + 1 WHERE i.id = :itemId")
-	Long incrementSales(@Param("itemId") Long itemId);
+	int incrementSales(@Param("itemId") Long itemId);
 }
 

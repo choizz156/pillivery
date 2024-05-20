@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -20,8 +21,8 @@ import com.team33.modulecore.item.infra.ItemQueryDslDao;
 import com.team33.modulecore.order.infra.OrderQueryDslDao;
 import com.team33.modulecore.review.infra.ReviewQueryDslDao;
 
-// @Profile("prod")
-@Import({ItemQueryDslDao.class, OrderQueryDslDao.class, ReviewQueryDslDao.class})
+@Profile("prod")
+
 @EnableJpaRepositories(
     entityManagerFactoryRef = "mainEntityManager",
     transactionManagerRef = "mainTransactionManager",

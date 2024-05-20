@@ -63,4 +63,9 @@ public class FakeUserRepository implements UserRepository {
 			.filter(user -> user.getPhone().equals(phoneNumber))
 			.findFirst();
 	}
+
+	@Override
+	public void deleteAll() {
+
+	}
 }

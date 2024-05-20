@@ -52,7 +52,7 @@ public class KaKaoSubscriptionJob implements Job {
         parameters.add("orderId", String.valueOf(orderId));
 
         URI uri = UriComponentsBuilder.newInstance()
-            .scheme("http").host("ec2-43-201-37-71.ap-northeast-2.compute.amazonaws.com")
+            .scheme("http").host("http://localhost:8080/")
             .port(8080)
             .path("/payments/kakao/subscription")
             .queryParams(parameters)

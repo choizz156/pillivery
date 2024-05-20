@@ -1,14 +1,15 @@
 package com.team33.modulecore.payment.kakao.application.approve;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 
 import com.team33.modulecore.payment.application.approve.NormalApprove;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
 import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
 
 @Component
 public class KakaoNormalApprove
@@ -31,7 +32,7 @@ public class KakaoNormalApprove
 	}
 
 	@Override
-	public MultiValueMap<String, String> getApproveParams(ApproveRequest approveRequest) {
+	public Map<String, String> getApproveParams(ApproveRequest approveRequest) {
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest) approveRequest;
 
 		return parameterProvider.getOneTimeApproveParams(

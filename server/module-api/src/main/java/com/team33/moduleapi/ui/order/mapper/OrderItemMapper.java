@@ -41,6 +41,7 @@ public class OrderItemMapper {
 
 	public OrderContext toOrderContext(OrderPostListDto orderPostDtoList) {
 		return OrderContext.builder()
+			.userId(orderPostDtoList.getUserId())
 			.isOrderedCart(orderPostDtoList.isOrderedAtCart())
 			.isSubscription(orderPostDtoList.isSubscription())
 			.receiver(

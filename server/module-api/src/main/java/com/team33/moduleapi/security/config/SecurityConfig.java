@@ -81,7 +81,7 @@ public class SecurityConfig {
                 .antMatchers(REVIEWS).hasRole("USER")
                 .antMatchers(PATCH, SCHEDULE_URL).hasRole("USER")
                 .antMatchers(DELETE, SCHEDULE_URL).hasRole("USER")
-                .antMatchers(GET, PAYMENTS_URL).hasRole("USER")
+                // .antMatchers(GET, PAYMENTS_URL).hasRole("USER")
                 .anyRequest().permitAll()
             );
 

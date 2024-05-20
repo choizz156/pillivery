@@ -1,13 +1,14 @@
 package com.team33.modulecore.payment.kakao.application.request;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.NormalRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 @Service
 public class KakaoNormalRequest
@@ -30,7 +31,7 @@ public class KakaoNormalRequest
 	}
 
 	@Override
-	public MultiValueMap<String, String> getRequestParams(Order order) {
-		return parameterProvider.getSubscriptionReqsParams(order);
+	public Map<String, String> getRequestParams(Order order) {
+		return parameterProvider.getOneTimeReqsParams(order);
 	}
 }

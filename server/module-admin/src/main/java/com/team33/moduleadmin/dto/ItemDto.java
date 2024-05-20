@@ -3,6 +3,8 @@ package com.team33.moduleadmin.dto;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -32,9 +34,16 @@ public class ItemDto {
     private String mainFnctn;
     @JsonProperty("BASE_STANDARD")
     private String baseStandard;
-    @Min(1000) @Max(500000)
-    private int originPrice;
-    @Min(10) @Max(80)
-    private int discountRate;
+
+    	@Min(1000) @Max(500000)
+    	private int originPrice;
+
+    	@Min(10) @Max(80)
+    	private int discountRate;
+
+        @Length(min = 10, max = 20)
+        private String image;
+        @Length(min = 10, max = 20)
+        private String description;
 
 }

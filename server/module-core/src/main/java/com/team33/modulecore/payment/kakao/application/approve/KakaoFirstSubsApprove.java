@@ -1,7 +1,8 @@
 package com.team33.modulecore.payment.kakao.application.approve;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
@@ -27,7 +28,7 @@ public class KakaoFirstSubsApprove extends KaKaoApproveTemplate {
 	}
 
 	@Override
-	public MultiValueMap<String, String> getApproveParams(ApproveRequest approveRequest) {
+	public Map<String, String> getApproveParams(ApproveRequest approveRequest) {
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest)approveRequest;
 		return parameterProvider.getSubscriptionFirstApproveParams(
 			request.getTid(),

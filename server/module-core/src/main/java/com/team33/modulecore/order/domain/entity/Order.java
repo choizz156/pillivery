@@ -53,6 +53,8 @@ public class Order extends BaseEntity {
 
 	private int totalItemsCount;
 
+	private String mainItemName;
+
 	private int totalQuantity;
 
 	private String sid;
@@ -85,6 +87,7 @@ public class Order extends BaseEntity {
 		this.orderStatus = origin.getOrderStatus();
 		this.user = origin.getUser();
 		this.orderItems = origin.getOrderItems();
+		this.mainItemName = origin.getMainItemName();
 	}
 
 	@Builder
@@ -92,6 +95,7 @@ public class Order extends BaseEntity {
 		boolean isSubscription,
 		boolean isOrderedAtCart,
 		int totalItemsCount,
+		String mainItemName,
 		OrderPrice orderPrice,
 		Receiver receiver,
 		OrderStatus orderStatus,
@@ -102,6 +106,7 @@ public class Order extends BaseEntity {
 		this.isSubscription = isSubscription;
 		this.isOrderedAtCart = isOrderedAtCart;
 		this.totalItemsCount = totalItemsCount;
+		this.mainItemName = mainItemName;
 		this.orderPrice = orderPrice;
 		this.receiver = receiver;
 		this.orderStatus = orderStatus;
@@ -120,6 +125,7 @@ public class Order extends BaseEntity {
 			.orderItems(orderItems)
 			.totalItemsCount(orderItems.size())
 			.totalQuantity(orderItems.stream().mapToInt(OrderItem::getQuantity).sum())
+			.mainItemName(orderItems.get(0).getItem().getProductName())
 			.build();
 
 		order.addPrice(order.getOrderItems());
@@ -154,10 +160,6 @@ public class Order extends BaseEntity {
 	public void adjustPriceAndQuantity(List<OrderItem> orderItems) {
 		this.orderPrice = new OrderPrice(orderItems);
 		countQuantity();
-	}
-
-	public String getFirstProductName() {
-		return this.orderItems.get(0).getItem().getProductName();
 	}
 
 	public int getTotalPrice() {

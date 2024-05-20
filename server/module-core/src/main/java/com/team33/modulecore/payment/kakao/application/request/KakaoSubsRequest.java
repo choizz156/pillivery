@@ -1,7 +1,8 @@
 package com.team33.modulecore.payment.kakao.application.request;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.SubscriptionRequest;
@@ -27,7 +28,7 @@ public class KakaoSubsRequest
 	}
 
 	@Override
-	public MultiValueMap<String, String> getRequestParams(Order order) {
+	public Map<String, String> getRequestParams(Order order) {
 		return parameterProvider.getSubscriptionReqsParams(order);
 	}
 }

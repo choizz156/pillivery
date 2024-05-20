@@ -8,7 +8,9 @@ import com.team33.modulecore.payment.application.request.RequestFacade;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class KakaoRequestFacade implements RequestFacade<KakaoRequestResponse> {

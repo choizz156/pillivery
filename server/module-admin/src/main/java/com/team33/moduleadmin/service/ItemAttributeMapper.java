@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+// import com.team33.moduleadmin.dto.ItemInfoDto;
 import com.team33.moduleadmin.dto.ItemDto;
+import com.team33.modulecore.item.domain.Image;
 import com.team33.modulecore.item.domain.Information;
 import com.team33.modulecore.item.domain.Price;
 
@@ -18,6 +20,7 @@ public class ItemAttributeMapper {
 
 
     public static List<Information> toInformation(List<ItemDto> items) {
+
         return items.stream()
             .map(
                 wrapper ->Information.builder()
@@ -33,6 +36,7 @@ public class ItemAttributeMapper {
                     .statementNumber(wrapper.getSttemntNo())
                     .sungsang(wrapper.getSungsang())
                     .price(new Price(wrapper.getOriginPrice(), wrapper.getDiscountRate()))
+                    .image(new Image(wrapper.getImage(),wrapper.getDescription()))
                     .build()
 
             )

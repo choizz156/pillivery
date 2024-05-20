@@ -3,6 +3,8 @@ package com.team33.modulecore.item.domain;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.Lob;
+
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,16 +28,20 @@ public class Information {
 
     private String distributionPeriod;
 
+    @Lob
     private String sungsang; //원료 특성
 
     private String servingUse;
 
     private String preservePeriod;
 
+    @Lob
     private String intake;
 
+    @Lob
     private String mainFunction;
 
+    @Lob
     private String baseStandard;
 
     @Embedded

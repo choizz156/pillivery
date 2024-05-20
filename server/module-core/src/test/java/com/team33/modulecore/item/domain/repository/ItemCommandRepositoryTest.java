@@ -85,7 +85,7 @@ class ItemCommandRepositoryTest {
 		em.persist(item);
 
 		//when
-		Long updateItemId = itemCommandRepository.incrementSales(item.getId());
+		int updateItemId = itemCommandRepository.incrementSales(item.getId());
 
 		//then
 		Item updateItem = em.find(Item.class, updateItemId);

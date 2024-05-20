@@ -13,8 +13,8 @@ public enum KakaoHeader {
 	HTTP_HEADERS(
 		() -> {
 			HttpHeaders httpHeaders = new HttpHeaders();
-			httpHeaders.add("Authorization", "KakaoAK 15fe252b3ce1d6da44b790e005f40964");
-			httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+			httpHeaders.add("Authorization",  "SECRET_KEY DEV9F204C96DFE6655F42DCE22C77CF4CC4E3BD5");
+			httpHeaders.add("Content-Type","application/json");
 			return httpHeaders;
 		}
 	);

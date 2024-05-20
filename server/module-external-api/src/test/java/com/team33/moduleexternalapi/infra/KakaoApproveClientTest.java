@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.*;
 import static org.mockserver.model.HttpResponse.*;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,8 +19,6 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.Header;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.domain.PaymentClient;
@@ -84,14 +85,14 @@ class KakaoApproveClientTest {
 	void test() throws Exception {
 		// Given
 		PaymentClient<KaKaoApproveResponse> kaKaoApproveClient =
-			new KakaoApproveClient(new TestRestTemplate().getRestTemplate());
+			new KakaoApproveClient(new TestRestTemplate().getRestTemplate(), new ObjectMapper());
 
-		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-		parameters.add("cid", "TC0ONETIME");
-		parameters.add("tid", "tid");
-		parameters.add("partner_order_id", "1");
-		parameters.add("partner_user_id", "partner_user_id");
-		parameters.add("pg_token", "pgToken");
+		Map<String, String> parameters = new ConcurrentHashMap<>();
+		parameters.put("cid", "TC0ONETIME");
+		parameters.put("tid", "tid");
+		parameters.put("partner_order_id", "1");
+		parameters.put("partner_user_id", "partner_user_id");
+		parameters.put("pg_token", "pgToken");
 
 		// When
 		KaKaoApproveResponse send = kaKaoApproveClient.send(parameters, APPROVE_URL);

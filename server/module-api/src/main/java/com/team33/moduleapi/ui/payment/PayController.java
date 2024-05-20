@@ -1,18 +1,22 @@
 package com.team33.moduleapi.ui.payment;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleapi.ui.payment.dto.KaKaoApproveResponseDto;
 import com.team33.moduleapi.ui.payment.dto.KaKaoPayNextUrlDto;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.payment.application.request.RequestFacade;
-import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -25,35 +29,51 @@ public class PayController {
 	private final ApproveFacade<KaKaoApproveResponse, KakaoApproveOneTimeRequest> approveFacade;
 	private final RequestFacade<KakaoRequestResponse> requestFacade;
 	private final PaymentMapper paymentMapper;
+	private final PaymentDataService paymentDataSerivce;
+
 
 	@PostMapping("/{orderId}")
 	public KaKaoPayNextUrlDto request(
 		@PathVariable Long orderId
 	) {
 		KakaoRequestResponse requestResponse = requestFacade.request(orderId);
+		paymentDataSerivce.addData(orderId, requestResponse.getTid());
 
 		return KaKaoPayNextUrlDto.from(requestResponse);
 	}
 
-	@PostMapping("/{orderId}/approve")
-	public KaKaoApproveResponseDto approve(
-		@PathVariable Long orderId,
-		@RequestParam String tid,
-		@RequestParam("pg_token") String pgToken
+	// @PostMapping("/{orderId}/approve")
+	// public KaKaoApproveResponseDto approve(
+	// 	@PathVariable Long orderId,
+	// 	@RequestParam String tid,
+	// 	@RequestParam("pg_token") String pgToken
+	// ) {
+	// 	KakaoApproveOneTimeRequest approveOneTimeRequest = paymentMapper.toApproveOneTime(tid, pgToken, orderId);
+	// 	KaKaoApproveResponse approveResponse = approveFacade.approveFirstTime(approveOneTimeRequest);
+	//
+	// 	return KaKaoApproveResponseDto.from(approveResponse);
+	// }
+
+	// @PostMapping("/{orderId}/approve/subscription")
+	// public KaKaoApproveResponseDto subscription(
+	// 	@PathVariable Long orderId
+	// ) {
+	// 	KaKaoApproveResponse approveResponse = approveFacade.approveSubscription(orderId);
+	// 	return KaKaoApproveResponseDto.from(approveResponse);
+	// }
+
+	@GetMapping("/approve/{orderId}")
+	public KaKaoApproveResponseDto success(
+		@RequestParam("pg_token") String pgToken,
+		@PathVariable Long orderId
 	) {
-		KakaoApproveOneTimeRequest approveOneTimeRequest = paymentMapper.toApproveOneTimeRequest(tid, pgToken, orderId);
+		PaymentData data = paymentDataSerivce.getData(orderId);
+
+		KakaoApproveOneTimeRequest approveOneTimeRequest = paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
 		KaKaoApproveResponse approveResponse = approveFacade.approveFirstTime(approveOneTimeRequest);
 
 		return KaKaoApproveResponseDto.from(approveResponse);
-	}
 
-	@PostMapping("/{orderId}/approve/subscription")
-	public KaKaoApproveResponseDto subscription(
-		@PathVariable Long orderId
-	) {
-		KaKaoApproveResponse approveResponse = approveFacade.approveSubscription(orderId);
-
-		return KaKaoApproveResponseDto.from(approveResponse);
 	}
 
 	//    @GetMapping("/kakao/cancel")
@@ -62,9 +82,8 @@ public class PayController {
 	//        return Mapper.getInstance().readValue(cancel, FailResponse.class);
 	//    }
 	//
-	//    @GetMapping("/kakao/fail")
-	//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-	//    public FailResponse fail(@RequestBody String fail) throws JsonProcessingException {
-	//        return Mapper.getInstance().readValue(fail, FailResponse.class);
-	//    }
+	   @GetMapping("/fail")
+	   @ResponseStatus(HttpStatus.BAD_REQUEST)
+	   public void fail() throws JsonProcessingException {
+	   }
 }

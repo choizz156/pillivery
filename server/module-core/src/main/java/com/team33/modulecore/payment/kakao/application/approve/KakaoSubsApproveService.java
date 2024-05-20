@@ -21,13 +21,13 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<KaKao
 	private final OrderService orderService;
 
 	@Override
-	public KaKaoApproveResponse approveFirstTime(Long orderId, ApproveRequest approveRequest) {
+	public KaKaoApproveResponse approveFirstTime(ApproveRequest approveRequest) {
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest)approveRequest;
 
 		KaKaoApproveResponse approve =
 			kakaoFirstSubsApprove.approveFirstSubscription(request);
 
-		orderService.changeOrderStatusToSubscribe(orderId, approve.getSid());
+		orderService.changeOrderStatusToSubscribe(Long.valueOf(approve.getPartner_order_id()), approve.getSid());
 
 		// doKakaoScheduling(orderId);
 		return approve;

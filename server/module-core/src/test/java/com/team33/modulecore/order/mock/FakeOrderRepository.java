@@ -1,10 +1,11 @@
 package com.team33.modulecore.order.mock;
 
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.order.domain.repository.OrderRepository;
 
 public class FakeOrderRepository implements OrderRepository {
 
@@ -26,5 +27,10 @@ public class FakeOrderRepository implements OrderRepository {
     @Override
     public void delete(Order entity) {
         store.remove(entity.getId());
+    }
+
+    @Override
+    public boolean findIsSubscriptionById(Long orderId) {
+        return false;
     }
 }

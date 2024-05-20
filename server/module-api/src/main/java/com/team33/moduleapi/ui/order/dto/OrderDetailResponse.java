@@ -74,6 +74,7 @@ public class OrderDetailResponse {
             .orderStatus(order.getOrderStatus())
             .createdAt(order.getCreatedAt())
             .updatedAt(order.getUpdatedAt())
+            .totalQuantity(order.getTotalQuantity())
             .build();
     }
 }
