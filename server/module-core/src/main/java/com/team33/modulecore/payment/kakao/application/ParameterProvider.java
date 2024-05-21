@@ -22,7 +22,7 @@ public class ParameterProvider extends ParamsConst {
 	public Map<String, String> getSubscriptionReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
 		commonReqsParams.put(CID, SUBSCRIP_CID);
-		commonReqsParams.put(APPROVAL_URL, SUBSCRIPTION_APPROVAL_URI);
+		commonReqsParams.put(APPROVAL_URL, SUBSCRIPTION_APPROVAL_URI + "/" + order.getId());
 		return commonReqsParams;
 	}
 
@@ -110,6 +110,6 @@ public class ParameterProvider extends ParamsConst {
 			return itemName;
 		}
 
-		return itemName + "그 외" + (itemQuantity - 1) + "개";
+		return itemName + " 그 외 " + (itemQuantity - 1) + "개";
 	}
 }

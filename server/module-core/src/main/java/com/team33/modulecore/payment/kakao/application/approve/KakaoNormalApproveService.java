@@ -22,9 +22,6 @@ public class KakaoNormalApproveService implements NormalApproveService<KaKaoAppr
 	public KaKaoApproveResponse approveOneTime( ApproveRequest approveRequest) {
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest) approveRequest;
 
-		KaKaoApproveResponse approve = normalApprove.approveOneTime(request);
-		orderService.changeOrderStatusToComplete(Long.valueOf(approve.getPartner_order_id()));
-
-		return approve;
+		return normalApprove.approveOneTime(request);
 	}
 }

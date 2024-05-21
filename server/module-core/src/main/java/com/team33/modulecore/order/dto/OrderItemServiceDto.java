@@ -12,18 +12,18 @@ public class OrderItemServiceDto {
 	private long itemId;
 	private int quantity;
 	private int period;
-	private boolean isSubscription;
+	private boolean subscription;
 
 	@Builder
 	public OrderItemServiceDto(
 		long itemId,
 		int quantity,
 		int period,
-		boolean isSubscription
+		boolean subscription
 	) {
 		this.itemId = itemId;
 		this.quantity = quantity;
 		this.period = period;
-		this.isSubscription = isSubscription;
+		this.subscription = subscription;
 	}
 }

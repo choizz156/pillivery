@@ -20,14 +20,14 @@ class OrderItemServiceTest {
 	void createOrderItem() throws Exception {
 		//given
 		var dto1 = OrderItemServiceDto.builder()
-			.isSubscription(true)
+			.subscription(true)
 			.itemId(1L)
 			.period(30)
 			.quantity(3)
 			.build();
 
 		var dto2 = OrderItemServiceDto.builder()
-			.isSubscription(false)
+			.subscription(false)
 			.itemId(2L)
 			.period(0)
 			.quantity(1)

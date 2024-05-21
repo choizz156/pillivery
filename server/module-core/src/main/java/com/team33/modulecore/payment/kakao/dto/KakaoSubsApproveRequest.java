@@ -7,8 +7,8 @@ import lombok.Getter;
 
 @Getter
 public class KakaoSubsApproveRequest implements ApproveRequest {
-	private String sid;
-	private Long orderId;
+	private final String sid;
+	private final Long orderId;
 
 	@Builder
 	private KakaoSubsApproveRequest(String sid, Long orderId) {

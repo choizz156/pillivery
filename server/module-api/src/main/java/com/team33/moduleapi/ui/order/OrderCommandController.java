@@ -50,10 +50,11 @@ public class OrderCommandController {
 		List<OrderItemServiceDto> orderItemServiceDto =
 			orderItemMapper.toOrderItemPostDto(orderPostDtoList.getOrderPostDtoList());
 
+		OrderContext orderContext = orderItemMapper.toOrderContext(orderPostDtoList);
+
 		List<OrderItem> orderItems =
 			orderItemService.toOrderItems(orderItemServiceDto);
 
-		OrderContext orderContext = orderItemMapper.toOrderContext(orderPostDtoList);
 		Order order = orderService.callOrder(orderItems, orderContext);
 
 		return new SingleResponseDto<>(OrderDetailResponse.of(order));

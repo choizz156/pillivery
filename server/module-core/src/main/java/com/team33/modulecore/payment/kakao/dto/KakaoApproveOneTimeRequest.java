@@ -8,9 +8,9 @@ import lombok.Getter;
 @Getter
 public class KakaoApproveOneTimeRequest implements ApproveRequest {
 
-	private String tid;
-	private String pgtoken;
-	private Long orderId;
+	private final String tid;
+	private final String pgtoken;
+	private final Long orderId;
 
 	@Builder
 	private KakaoApproveOneTimeRequest(String tid, String pgtoken, Long orderId) {

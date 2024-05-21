@@ -95,7 +95,6 @@ public class ItemRegisterController {
 	}
 
     private List<ItemDto> toBusinessDto(List<ItemWrapper> items) {
-		items.forEach(itemInfoDto -> log.warn("{}", itemInfoDto.getItem().getEntrps()));
         FixtureMonkey build = FixtureMonkey.builder()
             .plugin(new JavaxValidationPlugin())
             .plugin(new JacksonPlugin())

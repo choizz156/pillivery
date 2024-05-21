@@ -17,7 +17,7 @@ public class KakaoSubsApprove
 
 	private final ParameterProvider parameterProvider;
 	private final PaymentClient<KaKaoApproveResponse> kakaoApproveClient;
-	private static final String KAKAO_SUBSCRIPTION_URL = "https://kapi.kakao.com/v1/payment/subscription";
+	private static final String KAKAO_SUBSCRIPTION_URL = "https://open-api.kakaopay.com/online/v11/payment/subscription";
 
 	@Override
 	public KaKaoApproveResponse approveSubscription(Order order) {

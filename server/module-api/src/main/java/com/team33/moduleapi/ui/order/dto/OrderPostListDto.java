@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class OrderPostListDto {
 	private Long userId;
-	private boolean isSubscription;
-	private boolean isOrderedAtCart;
+	private boolean subscription;
+	private boolean orderedAtCart;
 	private String city;
 	private String detailAddress;
 	private String realName;

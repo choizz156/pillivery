@@ -21,7 +21,7 @@ public class OrderItemMapper {
 
 		return OrderItemServiceDto.builder()
 			.itemId(orderPostDto.getItemId())
-			.isSubscription(orderPostDto.isSubscription())
+			.subscription(orderPostDto.isSubscription())
 			.quantity(orderPostDto.getQuantity())
 			.period(orderPostDto.getPeriod())
 			.build();

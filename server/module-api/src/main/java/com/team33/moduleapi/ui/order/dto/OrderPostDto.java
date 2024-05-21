@@ -12,5 +12,5 @@ public class OrderPostDto {
     @Min(value = 1, message = "수량은 1개 이상 선택해주세요.")
     private int quantity;
     private int period;
-    private boolean isSubscription;
+    private boolean subscription;
 }
