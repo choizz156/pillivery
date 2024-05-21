@@ -1,0 +1,78 @@
+package com.team33.modulecore.payment.kakao.application.approve;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import com.team33.modulecore.common.OrderFindHelper;
+import com.team33.modulecore.payment.application.approve.NormalApproveService;
+import com.team33.modulecore.payment.application.approve.SubscriptionApproveService;
+import com.team33.modulecore.payment.dto.ApproveRequest;
+import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+
+class KakaoApproveFacadeTest {
+
+	@DisplayName("정기 결제 승인시 정기 결제 승인 서비스로 위임한다.")
+	@Test
+	void 정기_서비스_위임() throws Exception{
+		//given
+		SubscriptionApproveService subscriptionApproveService = mock(SubscriptionApproveService.class);
+		NormalApproveService normalApproveService = mock(NormalApproveService.class);
+		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
+
+		when(orderFindHelper.checkSubscription(anyLong())).thenReturn(true);
+		when(subscriptionApproveService.approveFirstTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		when(normalApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		KakaoApproveFacade kakaoApproveFacade =
+			new KakaoApproveFacade(subscriptionApproveService, normalApproveService, orderFindHelper);
+
+		KakaoApproveOneTimeRequest request = KakaoApproveOneTimeRequest.builder()
+			.orderId(1L)
+			.pgtoken("pgToken")
+			.tid("tid")
+			.build();
+
+		//when
+		KakaoApproveResponse kakaoApproveResponse = kakaoApproveFacade.approveFirst(request);
+
+		//then
+		verify(subscriptionApproveService, times(1)).approveFirstTime(any(ApproveRequest.class));
+		verify(normalApproveService, times(0)).approveOneTime(any(ApproveRequest.class));
+		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
+
+		assertThat(kakaoApproveResponse).isNotNull();
+	}
+
+	@DisplayName("단건 결제 승인 시 단건 승인 서비스로 위임한다.")
+	@Test
+	void 단건_승인_위임() throws Exception{
+		SubscriptionApproveService subscriptionApproveService = mock(SubscriptionApproveService.class);
+		NormalApproveService normalApproveService = mock(NormalApproveService.class);
+		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
+
+		when(orderFindHelper.checkSubscription(anyLong())).thenReturn(false);
+		when(subscriptionApproveService.approveFirstTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		when(normalApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		KakaoApproveFacade kakaoApproveFacade =
+			new KakaoApproveFacade(subscriptionApproveService, normalApproveService, orderFindHelper);
+
+		KakaoApproveOneTimeRequest request = KakaoApproveOneTimeRequest.builder()
+			.orderId(1L)
+			.pgtoken("pgToken")
+			.tid("tid")
+			.build();
+
+		//when
+		KakaoApproveResponse kakaoApproveResponse = kakaoApproveFacade.approveFirst(request);
+
+		//then
+		verify(subscriptionApproveService, times(0)).approveFirstTime(any(ApproveRequest.class));
+		verify(normalApproveService, times(1)).approveOneTime(any(ApproveRequest.class));
+		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
+
+		assertThat(kakaoApproveResponse).isNotNull();
+	}
+}

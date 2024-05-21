@@ -22,7 +22,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.domain.PaymentClient;
-import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoApproveClientTest {
@@ -52,7 +52,7 @@ class KakaoApproveClientTest {
 	void setUp() throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		KaKaoApproveResponse dto = KaKaoApproveResponse.builder().build();
+		KakaoApproveResponse dto = KakaoApproveResponse.builder().build();
 		String response = objectMapper.writeValueAsString(dto);
 
 		mockServerClient = new MockServerClient(HOST, PORT);
@@ -84,7 +84,7 @@ class KakaoApproveClientTest {
 	@Test
 	void test() throws Exception {
 		// Given
-		PaymentClient<KaKaoApproveResponse> kaKaoApproveClient =
+		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new TestRestTemplate().getRestTemplate(), new ObjectMapper());
 
 		Map<String, String> parameters = new ConcurrentHashMap<>();
@@ -95,7 +95,7 @@ class KakaoApproveClientTest {
 		parameters.put("pg_token", "pgToken");
 
 		// When
-		KaKaoApproveResponse send = kaKaoApproveClient.send(parameters, APPROVE_URL);
+		KakaoApproveResponse send = kaKaoApproveClient.send(parameters, APPROVE_URL);
 
 		// Then
 		assertThat(send).isNotNull();
