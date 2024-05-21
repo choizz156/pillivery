@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class KaKaoApproveResponse {
+public class KakaoApproveResponse {
 
 	private String aid;
 	private String tid;
@@ -34,7 +34,7 @@ public class KaKaoApproveResponse {
 	}
 
 	@Builder
-	public KaKaoApproveResponse(
+	public KakaoApproveResponse(
 		String aid,
 		String tid,
 		String cid,

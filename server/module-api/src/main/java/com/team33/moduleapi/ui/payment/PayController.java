@@ -18,7 +18,7 @@ import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.payment.application.request.RequestFacade;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class PayController {
 
-	private final ApproveFacade<KaKaoApproveResponse, KakaoApproveOneTimeRequest> approveFacade;
+	private final ApproveFacade<KakaoApproveResponse, KakaoApproveOneTimeRequest> approveFacade;
 	private final RequestFacade<KakaoRequestResponse> requestFacade;
 	private final PaymentMapper paymentMapper;
 	private final PaymentDataService paymentDataSerivce;
@@ -53,7 +53,7 @@ public class PayController {
 
 		KakaoApproveOneTimeRequest approveOneTimeRequest = paymentMapper.toApproveOneTime(data.getTid(), pgToken,
 			data.getOrderId());
-		KaKaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
+		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
 
 		orderService.changeOrderStatusToSubscribe(Long.valueOf(approve.getPartner_order_id()), approve.getSid());
 
@@ -70,7 +70,7 @@ public class PayController {
 		KakaoApproveOneTimeRequest approveOneTimeRequest =
 			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
 
-		KaKaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
+		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
 
 		orderService.changeOrderStatusToComplete(Long.valueOf(approve.getPartner_order_id()));
 
@@ -81,7 +81,7 @@ public class PayController {
 	public KaKaoApproveResponseDto subscription(
 		@RequestParam("orderId") Long orderId
 	) {
-		KaKaoApproveResponse kaKaoApproveResponse = approveFacade.approveSubscription(orderId);
+		KakaoApproveResponse kaKaoApproveResponse = approveFacade.approveSubscription(orderId);
 
 		return KaKaoApproveResponseDto.from(kaKaoApproveResponse);
 	}

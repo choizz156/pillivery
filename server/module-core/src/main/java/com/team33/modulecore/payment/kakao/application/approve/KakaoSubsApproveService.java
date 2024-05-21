@@ -2,26 +2,24 @@ package com.team33.modulecore.payment.kakao.application.approve;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.approve.SubscriptionApprove;
 import com.team33.modulecore.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoSubsApproveService implements SubscriptionApproveService<KaKaoApproveResponse> {
+public class KakaoSubsApproveService implements SubscriptionApproveService<KakaoApproveResponse> {
 
 	private final KakaoFirstSubsApprove kakaoFirstSubsApprove;
-	private final SubscriptionApprove<KaKaoApproveResponse> subscriptionApprove;
-	private final OrderService orderService;
+	private final SubscriptionApprove<KakaoApproveResponse> subscriptionApprove;
 
 	@Override
-	public KaKaoApproveResponse approveFirstTime(ApproveRequest approveRequest) {
+	public KakaoApproveResponse approveFirstTime(ApproveRequest approveRequest) {
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest)approveRequest;
 
 		// doKakaoScheduling(orderId);
@@ -29,7 +27,7 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<KaKao
 	}
 
 	@Override
-	public KaKaoApproveResponse approveSubscribe(Order order) {
+	public KakaoApproveResponse approveSubscribe(Order order) {
 		return subscriptionApprove.approveSubscription(order);
 	}
 }

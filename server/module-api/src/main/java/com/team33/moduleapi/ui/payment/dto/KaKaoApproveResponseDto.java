@@ -1,6 +1,6 @@
 package com.team33.moduleapi.ui.payment.dto;
 
-import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -54,7 +54,7 @@ public class KaKaoApproveResponseDto {
 	}
 
 	public static KaKaoApproveResponseDto from(
-		KaKaoApproveResponse approveResponse
+		KakaoApproveResponse approveResponse
 	) {
 		return KaKaoApproveResponseDto.builder()
 			.item_name(approveResponse.getItem_name())

@@ -9,17 +9,17 @@ import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.moduleexternalapi.domain.PaymentClient;
-import com.team33.moduleexternalapi.dto.KaKaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 
 @Component
 public class KakaoNormalApprove
 	extends KaKaoApproveTemplate
-	implements NormalApprove<KaKaoApproveResponse, KakaoApproveOneTimeRequest>
+	implements NormalApprove<KakaoApproveResponse, KakaoApproveOneTimeRequest>
 {
 	private final ParameterProvider parameterProvider;
 
 	public KakaoNormalApprove(
-		PaymentClient<KaKaoApproveResponse> kakaoApproveClient,
+		PaymentClient<KakaoApproveResponse> kakaoApproveClient,
 		ParameterProvider parameterProvider
 	) {
 		super(kakaoApproveClient);
@@ -27,7 +27,7 @@ public class KakaoNormalApprove
 	}
 
 	@Override
-	public KaKaoApproveResponse approveOneTime(KakaoApproveOneTimeRequest approveRequest) {
+	public KakaoApproveResponse approveOneTime(KakaoApproveOneTimeRequest approveRequest) {
 		return super.approve(approveRequest);
 	}
 
