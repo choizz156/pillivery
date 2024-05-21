@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.domain.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
+import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -33,10 +34,14 @@ public class KakaoRequestClient implements PaymentClient<KakaoRequestResponse> {
 		ResponseEntity<KakaoRequestResponse> exchange = restTemplate.exchange(url, HttpMethod.POST, kakaoRequestEntity,
 			KakaoRequestResponse.class);
 
-		if (!exchange.getStatusCode().is2xxSuccessful()) {
-			throw new RuntimeException("kakao request fail");
-		}
+		checkSuccess(exchange);
 
 		return exchange.getBody();
+	}
+
+	private void checkSuccess(ResponseEntity<KakaoRequestResponse> exchange) {
+		if (!exchange.getStatusCode().is2xxSuccessful()) {
+			throw new PaymentApiException("kakao request fail");
+		}
 	}
 }
