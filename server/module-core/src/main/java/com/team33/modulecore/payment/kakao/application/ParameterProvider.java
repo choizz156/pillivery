@@ -56,17 +56,6 @@ public class ParameterProvider extends ParamsConst {
 		return subsApproveParams;
 	}
 
-	public Map<String, String> getRefundParams(String tid, int cancelAmount, int cancelTaxFreeAmount) {
-		Map<String, String> parameters = new ConcurrentHashMap<>();
-
-		parameters.put(TID, tid);
-		parameters.put(CID, ONE_TIME_CID);
-		parameters.put(CANCEL_AMOUNT, String.valueOf(cancelAmount)); //TODO: 이거 숫자여야됨.
-		parameters.put(CANCEL_TAX_FREE_AMOUNT, String.valueOf(cancelTaxFreeAmount));
-
-		return parameters;
-	}
-
 	private Map<String, String> getRequestParams(Order order) {
 		PaymentParams requestParamsInfo = getRequestParamsInfo(order);
 		return getCommonReqsParams(requestParamsInfo);

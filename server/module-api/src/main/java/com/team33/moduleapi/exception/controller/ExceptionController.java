@@ -12,11 +12,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.team33.moduleapi.exception.dto.ErrorResponse;
 import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = {"com.team33.moduleapi", "com.team33.modulecore", "com.team33.modulequartz"})
 public class ExceptionController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -53,10 +54,16 @@ public class ExceptionController {
         return ErrorResponse.of(e.getMessage());
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    // @ExceptionHandler(RuntimeException.class)
+    // @ResponseStatus(HttpStatus.BAD_REQUEST)
+    // public ErrorResponse illegalArgumentExceptionHandler(RuntimeException e) {
+    //     return ErrorResponse.of(e.getMessage());
+    // }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse illegalArgumentExceptionHandler(RuntimeException e) {
-        return ErrorResponse.of(e.getMessage());
+    @ExceptionHandler(PaymentApiException.class)
+    public com.team33.moduleexternalapi.exception.ErrorResponse handleException(PaymentApiException e) {
+        return com.team33.moduleexternalapi.exception.ErrorResponse.of(e.getMessage());
     }
 }
 
