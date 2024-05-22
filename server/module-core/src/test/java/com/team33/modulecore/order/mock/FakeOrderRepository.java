@@ -4,33 +4,49 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 
 public class FakeOrderRepository implements OrderRepository {
 
-    private final Map<Long, Order> store;
+	private Map<Long, Order> store;
+	private EntityManager em;
 
-    public FakeOrderRepository() {
-        this.store = new HashMap<>();
-    }
+	public FakeOrderRepository(EntityManager em) {
+		this.store = new HashMap<>();
+		this.em = em;
+	}
 
-    public Order save(Order order) {
-        store.put(order.getId(), order);
-        return order;
-    }
+	public FakeOrderRepository() {
+	}
 
-    public Optional<Order> findById(Long id) {
-        return store.containsKey(id) ? Optional.of(store.get(id)) : Optional.empty();
-    }
+	public Order save(Order order) {
+		store.put(order.getId(), order);
+		return order;
+	}
 
-    @Override
-    public void delete(Order entity) {
-        store.remove(entity.getId());
-    }
+	public Optional<Order> findById(Long id) {
+		return store.containsKey(id) ? Optional.of(store.get(id)) : Optional.empty();
+	}
 
-    @Override
-    public boolean findIsSubscriptionById(Long orderId) {
-        return false;
-    }
+	@Override
+	public void delete(Order entity) {
+		store.remove(entity.getId());
+	}
+
+	@Override
+	public boolean findIsSubscriptionById(Long orderId) {
+		return em.createQuery("select o.isSubscription from orders o where o.id = :orderId", Boolean.class)
+			.setParameter("orderId", orderId)
+			.getSingleResult();
+	}
+
+	@Override
+	public String findTid(Long orderId) {
+		return em.createQuery("select o.paymentCode.tid from orders o where o.id = :orderId", String.class)
+			.setParameter("orderId", orderId)
+			.getSingleResult();
+	}
 }

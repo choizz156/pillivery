@@ -16,4 +16,7 @@ public interface OrderRepository extends Repository<Order, Long> {
 
 	@Query("select o.isSubscription from orders o where o.id = :orderId")
 	boolean findIsSubscriptionById(@Param("orderId") Long orderId);
+
+	@Query("select o.paymentCode.tid from orders o where o.id = :orderId")
+	String findTid(@Param("orderId") Long orderId);
 }
