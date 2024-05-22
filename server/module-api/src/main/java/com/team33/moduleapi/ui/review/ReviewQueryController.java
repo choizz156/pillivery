@@ -12,7 +12,7 @@ import com.team33.moduleapi.ui.review.dto.ReviewPageDto;
 import com.team33.moduleapi.ui.review.mapper.ReviewPageMapper;
 import com.team33.modulecore.review.dto.query.ReviewPage;
 import com.team33.modulecore.review.dto.query.ReviewQueryDto;
-import com.team33.modulecore.review.repository.ReviewQueryRepository;
+import com.team33.modulecore.review.domain.repository.ReviewQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

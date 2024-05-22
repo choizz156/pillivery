@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -30,6 +31,7 @@ import com.team33.modulecore.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Repository
 public class OrderQueryDslDao implements OrderQueryRepository {
 
 	private final JPAQueryFactory queryFactory;

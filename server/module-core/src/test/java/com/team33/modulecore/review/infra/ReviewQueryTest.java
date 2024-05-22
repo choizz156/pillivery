@@ -26,7 +26,7 @@ import com.team33.modulecore.review.domain.entity.Review;
 import com.team33.modulecore.review.dto.query.ReviewPage;
 import com.team33.modulecore.review.dto.query.ReviewQueryDto;
 import com.team33.modulecore.review.dto.query.ReviewSortOption;
-import com.team33.modulecore.review.repository.ReviewQueryRepository;
+import com.team33.modulecore.review.domain.repository.ReviewQueryRepository;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class ReviewQueryTest {

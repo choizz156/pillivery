@@ -106,7 +106,6 @@ class OrderCreateServiceTest {
 	void 주문_상태_변경2() throws Exception {
 		//given
 		var order = orderRepository.save(getCartOrder());
-		var userFindHelper = mock(UserFindHelper.class);
 		var itemCommandService = mock(ItemCommandService.class);
 		var subscriptionCartService = mock(SubscriptionCartService.class);
 
@@ -138,7 +137,6 @@ class OrderCreateServiceTest {
 
 		var order = orderRepository.save(sample);
 
-		UserFindHelper userFindHelper = mock(UserFindHelper.class);
 		var itemCommandService = mock(ItemCommandService.class);
 		var normalCartService = mock(NormalCartService.class);
 

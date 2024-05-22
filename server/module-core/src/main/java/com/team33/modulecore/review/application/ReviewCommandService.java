@@ -9,7 +9,7 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.review.domain.ReviewContext;
 import com.team33.modulecore.review.domain.entity.Review;
-import com.team33.modulecore.review.repository.ReviewCommandRepository;
+import com.team33.modulecore.review.domain.repository.ReviewCommandRepository;
 import com.team33.modulecore.user.application.UserService;
 
 import lombok.RequiredArgsConstructor;

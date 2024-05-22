@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -19,12 +20,14 @@ import com.team33.modulecore.review.dto.query.QReviewQueryDto;
 import com.team33.modulecore.review.dto.query.ReviewPage;
 import com.team33.modulecore.review.dto.query.ReviewQueryDto;
 import com.team33.modulecore.review.dto.query.ReviewSortOption;
-import com.team33.modulecore.review.repository.ReviewQueryRepository;
+import com.team33.modulecore.review.domain.repository.ReviewQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Repository
 public class ReviewQueryDslDao implements ReviewQueryRepository {
+
 	private final JPAQueryFactory queryFactory;
 
 	@Override
