@@ -12,7 +12,7 @@ public abstract class ParamsConst {
     protected static final String SUBSCRIPTION_APPROVAL_URI = "http://localhost:8080/payments/approve/subscription";
     protected static final String CANCEL_URI = "http://localhost:8080/payments/cancel";
     protected static final String FAIL_URI = "http://localhost:8080/payments/fail";
-    protected static final String ONE_TIME_CID = "TC0ONETIME";
+    public static final String ONE_TIME_CID = "TC0ONETIME";
     protected static final String SUBSCRIP_CID = "TCSUBSCRIP";
     protected static final String CID = "cid";
     protected static final String APPROVAL_URL = "approval_url";

@@ -1,12 +1,12 @@
-package com.team33.modulecore.payment.kakao.application;
+package com.team33.modulecore.payment.kakao.application.refund;
 
 import static com.team33.modulecore.payment.kakao.application.ParamsConst.*;
 
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.payment.application.refund.RefundContext;
 import com.team33.modulecore.payment.application.refund.RefundService;
+import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.domain.RefundClient;
 import com.team33.moduleexternalapi.infra.RefundParams;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
