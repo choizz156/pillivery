@@ -1,6 +1,7 @@
 package com.team33.moduleapi.ui.payment;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,12 @@ public class RefundController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/{orderId}")
-	public SingleResponseDto<?> refund(@RequestBody RefundDto refundDto) {
+	public SingleResponseDto<?> refund(
+		@PathVariable Long orderId,
+		@RequestBody RefundDto refundDto
+	) {
 
-		RefundContext refundContext = paymentMapper.toRefundContext(refundDto);
+		RefundContext refundContext = paymentMapper.toRefundContext(refundDto, orderId);
 
 		return new SingleResponseDto<>(refundService.refund(refundContext));
 	}

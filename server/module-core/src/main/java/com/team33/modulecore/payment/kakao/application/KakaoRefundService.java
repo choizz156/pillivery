@@ -26,13 +26,13 @@ public class KakaoRefundService implements RefundService<KakaoRefundResponse> {
 	public KakaoRefundResponse refund(RefundContext refundContext) {
 
 		String tid = orderFindHelper.findTid(refundContext.getOrderId());
-
 		Map<String, String> refundParams =
 			parameterProvider.getRefundParams(
 				tid,
 				refundContext.getCancelAmount(),
 				refundContext.getCancelTaxFreeAmount()
 			);
+
 
 		return kakaoRefundClient.send(refundParams, REFUND_URL);
 	}

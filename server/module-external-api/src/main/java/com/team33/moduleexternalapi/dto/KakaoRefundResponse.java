@@ -8,13 +8,14 @@ import lombok.NoArgsConstructor;
 public class KakaoRefundResponse {
 
 	private String tid;
+
 	private String cid;
 	private String status;
 	private String partnerOrderId;
 	private String partnerUserId;
 	private String paymentMethodType;
 	private String itemName;
-	private Integer quantity;
+	private int quantity;
 	private Amount amount;
 	private ApprovedCancelAmount approvedCancelAmount;
 	private CanceledAmount canceledAmount;
@@ -25,48 +26,57 @@ public class KakaoRefundResponse {
 
 	@NoArgsConstructor
 	@Getter
-	private static class Amount {
+	public static class Amount {
 
-		private Integer total;
-		private Integer taxFree;
-		private Integer vat;
-		private Integer point;
-		private Integer discount;
-		private Integer greenDeposit;
+		private int total;
 
+		private int taxFree;
+		private int vat;
+		private int point;
+		private int discount;
+		private int greenDeposit;
+
+	}
+
+	/**
+	 * 취소된 금액 정보
+	 */
+	@NoArgsConstructor
+	@Getter
+	public static class ApprovedCancelAmount {
+
+		private int total;
+
+		private int taxFree;
+		private int vat;
+		private int point;
+		private int discount;
+		private int greenDeposit;
+	}
+
+	/**
+	 * 누적 취소 금액 정보
+	 */
+	@NoArgsConstructor
+	@Getter
+	public static class CanceledAmount {
+
+		private int total;
+		private int taxFree;
+		private int vat;
+		private int point;
+		private int discount;
+		private int greenDeposit;
 	}
 
 	@NoArgsConstructor
 	@Getter
-	private static class ApprovedCancelAmount {
-
-		private Integer total;
-		private Integer taxFree;
-		private Integer vat;
-		private Integer point;
-		private Integer discount;
-		private Integer greenDeposit;
-	}
-
-	@NoArgsConstructor
-	@Getter
-	private static class CanceledAmount {
-		private Integer total;
-		private Integer taxFree;
-		private Integer vat;
-		private Integer point;
-		private Integer discount;
-		private Integer greenDeposit;
-	}
-
-	@NoArgsConstructor
-	@Getter
-	private static class CancelAvailableAmount {
-		private Integer total;
-		private Integer taxFree;
-		private Integer vat;
-		private Integer point;
-		private Integer discount;
-		private Integer greenDeposit;
+	public static class CancelAvailableAmount {
+		private int total;
+		private int taxFree;
+		private int vat;
+		private int point;
+		private int discount;
+		private int greenDeposit;
 	}
 }

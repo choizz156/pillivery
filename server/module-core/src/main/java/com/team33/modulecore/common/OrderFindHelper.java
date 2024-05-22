@@ -25,6 +25,10 @@ public class OrderFindHelper {
 	}
 
 	public String findTid(Long orderId) {
-		return orderRepository.findTid(orderId);
+		String tid = orderRepository.findTid(orderId);
+		if(tid == null){
+			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
+		}
+		return tid;
 	}
 }

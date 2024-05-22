@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class RefundDto {
-	private Long orderId;
 	private int cancelAmount;
 	private int cancelTaxFreeAmount;
 	private int cancelAvailableAmount;

@@ -1,19 +1,10 @@
 package com.team33.modulequartz.subscription.application;
 
-import static org.quartz.JobKey.jobKey;
+import static org.quartz.JobKey.*;
 
-import com.team33.modulecore.order.application.OrderCreateService;
-import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderQueryService;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.OrderItem;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulequartz.subscription.infra.JobListeners;
-import com.team33.modulequartz.subscription.infra.TriggerListeners;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.ListenerManager;
@@ -22,6 +13,19 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.team33.modulecore.order.application.OrderCreateService;
+import com.team33.modulecore.order.application.OrderItemService;
+import com.team33.modulecore.order.application.OrderPaymentService;
+import com.team33.modulecore.order.application.OrderQueryService;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulequartz.subscription.infra.JobListeners;
+import com.team33.modulequartz.subscription.infra.TriggerListeners;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
@@ -33,6 +37,7 @@ public class SubscriptionService {
     private final TriggerService trigger;
     private final JobDetailService jobDetailService;
     private final OrderCreateService orderCreateService;
+    private final OrderPaymentService orderPaymentService;
     private final OrderItemService orderItemService;
     private final OrderQueryService orderQueryService;
 
@@ -174,6 +179,7 @@ public class SubscriptionService {
                     trigger,
                     orderItemService,
 					orderCreateService,
+                    orderPaymentService,
                     jobDetailService,
                     orderQueryService
                 )

@@ -13,11 +13,11 @@ public class PaymentMapper {
 		return KakaoApproveOneTimeRequest.of(tid, pgToken, orderId);
 	}
 
-	public RefundContext toRefundContext(RefundDto refundDto) {
+	public RefundContext toRefundContext(RefundDto refundDto, Long orderId) {
 		return RefundContext.builder()
+			.orderId(orderId)
 			.cancelAmount(refundDto.getCancelAmount())
 			.cancelTaxFreeAmount(refundDto.getCancelTaxFreeAmount())
-			.orderId(refundDto.getOrderId())
 			.build();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.cart.application.NormalCartService;
 import com.team33.modulecore.cart.application.SubscriptionCartService;
@@ -14,6 +15,7 @@ import com.team33.modulecore.order.domain.entity.Order;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class OrderPaymentService {
