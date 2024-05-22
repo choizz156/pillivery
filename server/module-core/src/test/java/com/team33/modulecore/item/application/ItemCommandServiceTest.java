@@ -38,7 +38,7 @@ class ItemCommandServiceTest {
 	void 아이템_판매량_증가() throws Exception {
 		//given
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
-		when(itemCommandRepository.incrementSales(anyLong())).thenReturn(null);
+		when(itemCommandRepository.incrementSales(anyLong())).thenReturn(1);
 
 		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
 

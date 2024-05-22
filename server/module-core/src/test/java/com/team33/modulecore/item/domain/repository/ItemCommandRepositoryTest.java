@@ -85,10 +85,10 @@ class ItemCommandRepositoryTest {
 		em.persist(item);
 
 		//when
-		int updateItemId = itemCommandRepository.incrementSales(item.getId());
+		 itemCommandRepository.incrementSales(item.getId());
 
 		//then
-		Item updateItem = em.find(Item.class, updateItemId);
+		Item updateItem = em.find(Item.class, item.getId());
 		assertThat(updateItem.getStatistics().getSales()).isEqualTo(1L);
 	}
 }

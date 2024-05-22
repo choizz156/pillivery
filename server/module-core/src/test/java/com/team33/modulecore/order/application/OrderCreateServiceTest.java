@@ -15,6 +15,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.cart.application.NormalCartService;
 import com.team33.modulecore.cart.application.SubscriptionCartService;
+import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.domain.entity.Item;
@@ -30,7 +31,7 @@ import com.team33.modulecore.order.mock.FakeOrderRepository;
 import com.team33.modulecore.user.domain.entity.User;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class OrderServiceTest {
+class OrderCreateServiceTest {
 
 	private User user;
 	private OrderRepository orderRepository;
@@ -63,7 +64,7 @@ class OrderServiceTest {
 		given(userFindHelper.findUser(anyLong())).willReturn(user);
 
 		var orderService =
-			new OrderService(orderRepository, null, null, null, userFindHelper);
+			new OrderCreateService(orderRepository, userFindHelper);
 
 		//when
 		Order order = orderService.callOrder(orderItems, orderContext);
@@ -86,7 +87,8 @@ class OrderServiceTest {
 		var subscriptionCartService = mock(SubscriptionCartService.class);
 
 		var orderService =
-			new OrderService(orderRepository, itemCommandService, subscriptionCartService, null, userFindHelper);
+			new OrderPaymentService(new OrderFindHelper(orderRepository), itemCommandService, subscriptionCartService,
+				null);
 
 		//when
 		orderService.changeOrderStatusToSubscribe(order.getId(), "sid");
@@ -109,7 +111,8 @@ class OrderServiceTest {
 		var subscriptionCartService = mock(SubscriptionCartService.class);
 
 		var orderService =
-			new OrderService(orderRepository, itemCommandService, subscriptionCartService, null, userFindHelper);
+			new OrderPaymentService(new OrderFindHelper(orderRepository), itemCommandService, subscriptionCartService,
+				null);
 
 		//when
 		orderService.changeOrderStatusToSubscribe(order.getId(), "sid");
@@ -125,14 +128,22 @@ class OrderServiceTest {
 	@DisplayName("일반 주문 상태를 주문 완료로 바꿀 수 있다.")
 	@Test
 	void 주문_상태_변경4() throws Exception {
-		var order = orderRepository.save(getNoCartOrder());
+		//given
+		Order sample = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("isOrderedAtCart", false)
+			.set("isSubscription", true)
+			.setNull("receiver")
+			.setNull("orderItems")
+			.sample();
+
+		var order = orderRepository.save(sample);
 
 		UserFindHelper userFindHelper = mock(UserFindHelper.class);
 		var itemCommandService = mock(ItemCommandService.class);
 		var normalCartService = mock(NormalCartService.class);
 
 		var orderService =
-			new OrderService(orderRepository, itemCommandService, null, normalCartService, userFindHelper);
+			new OrderPaymentService(new OrderFindHelper(orderRepository), itemCommandService, null, normalCartService);
 
 		//when
 		orderService.changeOrderStatusToComplete(order.getId());
@@ -147,14 +158,21 @@ class OrderServiceTest {
 	@DisplayName("카트 주문 상태를 주문 완료로 바꿀 수 있다.")
 	@Test
 	void 주문_상태_변경5() throws Exception {
-		var order = orderRepository.save(getCartOrder());
+		//given
+		Order sample = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("isOrderedAtCart", true)
+			.set("isSubscription", false)
+			.setNull("receiver")
+			.setNull("orderItems")
+			.sample();
 
-		UserFindHelper userFindHelper = mock(UserFindHelper.class);
+		var order = orderRepository.save(sample);
+
 		var itemCommandService = mock(ItemCommandService.class);
 		var normalCartService = mock(NormalCartService.class);
 
 		var orderService =
-			new OrderService(orderRepository, itemCommandService, null, normalCartService, userFindHelper);
+			new OrderPaymentService(new OrderFindHelper(orderRepository), itemCommandService, null, normalCartService);
 
 		//when
 		orderService.changeOrderStatusToComplete(order.getId());
@@ -173,7 +191,7 @@ class OrderServiceTest {
 		var order = orderRepository.save(getMockOrderWithOrderItem());
 
 		var orderService =
-			new OrderService(orderRepository, null, null, null, null);
+			new OrderSubscriptionService(new OrderFindHelper(orderRepository));
 
 		//when
 		orderService.changeSubscriptionItemQuantity(
@@ -193,7 +211,7 @@ class OrderServiceTest {
 	void 주문_복사() throws Exception {
 		//given
 		var orderService =
-			new OrderService(orderRepository, null, null, null, null);
+			new OrderCreateService(orderRepository, null);
 		Order order = getMockOrderWithOrderItem();
 
 		//when
@@ -232,11 +250,19 @@ class OrderServiceTest {
 	}
 
 	private Order getNoCartOrder() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class).set("isOrderedAtCart", false).sample();
+		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("isOrderedAtCart", false)
+			.set("isSubscription", false)
+			.setNull("paymentCode.sid")
+			.sample();
 	}
 
 	private Order getCartOrder() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class).set("isOrderedAtCart", true).sample();
+		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("isOrderedAtCart", true)
+			.set("isSubscription", true)
+			.setNull("paymentCode.sid")
+			.sample();
 	}
 
 	private Order getMockOrderWithOrderItem() {

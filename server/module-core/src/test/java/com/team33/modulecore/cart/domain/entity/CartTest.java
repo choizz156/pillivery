@@ -86,7 +86,7 @@ class CartTest {
 
 		// then
 		assertThat(cart.getSubscriptionCartItems()).hasSize(2)
-			.extracting("subscriptionInfo.isSubscription", "subscriptionInfo.period")
+			.extracting("subscriptionInfo.subscription", "subscriptionInfo.period")
 			.containsExactlyInAnyOrder(
 				tuple(true, 30),
 				tuple(true, 60)
@@ -113,7 +113,7 @@ class CartTest {
 		//then
 		assertThat(cart.getSubscriptionCartItems()).contains(subscriptionCartItem1);
 		assertThat(cart.getSubscriptionCartItems()).hasSize(1)
-			.extracting("subscriptionInfo.isSubscription", "subscriptionInfo.period")
+			.extracting("subscriptionInfo.subscription", "subscriptionInfo.period")
 			.containsOnly(tuple(true, 60));
 	}
 

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import com.team33.modulecore.common.ItemFindHelper;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
-import com.team33.modulecore.order.mock.FakeOrderRepository;
 
 class OrderItemServiceTest {
 
@@ -44,7 +43,7 @@ class OrderItemServiceTest {
 
 		//then
 		assertThat(orderItems).hasSize(2)
-			.extracting("subscriptionInfo.isSubscription", "subscriptionInfo.period", "quantity")
+			.extracting("subscriptionInfo.subscription", "subscriptionInfo.period", "quantity")
 			.containsExactlyInAnyOrder(
 				tuple(true, 30, 3),
 				tuple(false, 0, 1)
