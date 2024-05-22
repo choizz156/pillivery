@@ -11,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class KaKaoApproveTemplate {
 
-	private final PaymentClient<KakaoApproveResponse> kakaoApproveClient;
 	private static final String KAKAO_APPROVE_URL = "https://open-api.kakaopay.com/online/v1/payment/approve";
+
+	private final PaymentClient<KakaoApproveResponse> kakaoApproveClient;
+
 
 	public abstract Map<String, String> getApproveParams(ApproveRequest approveRequest);
 

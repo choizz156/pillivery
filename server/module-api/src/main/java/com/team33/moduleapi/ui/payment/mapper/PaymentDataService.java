@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 import net.jodah.expiringmap.ExpiringMap;
 
-import com.team33.moduleapi.ui.payment.dto.PaymentData;
-
 @Component
 public class PaymentDataService {
 

@@ -112,4 +112,13 @@ public class ParameterProvider extends ParamsConst {
 
 		return itemName + " 그 외 " + (itemQuantity - 1) + "개";
 	}
+
+	public Map<String, String> getRefundParams(String tid, int cancelAmount, int cancelTaxFreeAmount) {
+		Map<String, String> parameters = new ConcurrentHashMap<>();
+		parameters.put(TID, tid);
+		parameters.put(CID, ONE_TIME_CID);
+		parameters.put(CANCEL_AMOUNT, String.valueOf(cancelAmount));
+		parameters.put(CANCEL_TAX_FREE_AMOUNT, String.valueOf(cancelTaxFreeAmount));
+		return parameters;
+	}
 }

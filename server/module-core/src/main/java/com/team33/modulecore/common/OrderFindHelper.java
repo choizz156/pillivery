@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Component
 public class OrderFindHelper {
+
 	private final OrderRepository orderRepository;
 
 	public Order findOrder(Long id) {
@@ -21,5 +22,9 @@ public class OrderFindHelper {
 
 	public boolean checkSubscription(Long orderId){
 		return orderRepository.findIsSubscriptionById(orderId);
+	}
+
+	public String findTid(Long orderId) {
+		return orderRepository.findTid(orderId);
 	}
 }

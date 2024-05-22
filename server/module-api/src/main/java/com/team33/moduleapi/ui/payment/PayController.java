@@ -1,22 +1,19 @@
 package com.team33.moduleapi.ui.payment;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.payment.dto.KaKaoApproveResponseDto;
 import com.team33.moduleapi.ui.payment.dto.KaKaoPayNextUrlDto;
-import com.team33.moduleapi.ui.payment.dto.PaymentData;
+import com.team33.moduleapi.ui.payment.mapper.PaymentData;
 import com.team33.moduleapi.ui.payment.mapper.PaymentDataService;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.order.application.OrderPaymentService;
-import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.payment.application.request.RequestFacade;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
@@ -91,13 +88,15 @@ public class PayController {
 	}
 
 
-	@GetMapping("/cancel")
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public void cancel() {
-	}
 
-	@GetMapping("/fail")
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public void fail() {
-	}
+
+	// @GetMapping("/cancel")
+	// @ResponseStatus(HttpStatus.BAD_REQUEST)
+	// public void cancel() {
+	// }
+	//
+	// @GetMapping("/fail")
+	// @ResponseStatus(HttpStatus.BAD_REQUEST)
+	// public void fail() {
+	// }
 }

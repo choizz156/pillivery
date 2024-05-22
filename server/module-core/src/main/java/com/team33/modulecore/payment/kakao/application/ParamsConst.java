@@ -27,4 +27,6 @@ public abstract class ParamsConst {
     protected static final String TAX_FREE_AMOUNT = "tax_free_amount";
     protected static final String CANCEL_URL = "cancel_url";
     protected static final String FAIL_URL = "fail_url";
+    protected static final String CANCEL_AMOUNT = "cancel_amount";
+    protected static final String CANCEL_TAX_FREE_AMOUNT = "cancel_tax_free_amount";
 }
