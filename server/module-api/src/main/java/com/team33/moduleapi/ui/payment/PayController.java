@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.payment.dto.KaKaoApproveResponseDto;
 import com.team33.moduleapi.ui.payment.dto.KaKaoPayNextUrlDto;
 import com.team33.moduleapi.ui.payment.dto.PaymentData;
@@ -31,41 +32,43 @@ public class PayController {
 	private final ApproveFacade<KakaoApproveResponse, KakaoApproveOneTimeRequest> approveFacade;
 	private final RequestFacade<KakaoRequestResponse> requestFacade;
 	private final PaymentMapper paymentMapper;
-	private final PaymentDataService paymentDataSerivce;
+	private final PaymentDataService paymentDataService;
 	private final OrderService orderService;
 
 	@PostMapping("/{orderId}")
-	public KaKaoPayNextUrlDto request(
+	public SingleResponseDto<?> request(
 		@PathVariable Long orderId
 	) {
 		KakaoRequestResponse requestResponse = requestFacade.request(orderId);
-		paymentDataSerivce.addData(orderId, requestResponse.getTid());
 
-		return KaKaoPayNextUrlDto.from(requestResponse);
+		paymentDataService.addData(orderId, requestResponse.getTid());
+		orderService.addTid(orderId, requestResponse.getTid());
+
+		return new SingleResponseDto<>(KaKaoPayNextUrlDto.from(requestResponse));
 	}
 
 	@GetMapping("/approve/subscription/{orderId}")
-	public KaKaoApproveResponseDto subscription(
+	public SingleResponseDto<?> subscription(
 		@RequestParam("pg_token") String pgToken,
 		@PathVariable Long orderId
 	) {
-		PaymentData data = paymentDataSerivce.getData(orderId);
+		PaymentData data = paymentDataService.getData(orderId);
 
-		KakaoApproveOneTimeRequest approveOneTimeRequest = paymentMapper.toApproveOneTime(data.getTid(), pgToken,
-			data.getOrderId());
+		KakaoApproveOneTimeRequest approveOneTimeRequest =
+			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
 		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
 
 		orderService.changeOrderStatusToSubscribe(Long.valueOf(approve.getPartner_order_id()), approve.getSid());
 
-		return KaKaoApproveResponseDto.from(approve);
+		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
 	}
 
 	@GetMapping("/approve/{orderId}")
-	public KaKaoApproveResponseDto success(
+	public SingleResponseDto<?> success(
 		@RequestParam("pg_token") String pgToken,
 		@PathVariable Long orderId
 	) {
-		PaymentData data = paymentDataSerivce.getData(orderId);
+		PaymentData data = paymentDataService.getData(orderId);
 
 		KakaoApproveOneTimeRequest approveOneTimeRequest =
 			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
@@ -74,17 +77,18 @@ public class PayController {
 
 		orderService.changeOrderStatusToComplete(Long.valueOf(approve.getPartner_order_id()));
 
-		return KaKaoApproveResponseDto.from(approve);
+		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
 	}
 
-	@PostMapping("/approve/subscription")
-	public KaKaoApproveResponseDto subscription(
+	@GetMapping("/approve/subscription")
+	public SingleResponseDto<?> subscription(
 		@RequestParam("orderId") Long orderId
 	) {
 		KakaoApproveResponse kaKaoApproveResponse = approveFacade.approveSubscription(orderId);
 
-		return KaKaoApproveResponseDto.from(kaKaoApproveResponse);
+		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(kaKaoApproveResponse));
 	}
+
 
 	@GetMapping("/cancel")
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

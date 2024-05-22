@@ -92,6 +92,11 @@ public class OrderService {
 		return Order.create(orderItems, orderContext, user);
 	}
 
+	public void addTid(Long orderId, String tid) {
+		Order order = findOrder(orderId);
+		order.addTid(tid);
+	}
+
 	private void refreshSubscriptionCart(Order order) {
 		if (order.isOrderedAtCart()) {
 			List<Long> orderedItemsId = order.getOrderItems()

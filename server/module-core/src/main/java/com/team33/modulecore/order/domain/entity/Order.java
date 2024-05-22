@@ -26,6 +26,7 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.domain.PaymentCode;
 import com.team33.modulecore.order.domain.Receiver;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.user.domain.entity.User;
@@ -57,7 +58,8 @@ public class Order extends BaseEntity {
 
 	private int totalQuantity;
 
-	private String sid;
+	@Embedded
+	private PaymentCode paymentCode;
 
 	@Embedded
 	private OrderPrice orderPrice;
@@ -80,7 +82,7 @@ public class Order extends BaseEntity {
 		this.isOrderedAtCart = origin.isOrderedAtCart();
 		this.totalItemsCount = origin.getTotalItemsCount();
 		this.totalQuantity = origin.getTotalQuantity();
-		this.sid = origin.getSid();
+		this.paymentCode = origin.getPaymentCode();
 		this.orderPrice = 	origin.getOrderPrice();
 		this.receiver = origin.getReceiver();
 		this.orderStatus = origin.getOrderStatus();
@@ -95,6 +97,7 @@ public class Order extends BaseEntity {
 		boolean isOrderedAtCart,
 		int totalItemsCount,
 		String mainItemName,
+		PaymentCode paymentCode,
 		OrderPrice orderPrice,
 		Receiver receiver,
 		OrderStatus orderStatus,
@@ -106,6 +109,7 @@ public class Order extends BaseEntity {
 		this.isOrderedAtCart = isOrderedAtCart;
 		this.totalItemsCount = totalItemsCount;
 		this.mainItemName = mainItemName;
+		this.paymentCode = paymentCode;
 		this.orderPrice = orderPrice;
 		this.receiver = receiver;
 		this.orderStatus = orderStatus;
@@ -133,7 +137,11 @@ public class Order extends BaseEntity {
 	}
 
 	public void addSid(String sid) {
-		this.sid = sid;
+		this.paymentCode = PaymentCode.addSid(sid);
+	}
+
+	public void addTid(String tid) {
+		this.paymentCode = PaymentCode.addTid(tid);
 	}
 
 	public String getOrdererCity() {
@@ -201,4 +209,6 @@ public class Order extends BaseEntity {
 			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
 			getClass().hashCode();
 	}
+
+
 }
