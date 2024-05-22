@@ -2,9 +2,9 @@ package com.team33.modulequartz.subscription.application;
 
 import static org.quartz.JobKey.jobKey;
 
+import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
-import com.team33.modulecore.order.application.OrderService;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.user.domain.entity.User;
@@ -32,7 +32,7 @@ public class SubscriptionService {
     private final Scheduler scheduler;
     private final TriggerService trigger;
     private final JobDetailService jobDetailService;
-    private final OrderService orderService;
+    private final OrderCreateService orderCreateService;
     private final OrderItemService orderItemService;
     private final OrderQueryService orderQueryService;
 
@@ -173,7 +173,7 @@ public class SubscriptionService {
                 new JobListeners(
                     trigger,
                     orderItemService,
-                    orderService,
+					orderCreateService,
                     jobDetailService,
                     orderQueryService
                 )

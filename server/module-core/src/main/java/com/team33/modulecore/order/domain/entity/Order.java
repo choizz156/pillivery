@@ -22,6 +22,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.proxy.HibernateProxy;
 
 import com.team33.modulecore.common.BaseEntity;
+import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderPrice;
@@ -137,7 +138,13 @@ public class Order extends BaseEntity {
 	}
 
 	public void addSid(String sid) {
-		this.paymentCode = PaymentCode.addSid(sid);
+		String tid = paymentCode.getTid();
+
+		if (tid == null) {
+			throw new BusinessLogicException("tid는 null일 수 없습니다.");
+		}
+
+		this.paymentCode = PaymentCode.addSid(tid, sid);
 	}
 
 	public void addTid(String tid) {
@@ -164,16 +171,20 @@ public class Order extends BaseEntity {
 		this.orderPrice = new OrderPrice(orderItems);
 	}
 
-	public void adjustPriceAndQuantity(List<OrderItem> orderItems) {
+	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
 		this.orderPrice = new OrderPrice(orderItems);
-		countQuantity();
+		countTotalQuantity();
 	}
 
 	public int getTotalPrice() {
 		return this.orderPrice.getTotalPrice();
 	}
 
-	private void countQuantity() {
+	public String getSid() {
+		return this.paymentCode.getSid();
+	}
+
+	private void countTotalQuantity() {
 
 		if (this.orderItems.isEmpty()) {
 			this.totalQuantity = 0;
@@ -209,6 +220,4 @@ public class Order extends BaseEntity {
 			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
 			getClass().hashCode();
 	}
-
-
 }

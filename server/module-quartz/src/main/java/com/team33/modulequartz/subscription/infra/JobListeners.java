@@ -1,21 +1,10 @@
 package com.team33.modulequartz.subscription.infra;
 
-import static org.quartz.JobKey.jobKey;
+import static org.quartz.JobKey.*;
 
-import com.team33.modulecore.order.application.OrderQueryService;
-import com.team33.modulecore.order.domain.OrderItem;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderService;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulequartz.subscription.application.JobDetailService;
-import com.team33.modulequartz.subscription.application.TriggerService;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -26,13 +15,29 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.order.application.OrderCreateService;
+import com.team33.modulecore.order.application.OrderItemService;
+import com.team33.modulecore.order.application.OrderPaymentService;
+import com.team33.modulecore.order.application.OrderQueryService;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulequartz.subscription.application.JobDetailService;
+import com.team33.modulequartz.subscription.application.TriggerService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JobListeners implements JobListener {
 
     private final TriggerService triggerService;
     private final OrderItemService orderItemService;
-    private final OrderService orderService;
+    private final OrderCreateService orderCreateService;
+    private final OrderPaymentService paymentService;
     private final JobDetailService jobDetailService;
     private final OrderQueryService orderQueryService;
 
@@ -132,9 +137,9 @@ public class JobListeners implements JobListener {
     }
 
     private Order getOrder(Long orderId) {
-        orderService.changeOrderStatusToComplete(orderId);
+        paymentService.changeOrderStatusToComplete(orderId);
         Order order = orderQueryService.findOrder(orderId);
-        return orderService.deepCopy(order);
+        return orderCreateService.deepCopy(order);
     }
 
     private OrderItem updateDeliveryDate(final OrderItem orderItem) {

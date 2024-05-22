@@ -18,7 +18,8 @@ import com.team33.moduleapi.ui.order.dto.OrderDetailResponse;
 import com.team33.moduleapi.ui.order.dto.OrderPostListDto;
 import com.team33.moduleapi.ui.order.mapper.OrderItemMapper;
 import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderService;
+import com.team33.modulecore.order.application.OrderCreateService;
+import com.team33.modulecore.order.application.OrderSubscriptionService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.dto.OrderContext;
@@ -37,8 +38,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/orders")
 public class OrderCommandController {
 
-	private final OrderService orderService;
+	private final OrderCreateService orderCreateService;
 	private final OrderItemService orderItemService;
+	private final OrderSubscriptionService orderSubscriptionService;
 	private final OrderItemMapper orderItemMapper;
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -55,7 +57,7 @@ public class OrderCommandController {
 		List<OrderItem> orderItems =
 			orderItemService.toOrderItems(orderItemServiceDto);
 
-		Order order = orderService.callOrder(orderItems, orderContext);
+		Order order = orderCreateService.callOrder(orderItems, orderContext);
 
 		return new SingleResponseDto<>(OrderDetailResponse.of(order));
 	}
@@ -67,6 +69,6 @@ public class OrderCommandController {
 		@RequestParam Long orderItemId,
 		@RequestParam int quantity
 	) {
-		orderService.changeSubscriptionItemQuantity(orderId, orderItemId, quantity);
+		orderSubscriptionService.changeSubscriptionItemQuantity(orderId, orderItemId, quantity);
 	}
 }

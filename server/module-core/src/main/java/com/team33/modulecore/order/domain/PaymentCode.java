@@ -25,7 +25,7 @@ public class PaymentCode {
 		return new PaymentCode(null, tid);
 	}
 
-	public static PaymentCode addSid(String sid){
-		return new PaymentCode(sid, null);
+	public static PaymentCode addSid(String tid, String sid){
+		return new PaymentCode(sid, tid);
 	}
 }

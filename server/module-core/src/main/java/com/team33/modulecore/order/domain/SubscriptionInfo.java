@@ -10,10 +10,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
+@Getter
 @Access(AccessType.FIELD)
 public class SubscriptionInfo {
 

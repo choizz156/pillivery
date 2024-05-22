@@ -6,7 +6,7 @@
 //import com.team33.modulecore.domain.order.entity.Order;
 //import com.team33.modulecore.domain.order.mapper.ItemOrderMapper;
 //import com.team33.modulecore.domain.order.service.OrderItemService;
-//import com.team33.modulecore.domain.order.service.OrderService;
+//import com.team33.modulecore.domain.order.service.OrderCreateService;
 //import com.team33.moduleapi.response.SingleResponseDto;
 //import com.team33.modulequartz.subscription.service.SubscriptionService;
 //import java.time.ZonedDateTime;
@@ -29,7 +29,7 @@
 //public class ScheduleController {
 //
 //    private final SubscriptionService subscriptionService;
-//    private final OrderService orderService;
+//    private final OrderCreateService orderService;
 //    private final OrderItemService orderItemService;
 //    private final ItemOrderMapper itemOrderMapper;
 //    private final ItemMapper itemMapper;

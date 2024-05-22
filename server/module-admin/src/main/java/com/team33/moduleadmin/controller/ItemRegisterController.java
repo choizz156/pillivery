@@ -1,15 +1,10 @@
 package com.team33.moduleadmin.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,13 +39,7 @@ public class ItemRegisterController {
 	public void postItem() {
 		List<BodyWrapper> lists = new ArrayList<>(10000);
 		RestTemplate restTemplate = new RestTemplate();
-		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-		converter.setSupportedMediaTypes(Collections.singletonList(MediaType.TEXT_HTML));
-		restTemplate.getMessageConverters().add(converter);
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		final HttpEntity<?> entity = new HttpEntity<>(headers);
 		for (int i = 10; i <= 20 ; i++) {
 			String url = "https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?pageNo="
 				+ i
@@ -61,14 +50,14 @@ public class ItemRegisterController {
 		}
 
 
-		List<ItemWrapper> itemWrappers = lists.stream()
-			.map(b -> b.getBody().getItems())
-			.flatMap(List::stream)
-			.collect(Collectors.toList());
-
-		List<ItemDto> collect = toBusinessDto(itemWrappers);
-        List<Information> information = ItemAttributeMapper.toInformation(collect);
-        itemRegisterService.createItem(information);
+		// List<ItemWrapper> itemWrappers = lists.stream()
+		// 	.map(b -> b.getBody().getItems())
+		// 	.flatMap(List::stream)
+		// 	.collect(Collectors.toList());
+		//
+		// List<ItemDto> collect = toBusinessDto(itemWrappers);
+        // List<Information> information = ItemAttributeMapper.toInformation(collect);
+        // itemRegisterService.createItem(information);
     }
 
 	@ResponseStatus(HttpStatus.CREATED)
