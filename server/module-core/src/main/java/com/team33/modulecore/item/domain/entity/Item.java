@@ -55,6 +55,7 @@ public class Item extends BaseEntity {
 
     @ElementCollection
     @CollectionTable(name = "item_review", joinColumns = @JoinColumn(name = "item_id"))
+    @Column(name = "review_id")
     private Set<Long> reviewIds = new HashSet<>();
 
 

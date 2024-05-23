@@ -21,7 +21,8 @@ public enum ExceptionCode {
     SCHEDULE_CANCEL(500, "스케쥴이 취소되었습니다."),
     PAYMENT_FAIL(400, "결제에 실패했습니다."),
     ALREADY_LOGOUT(401, "로그아웃 됐습니다."),
-    NOT_ORDERED_ITEM(404, "주문되지 않은 아이템입니다.");
+    NOT_ORDERED_ITEM(404, "주문되지 않은 아이템입니다."),
+    DUPLICATED_REVIEW(404, "이미 작성한 리뷰가 있습니다." );
 
     private final int code;
     private final String message;

@@ -24,6 +24,7 @@ public class ReviewCommandService {
 	private final ItemCommandService itemCommandService;
 
 	public Review createReview(ReviewContext context) {
+		checkDuplicateReview(context);
 
 		Review review = reviewCommandRepository.save(Review.create(context));
 
@@ -52,5 +53,12 @@ public class ReviewCommandService {
 	public Review findReview(long reviewId) {
 		return reviewCommandRepository.findById(reviewId)
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.REVIEW_NOT_FOUND));
+	}
+
+	private void checkDuplicateReview(ReviewContext context) {
+		boolean duplicated = reviewCommandRepository.findDuplicated(context.getItemId(), context.getUserId());
+		if(duplicated){
+			throw new BusinessLogicException(ExceptionCode.DUPLICATED_REVIEW);
+		}
 	}
 }
