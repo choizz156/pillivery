@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.moduleapi.ui.review.dto.ReviewDeleteDto;
 import com.team33.moduleapi.ui.review.dto.ReviewDetailResponseDto;
-import com.team33.moduleapi.ui.review.dto.ReviewDto;
+import com.team33.moduleapi.ui.review.dto.ReviewPatchDto;
+import com.team33.moduleapi.ui.review.dto.ReviewPostDto;
 import com.team33.moduleapi.ui.review.mapper.ReviewServiceMapper;
 import com.team33.modulecore.review.application.ReviewCommandService;
 import com.team33.modulecore.review.domain.ReviewContext;
@@ -33,11 +35,10 @@ public class ReviewCommandController {
 
 	@PostMapping
 	public SingleResponseDto<ReviewDetailResponseDto> postReview(
-		@RequestBody ReviewDto reviewDto
+		@RequestBody ReviewPostDto reviewPostDto
 	) {
-
-		reviewServiceMapper.validate(reviewDto);
-		ReviewContext reviewContext = reviewServiceMapper.toReviewContext(reviewDto);
+		reviewServiceMapper.validate(reviewPostDto);
+		ReviewContext reviewContext = reviewServiceMapper.toReviewPostContext(reviewPostDto);
 
 		Review review = reviewCommandService.createReview(reviewContext);
 
@@ -46,9 +47,9 @@ public class ReviewCommandController {
 
 	@PatchMapping
 	public SingleResponseDto<ReviewDetailResponseDto> updateReview(
-		@RequestBody ReviewDto reviewDto
+		@RequestBody ReviewPatchDto reviewPatchDto
 	) {
-		ReviewContext reviewContext = reviewServiceMapper.toReviewContext(reviewDto);
+		ReviewContext reviewContext = reviewServiceMapper.toReviewPatchContext(reviewPatchDto);
 
 		Review updatedReview = reviewCommandService.updateReview(reviewContext);
 
@@ -57,8 +58,8 @@ public class ReviewCommandController {
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping
-	public void deleteReview(@RequestBody ReviewDto reviewDto) {
-		ReviewContext reviewContext = reviewServiceMapper.toReviewContext(reviewDto);
+	public void deleteReview(@RequestBody ReviewDeleteDto reviewDeleteDto) {
+		ReviewContext reviewContext = reviewServiceMapper.toReviewDeleteContext(reviewDeleteDto);
 
 		reviewCommandService.deleteReview(reviewContext);
 	}

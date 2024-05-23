@@ -58,7 +58,6 @@ public class ExceptionController {
     // public ErrorResponse illegalArgumentExceptionHandler(RuntimeException e) {
     //     return ErrorResponse.of(e.getMessage());
     // }
-
 }
 
 

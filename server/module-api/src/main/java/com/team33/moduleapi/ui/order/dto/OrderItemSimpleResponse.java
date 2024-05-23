@@ -16,8 +16,6 @@ public class OrderItemSimpleResponse {
     private int period;
     private boolean subscription;
     private ItemSimpleResponseDto item;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
 
     @Builder
     public OrderItemSimpleResponse(
@@ -25,17 +23,13 @@ public class OrderItemSimpleResponse {
         int quantity,
         int period,
         boolean subscription,
-        ItemSimpleResponseDto item,
-        ZonedDateTime createdAt,
-        ZonedDateTime updatedAt
+        ItemSimpleResponseDto item
     ) {
         this.orderItemId = orderItemId;
         this.quantity = quantity;
         this.period = period;
         this.subscription = subscription;
         this.item = item;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public static OrderItemSimpleResponse of(OrderItem orderItem) {
@@ -45,8 +39,6 @@ public class OrderItemSimpleResponse {
             .period(orderItem.getPeriod())
             .subscription(orderItem.isSubscription())
             .item(ItemSimpleResponseDto.of(orderItem.getItem()))
-            .createdAt(orderItem.getCreatedAt())
-            .updatedAt(orderItem.getUpdatedAt())
             .build();
     }
 }

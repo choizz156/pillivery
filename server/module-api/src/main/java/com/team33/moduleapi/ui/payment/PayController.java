@@ -37,6 +37,7 @@ public class PayController {
 	public SingleResponseDto<?> request(
 		@PathVariable Long orderId
 	) {
+
 		KakaoRequestResponse requestResponse = requestFacade.request(orderId);
 
 		paymentDataService.addData(orderId, requestResponse.getTid());
@@ -54,6 +55,7 @@ public class PayController {
 
 		KakaoApproveOneTimeRequest approveOneTimeRequest =
 			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
+
 		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
 
 		orderPaymentService.changeOrderStatusToSubscribe(Long.valueOf(approve.getPartner_order_id()), approve.getSid());
