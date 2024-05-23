@@ -20,11 +20,13 @@ import lombok.RequiredArgsConstructor;
 public class ReviewCommandService {
 
 	private final ReviewCommandRepository reviewCommandRepository;
-	private final UserService userService;
 	private final ItemCommandService itemCommandService;
+	private final UserService userService;
+	private final ReviewValidator reviewValidator;
+
 
 	public Review createReview(ReviewContext context) {
-		checkDuplicateReview(context);
+		reviewValidator.validate(context);
 
 		Review review = reviewCommandRepository.save(Review.create(context));
 
@@ -55,10 +57,4 @@ public class ReviewCommandService {
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.REVIEW_NOT_FOUND));
 	}
 
-	private void checkDuplicateReview(ReviewContext context) {
-		boolean duplicated = reviewCommandRepository.findDuplicated(context.getItemId(), context.getUserId());
-		if(duplicated){
-			throw new BusinessLogicException(ExceptionCode.DUPLICATED_REVIEW);
-		}
-	}
 }

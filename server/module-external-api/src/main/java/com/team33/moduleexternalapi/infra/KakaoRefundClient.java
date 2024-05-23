@@ -18,7 +18,6 @@ public class KakaoRefundClient implements RefundClient<KakaoRefundResponse> {
 
 	@Override
 	public KakaoRefundResponse send(RefundParams params, String url) {
-
 		return sendRefund(params, url);
 	}
 
