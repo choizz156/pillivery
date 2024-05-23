@@ -474,7 +474,7 @@ class ItemQueryTest {
 
 		LongStream.range(1, 16).forEach(i ->
 			{
-				items.forEach(item -> item.getReviewIds().add(new ReviewId(i)));
+				items.forEach(item -> item.getReviewIds().add(i));
 			}
 		);
 
