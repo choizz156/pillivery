@@ -235,7 +235,6 @@ class UserServiceTest {
 		User user = userRepository.findById(1L).orElse(null);
 
 		assertThat(user.getReviewIds()).hasSize(1)
-			.extracting("id")
 			.containsOnly(1L);
 	}
 

@@ -21,6 +21,7 @@ public class ReviewServiceMapper {
 	public ReviewContext toReviewPostContext(ReviewPostDto reviewPostDto) {
 		return ReviewContext.builder()
 			.displayName(reviewPostDto.getDisplayName())
+			.orderId(reviewPostDto.getOrderId())
 			.content(reviewPostDto.getContent())
 			.star(reviewPostDto.getStar())
 			.itemId(reviewPostDto.getItemId())

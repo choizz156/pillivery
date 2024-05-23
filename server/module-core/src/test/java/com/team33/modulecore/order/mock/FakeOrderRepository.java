@@ -15,11 +15,11 @@ public class FakeOrderRepository implements OrderRepository {
 	private EntityManager em;
 
 	public FakeOrderRepository(EntityManager em) {
-		this.store = new HashMap<>();
 		this.em = em;
 	}
 
 	public FakeOrderRepository() {
+		this.store = new HashMap<>();
 	}
 
 	public Order save(Order order) {

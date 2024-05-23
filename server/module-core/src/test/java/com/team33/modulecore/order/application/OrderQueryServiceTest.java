@@ -20,6 +20,7 @@ class OrderQueryServiceTest {
 		UserFindHelper userFindHelper = mock(UserFindHelper.class);
 
 		OrderQueryService orderQueryService = new OrderQueryService(orderQueryRepository, userFindHelper);
+
 		//when
 		orderQueryService.findAllOrders(1L, OrderPageRequest.builder().build());
 
