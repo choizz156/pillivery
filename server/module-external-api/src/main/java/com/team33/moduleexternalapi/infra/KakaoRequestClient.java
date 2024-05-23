@@ -24,7 +24,6 @@ public class KakaoRequestClient implements PaymentClient<KakaoRequestResponse> {
 	public KakaoRequestResponse send(Map<String, String> params, String url) {
 
 		return sendRequest(params, url);
-
 	}
 
 	private KakaoRequestResponse sendRequest(Map<String, String> params, String url) {

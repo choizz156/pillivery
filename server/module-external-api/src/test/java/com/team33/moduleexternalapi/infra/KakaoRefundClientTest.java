@@ -18,6 +18,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.application.ClientSender;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
+import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoRefundClientTest {
@@ -51,6 +52,50 @@ class KakaoRefundClientTest {
 		// Given
 		ObjectMapper objectMapper = new ObjectMapper();
 
+		KakaoRefundResponse dto = KakaoRefundResponse.builder().build();
+		String response = objectMapper.writeValueAsString(dto);
+
+		mockServerClient = new MockServerClient(HOST, PORT);
+
+		mockServerClient
+			.when(
+				request()
+					.withMethod("POST")
+					.withBody(
+						"{\"tid\":\"tid\",\"cid\":\"cid\",\"cancel_amount\":2200,\"cancel_tax_free_amount\":0}"
+					)
+					.withHeader(Header.header("Authorization", "SECRET_KEY DEV9F204C96DFE6655F42DCE22C77CF4CC4E3BD5"))
+					.withHeader(Header.header("Content-type", "application/json")),
+				Times.exactly(1)
+			)
+			.respond(response()
+				.withStatusCode(200)
+				.withHeader("Content-Type", "application/json")
+				.withBody(response)
+			);
+
+		RefundParams param = RefundParams.builder()
+			.cid("cid")
+			.tid("tid")
+			.cancelAmount(2200)
+			.cancelTaxFreeAmount(0)
+			.build();
+
+		//when
+		KakaoRefundResponse refundResponse = new KakaoRefundClient(
+			new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
+		)
+			.send(param, CANCEL_URL);
+
+		// Then
+		assertThat(refundResponse).isNotNull();
+	}
+
+	@DisplayName("환불 요청 오류 시 예외를 던진다.")
+	@Test
+	void test2() throws Exception {
+		// Given
+		ObjectMapper objectMapper = new ObjectMapper();
 
 		KakaoRefundResponse dto = KakaoRefundResponse.builder().build();
 		String response = objectMapper.writeValueAsString(dto);
@@ -74,21 +119,19 @@ class KakaoRefundClientTest {
 				.withBody(response)
 			);
 
-
 		RefundParams param = RefundParams.builder()
 			.cid("cid")
-			.tid("tid")
+			.tid("ti") //잘못된 tid
 			.cancelAmount(2200)
 			.cancelTaxFreeAmount(0)
 			.build();
 
-
-		KakaoRefundResponse refundResponse = new KakaoRefundClient(
+		KakaoRefundClient kakaoRefundClient = new KakaoRefundClient(
 			new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
-		)
-			.send(param, CANCEL_URL);
+		);
 
-		// Then
-		assertThat(refundResponse).isNotNull();
+		// when //Then
+		assertThatThrownBy(() -> kakaoRefundClient.send(param, CANCEL_URL))
+			.isInstanceOf(PaymentApiException.class);
 	}
 }
