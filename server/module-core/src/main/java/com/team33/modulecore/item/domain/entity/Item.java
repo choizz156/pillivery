@@ -24,7 +24,6 @@ import com.team33.modulecore.item.domain.Categories;
 import com.team33.modulecore.item.domain.Information;
 import com.team33.modulecore.item.domain.Statistic;
 import com.team33.modulecore.item.infra.CategoryNameConverter;
-import com.team33.modulecore.user.domain.ReviewId;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -56,7 +55,8 @@ public class Item extends BaseEntity {
 
     @ElementCollection
     @CollectionTable(name = "item_review", joinColumns = @JoinColumn(name = "item_id"))
-    private Set<ReviewId> reviewIds = new HashSet<>();
+    private Set<Long> reviewIds = new HashSet<>();
+
 
     @Column(name = "categories")
     @Convert(converter = CategoryNameConverter.class)
@@ -77,7 +77,6 @@ public class Item extends BaseEntity {
             .statistics(new Statistic())
             .build();
     }
-
 
     public String getThumbnailUrl() {
         return this.information.getImage().getThumbnail();
@@ -103,10 +102,6 @@ public class Item extends BaseEntity {
         return this.information.getPrice().getRealPrice();
     }
 
-    // public void minusSales(int quantity) {
-    //     this.statistics.reduceSales(quantity);
-    // }
-
     public String getDescriptionImage() {
         return this.getInformation().getImage().getDescriptionImage();
     }
@@ -128,17 +123,15 @@ public class Item extends BaseEntity {
     }
 
     public void addReviewId(Long id) {
-        this.reviewIds.add(new ReviewId(id));
+        this.reviewIds.add(id);
     }
-
     public void updateCountAndStars(double star) {
         this.statistics.addStarAvg(star);
     }
 
     public void deleteReviewId(Long reviewId) {
-        this.reviewIds.remove(new ReviewId(reviewId));
+        this.reviewIds.remove(reviewId);
     }
-
     public void subtractCountAndStars(double star) {
         this.statistics.subtractStarAvg(star);
     }

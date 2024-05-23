@@ -19,7 +19,6 @@ import javax.persistence.Table;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.order.domain.Address;
-import com.team33.modulecore.user.domain.ReviewId;
 import com.team33.modulecore.user.domain.UserRoles;
 import com.team33.modulecore.user.domain.UserStatus;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
@@ -75,7 +74,8 @@ public class User extends BaseEntity {
 
 	@ElementCollection
 	@CollectionTable(name = "user_review", joinColumns = @JoinColumn(name = "user_id"))
-	private Set<ReviewId> reviewIds = new HashSet<>();
+	@Column(name = "review_id")
+	private Set<Long> reviewIds = new HashSet<>();
 
 	@Builder
 	private User(
@@ -151,11 +151,11 @@ public class User extends BaseEntity {
 	}
 
 	public void addReviewId(Long id) {
-		this.reviewIds.add(new ReviewId(id));
+		this.reviewIds.add(id);
 	}
 
 	public void deleteReviewId(Long reviewId) {
-		this.reviewIds.remove(new ReviewId(reviewId));
+		this.reviewIds.remove(id);
 	}
 }
 
