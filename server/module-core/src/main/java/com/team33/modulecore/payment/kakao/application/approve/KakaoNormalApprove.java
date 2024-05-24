@@ -32,7 +32,7 @@ public class KakaoNormalApprove
 	}
 
 	@Override
-	public Map<String, String> getApproveParams(ApproveRequest approveRequest) {
+	public Map<String, Object> getApproveParams(ApproveRequest approveRequest) {
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest) approveRequest;
 
 		return parameterProvider.getOneTimeApproveParams(

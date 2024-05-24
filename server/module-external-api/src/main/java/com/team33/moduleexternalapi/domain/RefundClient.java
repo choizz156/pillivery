@@ -1,8 +1,8 @@
 package com.team33.moduleexternalapi.domain;
 
-import com.team33.moduleexternalapi.infra.RefundParams;
+import java.util.Map;
 
 public interface RefundClient<T> {
 
-	T send(RefundParams params, String url);
+	T send(Map<String, Object> params, String url);
 }

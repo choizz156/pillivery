@@ -14,10 +14,10 @@ public abstract class KakaoRequestTemplate {
 	private final PaymentClient<KakaoRequestResponse> KakaoRequestClient;
 	private static final String READY_URL = "https://open-api.kakaopay.com/online/v1/payment/ready";
 
-	public abstract Map<String, String> getRequestParams(Order order);
+	public abstract Map<String, Object> getRequestParams(Order order);
 
 	public KakaoRequestResponse request(Order order) {
-		Map<String, String> requestParams = getRequestParams(order);
+		Map<String, Object> requestParams = getRequestParams(order);
 
 		return KakaoRequestClient.send(requestParams, READY_URL);
 	}

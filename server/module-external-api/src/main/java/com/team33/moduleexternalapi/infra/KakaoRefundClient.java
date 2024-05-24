@@ -1,5 +1,7 @@
 package com.team33.moduleexternalapi.infra;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,11 +19,11 @@ public class KakaoRefundClient implements RefundClient<KakaoRefundResponse> {
 	private final ClientSender clientSender;
 
 	@Override
-	public KakaoRefundResponse send(RefundParams params, String url) {
+	public KakaoRefundResponse send(Map<String, Object> params, String url) {
 		return sendRefund(params, url);
 	}
 
-	private KakaoRefundResponse sendRefund(RefundParams params, String url) {
+	private KakaoRefundResponse sendRefund(Map<String, Object> params, String url) {
 		try {
 			return clientSender.send(params, url, KakaoRefundResponse.class);
 		} catch (JsonProcessingException e) {

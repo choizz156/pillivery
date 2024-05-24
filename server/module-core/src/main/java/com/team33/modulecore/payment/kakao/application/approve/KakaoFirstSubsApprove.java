@@ -28,7 +28,7 @@ public class KakaoFirstSubsApprove extends KaKaoApproveTemplate {
 	}
 
 	@Override
-	public Map<String, String> getApproveParams(ApproveRequest approveRequest) {
+	public Map<String, Object> getApproveParams(ApproveRequest approveRequest) {
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest)approveRequest;
 		return parameterProvider.getSubscriptionFirstApproveParams(
 			request.getTid(),

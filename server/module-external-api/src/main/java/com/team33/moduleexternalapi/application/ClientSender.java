@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.infra.KakaoHeader;
-import com.team33.moduleexternalapi.infra.RefundParams;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,23 +22,10 @@ public class ClientSender {
 	private final ObjectMapper objectMapper;
 	private final RestTemplate restTemplate;
 
-	public <T> T send(Map<String, String> params, String url, Class<T> responseClass) throws JsonProcessingException {
+	public <T> T send(Map<String, Object> params, String url, Class<T> responseClass) throws JsonProcessingException {
 
 		String kakaoRequest = objectMapper.writeValueAsString(params);
 		var entity = new HttpEntity<>(kakaoRequest, KakaoHeader.HTTP_HEADERS.getHeaders());
-
-		ResponseEntity<T> exchange =
-			restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
-
-		checkSuccess(exchange);
-
-		return exchange.getBody();
-	}
-
-	public <T> T send(RefundParams params, String url, Class<T> responseClass) throws JsonProcessingException {
-
-		String refundRequest = objectMapper.writeValueAsString(params);
-		var entity = new HttpEntity<>(refundRequest, KakaoHeader.HTTP_HEADERS.getHeaders());
 
 		ResponseEntity<T> exchange =
 			restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);

@@ -28,7 +28,7 @@ public class KakaoSubsRequest
 	}
 
 	@Override
-	public Map<String, String> getRequestParams(Order order) {
+	public Map<String, Object> getRequestParams(Order order) {
 		return parameterProvider.getSubscriptionReqsParams(order);
 	}
 }

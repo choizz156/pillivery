@@ -68,6 +68,10 @@ public class OrderPaymentService {
 		order.addTid(tid);
 	}
 
+	public void changeOrderStatusToCancel(Long orderId) {
+		orderFindHelper.findOrder(orderId).changeOrderStatus(OrderStatus.CANCEL);
+	}
+
 	private List<Long> getOrderedIds(Order order) {
 		return order.getOrderItems()
 			.stream()

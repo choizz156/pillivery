@@ -21,12 +21,12 @@ public class KakaoRequestClient implements PaymentClient<KakaoRequestResponse> {
 	private final ClientSender clientSender;
 
 	@Override
-	public KakaoRequestResponse send(Map<String, String> params, String url) {
+	public KakaoRequestResponse send(Map<String, Object> params, String url) {
 
 		return sendRequest(params, url);
 	}
 
-	private KakaoRequestResponse sendRequest(Map<String, String> params, String url) {
+	private KakaoRequestResponse sendRequest(Map<String, Object> params, String url) {
 		try {
 			return clientSender.send(params, url, KakaoRequestResponse.class);
 		} catch (JsonProcessingException e) {

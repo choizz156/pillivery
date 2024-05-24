@@ -16,10 +16,10 @@ public abstract class KaKaoApproveTemplate {
 	private final PaymentClient<KakaoApproveResponse> kakaoApproveClient;
 
 
-	public abstract Map<String, String> getApproveParams(ApproveRequest approveRequest);
+	public abstract Map<String, Object> getApproveParams(ApproveRequest approveRequest);
 
 	public KakaoApproveResponse approve(ApproveRequest approveRequest) {
-		Map<String, String> approveParams = getApproveParams(approveRequest);
+		Map<String, Object> approveParams = getApproveParams(approveRequest);
 
 		return kakaoApproveClient.send(approveParams, KAKAO_APPROVE_URL);
 	}

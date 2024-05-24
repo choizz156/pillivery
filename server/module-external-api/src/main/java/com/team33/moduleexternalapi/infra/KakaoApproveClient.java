@@ -19,12 +19,12 @@ public class KakaoApproveClient implements PaymentClient<KakaoApproveResponse> {
 	private final ClientSender clientSender;
 
 	@Override
-	public KakaoApproveResponse send(Map<String, String> params, String url) {
+	public KakaoApproveResponse send(Map<String, Object> params, String url) {
 
 		return sendApprove(params, url);
 	}
 
-	private KakaoApproveResponse sendApprove(Map<String, String> params, String url) {
+	private KakaoApproveResponse sendApprove(Map<String, Object> params, String url) {
 		try {
 			return clientSender.send(params, url, KakaoApproveResponse.class);
 		} catch (JsonProcessingException e) {

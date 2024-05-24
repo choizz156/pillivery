@@ -5,5 +5,5 @@ import java.util.Map;
 
 public interface PaymentClient<T> {
 
-	T send(Map<String, String> params, String url);
+	T send(Map<String, Object> params, String url);
 }

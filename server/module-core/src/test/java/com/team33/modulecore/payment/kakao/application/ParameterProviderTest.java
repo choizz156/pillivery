@@ -135,7 +135,7 @@ class ParameterProviderTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, String> subscriptionReqsParams = parameterProvider.getSubscriptionApproveParams(order);
+		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionApproveParams(order);
 
 		//then
 		assertThat(subscriptionReqsParams).hasSize(10)

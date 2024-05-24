@@ -1,14 +1,14 @@
 package com.team33.modulecore.payment.kakao.application.refund;
 
-import static com.team33.modulecore.payment.kakao.application.ParamsConst.*;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.payment.application.refund.RefundService;
+import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.domain.RefundClient;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
-import com.team33.moduleexternalapi.infra.RefundParams;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +19,7 @@ public class KakaoRefundService implements RefundService<KakaoRefundResponse> {
 	private static final String REFUND_URL = "https://open-api.kakaopay.com/online/v1/payment/cancel";
 
 	private final RefundClient<KakaoRefundResponse> kakaoRefundClient;
+	private final ParameterProvider parameterProvider;
 	private final OrderFindHelper orderFindHelper;
 
 	@Override
@@ -26,14 +27,9 @@ public class KakaoRefundService implements RefundService<KakaoRefundResponse> {
 
 		String tid = orderFindHelper.findTid(refundContext.getOrderId());
 
-		RefundParams refundParam = RefundParams.builder()
-			.cancelAmount(refundContext.getCancelAmount())
-			.cancelTaxFreeAmount(refundContext.getCancelTaxFreeAmount())
-			.tid(tid)
-			.cid(ONE_TIME_CID)
-			.build();
+		Map<String, Object> refundParams = parameterProvider.getRefundParams(refundContext, tid);
 
-		return kakaoRefundClient.send(refundParam, REFUND_URL);
+		return kakaoRefundClient.send(refundParams, REFUND_URL);
 	}
 
 }
