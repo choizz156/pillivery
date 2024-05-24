@@ -10,9 +10,10 @@ import com.team33.modulecore.cart.application.NormalCartService;
 import com.team33.modulecore.cart.application.SubscriptionCartService;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.item.application.ItemCommandService;
+import com.team33.modulecore.item.events.ItemSaleCountedEvent;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.events.Events;
+import com.team33.modulecore.config.Events;
 import com.team33.modulecore.order.events.OrderAddedSidEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,7 @@ public class OrderPaymentService {
 		itemCommandService.addSales(getOrderedItemsId(order));
 
 		Events.publish(new OrderAddedSidEvent(sid, orderId));
+		Events.publish(new ItemSaleCountedEvent(orderedItemsId));
 	}
 
 	private void refreshCart(boolean isSubscription, Long cartId, List<Long> orderedItemsId) {

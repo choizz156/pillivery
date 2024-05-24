@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.events;
+package com.team33.modulecore.config;
 
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -10,7 +10,7 @@ public class Events {
 		Events.publisher = publisher;
 	}
 
-	public static void publish(OrderAddedSidEvent event) {
+	public static void publish(Object event) {
 		if (publisher != null) {
 			publisher.publishEvent(event);
 		}

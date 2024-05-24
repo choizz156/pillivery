@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.events;
+package com.team33.modulecore.config;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
