@@ -96,7 +96,7 @@ public class PayController {
 	// @ResponseStatus(HttpStatus.BAD_REQUEST)
 	// public void cancel() {
 	// }
-	//
+
 	// @GetMapping("/fail")
 	// @ResponseStatus(HttpStatus.BAD_REQUEST)
 	// public void fail() {

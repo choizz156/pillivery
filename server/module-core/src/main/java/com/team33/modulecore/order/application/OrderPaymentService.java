@@ -12,6 +12,8 @@ import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.order.events.Events;
+import com.team33.modulecore.order.events.OrderAddedSidEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +44,6 @@ public class OrderPaymentService {
 	public void changeOrderStatusToSubscribe(Long orderId, String sid) {
 		Order order = orderFindHelper.findOrder(orderId);
 
-		order.addSid(sid);
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
 
 		List<Long> orderedItemsId = getOrderedIds(order);
@@ -52,6 +53,8 @@ public class OrderPaymentService {
 		}
 
 		itemCommandService.addSales(getOrderedItemsId(order));
+
+		Events.publish(new OrderAddedSidEvent(sid, orderId));
 	}
 
 	private void refreshCart(boolean isSubscription, Long cartId, List<Long> orderedItemsId) {
