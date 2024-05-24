@@ -65,12 +65,13 @@ public class OrderPaymentService {
 
 	public void addTid(Long orderId, String tid) {
 		Order order = orderFindHelper.findOrder(orderId);
+
 		order.addTid(tid);
 	}
 
 	public void changeOrderStatusToCancel(Long orderId) {
-
 		Order order = orderFindHelper.findOrder(orderId);
+
 		order.changeOrderStatus(OrderStatus.CANCEL);
 		order.deleteTid();
 	}

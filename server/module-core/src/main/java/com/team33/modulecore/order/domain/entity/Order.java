@@ -180,6 +180,10 @@ public class Order extends BaseEntity {
 		return this.orderPrice.getTotalPrice();
 	}
 
+	public void deleteTid() {
+		this.paymentCode = PaymentCode.addTid(null);
+	}
+
 	public String getSid() {
 		return this.paymentCode.getSid();
 	}
@@ -219,9 +223,5 @@ public class Order extends BaseEntity {
 		return this instanceof HibernateProxy ?
 			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
 			getClass().hashCode();
-	}
-
-	public void deleteTid() {
-		this.paymentCode = PaymentCode.addTid(null);
 	}
 }

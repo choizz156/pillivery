@@ -31,7 +31,7 @@ import com.team33.modulecore.order.mock.FakeOrderRepository;
 import com.team33.modulecore.user.domain.entity.User;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class OrderCreateServiceTest {
+class OrderServiceTest {
 
 	private User user;
 	private OrderRepository orderRepository;
@@ -180,6 +180,53 @@ class OrderCreateServiceTest {
 
 		verify(itemCommandService, times(1)).addSales(anyList());
 		verify(normalCartService, times(1)).refresh(anyLong(), anyList());
+	}
+
+	@DisplayName("주문 상태를 취소로 바꿀 수 있다.")
+	@Test
+	void 주문_상태_변경6() throws Exception {
+		//given
+		Order sample = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("isOrderedAtCart", true)
+			.set("isSubscription", false)
+			.setNull("receiver")
+			.setNull("orderItems")
+			.sample();
+
+		var order = orderRepository.save(sample);
+
+		var orderService =
+			new OrderPaymentService(new OrderFindHelper(orderRepository), null, null, null);
+
+		//when
+		orderService.changeOrderStatusToCancel(order.getId());
+
+		//then
+		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.CANCEL);
+		assertThat(order.getPaymentCode().getTid()).isNull();
+	}
+
+	@DisplayName("order 객체에 tid를 저장할 수 있다.")
+	@Test
+	void 주문_상태_변경7() throws Exception {
+		//given
+		Order sample = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("isOrderedAtCart", true)
+			.set("isSubscription", false)
+			.setNull("receiver")
+			.setNull("orderItems")
+			.sample();
+
+		var order = orderRepository.save(sample);
+
+		var orderService =
+			new OrderPaymentService(new OrderFindHelper(orderRepository), null, null, null);
+
+		//when
+		orderService.addTid(order.getId(), "tid");
+
+		//then
+		assertThat(order.getPaymentCode().getTid()).isNotNull();
 	}
 
 	@DisplayName("정기 결제 중인 아이템의 수량을 조정할 수 있다.")
