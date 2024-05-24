@@ -220,4 +220,8 @@ public class Order extends BaseEntity {
 			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
 			getClass().hashCode();
 	}
+
+	public void deleteTid() {
+		this.paymentCode = PaymentCode.addTid(null);
+	}
 }
