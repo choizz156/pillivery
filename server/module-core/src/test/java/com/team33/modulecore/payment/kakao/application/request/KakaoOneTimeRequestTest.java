@@ -4,23 +4,21 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.payment.application.request.NormalRequest;
+import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 
-class KakaoNormalRequestServiceTest {
+class KakaoOneTimeRequestTest {
 
-	@DisplayName("단건 결제 요청을 위임 할 수 있다.")
+	@DisplayName("단건 결제 요청을 보낼 수 있다.")
 	@Test
-	void 단건_결제_요청_위임() throws Exception{
+	void 단건_결제_요청() throws Exception {
 		//given
 		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.set("id", 1L)
@@ -33,10 +31,17 @@ class KakaoNormalRequestServiceTest {
 			.set("sid", "sid")
 			.sample();
 
-		KakaoNormalRequestService kakaoNormalRequestService =
-				new KakaoNormalRequestService(o -> new KakaoRequestResponse());
+		ParameterProvider parameterProvider = new ParameterProvider();
+
+		KakaoOneTimeRequest kakaoNormalRequest =
+			new KakaoOneTimeRequest(
+				(params, url) -> new KakaoRequestResponse(),
+				parameterProvider
+			);
+
 		//when
-		KakaoRequestResponse kakaoRequestResponse = kakaoNormalRequestService.requestOneTime(order);
+		KakaoRequestResponse kakaoRequestResponse = kakaoNormalRequest.request(order);
+
 		//then
 		assertThat(kakaoRequestResponse).isNotNull();
 	}

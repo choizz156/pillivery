@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.approve.ApproveFacade;
-import com.team33.modulecore.payment.application.approve.NormalApproveService;
+import com.team33.modulecore.payment.application.approve.OneTimeApproveService;
 import com.team33.modulecore.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class KakaoApproveFacade implements ApproveFacade<KakaoApproveResponse, KakaoApproveOneTimeRequest> {
 
 	private final SubscriptionApproveService<KakaoApproveResponse> kakaoSubsApproveService;
-	private final NormalApproveService<KakaoApproveResponse> kakaoNormalApproveService;
+	private final OneTimeApproveService<KakaoApproveResponse> kakaoOneTimeApproveService;
 	private final OrderFindHelper orderFindHelper;
 
 	@Override
@@ -28,7 +28,7 @@ public class KakaoApproveFacade implements ApproveFacade<KakaoApproveResponse, K
 
 		return isSubscription
 			? kakaoSubsApproveService.approveFirstTime(approveRequest)
-			: kakaoNormalApproveService.approveOneTime(approveRequest);
+			: kakaoOneTimeApproveService.approveOneTime(approveRequest);
 	}
 
 	@Override

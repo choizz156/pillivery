@@ -30,14 +30,14 @@ class KakaoSubsRequestServiceTest {
 			.set("orderPrice", new OrderPrice(3000, 200))
 			.set("orderItems", List.of())
 			.set("receiver", null)
-			.set("sid", "sid")
+			.set("paymentCode.sid", "sid")
 			.sample();
 
 		//given
 		KakaoSubsRequestService kakaoSubsRequestService = new KakaoSubsRequestService(o -> new KakaoRequestResponse());
 
 		//when
-		KakaoRequestResponse kakaoRequestResponse = kakaoSubsRequestService.requestSubscription(order);
+		KakaoRequestResponse kakaoRequestResponse = kakaoSubsRequestService.request(order);
 
 		//then
 		assertThat(kakaoRequestResponse).isNotNull();

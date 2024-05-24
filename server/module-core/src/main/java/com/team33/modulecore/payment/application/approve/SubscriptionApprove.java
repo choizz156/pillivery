@@ -5,5 +5,4 @@ import com.team33.modulecore.order.domain.entity.Order;
 public interface SubscriptionApprove<T> {
 
 	T approveSubscription(Order order);
-
 }

@@ -76,7 +76,7 @@ class KakaoRequestClientTest {
 				.withBody(response)
 			);
 
-		Map<String, String> parameters = getCommonParam();
+		Map<String, Object> parameters = getCommonParam();
 		parameters.put("cid", "TC0ONETIME");
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
@@ -118,7 +118,7 @@ class KakaoRequestClientTest {
 				.withBody(response)
 			);
 
-		Map<String, String> parameters = getCommonParam();
+		Map<String, Object> parameters = getCommonParam();
 		parameters.put("cid", "TC0ONETIME");
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
@@ -160,7 +160,7 @@ class KakaoRequestClientTest {
 				.withBody(response)
 			);
 
-		Map<String, String> parameters = getCommonParam();
+		Map<String, Object> parameters = getCommonParam();
 		parameters.put("cid", "TC0ONETIM"); //잘못된 cid
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
@@ -173,8 +173,8 @@ class KakaoRequestClientTest {
 			.isInstanceOf(PaymentApiException.class);
 	}
 
-	private Map<String, String> getCommonParam() {
-		Map<String, String> parameters = new ConcurrentHashMap<>();
+	private Map<String, Object> getCommonParam() {
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
 		parameters.put("partner_order_id", String.valueOf(1L));
 		parameters.put("partner_user_id", "partner_user_id");

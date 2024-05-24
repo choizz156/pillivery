@@ -5,19 +5,19 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.payment.application.request.NormalRequest;
+import com.team33.modulecore.payment.application.request.Request;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.domain.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 @Service
-public class KakaoNormalRequest
+public class KakaoOneTimeRequest
 	extends KakaoRequestTemplate
-	implements NormalRequest<KakaoRequestResponse> {
+	implements Request<KakaoRequestResponse> {
 
 	private final ParameterProvider parameterProvider;
 
-	public KakaoNormalRequest(
+	public KakaoOneTimeRequest(
 		PaymentClient<KakaoRequestResponse> KakaoRequestClient,
 		ParameterProvider parameterProvider
 	) {
@@ -26,7 +26,7 @@ public class KakaoNormalRequest
 	}
 
 	@Override
-	public KakaoRequestResponse requestOneTime(Order order) {
+	public KakaoRequestResponse request(Order order) {
 		return super.request(order);
 	}
 

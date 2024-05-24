@@ -41,7 +41,7 @@ class ParameterProviderTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, String> oneTimeReqsParams = parameterProvider.getOneTimeReqsParams(order);
+		Map<String, Object> oneTimeReqsParams = parameterProvider.getOneTimeReqsParams(order);
 
 		//then
 		assertThat(oneTimeReqsParams).hasSize(10)
@@ -67,7 +67,7 @@ class ParameterProviderTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, String> subscriptionReqsParams = parameterProvider.getSubscriptionReqsParams(order);
+		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionReqsParams(order);
 
 		//then
 		assertThat(subscriptionReqsParams).hasSize(10)
@@ -93,7 +93,7 @@ class ParameterProviderTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, String> subscriptionReqsParams = parameterProvider.getOneTimeApproveParams("tid", "pgToken", 1L);
+		Map<String, Object> subscriptionReqsParams = parameterProvider.getOneTimeApproveParams("tid", "pgToken", 1L);
 
 		//then
 		assertThat(subscriptionReqsParams).hasSize(5)
@@ -114,7 +114,7 @@ class ParameterProviderTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, String> subscriptionReqsParams = parameterProvider.getSubscriptionFirstApproveParams("tid", "pgToken", 1L);
+		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionFirstApproveParams("tid", "pgToken", 1L);
 
 		//then
 		assertThat(subscriptionReqsParams).hasSize(5)

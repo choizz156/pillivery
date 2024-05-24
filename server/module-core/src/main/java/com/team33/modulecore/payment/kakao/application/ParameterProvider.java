@@ -68,6 +68,15 @@ public class ParameterProvider extends ParamsConst {
 		return refundParam;
 	}
 
+	public Map<String, Object> getSubsCancelParams(Order order) {
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
+
+		parameters.put(CID, SUBSCRIP_CID);
+		parameters.put(SID, order.getSid());
+
+		return parameters;
+	}
+
 	private Map<String, Object> getRequestParams(Order order) {
 		PaymentParams requestParamsInfo = getRequestParamsInfo(order);
 		return getCommonReqsParams(requestParamsInfo);

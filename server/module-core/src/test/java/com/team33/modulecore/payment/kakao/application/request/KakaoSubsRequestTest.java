@@ -38,7 +38,7 @@ class KakaoSubsRequestTest {
 			new KakaoSubsRequest((params, url) -> new KakaoRequestResponse(), parameterProvider);
 
 		//when
-		KakaoRequestResponse kakaoRequestResponse = kakaoSubsRequest.requestSubscription(order);
+		KakaoRequestResponse kakaoRequestResponse = kakaoSubsRequest.request(order);
 
 		//then
 		assertThat(kakaoRequestResponse).isNotNull();

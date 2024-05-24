@@ -87,7 +87,7 @@ class KakaoApproveClientTest {
 		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
-		Map<String, String> parameters = new ConcurrentHashMap<>();
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put("cid", "TC0ONETIME");
 		parameters.put("tid", "tid");
 		parameters.put("partner_order_id", "1");
@@ -95,8 +95,7 @@ class KakaoApproveClientTest {
 		parameters.put("pg_token", "pgToken");
 
 		// When
-		KakaoApproveResponse send = kaKaoApproveClient.send(parameters, APPROVE_URL);
-		return send;
+		return kaKaoApproveClient.send(parameters, APPROVE_URL);
 	}
 
 	@DisplayName("최초 정기 결제 승인 요청 시 응답 객체를 가져온다.")
@@ -139,7 +138,7 @@ class KakaoApproveClientTest {
 		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
-		Map<String, String> parameters = new ConcurrentHashMap<>();
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put("tid", "tid");
 		parameters.put("partner_order_id", "partner_order_id");
 		parameters.put("partner_user_id", "partner_user_id");
@@ -190,7 +189,7 @@ class KakaoApproveClientTest {
 		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
-		Map<String, String> parameters = new ConcurrentHashMap<>();
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put("tid", "tid");
 		parameters.put("partner_order_id", "partner_order_id");
 		parameters.put("partner_user_id", "partner_user_id");
@@ -232,7 +231,7 @@ class KakaoApproveClientTest {
 		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
-		Map<String, String> parameters = new ConcurrentHashMap<>();
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put("tid", "tid");
 		parameters.put("partner_order_id", "partner_order_id");
 		parameters.put("partner_user_id", "partner_user_id");

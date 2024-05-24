@@ -10,17 +10,17 @@ import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 
-class KakaoNormalApproveServiceTest {
+class KakaoOneTimeApproveTest {
 
-	@DisplayName("단건 결제 승인을 위임할 수 있다.")
+	@DisplayName("일반 결제 승인을 요청할 수 있다.")
 	@Test
-	void 단건_승인_위임() throws Exception {
+	void 승인_요청() throws Exception {
 		//given
-
 		ParameterProvider parameterProvider = new ParameterProvider();
-		KakaoNormalApproveService kakaoNormalApproveService =
-			new KakaoNormalApproveService(
-				order -> new KakaoApproveResponse()
+		KakaoOneTimeApprove kakaoNormalApprove =
+			new KakaoOneTimeApprove(
+				(params, url) -> new KakaoApproveResponse(),
+				parameterProvider
 			);
 
 		ApproveRequest request = KakaoApproveOneTimeRequest.builder()
@@ -30,10 +30,9 @@ class KakaoNormalApproveServiceTest {
 			.build();
 
 		//when
-		KakaoApproveResponse kaKaoApproveResponse = kakaoNormalApproveService.approveOneTime(request);
+		KakaoApproveResponse approve = kakaoNormalApprove.approve(request);
 
 		//then
-		assertThat(kaKaoApproveResponse).isNotNull();
+		assertThat(approve).isNotNull();
 	}
-
 }

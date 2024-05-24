@@ -11,11 +11,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoSubsRequestService implements RequestService<KakaoRequestResponse> {
+public class KakaoRequestService implements RequestService<KakaoRequestResponse> {
 
-	private final Request<KakaoRequestResponse> kakaoSubsRequest;
+	private final Request<KakaoRequestResponse> kakaoOneTimeRequest;
 
 	public KakaoRequestResponse request(Order order) {
-		return kakaoSubsRequest.request(order);
+		return kakaoOneTimeRequest.request(order);
 	}
 }

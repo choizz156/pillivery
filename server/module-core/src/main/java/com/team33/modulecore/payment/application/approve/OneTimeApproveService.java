@@ -2,7 +2,7 @@ package com.team33.modulecore.payment.application.approve;
 
 import com.team33.modulecore.payment.dto.ApproveRequest;
 
-public interface NormalApprove<T, S extends ApproveRequest> {
+public interface OneTimeApproveService<T> {
 
-	T approveOneTime(S approveRequest);
+	T approveOneTime(ApproveRequest approveRequest);
 }

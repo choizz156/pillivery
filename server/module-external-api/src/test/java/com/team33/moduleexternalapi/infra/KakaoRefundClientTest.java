@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.*;
 import static org.mockserver.model.HttpResponse.*;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -62,7 +65,7 @@ class KakaoRefundClientTest {
 				request()
 					.withMethod("POST")
 					.withBody(
-						"{\"tid\":\"tid\",\"cid\":\"cid\",\"cancel_amount\":2200,\"cancel_tax_free_amount\":0}"
+						"{\"cancel_amount\":2200,\"cancel_tax_free_amount\":0,\"tid\":\"tid\",\"cid\":\"cid\"}"
 					)
 					.withHeader(Header.header("Authorization", "SECRET_KEY DEV9F204C96DFE6655F42DCE22C77CF4CC4E3BD5"))
 					.withHeader(Header.header("Content-type", "application/json")),
@@ -74,18 +77,13 @@ class KakaoRefundClientTest {
 				.withBody(response)
 			);
 
-		RefundParams param = RefundParams.builder()
-			.cid("cid")
-			.tid("tid")
-			.cancelAmount(2200)
-			.cancelTaxFreeAmount(0)
-			.build();
-
 		//when
+		Map<String, Object> parameters = getMap("tid");
+
 		KakaoRefundResponse refundResponse = new KakaoRefundClient(
 			new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
 		)
-			.send(param, CANCEL_URL);
+			.send(parameters, CANCEL_URL);
 
 		// Then
 		assertThat(refundResponse).isNotNull();
@@ -119,19 +117,25 @@ class KakaoRefundClientTest {
 				.withBody(response)
 			);
 
-		RefundParams param = RefundParams.builder()
-			.cid("cid")
-			.tid("ti") //잘못된 tid
-			.cancelAmount(2200)
-			.cancelTaxFreeAmount(0)
-			.build();
+		Map<String, Object> parameters = getMap("ti");
 
 		KakaoRefundClient kakaoRefundClient = new KakaoRefundClient(
 			new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
 		);
 
 		// when //Then
-		assertThatThrownBy(() -> kakaoRefundClient.send(param, CANCEL_URL))
+		assertThatThrownBy(() -> kakaoRefundClient.send(parameters, CANCEL_URL))
 			.isInstanceOf(PaymentApiException.class);
+	}
+
+	private static Map<String, Object> getMap(String ti) {
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
+
+		parameters.put("tid", ti);
+		parameters.put("cid", "cid");
+		parameters.put("cancel_amount", 2200);
+		parameters.put("cancel_tax_free_amount", 0);
+
+		return parameters;
 	}
 }

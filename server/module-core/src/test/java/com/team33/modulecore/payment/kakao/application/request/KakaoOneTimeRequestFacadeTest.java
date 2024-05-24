@@ -1,15 +1,12 @@
 package com.team33.modulecore.payment.kakao.application.request;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.common.OrderFindHelper;
@@ -19,7 +16,7 @@ import com.team33.modulecore.payment.application.request.RequestFacade;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 
-class KakaoRequestFacadeTest {
+class KakaoOneTimeRequestFacadeTest {
 
 	@DisplayName("정기 결제 요청일 경우 정기 결제 요청 서비스로 위임한다.")
 	@Test
@@ -38,13 +35,13 @@ class KakaoRequestFacadeTest {
 			.sample();
 
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
-		KakaoNormalRequestService kakaoNormalRequestService = mock(KakaoNormalRequestService.class);
+		KakaoRequestService kakaoNormalRequestService = mock(KakaoRequestService.class);
 		KakaoSubsRequestService kakaoSubsRequestService = mock(KakaoSubsRequestService.class);
 
 
 		when(orderFindHelper.findOrder(anyLong())).thenReturn(order);
-		when(kakaoNormalRequestService.requestOneTime(any())).thenReturn(new KakaoRequestResponse());
-		when(kakaoSubsRequestService.requestSubscription(any())).thenReturn(new KakaoRequestResponse());
+		when(kakaoNormalRequestService.request(any())).thenReturn(new KakaoRequestResponse());
+		when(kakaoSubsRequestService.request(any())).thenReturn(new KakaoRequestResponse());
 
 		RequestFacade<KakaoRequestResponse> facade = new KakaoRequestFacade(
 			orderFindHelper,
@@ -57,8 +54,8 @@ class KakaoRequestFacadeTest {
 
 		//then
 		verify(orderFindHelper, times(1)).findOrder(1L);
-		verify(kakaoNormalRequestService, times(0)).requestOneTime(any(Order.class));
-		verify(kakaoSubsRequestService, times(1)).requestSubscription(any(Order.class));
+		verify(kakaoNormalRequestService, times(0)).request(any(Order.class));
+		verify(kakaoSubsRequestService, times(1)).request(any(Order.class));
 
 		assertThat(request).isNotNull();
 	}
@@ -79,13 +76,13 @@ class KakaoRequestFacadeTest {
 			.sample();
 
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
-		KakaoNormalRequestService kakaoNormalRequestService = mock(KakaoNormalRequestService.class);
+		KakaoRequestService kakaoNormalRequestService = mock(KakaoRequestService.class);
 		KakaoSubsRequestService kakaoSubsRequestService = mock(KakaoSubsRequestService.class);
 
 
 		when(orderFindHelper.findOrder(anyLong())).thenReturn(order);
-		when(kakaoNormalRequestService.requestOneTime(any())).thenReturn(new KakaoRequestResponse());
-		when(kakaoSubsRequestService.requestSubscription(any())).thenReturn(new KakaoRequestResponse());
+		when(kakaoNormalRequestService.request(any())).thenReturn(new KakaoRequestResponse());
+		when(kakaoSubsRequestService.request(any())).thenReturn(new KakaoRequestResponse());
 
 		RequestFacade<KakaoRequestResponse> facade = new KakaoRequestFacade(
 			orderFindHelper,
@@ -99,8 +96,8 @@ class KakaoRequestFacadeTest {
 
 		//then
 		verify(orderFindHelper, times(1)).findOrder(1L);
-		verify(kakaoNormalRequestService, times(1)).requestOneTime(any(Order.class));
-		verify(kakaoSubsRequestService, times(0)).requestSubscription(any(Order.class));
+		verify(kakaoNormalRequestService, times(1)).request(any(Order.class));
+		verify(kakaoSubsRequestService, times(0)).request(any(Order.class));
 
 		assertThat(request).isNotNull();
 

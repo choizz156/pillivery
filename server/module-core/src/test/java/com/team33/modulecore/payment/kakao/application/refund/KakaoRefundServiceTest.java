@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.common.OrderFindHelper;
+import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
 
 class KakaoRefundServiceTest {
@@ -25,7 +26,7 @@ class KakaoRefundServiceTest {
 			.build();
 
 		KakaoRefundService kakaoRefundService =
-			new KakaoRefundService((params, url) -> new KakaoRefundResponse(), orderFindHelper);
+			new KakaoRefundService((params, url) -> new KakaoRefundResponse(), new ParameterProvider(), orderFindHelper);
 		//when
 		KakaoRefundResponse refund = kakaoRefundService.refund(context);
 

@@ -12,9 +12,11 @@ import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.payment.dto.RefundDto;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.order.application.OrderPaymentService;
-import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
 import com.team33.modulecore.payment.application.refund.RefundService;
+import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
+import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
+import com.team33.moduleexternalapi.dto.KakaoSubsCancelResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class RefundController {
 
 	private final RefundService<KakaoRefundResponse> refundService;
+	private final CancelSubscriptionService<KakaoSubsCancelResponse> cancelSubscriptionService;
 	private final PaymentMapper paymentMapper;
 	private final OrderPaymentService orderPaymentService;
 
@@ -37,6 +40,7 @@ public class RefundController {
 		RefundContext refundContext = paymentMapper.toRefundContext(refundDto, orderId);
 		orderPaymentService.changeOrderStatusToCancel(orderId);
 
-		return new SingleResponseDto<>(refundService.refund(refundContext));
+		KakaoRefundResponse refund = refundService.refund(refundContext);
+		return new SingleResponseDto<>(refund);
 	}
 }

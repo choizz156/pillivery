@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.payment.application.approve.NormalApprove;
+import com.team33.modulecore.payment.application.approve.OneTimeApprove;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
@@ -12,13 +12,13 @@ import com.team33.moduleexternalapi.domain.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 
 @Component
-public class KakaoNormalApprove
+public class KakaoOneTimeApprove
 	extends KaKaoApproveTemplate
-	implements NormalApprove<KakaoApproveResponse, KakaoApproveOneTimeRequest>
+	implements OneTimeApprove<KakaoApproveResponse, KakaoApproveOneTimeRequest>
 {
 	private final ParameterProvider parameterProvider;
 
-	public KakaoNormalApprove(
+	public KakaoOneTimeApprove(
 		PaymentClient<KakaoApproveResponse> kakaoApproveClient,
 		ParameterProvider parameterProvider
 	) {

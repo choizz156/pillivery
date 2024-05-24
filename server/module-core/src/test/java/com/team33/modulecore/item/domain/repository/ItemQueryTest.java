@@ -35,7 +35,6 @@ import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.item.dto.query.PriceFilter;
 import com.team33.modulecore.item.infra.ItemQueryDslDao;
-import com.team33.modulecore.user.domain.ReviewId;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class ItemQueryTest {

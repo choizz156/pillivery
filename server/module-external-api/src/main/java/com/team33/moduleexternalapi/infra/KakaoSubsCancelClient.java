@@ -7,25 +7,26 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleexternalapi.application.ClientSender;
 import com.team33.moduleexternalapi.domain.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
+import com.team33.moduleexternalapi.dto.KakaoSubsCancelResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoRefundClient implements PaymentClient<KakaoRefundResponse> {
+public class KakaoSubsCancelClient implements PaymentClient<KakaoSubsCancelResponse> {
 
 	private final ClientSender clientSender;
 
 	@Override
-	public KakaoRefundResponse send(Map<String, Object> params, String url) {
-		return sendRefund(params, url);
+	public KakaoSubsCancelResponse send(Map<String, Object> params, String url) {
+
+		return sendSubscriptionCancel(params, url);
 	}
 
-	private KakaoRefundResponse sendRefund(Map<String, Object> params, String url) {
+	private KakaoSubsCancelResponse sendSubscriptionCancel(Map<String, Object> params, String url) {
 		try {
-			return clientSender.send(params, url, KakaoRefundResponse.class);
+			return clientSender.send(params, url, KakaoSubsCancelResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new PaymentApiException(e.getMessage());
 		}

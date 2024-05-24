@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class RefundContext {
-	private Long orderId;
-	private int cancelAmount;
-	private int cancelTaxFreeAmount;
+	private final Long orderId;
+	private final int cancelAmount;
+	private final int cancelTaxFreeAmount;
 
 	@Builder
 	public RefundContext(Long orderId, int cancelAmount, int cancelTaxFreeAmount) {

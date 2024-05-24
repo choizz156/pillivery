@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.payment.application.approve.NormalApproveService;
+import com.team33.modulecore.payment.application.approve.OneTimeApproveService;
 import com.team33.modulecore.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
@@ -20,14 +20,14 @@ class KakaoApproveFacadeTest {
 	void 정기_서비스_위임() throws Exception{
 		//given
 		SubscriptionApproveService subscriptionApproveService = mock(SubscriptionApproveService.class);
-		NormalApproveService normalApproveService = mock(NormalApproveService.class);
+		OneTimeApproveService oneTimeApproveService = mock(OneTimeApproveService.class);
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
 
 		when(orderFindHelper.checkSubscription(anyLong())).thenReturn(true);
 		when(subscriptionApproveService.approveFirstTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
-		when(normalApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		when(oneTimeApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		KakaoApproveFacade kakaoApproveFacade =
-			new KakaoApproveFacade(subscriptionApproveService, normalApproveService, orderFindHelper);
+			new KakaoApproveFacade(subscriptionApproveService, oneTimeApproveService, orderFindHelper);
 
 		KakaoApproveOneTimeRequest request = KakaoApproveOneTimeRequest.builder()
 			.orderId(1L)
@@ -40,7 +40,7 @@ class KakaoApproveFacadeTest {
 
 		//then
 		verify(subscriptionApproveService, times(1)).approveFirstTime(any(ApproveRequest.class));
-		verify(normalApproveService, times(0)).approveOneTime(any(ApproveRequest.class));
+		verify(oneTimeApproveService, times(0)).approveOneTime(any(ApproveRequest.class));
 		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
 
 		assertThat(kakaoApproveResponse).isNotNull();
@@ -50,14 +50,14 @@ class KakaoApproveFacadeTest {
 	@Test
 	void 단건_승인_위임() throws Exception{
 		SubscriptionApproveService subscriptionApproveService = mock(SubscriptionApproveService.class);
-		NormalApproveService normalApproveService = mock(NormalApproveService.class);
+		OneTimeApproveService oneTimeApproveService = mock(OneTimeApproveService.class);
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
 
 		when(orderFindHelper.checkSubscription(anyLong())).thenReturn(false);
 		when(subscriptionApproveService.approveFirstTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
-		when(normalApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		when(oneTimeApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		KakaoApproveFacade kakaoApproveFacade =
-			new KakaoApproveFacade(subscriptionApproveService, normalApproveService, orderFindHelper);
+			new KakaoApproveFacade(subscriptionApproveService, oneTimeApproveService, orderFindHelper);
 
 		KakaoApproveOneTimeRequest request = KakaoApproveOneTimeRequest.builder()
 			.orderId(1L)
@@ -70,7 +70,7 @@ class KakaoApproveFacadeTest {
 
 		//then
 		verify(subscriptionApproveService, times(0)).approveFirstTime(any(ApproveRequest.class));
-		verify(normalApproveService, times(1)).approveOneTime(any(ApproveRequest.class));
+		verify(oneTimeApproveService, times(1)).approveOneTime(any(ApproveRequest.class));
 		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
 
 		assertThat(kakaoApproveResponse).isNotNull();
