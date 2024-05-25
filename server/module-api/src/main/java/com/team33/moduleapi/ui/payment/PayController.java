@@ -13,7 +13,8 @@ import com.team33.moduleapi.ui.payment.dto.KaKaoPayNextUrlDto;
 import com.team33.moduleapi.ui.payment.mapper.PaymentData;
 import com.team33.moduleapi.ui.payment.mapper.PaymentDataService;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
-import com.team33.modulecore.order.application.OrderPaymentService;
+import com.team33.modulecore.order.application.OrderPaymentCodeService;
+import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.payment.application.request.RequestFacade;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
@@ -31,7 +32,8 @@ public class PayController {
 	private final RequestFacade<KakaoRequestResponse> requestFacade;
 	private final PaymentMapper paymentMapper;
 	private final PaymentDataService paymentDataService;
-	private final OrderPaymentService orderPaymentService;
+	private final OrderStatusService orderStatusService;
+	private final OrderPaymentCodeService paymentCodeService;
 
 	@PostMapping("/{orderId}")
 	public SingleResponseDto<?> request(
@@ -41,7 +43,7 @@ public class PayController {
 		KakaoRequestResponse requestResponse = requestFacade.request(orderId);
 
 		paymentDataService.addData(orderId, requestResponse.getTid());
-		orderPaymentService.addTid(orderId, requestResponse.getTid());
+		paymentCodeService.addTid(orderId, requestResponse.getTid());
 
 		return new SingleResponseDto<>(KaKaoPayNextUrlDto.from(requestResponse));
 	}
@@ -58,7 +60,8 @@ public class PayController {
 
 		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
 
-		orderPaymentService.changeOrderStatusToSubscribe(Long.valueOf(approve.getPartner_order_id()), approve.getSid());
+		orderStatusService.processSubscriptionStatus(orderId);
+		paymentCodeService.addSid(orderId, approve.getSid());
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
 	}
@@ -75,7 +78,7 @@ public class PayController {
 
 		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
 
-		orderPaymentService.changeOrderStatusToComplete(Long.valueOf(approve.getPartner_order_id()));
+		orderStatusService.processOneTimeStatus(Long.valueOf(approve.getPartner_order_id()));
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
 	}
@@ -88,9 +91,6 @@ public class PayController {
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(kaKaoApproveResponse));
 	}
-
-
-
 
 	// @GetMapping("/cancel")
 	// @ResponseStatus(HttpStatus.BAD_REQUEST)

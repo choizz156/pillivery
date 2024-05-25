@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderPaymentService;
+import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
@@ -37,7 +37,7 @@ public class SubscriptionService {
     private final TriggerService trigger;
     private final JobDetailService jobDetailService;
     private final OrderCreateService orderCreateService;
-    private final OrderPaymentService orderPaymentService;
+    private final OrderStatusService orderStatusService;
     private final OrderItemService orderItemService;
     private final OrderQueryService orderQueryService;
 
@@ -179,7 +179,7 @@ public class SubscriptionService {
                     trigger,
                     orderItemService,
 					orderCreateService,
-                    orderPaymentService,
+					orderStatusService,
                     jobDetailService,
                     orderQueryService
                 )

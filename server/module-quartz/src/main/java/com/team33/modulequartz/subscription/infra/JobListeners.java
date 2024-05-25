@@ -19,7 +19,7 @@ import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderPaymentService;
+import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
@@ -37,7 +37,7 @@ public class JobListeners implements JobListener {
     private final TriggerService triggerService;
     private final OrderItemService orderItemService;
     private final OrderCreateService orderCreateService;
-    private final OrderPaymentService paymentService;
+    private final OrderStatusService paymentService;
     private final JobDetailService jobDetailService;
     private final OrderQueryService orderQueryService;
 
@@ -137,7 +137,7 @@ public class JobListeners implements JobListener {
     }
 
     private Order getOrder(Long orderId) {
-        paymentService.changeOrderStatusToComplete(orderId);
+        paymentService.processOneTimeStatus(orderId);
         Order order = orderQueryService.findOrder(orderId);
         return orderCreateService.deepCopy(order);
     }
