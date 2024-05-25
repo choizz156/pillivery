@@ -26,7 +26,12 @@ class KakaoRefundServiceTest {
 			.build();
 
 		KakaoRefundService kakaoRefundService =
-			new KakaoRefundService((params, url) -> new KakaoRefundResponse(), new ParameterProvider(), orderFindHelper);
+			new KakaoRefundService(
+				event -> {},
+				(params, url) -> new KakaoRefundResponse(),
+				new ParameterProvider(),
+				orderFindHelper
+			);
 		//when
 		KakaoRefundResponse refund = kakaoRefundService.refund(context);
 

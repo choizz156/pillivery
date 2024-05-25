@@ -2,10 +2,10 @@ package com.team33.modulecore.payment.kakao.application.refund;
 
 import java.util.Map;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.config.Events;
 import com.team33.modulecore.payment.application.refund.RefundService;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
@@ -20,6 +20,7 @@ public class KakaoRefundService implements RefundService<KakaoRefundResponse> {
 
 	private static final String REFUND_URL = "https://open-api.kakaopay.com/online/v1/payment/cancel";
 
+	private final ApplicationEventPublisher applicationEventPublisher;
 	private final PaymentClient<KakaoRefundResponse> kakaoRefundClient;
 	private final ParameterProvider parameterProvider;
 	private final OrderFindHelper orderFindHelper;
@@ -30,7 +31,7 @@ public class KakaoRefundService implements RefundService<KakaoRefundResponse> {
 		String tid = orderFindHelper.findTid(refundContext.getOrderId());
 		Map<String, Object> refundParams = parameterProvider.getRefundParams(refundContext, tid);
 
-		Events.publish(new KakaoRefundedEvent(refundParams, REFUND_URL));
+		applicationEventPublisher.publishEvent(new KakaoRefundedEvent(refundParams, REFUND_URL));
 		return kakaoRefundClient.send(refundParams, REFUND_URL);
 	}
 
