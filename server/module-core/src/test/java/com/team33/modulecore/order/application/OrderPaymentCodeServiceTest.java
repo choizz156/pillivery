@@ -28,7 +28,7 @@ class OrderPaymentCodeServiceTest {
 		OrderPaymentCodeService orderPaymentCodeService = new OrderPaymentCodeService(orderFindHelper);
 
 		//when//then
-		assertDoesNotThrow(() -> orderPaymentCodeService.addSid(1L, "sid"));
+		assertDoesNotThrow(() -> orderPaymentCodeService.addSid(order, "sid"));
 	}
 
 	@DisplayName("tid를 넣을 수 있다.")
@@ -59,7 +59,7 @@ class OrderPaymentCodeServiceTest {
 
 
 		//when //then
-		assertThatThrownBy(() -> orderPaymentCodeService.addSid(1L, "sid"))
+		assertThatThrownBy(() -> orderPaymentCodeService.addSid(order, "sid"))
 			.isInstanceOf(DataSaveException.class);
 
 		assertThat(output).contains("orderId = 1 :: lost sid = sid");

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationContext;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
@@ -90,10 +89,11 @@ class OrderServiceTest {
 		when(orderFindHelper.findOrder(anyLong())).thenReturn(order);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository),
+				new OrderPaymentCodeService(orderFindHelper));
 
 		//when
-		orderService.processSubscriptionStatus(order.getId());
+		orderService.processSubscriptionStatus(order.getId(), "sid");
 
 		//then
 		verify(applicationContext, times(1)).publishEvent(any(CartRefreshedEvent.class));
@@ -109,10 +109,11 @@ class OrderServiceTest {
 		var order = orderRepository.save(getCartOrder());
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository),
+				new OrderPaymentCodeService(new OrderFindHelper(orderRepository)));
 
 		//when
-		orderService.processSubscriptionStatus(order.getId());
+		orderService.processSubscriptionStatus(order.getId(), "sid");
 
 		//then
 		verify(applicationContext, times(1)).publishEvent(any(CartRefreshedEvent.class));
@@ -137,7 +138,7 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository), null);
 
 		//when
 		orderService.processOneTimeStatus(order.getId());
@@ -164,7 +165,7 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository), null);
 
 		//when
 		orderService.processOneTimeStatus(order.getId());
@@ -189,7 +190,7 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository), null);
 
 		//when
 		orderService.changeOrderStatusToCancel(order.getId());
