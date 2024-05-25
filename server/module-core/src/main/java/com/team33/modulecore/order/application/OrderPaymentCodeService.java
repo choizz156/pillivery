@@ -21,18 +21,6 @@ public class OrderPaymentCodeService {
 	private final OrderFindHelper orderFindHelper;
 
 	@Async
-	public void addSid(Long orderId, String sid) {
-		Order order = orderFindHelper.findOrder(orderId);
-
-		try {
-			order.addSid(sid);
-		} catch (DataAccessException e) {
-			log.error("orderId = {} :: lost sid = {}", orderId, sid);
-			throw new DataSaveException(e.getMessage());
-		}
-	}
-
-	@Async
 	public void addTid(Long orderId, String tid) {
 		Order order = orderFindHelper.findOrder(orderId);
 
@@ -40,6 +28,16 @@ public class OrderPaymentCodeService {
 			order.addTid(tid);
 		} catch (DataAccessException e) {
 			log.error("orderId = {} :: lost tid = {}", orderId, tid);
+			throw new DataSaveException(e.getMessage());
+		}
+	}
+
+	@Async
+	public void addSid(Order order, String sid) {
+		try {
+			order.addSid(sid);
+		} catch (DataAccessException e) {
+			log.error("orderId = {} :: lost sid = {}", order.getId(), sid);
 			throw new DataSaveException(e.getMessage());
 		}
 	}

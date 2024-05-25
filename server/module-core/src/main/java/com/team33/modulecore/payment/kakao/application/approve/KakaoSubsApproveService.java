@@ -20,7 +20,7 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 
 	@Override
 	public KakaoApproveResponse approveFirstTime(ApproveRequest approveRequest) {
-		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest)approveRequest;
+		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest) approveRequest;
 
 		// doKakaoScheduling(orderId);
 		return kakaoFirstSubsApprove.approveFirstSubscription(request);
