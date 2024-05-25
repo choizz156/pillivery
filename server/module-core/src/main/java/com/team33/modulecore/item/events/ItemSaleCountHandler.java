@@ -18,7 +18,7 @@ public class ItemSaleCountHandler {
 	@Async
 	@Transactional
 	@EventListener
-	public void handle(ItemSaleCountedEvent event) {
+	public void onItemSaleCounted(ItemSaleCountedEvent event) {
 		event.getItemId().forEach(itemCommandRepository::incrementSales);
 	}
 }

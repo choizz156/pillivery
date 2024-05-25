@@ -180,10 +180,6 @@ public class Order extends BaseEntity {
 		return this.orderPrice.getTotalPrice();
 	}
 
-	public void deleteTid() {
-		this.paymentCode = PaymentCode.addTid(null);
-	}
-
 	public String getSid() {
 		return this.paymentCode.getSid();
 	}

@@ -9,12 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.team33.modulecore.cart.application.NormalCartService;
 import com.team33.modulecore.cart.application.SubscriptionCartService;
 import com.team33.modulecore.common.OrderFindHelper;
+import com.team33.modulecore.config.Events;
 import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.events.ItemSaleCountedEvent;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.config.Events;
-import com.team33.modulecore.order.events.OrderAddedSidEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,6 +45,7 @@ public class OrderPaymentService {
 		Order order = orderFindHelper.findOrder(orderId);
 
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
+		order.addSid(sid);
 
 		List<Long> orderedItemsId = getOrderedIds(order);
 
@@ -53,9 +53,6 @@ public class OrderPaymentService {
 			refreshCart(order.isSubscription(), order.getUser().getCartId(), orderedItemsId);
 		}
 
-		itemCommandService.addSales(getOrderedItemsId(order));
-
-		Events.publish(new OrderAddedSidEvent(sid, orderId));
 		Events.publish(new ItemSaleCountedEvent(orderedItemsId));
 	}
 
@@ -78,7 +75,6 @@ public class OrderPaymentService {
 		Order order = orderFindHelper.findOrder(orderId);
 
 		order.changeOrderStatus(OrderStatus.CANCEL);
-		order.deleteTid();
 	}
 
 	private List<Long> getOrderedIds(Order order) {

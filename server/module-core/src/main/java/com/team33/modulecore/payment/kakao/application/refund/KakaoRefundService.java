@@ -5,8 +5,10 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.common.OrderFindHelper;
+import com.team33.modulecore.config.Events;
 import com.team33.modulecore.payment.application.refund.RefundService;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
+import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleexternalapi.domain.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
 
@@ -26,9 +28,9 @@ public class KakaoRefundService implements RefundService<KakaoRefundResponse> {
 	public KakaoRefundResponse refund(RefundContext refundContext) {
 
 		String tid = orderFindHelper.findTid(refundContext.getOrderId());
-
 		Map<String, Object> refundParams = parameterProvider.getRefundParams(refundContext, tid);
 
+		Events.publish(new KakaoRefundedEvent(refundParams, REFUND_URL));
 		return kakaoRefundClient.send(refundParams, REFUND_URL);
 	}
 
