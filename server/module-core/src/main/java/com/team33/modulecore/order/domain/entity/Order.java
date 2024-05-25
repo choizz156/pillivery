@@ -184,6 +184,10 @@ public class Order extends BaseEntity {
 		return this.paymentCode.getSid();
 	}
 
+	public String getTid() {
+		return this.paymentCode.getTid();
+	}
+
 	private void countTotalQuantity() {
 
 		if (this.orderItems.isEmpty()) {

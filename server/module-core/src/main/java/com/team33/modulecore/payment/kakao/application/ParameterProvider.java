@@ -77,6 +77,14 @@ public class ParameterProvider extends ParamsConst {
 		return parameters;
 	}
 
+	public Map<String, Object> getLookupParams(String tid) {
+		Map<String, Object> lookupParams = new ConcurrentHashMap<>();
+		lookupParams.put(TID, tid);
+		lookupParams.put(CID, ONE_TIME_CID);
+
+		return lookupParams;
+	}
+
 	private Map<String, Object> getRequestParams(Order order) {
 		PaymentParams requestParamsInfo = getRequestParamsInfo(order);
 		return getCommonReqsParams(requestParamsInfo);
