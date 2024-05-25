@@ -11,13 +11,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.mockito.ArgumentCaptor;
+import org.springframework.context.ApplicationContext;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.cart.application.NormalCartService;
-import com.team33.modulecore.cart.application.SubscriptionCartService;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.common.UserFindHelper;
-import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.Address;
 import com.team33.modulecore.order.domain.OrderItem;
@@ -27,6 +26,8 @@ import com.team33.modulecore.order.domain.Receiver;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.order.dto.OrderContext;
+import com.team33.modulecore.order.events.CartRefreshedEvent;
+import com.team33.modulecore.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.order.mock.FakeOrderRepository;
 import com.team33.modulecore.user.domain.entity.User;
 
@@ -82,23 +83,23 @@ class OrderServiceTest {
 	void 주문_상태_변경1() throws Exception {
 		//given
 		var order = orderRepository.save(getNoCartOrder());
-		var userFindHelper = mock(UserFindHelper.class);
-		var itemCommandService = mock(ItemCommandService.class);
-		var subscriptionCartService = mock(SubscriptionCartService.class);
+
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
+
+		when(orderFindHelper.findOrder(anyLong())).thenReturn(order);
 
 		var orderService =
-			new OrderPaymentService(new OrderFindHelper(orderRepository), itemCommandService, subscriptionCartService,
-				null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
 
 		//when
-		orderService.changeOrderStatusToSubscribe(order.getId(), "sid");
+		orderService.processSubscriptionStatus(order.getId());
 
 		//then
-		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.SUBSCRIBE);
-		assertThat(order.getSid()).isEqualTo("sid");
+		verify(applicationContext, times(1)).publishEvent(any(CartRefreshedEvent.class));
+		verify(applicationContext, times(1)).publishEvent(any(ItemSaleCountedEvent.class));
 
-		verify(itemCommandService, times(1)).addSales(anyList());
-		verify(subscriptionCartService, times(0)).refresh(anyLong(), anyList());
+		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.SUBSCRIBE);
 	}
 
 	@DisplayName("카트 주문의 주문 상태를 구독 중으로 바꿀 수 있다.")
@@ -106,22 +107,18 @@ class OrderServiceTest {
 	void 주문_상태_변경2() throws Exception {
 		//given
 		var order = orderRepository.save(getCartOrder());
-		var itemCommandService = mock(ItemCommandService.class);
-		var subscriptionCartService = mock(SubscriptionCartService.class);
-
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
 		var orderService =
-			new OrderPaymentService(new OrderFindHelper(orderRepository), itemCommandService, subscriptionCartService,
-				null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
 
 		//when
-		orderService.changeOrderStatusToSubscribe(order.getId(), "sid");
+		orderService.processSubscriptionStatus(order.getId());
 
 		//then
-		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.SUBSCRIBE);
-		assertThat(order.getSid()).isEqualTo("sid");
+		verify(applicationContext, times(1)).publishEvent(any(CartRefreshedEvent.class));
+		verify(applicationContext, times(1)).publishEvent(any(ItemSaleCountedEvent.class));
 
-		verify(itemCommandService, times(1)).addSales(anyList());
-		verify(subscriptionCartService, times(1)).refresh(anyLong(), anyList());
+		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.SUBSCRIBE);
 	}
 
 	@DisplayName("일반 주문 상태를 주문 완료로 바꿀 수 있다.")
@@ -137,20 +134,19 @@ class OrderServiceTest {
 
 		var order = orderRepository.save(sample);
 
-		var itemCommandService = mock(ItemCommandService.class);
-		var normalCartService = mock(NormalCartService.class);
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderPaymentService(new OrderFindHelper(orderRepository), itemCommandService, null, normalCartService);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
 
 		//when
-		orderService.changeOrderStatusToComplete(order.getId());
+		orderService.processOneTimeStatus(order.getId());
 
 		//then
-		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.COMPLETE);
+		verify(applicationContext, times(1)).publishEvent(any(CartRefreshedEvent.class));
+		verify(applicationContext, times(1)).publishEvent(any(ItemSaleCountedEvent.class));
 
-		verify(itemCommandService, times(1)).addSales(anyList());
-		verify(normalCartService, times(0)).refresh(anyLong(), anyList());
+		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.COMPLETE);
 	}
 
 	@DisplayName("카트 주문 상태를 주문 완료로 바꿀 수 있다.")
@@ -165,21 +161,17 @@ class OrderServiceTest {
 			.sample();
 
 		var order = orderRepository.save(sample);
-
-		var itemCommandService = mock(ItemCommandService.class);
-		var normalCartService = mock(NormalCartService.class);
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderPaymentService(new OrderFindHelper(orderRepository), itemCommandService, null, normalCartService);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
 
 		//when
-		orderService.changeOrderStatusToComplete(order.getId());
+		orderService.processOneTimeStatus(order.getId());
 
 		//then
 		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.COMPLETE);
 
-		verify(itemCommandService, times(1)).addSales(anyList());
-		verify(normalCartService, times(1)).refresh(anyLong(), anyList());
 	}
 
 	@DisplayName("주문 상태를 취소로 바꿀 수 있다.")
@@ -194,16 +186,16 @@ class OrderServiceTest {
 			.sample();
 
 		var order = orderRepository.save(sample);
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderPaymentService(new OrderFindHelper(orderRepository), null, null, null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository));
 
 		//when
 		orderService.changeOrderStatusToCancel(order.getId());
 
 		//then
 		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.CANCEL);
-		assertThat(order.getPaymentCode().getTid()).isNull();
 	}
 
 	@DisplayName("order 객체에 tid를 저장할 수 있다.")
@@ -220,7 +212,7 @@ class OrderServiceTest {
 		var order = orderRepository.save(sample);
 
 		var orderService =
-			new OrderPaymentService(new OrderFindHelper(orderRepository), null, null, null);
+			new OrderPaymentCodeService(new OrderFindHelper(orderRepository));
 
 		//when
 		orderService.addTid(order.getId(), "tid");
@@ -317,7 +309,7 @@ class OrderServiceTest {
 			.set("totalQuantity", 9)
 			.set("orderPrice", new OrderPrice(getMockOrderItems()))
 			.set("user", user)
-			.set("sid", "sid")
+			.set("paymentCode.sid", "sid")
 			.sample();
 	}
 }
