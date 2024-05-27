@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum OrderStatus {
 
-    REQUEST(1, "주문 요청"),
-    COMPLETE(2, "주문 완료"),
-    CANCEL(3, "주문 취소"),
-    SUBSCRIBE(4,"구독 중");
+	REQUEST("주문 요청"),
+	COMPLETE("주문 완료"),
+	Refund("주문 취소"),
+	SUBSCRIBE("구독 중"),
+	SUBSCRIBE_CANCEL("구독 취소");
 
-    private final int step;
-    private final String stepDescription;
+	private final String description;
 }

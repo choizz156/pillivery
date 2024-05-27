@@ -61,7 +61,7 @@ public class ReviewServiceMapper {
 	}
 
 	private void validateOrderStatus(OrderStatus orderStatus) {
-		if (orderStatus == OrderStatus.CANCEL || orderStatus == OrderStatus.REQUEST) {
+		if (orderStatus == OrderStatus.Refund || orderStatus == OrderStatus.REQUEST) {
 			throw new IllegalArgumentException("구매한 상품만 리뷰할 수 있습니다.");
 		}
 	}

@@ -27,7 +27,7 @@ public class SubscriptionCancelController {
 	public SingleResponseDto<?> refundSubscription(
 		@PathVariable Long orderId
 	) {
-		orderStatusService.changeOrderStatusToCancel(orderId);
+		orderStatusService.processSubscriptionCancel(orderId);
 
 		return new SingleResponseDto<>(kakaoSubsCancelService.cancelSubscription(orderId));
 	}
