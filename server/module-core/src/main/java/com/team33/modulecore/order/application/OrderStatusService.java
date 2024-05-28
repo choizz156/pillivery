@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.common.OrderFindHelper;
@@ -18,7 +17,9 @@ import com.team33.modulecore.payment.application.refund.RefundService;
 import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -42,7 +43,7 @@ public class OrderStatusService {
 		applicationContext.publishEvent(new CartRefreshedEvent(order, orderedItemsId));
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public void processSubscriptionStatus(Long orderId, String sid) {
 
 		Order order = orderFindHelper.findOrder(orderId);

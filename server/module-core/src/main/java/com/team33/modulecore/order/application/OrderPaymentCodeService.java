@@ -4,6 +4,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.exception.DataSaveException;
@@ -34,6 +35,7 @@ public class OrderPaymentCodeService {
 
 	@Async
 	public void addSid(Order order, String sid) {
+
 		try {
 			order.addSid(sid);
 		} catch (DataAccessException e) {

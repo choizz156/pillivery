@@ -48,7 +48,8 @@ public class EventForwarder {
 
 		while (check(attemp, isSuccess)) {
 			try {
-				sendAndChangeStatus(apiEventSet, isSuccess);
+				sendAndChangeStatus(apiEventSet);
+				isSuccess = true;
 			} catch (Exception e) {
 				attemp++;
 				log.warn("attempt : {}, parameters : {}", attemp, e.getMessage());
@@ -61,10 +62,9 @@ public class EventForwarder {
 		}
 	}
 
-	private void sendAndChangeStatus(ApiEventSet apiEventSet, boolean isSuccess) {
+	private void sendAndChangeStatus(ApiEventSet apiEventSet) {
 		eventSender.send(apiEventSet);
 		apiEventSet.changeStatusToComplete();
-		isSuccess = true;
 	}
 
 	private boolean check(int attemp, boolean isSuccess) {
