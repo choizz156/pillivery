@@ -1,4 +1,4 @@
-package com.team33.modulecore.eventstore;
+package com.team33.modulecore.eventstore.infra;
 
 import java.util.Map;
 
@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.modulecore.eventstore.api.EventSender;
+import com.team33.modulecore.eventstore.domain.ApiEventSet;
 import com.team33.moduleexternalapi.domain.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;

@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleexternalapi.application.ClientSender;
 import com.team33.moduleexternalapi.domain.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
@@ -26,8 +25,8 @@ public class KakaoRefundClient implements PaymentClient<KakaoRefundResponse> {
 	private KakaoRefundResponse sendRefund(Map<String, Object> params, String url) {
 		try {
 			return clientSender.send(params, url, KakaoRefundResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new PaymentApiException(e.getMessage());
+		} catch (Exception e) {
+			throw new PaymentApiException(e.getMessage() + " params: " + params);
 		}
 	}
 }
