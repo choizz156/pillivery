@@ -10,9 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,43 +18,29 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@DynamicUpdate
-public class ApiEventSet {
-
+public class FailEvent {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "event_id")
+	@Column(name = "fail_event_id")
 	private Long id;
 
 	private String type;
 
-	private String contentType;
+	private String payload;
 
-	private String parameters;
-
-	private String url;
+	private String reason;
 
 	@Enumerated(EnumType.STRING)
 	private EventStatus status;
 
-	@CreatedDate
 	private LocalDateTime createdAt;
 
 	@Builder
-	public ApiEventSet(String type, String contentType, String parameters, String url) {
+	public FailEvent(String type, String payload, String reason) {
 		this.type = type;
-		this.contentType = contentType;
-		this.parameters = parameters;
-		this.url = url;
-		this.status = EventStatus.READY;
-		this.createdAt = LocalDateTime.now();
-	}
-
-	public void changeStatusToComplete() {
-		this.status = EventStatus.COMPLETE;
-	}
-
-	public void changeStatusToFail() {
+		this.payload = payload;
+		this.reason = reason;
 		this.status = EventStatus.FAILED;
+		this.createdAt = LocalDateTime.now();
 	}
 }

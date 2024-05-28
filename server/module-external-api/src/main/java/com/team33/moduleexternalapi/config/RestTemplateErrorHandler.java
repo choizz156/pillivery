@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RestTemplateErrorHandler implements ResponseErrorHandler {
+
+
     @Override
     public boolean hasError(final ClientHttpResponse response) throws IOException {
         final HttpStatus statusCode = response.getStatusCode();
@@ -24,13 +26,30 @@ public class RestTemplateErrorHandler implements ResponseErrorHandler {
         log.error("======payment error=====");
         log.error("Headers: {}", response.getHeaders());
         log.error("Response Status : {}", response.getRawStatusCode());
-        log.error("Request body: {}", error);
+        log.error("Response body: {}", error);
         log.error("================");
+        ThreadLocalErrorMessage.set(error);
     }
 
     private String getErrorAsString(final ClientHttpResponse response) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody()))) {
             return br.readLine();
+        }
+    }
+
+    public static class ThreadLocalErrorMessage {
+        private static final ThreadLocal<String> errorMessage = new ThreadLocal<>();
+
+        public static String get() {
+            return errorMessage.get();
+        }
+
+        public static void set(String error) {
+            errorMessage.set(error);
+        }
+
+        public void clear(){
+            errorMessage.remove();
         }
     }
 }

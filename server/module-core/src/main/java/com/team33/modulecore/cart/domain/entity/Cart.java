@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,11 +37,11 @@ public class Cart {
 	@Embedded
 	private CartPrice price = new CartPrice(0, 0, 0);
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "normal_cart_item", joinColumns = @JoinColumn(name = "cart_id"))
 	private Set<NormalCartItem> normalCartItems = new HashSet<>();
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "subs_cart_item", joinColumns = @JoinColumn(name = "cart_id"))
 	private Set<SubscriptionCartItem> subscriptionCartItems = new HashSet<>();
 

@@ -1,6 +1,6 @@
 package com.team33.modulecore.payment.application.cancel;
 
-public interface CancelSubscriptionService<T> {
+public interface CancelSubscriptionService {
 
-	T cancelSubscription(Long orderId);
+	void cancelSubscription(Long orderId);
 }

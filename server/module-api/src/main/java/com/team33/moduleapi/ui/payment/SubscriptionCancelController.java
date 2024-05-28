@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.order.application.OrderStatusService;
-import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
-import com.team33.moduleexternalapi.dto.KakaoSubsCancelResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/payments/subscriptions/cancel")
 public class SubscriptionCancelController {
 
-	private final CancelSubscriptionService<KakaoSubsCancelResponse> kakaoSubsCancelService;
+
 	private final OrderStatusService orderStatusService;
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -28,7 +26,6 @@ public class SubscriptionCancelController {
 		@PathVariable Long orderId
 	) {
 		orderStatusService.processSubscriptionCancel(orderId);
-
-		return new SingleResponseDto<>(kakaoSubsCancelService.cancelSubscription(orderId));
+		return new SingleResponseDto<>("complete");
 	}
 }

@@ -6,24 +6,24 @@ import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.eventstore.domain.ApiEventSet;
 import com.team33.modulecore.eventstore.domain.EventRepository;
-import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
+import com.team33.modulecore.payment.kakao.application.events.KakaoSubsCanceledEvent;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class RefundEventHandler {
+public class CancelSubscriptionEventHandler {
 
 	private final EventRepository eventsRepository;
 
 	@EventListener
-	public void onEventSet(KakaoRefundedEvent apiEvent) {
+	public void onEventSet(KakaoSubsCanceledEvent apiEvent) {
 
 		ApiEventSet refund = ApiEventSet.builder()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.parameters(apiEvent.getParams())
-			.url(apiEvent.getUrl())
-			.type("refund")
+			.parameters(apiEvent.getCancelParam())
+			.url(apiEvent.getCancelUrl())
+			.type("subscription cancel")
 			.build();
 
 		eventsRepository.save(refund);

@@ -10,6 +10,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "users", indexes = {
 	@Index(name = "idx_email", columnList = "email"),
 	@Index(name = "idx_phone", columnList = "phone"),
-	@Index(name = "idx_display_name", columnList = "display_name")
+	@Index(name = "idx_display_name", columnList = "displayName")
 })
 public class User extends BaseEntity {
 
@@ -49,14 +50,12 @@ public class User extends BaseEntity {
 
 	private String email;
 
-	@Column(name = "display_name")
 	private String displayName;
 
 	private String password;
 
 	private String realName;
 
-	@Column(unique = true)
 	private String phone;
 
 	@Embedded
@@ -72,7 +71,7 @@ public class User extends BaseEntity {
 
 	private Long cartId;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "user_review", joinColumns = @JoinColumn(name = "user_id"))
 	@Column(name = "review_id")
 	private Set<Long> reviewIds = new HashSet<>();

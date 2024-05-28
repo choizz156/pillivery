@@ -13,6 +13,7 @@ import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.events.CartRefreshedEvent;
 import com.team33.modulecore.order.events.ItemSaleCountedEvent;
+import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
 import com.team33.modulecore.payment.application.refund.RefundService;
 import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
 
@@ -26,6 +27,7 @@ public class OrderStatusService {
 	private final ApplicationContext applicationContext;
 	private final OrderFindHelper orderFindHelper;
 	private final OrderPaymentCodeService orderPaymentCodeService;
+	private final CancelSubscriptionService kakaoSubsCancelService;
 	private final RefundService refundService;
 
 	public void processOneTimeStatus(Long orderId) {
@@ -70,5 +72,7 @@ public class OrderStatusService {
 	public void processSubscriptionCancel(Long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE_CANCEL);
+
+		kakaoSubsCancelService.cancelSubscription(orderId);
 	}
 }
