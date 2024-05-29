@@ -3,7 +3,7 @@ package com.team33.modulecore.payment.kakao.application.approve;
 import java.util.Map;
 
 import com.team33.modulecore.payment.dto.ApproveRequest;
-import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 
 import lombok.RequiredArgsConstructor;

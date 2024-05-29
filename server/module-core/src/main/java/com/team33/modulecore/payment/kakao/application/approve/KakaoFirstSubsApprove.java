@@ -8,7 +8,7 @@ import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
-import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.application.PaymentClient;
 
 @Component
 public class KakaoFirstSubsApprove extends KaKaoApproveTemplate {

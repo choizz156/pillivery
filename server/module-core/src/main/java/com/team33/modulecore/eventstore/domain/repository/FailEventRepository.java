@@ -1,8 +1,11 @@
-package com.team33.modulecore.eventstore.domain;
+package com.team33.modulecore.eventstore.domain.repository;
 
 import java.util.List;
 
 import org.springframework.data.repository.Repository;
+
+import com.team33.modulecore.eventstore.domain.EventStatus;
+import com.team33.modulecore.eventstore.domain.entity.FailEvent;
 
 public interface FailEventRepository extends Repository<FailEvent, Long> {
 	void save(FailEvent event);

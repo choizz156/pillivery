@@ -1,4 +1,4 @@
-package com.team33.modulecore.eventstore.domain;
+package com.team33.modulecore.eventstore.domain.entity;
 
 import java.time.LocalDateTime;
 
@@ -9,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import com.team33.modulecore.eventstore.domain.EventStatus;
 
 import lombok.AccessLevel;
 import lombok.Builder;

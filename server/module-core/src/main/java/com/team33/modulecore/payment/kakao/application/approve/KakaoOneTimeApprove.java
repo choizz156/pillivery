@@ -8,7 +8,7 @@ import com.team33.modulecore.payment.application.approve.OneTimeApprove;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 
 @Component

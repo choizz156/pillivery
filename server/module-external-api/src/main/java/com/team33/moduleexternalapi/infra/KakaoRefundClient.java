@@ -1,32 +1,19 @@
 package com.team33.moduleexternalapi.infra;
 
-import java.util.Map;
-
 import org.springframework.stereotype.Component;
 
-import com.team33.moduleexternalapi.application.ClientSender;
-import com.team33.moduleexternalapi.domain.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
-import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleexternalapi.application.CancelClient;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoRefundClient implements PaymentClient<KakaoRefundResponse> {
+public class KakaoRefundClient implements CancelClient {
 
-	private final ClientSender clientSender;
+	private final KakaoClientSender kakaoClientSender;
 
 	@Override
-	public KakaoRefundResponse send(Map<String, Object> params, String url) {
-		return sendRefund(params, url);
-	}
-
-	private KakaoRefundResponse sendRefund(Map<String, Object> params, String url) {
-		try {
-			return clientSender.send(params, url, KakaoRefundResponse.class);
-		} catch (Exception e) {
-			throw new PaymentApiException(e.getMessage() + " params: " + params);
-		}
+	public void send(String params, String url) {
+		kakaoClientSender.send(params, url);
 	}
 }

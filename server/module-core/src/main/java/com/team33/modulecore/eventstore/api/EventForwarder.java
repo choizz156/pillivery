@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.eventstore.application.FailEventService;
-import com.team33.modulecore.eventstore.domain.ApiEventSet;
 import com.team33.modulecore.eventstore.domain.EventStatus;
-import com.team33.modulecore.eventstore.domain.EventRepository;
-import com.team33.moduleexternalapi.config.RestTemplateErrorHandler;
+import com.team33.modulecore.eventstore.domain.entity.ApiEventSet;
+import com.team33.modulecore.eventstore.domain.repository.EventRepository;
+import com.team33.moduleexternalapi.config.RestTemplateErrorHandler.ThreadLocalErrorMessage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class EventForwarder {
 
-	private static final int LIMIT_RETRY = 2;
+	private static final int LIMIT_COUNT = 2;
 
 	private final EventRepository eventsRepository;
 	private final EventSender eventSender;
@@ -43,20 +43,19 @@ public class EventForwarder {
 	}
 
 	private void sendToKakao(ApiEventSet apiEventSet) {
-		int attemp = 0;
+		int retry = 0;
 		boolean isSuccess = false;
 
-		while (check(attemp, isSuccess)) {
+		while (check(retry, isSuccess)) {
 			try {
 				sendAndChangeStatus(apiEventSet);
 				isSuccess = true;
 			} catch (Exception e) {
-				attemp++;
-				log.warn("attempt : {}, parameters : {}", attemp, e.getMessage());
-				if (attemp == LIMIT_RETRY) {
+				retry++;
+				log.warn("retry : {}, parameters : {}", retry, e.getMessage());
+				if (retry == LIMIT_COUNT) {
 					apiEventSet.changeStatusToFail();
-					String reason = RestTemplateErrorHandler.ThreadLocalErrorMessage.get();
-					failEventService.saveFail(apiEventSet, reason);
+					failEventService.saveFail(apiEventSet,  ThreadLocalErrorMessage.get());
 				}
 			}
 		}
@@ -67,7 +66,7 @@ public class EventForwarder {
 		apiEventSet.changeStatusToComplete();
 	}
 
-	private boolean check(int attemp, boolean isSuccess) {
-		return attemp < LIMIT_RETRY && !isSuccess;
+	private boolean check(int retry, boolean isSuccess) {
+		return retry < LIMIT_COUNT && !isSuccess;
 	}
 }

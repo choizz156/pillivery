@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.eventstore.domain.ApiEventSet;
+import com.team33.modulecore.eventstore.domain.entity.ApiEventSet;
 import com.team33.modulecore.eventstore.domain.EventStatus;
-import com.team33.modulecore.eventstore.domain.FailEvent;
-import com.team33.modulecore.eventstore.domain.FailEventRepository;
+import com.team33.modulecore.eventstore.domain.entity.FailEvent;
+import com.team33.modulecore.eventstore.domain.repository.FailEventRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -12,12 +12,4 @@ public class KakaoRefundedEvent {
 		this.refundParams = refundParams;
 		this.refundUrl = refundUrl;
 	}
-
-	public String getParams() {
-		return refundParams;
-	}
-
-	public String getUrl() {
-		return refundUrl;
-	}
 }

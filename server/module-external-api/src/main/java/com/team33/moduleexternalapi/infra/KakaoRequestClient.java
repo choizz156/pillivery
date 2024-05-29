@@ -5,8 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.team33.moduleexternalapi.application.ClientSender;
-import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class KakaoRequestClient implements PaymentClient<KakaoRequestResponse> {
 
-	private final ClientSender clientSender;
+	private final KakaoClientSender kakaoClientSender;
 
 	@Override
 	public KakaoRequestResponse send(Map<String, Object> params, String url) {
@@ -28,7 +27,7 @@ public class KakaoRequestClient implements PaymentClient<KakaoRequestResponse> {
 
 	private KakaoRequestResponse sendRequest(Map<String, Object> params, String url) {
 		try {
-			return clientSender.send(params, url, KakaoRequestResponse.class);
+			return kakaoClientSender.send(params, url, KakaoRequestResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new PaymentApiException(e.getMessage());
 		}

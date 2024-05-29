@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.domain;
+package com.team33.moduleexternalapi.application;
 
 import java.util.Map;
 

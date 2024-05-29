@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.RequestService;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoPayLookupResponse;
 
 import lombok.RequiredArgsConstructor;

@@ -27,9 +27,9 @@ public class KakaoRefundService implements RefundService {
 	private final ObjectMapper objectMapper;
 
 	@Override
-	public void refund(RefundContext refundContext) {
+	public void refund(Long orderId, RefundContext refundContext) {
 
-		String tid = orderFindHelper.findTid(refundContext.getOrderId());
+		String tid = orderFindHelper.findTid(orderId);
 		String params = mapToString(parameterProvider.getRefundParams(refundContext, tid));
 
 		applicationEventPublisher.publishEvent(new KakaoRefundedEvent(params, REFUND_URL));

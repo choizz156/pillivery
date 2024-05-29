@@ -6,7 +6,7 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.approve.SubscriptionApprove;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
-import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.application.PaymentClient;
 
 import lombok.RequiredArgsConstructor;
 

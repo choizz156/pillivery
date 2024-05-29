@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.application;
+package com.team33.moduleexternalapi.infra;
 
 import java.util.Map;
 
@@ -11,13 +11,12 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
-import com.team33.moduleexternalapi.infra.KakaoHeader;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class ClientSender {
+public class KakaoClientSender {
 
 	private final ObjectMapper objectMapper;
 	private final RestTemplate restTemplate;
@@ -33,6 +32,15 @@ public class ClientSender {
 		checkSuccess(exchange);
 
 		return exchange.getBody();
+	}
+
+	public void send(String params, String url) {
+
+		var entity = new HttpEntity<>(params, KakaoHeader.HTTP_HEADERS.getHeaders());
+
+		ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+		checkSuccess(exchange);
 	}
 
 	private void checkSuccess(ResponseEntity<?> exchange) {

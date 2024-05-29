@@ -1,4 +1,4 @@
-package com.team33.modulecore.eventstore.domain;
+package com.team33.modulecore.eventstore.domain.entity;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +12,8 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
+
+import com.team33.modulecore.eventstore.domain.EventStatus;
 
 import lombok.AccessLevel;
 import lombok.Builder;

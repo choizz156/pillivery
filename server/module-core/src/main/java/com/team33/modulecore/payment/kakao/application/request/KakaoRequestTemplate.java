@@ -3,7 +3,7 @@ package com.team33.modulecore.payment.kakao.application.request;
 import java.util.Map;
 
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 
 import lombok.RequiredArgsConstructor;
