@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.cart.SubscriptionContext;
-import com.team33.modulecore.cart.domain.entity.Cart;
+import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
 import com.team33.modulecore.cart.mock.FakeCartRepository;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
@@ -20,20 +20,19 @@ import com.team33.modulecore.order.domain.SubscriptionInfo;
 class SubscriptionCartServiceTest {
 
 	private FakeCartRepository cartRepository;
-	private Cart cart;
-	private Item item;
+	private SubscriptionCart subscriptionCart;
 	private SubscriptionContext context;
 
 	@BeforeEach
 	void setUp() {
-		cart = FixtureMonkeyFactory.get().giveMeBuilder(Cart.class)
+
+		subscriptionCart = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionCart.class)
 			.set("id", 1L)
 			.set("price", null)
-			.set("normalCartItems", new HashSet<>())
-			.set("subscriptionCartItems", new HashSet<>())
+			.set("cartItems", new HashSet<>())
 			.sample();
 
-		item = FixtureMonkeyFactory.get()
+		Item item = FixtureMonkeyFactory.get()
 			.giveMeBuilder(Item.class)
 			.set("id", 1L)
 			.set("information.price.realPrice", 1000)
@@ -41,7 +40,7 @@ class SubscriptionCartServiceTest {
 			.sample();
 
 		cartRepository = new FakeCartRepository();
-		cartRepository.save(cart);
+		cartRepository.save(subscriptionCart);
 
 		context = SubscriptionContext.builder()
 			.item(item)
@@ -52,20 +51,20 @@ class SubscriptionCartServiceTest {
 
 	@AfterEach
 	void tearDown() {
-		cartRepository.clear();
+		cartRepository.deleteById(1L);
 	}
 
-	@DisplayName("일반 아이템을 장바구니에 넣을 수 있다.")
+	@DisplayName("구독 아이템을 장바구니에 넣을 수 있다.")
 	@Test
 	void 장바구니_추가() throws Exception {
 		//given
-		SubscriptionCartService subscriptionCartService = new SubscriptionCartService(cartRepository);
+		SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
 
 		//when
-		subscriptionCartService.addItem(cart.getId(), context);
+		subscriptionCartService.addSubscriptionItem(1L, context);
 
 		//then
-		assertThat(cart.getSubscriptionCartItems()).hasSize(1)
+		assertThat(subscriptionCart.getCartItems()).hasSize(1)
 			.extracting("item.id")
 			.containsOnly(1L);
 	}
@@ -74,59 +73,65 @@ class SubscriptionCartServiceTest {
 	@Test
 	void 장바구니_제거() throws Exception {
 		//given
-		SubscriptionCartService subscriptionCartService = new SubscriptionCartService(cartRepository);
-		subscriptionCartService.addItem(cart.getId(), context);
+		SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
+		subscriptionCartService.addSubscriptionItem(subscriptionCart.getId(), context);
+
+		CommonCartItemService commonCartItemService = new CommonCartItemService(cartRepository);
 
 		//when
-		subscriptionCartService.removeCartItem(cart.getId(), item);
+		commonCartItemService.removeCartItem(1L, 1L);
 
 		//then
-		assertThat(cart.getSubscriptionCartItems()).hasSize(0);
+		assertThat(subscriptionCart.getCartItems()).hasSize(0);
 	}
 
 	@DisplayName("장바구니의 담겨져 있는 수량을 변경할 수 있다.")
 	@Test
 	void 수량_변경() throws Exception {
 		//given
-		SubscriptionCartService subscriptionCartService = new SubscriptionCartService(cartRepository);
-		subscriptionCartService.addItem(cart.getId(), context);
+		SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
+		subscriptionCartService.addSubscriptionItem(subscriptionCart.getId(), context);
+
+		CommonCartItemService commonCartItemService = new CommonCartItemService(cartRepository);
 
 		//when
-		subscriptionCartService.changeQuantity(cart.getId(), item, 5);
+		commonCartItemService.changeQuantity(1L, 1L, 5);
 
 		//then
-		assertThat(cart.getSubscriptionCartItems()).hasSize(1)
+		assertThat(subscriptionCart.getCartItems()).hasSize(1)
 			.extracting("totalQuantity")
 			.containsOnly(5);
 	}
 
 	@DisplayName("정기 결제 기간을 조정할 수 있다.")
 	@Test
-	void 기한_변경() throws Exception{
+	void 기한_변경() throws Exception {
 		//given
-		SubscriptionCartService subscriptionCartService = new SubscriptionCartService(cartRepository);
-		subscriptionCartService.addItem(cart.getId(), context);;
+		SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
+		subscriptionCartService.addSubscriptionItem(subscriptionCart.getId(), context);
 
 		//when
-		subscriptionCartService.changePeriod(cart.getId(), item, 50);
+		subscriptionCartService.changePeriod(1L, 1L, 50);
 
 		//then
-		assertThat(cart.getSubscriptionCartItems()).hasSize(1)
+		assertThat(subscriptionCart.getCartItems()).hasSize(1)
 			.extracting("period")
 			.containsOnly(50);
 	}
 
 	@DisplayName("구매한 장바구니 상품을 제거할 수 있다.")
 	@Test
-	void 구매_상품_제거() throws Exception{
+	void 구매_상품_제거() throws Exception {
 		//given
-		SubscriptionCartService subscriptionCartService = new SubscriptionCartService(cartRepository);
-		subscriptionCartService.addItem(cart.getId(), context);;
+		SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
+		subscriptionCartService.addSubscriptionItem(subscriptionCart.getId(), context);
+
+		CommonCartItemService commonCartItemService = new CommonCartItemService(cartRepository);
 
 		//when
-		subscriptionCartService.refresh(cart.getId(), List.of(1L));
+		commonCartItemService.refresh(1L, List.of(1L));
 
 		//then
-		assertThat(cart.getSubscriptionCartItems()).hasSize(0);
+		assertThat(subscriptionCart.getCartItems()).hasSize(0);
 	}
 }

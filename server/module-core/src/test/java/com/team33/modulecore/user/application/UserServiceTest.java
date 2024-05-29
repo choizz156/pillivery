@@ -3,7 +3,6 @@ package com.team33.modulecore.user.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.HashSet;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -13,17 +12,15 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.cart.application.CartService;
-import com.team33.modulecore.cart.domain.entity.Cart;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.order.domain.Address;
-import com.team33.modulecore.user.mock.FakeUserRepository;
-import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.domain.UserStatus;
+import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;
 import com.team33.modulecore.user.dto.UserServicePatchDto;
 import com.team33.modulecore.user.dto.UserServicePostDto;
+import com.team33.modulecore.user.mock.FakeUserRepository;
 
 class UserServiceTest {
 
@@ -35,21 +32,21 @@ class UserServiceTest {
 		DuplicationVerifier duplicationVerifier = mock(DuplicationVerifier.class);
 		CartService cartService = mock(CartService.class);
 
-		Cart cart = FixtureMonkeyFactory.get()
-			.giveMeBuilder(Cart.class)
-			.set("id", 1L)
-			.set("subscriptionCartItems", new HashSet<>())
-			.set("normalCartItems", new HashSet<>())
-			.sample();
+
 
 		doNothing().when(duplicationVerifier).checkUserInfo(any(UserServicePostDto.class));
 		when(passwordEncoder.encode(anyString())).thenReturn("password");
-		when(cartService.create()).thenReturn(cart);
+		when(cartService.createNormalCart()).thenReturn(1L);
+		when(cartService.createSubsCart()).thenReturn(2L);
 
 		UserServicePostDto userServicePostDto = getUserServicePostDto("test1@gmail.com", "test22", "010-1112-1111");
 
-		UserService userService = new UserService(new FakeUserRepository(), cartService, passwordEncoder,
-			duplicationVerifier);
+		UserService userService = new UserService(
+			new FakeUserRepository(),
+			cartService,
+			passwordEncoder,
+			duplicationVerifier
+		);
 
 		//when
 		User user1 = userService.join(userServicePostDto);
@@ -61,7 +58,8 @@ class UserServiceTest {
 
 		verify(passwordEncoder, times(1)).encode(anyString());
 		verify(duplicationVerifier, times(1)).checkUserInfo(any(UserServicePostDto.class));
-		verify(cartService, times(1)).create();
+		verify(cartService, times(1)).createNormalCart();
+		verify(cartService, times(1)).createSubsCart();
 	}
 
 	private static Stream<Arguments> provideDuplicateUserInfoOnJoinDto() {
@@ -99,17 +97,11 @@ class UserServiceTest {
 			.phone("010-0000-0000")
 			.build();
 
-		Cart cart = FixtureMonkeyFactory.get()
-			.giveMeBuilder(Cart.class)
-			.set("id", 1L)
-			.set("subscriptionCartItems", new HashSet<>())
-			.set("normalCartItems", new HashSet<>())
-			.sample();
-
 		DuplicationVerifier duplicationVerifier = mock(DuplicationVerifier.class);
 		CartService cartService = mock(CartService.class);
 
-		when(cartService.create()).thenReturn(cart);
+		when(cartService.createNormalCart()).thenReturn(1L);
+		when(cartService.createSubsCart()).thenReturn(2L);
 		doNothing().when(duplicationVerifier).checkOauthAdditionalInfo(any(OAuthUserServiceDto.class));
 
 		UserService userService = new UserService(
@@ -128,7 +120,8 @@ class UserServiceTest {
 		assertThat(result.getDisplayName()).isEqualTo(oAuthUserServiceDto.getDisplayName());
 		assertThat(result.getPhone()).isEqualTo(oAuthUserServiceDto.getPhone());
 
-		verify(cartService, times(1)).create();
+		verify(cartService, times(1)).createNormalCart();
+		verify(cartService, times(1)).createSubsCart();
 		verify(duplicationVerifier, times(1)).checkOauthAdditionalInfo(any(OAuthUserServiceDto.class));
 	}
 
@@ -171,7 +164,7 @@ class UserServiceTest {
 	void 회원_탈퇴() throws Exception {
 		//given
 		CartService cartService = mock(CartService.class);
-		doNothing().when(cartService).deleteCart(anyLong());
+		doNothing().when(cartService).deleteCart(anyLong(), anyLong());
 
 		UserService userService = new UserService(new FakeUserRepository(), cartService, null, null);
 
@@ -180,9 +173,10 @@ class UserServiceTest {
 
 		//then
 		assertThat(user.getUserStatus()).isEqualTo(UserStatus.USER_WITHDRAWAL);
-		assertThat(user.getCartId()).isNull();
+		assertThat(user.getSubscriptionCartId()).isNull();
+		assertThat(user.getNormalCartId()).isNull();
 
-		verify(cartService, times(1)).deleteCart(anyLong());
+		verify(cartService, times(1)).deleteCart(anyLong(), anyLong());
 	}
 
 	@DisplayName("회원 정보 수정를 수정할 수 있다.")
@@ -223,7 +217,7 @@ class UserServiceTest {
 
 	@DisplayName("리뷰아이디를 추가할 수 있다.")
 	@Test
-	void 리뷰_추가() throws Exception{
+	void 리뷰_추가() throws Exception {
 		//given
 		FakeUserRepository userRepository = new FakeUserRepository();
 		UserService userService = new UserService(userRepository, null, null, null);
@@ -238,10 +232,9 @@ class UserServiceTest {
 			.containsOnly(1L);
 	}
 
-
 	@DisplayName("리뷰 아이디를 삭제할 수 있다.")
 	@Test
-	void 리뷰_삭제() throws Exception{
+	void 리뷰_삭제() throws Exception {
 		//given
 		FakeUserRepository userRepository = new FakeUserRepository();
 		UserService userService = new UserService(userRepository, null, null, null);

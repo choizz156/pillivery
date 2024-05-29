@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.events.CartRefreshedEvent;
 
-class CartRefreshEventHandlerTest {
+class NormalCartRefreshEventHandlerTest {
 
 	@DisplayName("구매한 상품의 장바구니를 제거할 수 있다.")
 	@Test
