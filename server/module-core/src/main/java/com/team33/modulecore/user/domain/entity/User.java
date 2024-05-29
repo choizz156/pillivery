@@ -69,7 +69,9 @@ public class User extends BaseEntity {
 	@Enumerated(value = EnumType.STRING)
 	private UserStatus userStatus;
 
-	private Long cartId;
+	private Long normalCartId;
+
+	private Long subscriptionCartId;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "user_review", joinColumns = @JoinColumn(name = "user_id"))
@@ -119,8 +121,9 @@ public class User extends BaseEntity {
 		this.password = encryptedPwd;
 	}
 
-	public void addCart(Long id) {
-		this.cartId = id;
+	public void addCart(Long normalCartId, Long subscriptionCartId) {
+		this.normalCartId = normalCartId;
+		this.subscriptionCartId = subscriptionCartId;
 	}
 
 	public void addAdditionalOauthUserInfo(OAuthUserServiceDto userDto) {
@@ -138,7 +141,8 @@ public class User extends BaseEntity {
 
 	public void withdrawal() {
 		this.userStatus = UserStatus.USER_WITHDRAWAL;
-		this.cartId = null;
+		this.normalCartId = null;
+		this.subscriptionCartId = null;
 	}
 
 	public String getCityAtAddress() {

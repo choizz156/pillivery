@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.cart.application.CartService;
-import com.team33.modulecore.cart.domain.entity.Cart;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.user.domain.entity.User;
@@ -57,8 +56,9 @@ public class UserService {
 	}
 
 	private void makeCart(User user) {
-		Cart cart = cartService.create();
-		user.addCart(cart.getId());
+		Long normalCartId = cartService.createNormalCart();
+		Long subsCartId = cartService.createSubsCart();
+		user.addCart(normalCartId, subsCartId);
 	}
 
 	private String encryptPassword(String password) {
@@ -77,7 +77,7 @@ public class UserService {
 	private User withdrawal(long userId) {
 		User user = findUser(userId);
 
-		cartService.deleteCart(user.getCartId());
+		cartService.deleteCart(user.getNormalCartId(), user.getSubscriptionCartId());
 		user.withdrawal();
 
 		return user;

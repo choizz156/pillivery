@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CartRefreshEventHandler {
 
-	private final SubscriptionCartService subscriptionCartService;
-	private final NormalCartService normalCartService;
+	private final SubscriptionCartItemService subscriptionCartService;
+	private final CommonCartItemService cartItemService;
 
 	@Async
 	@Transactional
@@ -25,16 +25,19 @@ public class CartRefreshEventHandler {
 	public void onCartRefreshEvent(CartRefreshedEvent event) {
 		Order order = event.getOrder();
 
-		if (order.isOrderedAtCart()) {
-			refreshCart(order.isSubscription(), order.getUser().getCartId(), event.getOrderedIds());
-		}
-	}
-
-	private void refreshCart(boolean isSubscription, Long cartId, List<Long> orderedItemsId) {
-		if (isSubscription) {
-			subscriptionCartService.refresh(cartId, orderedItemsId);
+		if (isSubscriptionInCart(order)) {
+			refreshCart(order.getUser().getSubscriptionCartId(), event.getOrderedIds());
 			return;
 		}
-		normalCartService.refresh(cartId, orderedItemsId);
+
+		refreshCart(order.getUser().getNormalCartId(), event.getOrderedIds());
+	}
+
+	private boolean isSubscriptionInCart(Order order) {
+		return order.isOrderedAtCart() && order.isSubscription();
+	}
+
+	private void refreshCart(Long cartId, List<Long> orderedItemsId) {
+		cartItemService.refresh(cartId, orderedItemsId);
 	}
 }

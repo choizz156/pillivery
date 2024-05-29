@@ -3,10 +3,9 @@ package com.team33.modulecore.cart.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.cart.domain.entity.Cart;
+import com.team33.modulecore.cart.domain.entity.NormalCart;
+import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
 import com.team33.modulecore.cart.domain.repository.CartRepository;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,19 +16,22 @@ public class CartService {
 
 	private final CartRepository cartRepository;
 
-	@Transactional(readOnly = true)
-	public Cart findCart(Long cartId) {
-		return cartRepository.findById(cartId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
+	public Long createNormalCart() {
+		NormalCart normalCart = NormalCart.create();
+		cartRepository.save(normalCart);
+
+		return normalCart.getId();
 	}
 
-	public Cart create() {
-		Cart cart = Cart.create();
-		cartRepository.save(cart);
-		return cart;
+	public Long createSubsCart() {
+		SubscriptionCart subscriptionCart = SubscriptionCart.create();
+		cartRepository.save(subscriptionCart);
+
+		return subscriptionCart.getId();
 	}
 
-	public void deleteCart(Long cartId) {
-		cartRepository.deleteById(cartId);
+	public void deleteCart(Long normalCartId, Long subscriptionCartId) {
+		cartRepository.deleteById(normalCartId);
+		cartRepository.deleteById(subscriptionCartId);
 	}
 }

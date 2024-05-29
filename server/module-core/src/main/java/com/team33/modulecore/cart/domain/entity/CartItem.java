@@ -1,8 +1,12 @@
-package com.team33.modulecore.cart.domain;
+package com.team33.modulecore.cart.domain.entity;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -10,29 +14,36 @@ import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
 
+import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Embeddable
-public class SubscriptionCartItem extends BaseEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+public class CartItem extends BaseEntity {
 
-	@Column(nullable = false)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Long id;
+
 	private int totalQuantity;
 
 	@Embedded
 	private SubscriptionInfo subscriptionInfo;
 
 	@ManyToOne
+	@JoinColumn(name = "cart_id")
+	private Cart cart;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_id")
 	private Item item;
 
 	@Builder
-	public SubscriptionCartItem(
+	public CartItem(
 		int totalQuantity,
 		SubscriptionInfo subscriptionInfo,
 		Item item
@@ -42,11 +53,19 @@ public class SubscriptionCartItem extends BaseEntity {
 		this.item = item;
 	}
 
-	public static SubscriptionCartItem of(Item item, int totalQuantity, SubscriptionInfo subscriptionInfo) {
-		return SubscriptionCartItem.builder()
+	public static CartItem of(Item item, int totalQuantity, SubscriptionInfo subscriptionInfo) {
+		return CartItem.builder()
 			.totalQuantity(totalQuantity)
 			.item(item)
 			.subscriptionInfo(subscriptionInfo)
+			.build();
+	}
+
+	public static CartItem of(Item item, int totalQuantity) {
+		return CartItem.builder()
+			.totalQuantity(totalQuantity)
+			.item(item)
+			.subscriptionInfo(SubscriptionInfo.of(false, 0))
 			.build();
 	}
 
@@ -64,5 +83,9 @@ public class SubscriptionCartItem extends BaseEntity {
 
 	public void changePeriod(int period) {
 		this.subscriptionInfo = SubscriptionInfo.of(true, period);
+	}
+
+	public void addCart(Cart cart) {
+		this.cart = cart;
 	}
 }

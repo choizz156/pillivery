@@ -58,7 +58,6 @@ public class Item extends BaseEntity {
     @Column(name = "review_id")
     private Set<Long> reviewIds = new HashSet<>();
 
-
     @Column(name = "categories")
     @Convert(converter = CategoryNameConverter.class)
     private Categories categories;

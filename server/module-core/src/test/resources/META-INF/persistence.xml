@@ -8,7 +8,7 @@
     <class>com.team33.modulecore.review.domain.entity.Review</class>
     <class>com.team33.modulecore.user.domain.entity.User</class>
     <class>com.team33.modulecore.wish.domain.Wish</class>
-    <class>com.team33.modulecore.cart.domain.Cart</class>
+    <class>com.team33.modulecore.normalCart.domain.Cart</class>
     <class>com.team33.modulecore.category.domain.Category</class>
     <class>com.team33.modulecore.itemcart.domain.ItemCart</class>
     <class>com.team33.modulecore.item.domain.entity.ItemCategory</class>

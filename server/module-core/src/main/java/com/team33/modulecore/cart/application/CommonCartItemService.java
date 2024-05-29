@@ -7,19 +7,18 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.cart.domain.NormalCartItem;
 import com.team33.modulecore.cart.domain.entity.Cart;
+import com.team33.modulecore.cart.domain.entity.CartItem;
 import com.team33.modulecore.cart.domain.repository.CartRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.item.domain.entity.Item;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class NormalCartService {
+public class CommonCartItemService {
 
 	private final CartRepository cartRepository;
 
@@ -28,60 +27,57 @@ public class NormalCartService {
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 	}
 
-	public void addItem(Long cartId, Item item, int quantity) {
+	public void removeCartItem(Long cartId, Long cartItemId) {
 		Cart cart = findCart(cartId);
 
-		cart.addNormalItem(item, quantity);
+		cart.removeCartItem(getCartItem(cartItemId, cart));
+		cartRepository.deleteById(cartId);
 	}
 
-	public void removeCartItem(Long cartId, Item item) {
+	public void changeQuantity(Long cartId, Long cartItemId, int quantity) {
 		Cart cart = findCart(cartId);
 
-		cart.removeNormalCartItem(getNormalCartItem(item, cart));
-	}
+		CartItem cartItem = getCartItem(cartItemId, cart);
 
-	public void changeQuantity(Long cartId, Item item, int quantity) {
-		Cart cart = findCart(cartId);
-
-		NormalCartItem normalCartItem = getNormalCartItem(item, cart);
-
-		changeQuantity(quantity, normalCartItem, cart);
+		changeQuantity(quantity, cartItem, cart);
 	}
 
 	public void refresh(Long cartId, List<Long> orderedItemsId) {
 		Cart cart = findCart(cartId);
 
-		if (cart.getNormalCartItems().isEmpty()) {
+		if (cart.getCartItems().isEmpty()) {
 			return;
 		}
 
 		removeOrderedItem(cart, orderedItemsId);
 	}
 
-	private NormalCartItem getNormalCartItem(Item item, Cart cart) {
+	private CartItem getCartItem(Long cartItemId, Cart cart) {
 
-		return cart.getNormalCartItems().stream()
+		return cart.getCartItems().stream()
 			.filter(
-				normalCartItem -> normalCartItem.getItem().getId().equals(item.getId())
+				cartItem -> cartItem.getItem().getId().equals(cartItemId)
 			)
 			.findFirst()
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_ITEM_NOT_FOUND));
 	}
 
-	private void changeQuantity(int quantity, NormalCartItem normalCartItem, Cart cart) {
-		if (normalCartItem.getTotalQuantity() == quantity) {
+	private void changeQuantity(int quantity, CartItem cartItem, Cart cart) {
+		if (cartItem.getTotalQuantity() == quantity) {
 			return;
 		}
-
-		cart.changeNormalCartItemQuantity(normalCartItem, quantity);
+		cart.changeCartItemQuantity(cartItem, quantity);
 	}
 
 	private void removeOrderedItem(Cart cart, List<Long> orderedItemId) {
-		List<NormalCartItem> removedItems = cart.getNormalCartItems()
+		List<CartItem> removedItems = cart.getCartItems()
 			.stream()
-			.filter(normalCartItem -> orderedItemId.contains(normalCartItem.getItem().getId()))
+			.filter(cartItem -> orderedItemId.contains(cartItem.getItem().getId()))
 			.collect(Collectors.toUnmodifiableList());
 
-		removedItems.forEach(cart::removeNormalCartItem);
+		removedItems.forEach(cartItem -> {
+			cart.removeCartItem(cartItem);
+			cartRepository.deleteById(cart.getId());
+		});
 	}
 }

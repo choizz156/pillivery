@@ -18,8 +18,8 @@ import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.cart.mapper.CartResponseMapper;
 import com.team33.moduleapi.ui.cart.mapper.CartServiceMapper;
-import com.team33.modulecore.cart.application.NormalCartService;
-import com.team33.modulecore.cart.domain.entity.Cart;
+import com.team33.modulecore.cart.application.NormalCartItemService;
+import com.team33.modulecore.cart.domain.entity.NormalCart;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class NormalCartController {
 
-	private final NormalCartService normalCartService;
+	private final NormalCartItemService normalCartItemService;
 	private final CartServiceMapper cartServiceMapper;
 	private final CartResponseMapper cartResponseMapper;
 
@@ -39,8 +39,8 @@ public class NormalCartController {
 	public SingleResponseDto<CartResponseDto> getNormalCart(
 		@PathVariable Long cartId
 	) {
-		Cart cart = normalCartService.findCart(cartId);
-		CartResponseDto cartResponseDto = cartResponseMapper.cartNormalResponseDto(cart);
+		NormalCart normalCart = normalCartItemService.findCart(cartId);
+		CartResponseDto cartResponseDto = cartResponseMapper.cartNormalResponseDto(normalCart);
 
 		return new SingleResponseDto<>(cartResponseDto);
 	}
@@ -52,7 +52,7 @@ public class NormalCartController {
 		@Min(1) @RequestParam int quantity,
 		@RequestParam Long itemId
 	) {
-		normalCartService.addItem(cartId, cartServiceMapper.toItem(itemId), quantity);
+		normalCartItemService.addItem(cartId, cartServiceMapper.toItem(itemId), quantity);
 
 		return new SingleResponseDto<>(itemId);
 	}
@@ -61,19 +61,19 @@ public class NormalCartController {
 	@DeleteMapping("/{cartId}")
 	public void removeNormalCart(
 		@PathVariable Long cartId,
-		@RequestParam Long itemId
+		@RequestParam Long cartItemId
 	) {
-		normalCartService.removeCartItem(cartId, cartServiceMapper.toItem(itemId));
+		normalCartItemService.removeCartItem(cartId, cartItemId);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PatchMapping("/{cartId}")
 	public void changeItemQauntity(
 		@PathVariable Long cartId,
-		@Min(1)@RequestParam int quantity,
-		@RequestParam Long itemId
+		@Min(1) @RequestParam int quantity,
+		@RequestParam Long cartItemId
 	) {
-		normalCartService.changeQuantity(cartId, cartServiceMapper.toItem(itemId), quantity);
+		normalCartItemService.changeQuantity(cartId, cartItemId, quantity);
 	}
 
 }

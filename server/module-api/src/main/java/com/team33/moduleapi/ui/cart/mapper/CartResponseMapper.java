@@ -8,38 +8,39 @@ import org.springframework.stereotype.Component;
 import com.team33.moduleapi.ui.cart.dto.CartItemResponseDto;
 import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
-import com.team33.modulecore.cart.domain.entity.Cart;
+import com.team33.modulecore.cart.domain.entity.NormalCart;
+import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
 
 @Component
 public class CartResponseMapper {
 
 
-	public CartResponseDto cartNormalResponseDto(Cart cart){
+	public CartResponseDto cartNormalResponseDto(NormalCart normalCart){
 
 		return CartResponseDto.builder()
-			.cartId(cart.getId())
-			.totalDiscountPrice(cart.getTotalDiscountPrice())
-			.totalPrice(cart.getTotalPrice())
-			.totalItemCount(cart.getTotalItemCount())
-			.expectPrice(cart.getExpectedPrice())
-			.cartItems(toNormalCartItemResponse(cart))
+			.cartId(normalCart.getId())
+			.totalDiscountPrice(normalCart.getTotalDiscountPrice())
+			.totalPrice(normalCart.getTotalPrice())
+			.totalItemCount(normalCart.getTotalItemCount())
+			.expectPrice(normalCart.getExpectedPrice())
+			.cartItems(toNormalCartItemResponse(normalCart))
 			.build();
 	}
 
-	public CartResponseDto toCartSubscriptionResponseDto(Cart cart) {
+	public CartResponseDto toCartSubscriptionResponseDto(SubscriptionCart subscriptionCart) {
 		return CartResponseDto.builder()
-			.cartId(cart.getId())
-			.totalDiscountPrice(cart.getTotalDiscountPrice())
-			.totalPrice(cart.getTotalPrice())
-			.totalItemCount(cart.getTotalItemCount())
-			.expectPrice(cart.getExpectedPrice())
-			.cartItems(toSubscriptionCartItemResponse(cart))
+			.cartId(subscriptionCart.getId())
+			.totalDiscountPrice(subscriptionCart.getTotalDiscountPrice())
+			.totalPrice(subscriptionCart.getTotalPrice())
+			.totalItemCount(subscriptionCart.getTotalItemCount())
+			.expectPrice(subscriptionCart.getExpectedPrice())
+			.cartItems(toSubscriptionCartItemResponse(subscriptionCart))
 			.build();
 
 	}
 
-	private  List<CartItemResponseDto> toNormalCartItemResponse(Cart cart) {
-		return cart.getNormalCartItems().stream()
+	private  List<CartItemResponseDto> toNormalCartItemResponse(NormalCart normalCart) {
+		return normalCart.getCartItems().stream()
 			.map(normalCartItem ->
 				CartItemResponseDto.builder()
 					.createdAt(normalCartItem.getCreatedAt())
@@ -51,8 +52,8 @@ public class CartResponseMapper {
 			.collect(Collectors.toList());
 	}
 
-	private  List<CartItemResponseDto> toSubscriptionCartItemResponse(Cart cart) {
-		return cart.getSubscriptionCartItems().stream()
+	private  List<CartItemResponseDto> toSubscriptionCartItemResponse(SubscriptionCart subscriptionCart) {
+		return subscriptionCart.getCartItems().stream()
 			.map(subscriptionCartItem ->
 				CartItemResponseDto.builder()
 					.period(subscriptionCartItem.getSubscriptionInfo().getPeriod())
