@@ -19,7 +19,6 @@ import org.mockserver.model.Header;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.moduleexternalapi.application.ClientSender;
 import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
@@ -81,7 +80,7 @@ class KakaoRequestClientTest {
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
 		KakaoRequestClient kakaoRequestClient = new KakaoRequestClient(
-			new ClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
+			new KakaoClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
 		);
 
 		//when
@@ -123,7 +122,7 @@ class KakaoRequestClientTest {
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
 		KakaoRequestClient kakaoRequestClient = new KakaoRequestClient(
-			new ClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
+			new KakaoClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
 		);
 
 		//when
@@ -165,7 +164,7 @@ class KakaoRequestClientTest {
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
 		KakaoRequestClient kakaoRequestClient = new KakaoRequestClient(
-			new ClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
+			new KakaoClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
 		);
 
 		//when// Then

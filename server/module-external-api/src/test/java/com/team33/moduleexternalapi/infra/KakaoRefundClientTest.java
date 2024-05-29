@@ -19,7 +19,6 @@ import org.mockserver.model.Header;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.moduleexternalapi.application.ClientSender;
 import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
@@ -77,16 +76,15 @@ class KakaoRefundClientTest {
 				.withBody(response)
 			);
 
-		//when
 		Map<String, Object> parameters = getMap("tid");
+		String request = objectMapper.writeValueAsString(parameters);
 
-		KakaoRefundResponse refundResponse = new KakaoRefundClient(
-			new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
-		)
-			.send(parameters, CANCEL_URL);
+		KakaoRefundClient kakaoRefundClient = new KakaoRefundClient(
+			new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
+		);
 
 		// Then
-		assertThat(refundResponse).isNotNull();
+		assertThatNoException().isThrownBy(() -> kakaoRefundClient.send(request, CANCEL_URL));
 	}
 
 	@DisplayName("환불 요청 오류 시 예외를 던진다.")
@@ -118,17 +116,17 @@ class KakaoRefundClientTest {
 			);
 
 		Map<String, Object> parameters = getMap("ti");
-
+		String request = objectMapper.writeValueAsString(parameters);
 		KakaoRefundClient kakaoRefundClient = new KakaoRefundClient(
-			new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
+			new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
 		);
 
 		// when //Then
-		assertThatThrownBy(() -> kakaoRefundClient.send(parameters, CANCEL_URL))
+		assertThatThrownBy(() -> kakaoRefundClient.send(request, CANCEL_URL))
 			.isInstanceOf(PaymentApiException.class);
 	}
 
-	private static Map<String, Object> getMap(String ti) {
+	private Map<String, Object> getMap(String ti) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
 		parameters.put("tid", ti);

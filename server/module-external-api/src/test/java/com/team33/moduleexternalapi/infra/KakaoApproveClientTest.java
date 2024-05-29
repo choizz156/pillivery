@@ -19,8 +19,7 @@ import org.mockserver.model.Header;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.moduleexternalapi.application.ClientSender;
-import com.team33.moduleexternalapi.domain.PaymentClient;
+import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
@@ -85,7 +84,7 @@ class KakaoApproveClientTest {
 
 	private  KakaoApproveResponse toSendNormal() {
 		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
-			new KakaoApproveClient(new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
+			new KakaoApproveClient(new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put("cid", "TC0ONETIME");
@@ -136,7 +135,7 @@ class KakaoApproveClientTest {
 
 	private  KakaoApproveResponse toSendSubsFirst() {
 		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
-			new KakaoApproveClient(new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
+			new KakaoApproveClient(new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put("tid", "tid");
@@ -187,7 +186,7 @@ class KakaoApproveClientTest {
 
 	private  KakaoApproveResponse toSendSubs() {
 		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
-			new KakaoApproveClient(new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
+			new KakaoApproveClient(new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put("tid", "tid");
@@ -229,7 +228,7 @@ class KakaoApproveClientTest {
 			);
 
 		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
-			new KakaoApproveClient(new ClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
+			new KakaoApproveClient(new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put("tid", "tid");
