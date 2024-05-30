@@ -20,7 +20,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.item.domain.Categories;
+import com.team33.modulecore.category.domain.Categories;
 import com.team33.modulecore.item.domain.Information;
 import com.team33.modulecore.item.domain.Statistic;
 import com.team33.modulecore.item.infra.CategoryNameConverter;

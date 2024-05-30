@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.domain;
+package com.team33.modulecore.user.domain;
 
 import javax.persistence.Embeddable;
 import lombok.Builder;

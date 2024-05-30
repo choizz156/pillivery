@@ -17,7 +17,7 @@ import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.domain.Address;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
@@ -30,7 +30,6 @@ import com.team33.modulecore.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.order.mock.FakeOrderRepository;
 import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
 import com.team33.modulecore.payment.application.refund.RefundService;
-import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
 import com.team33.modulecore.user.domain.entity.User;
 

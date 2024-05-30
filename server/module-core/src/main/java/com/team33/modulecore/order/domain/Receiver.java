@@ -3,6 +3,8 @@ package com.team33.modulecore.order.domain;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
+import com.team33.modulecore.user.domain.Address;
+
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

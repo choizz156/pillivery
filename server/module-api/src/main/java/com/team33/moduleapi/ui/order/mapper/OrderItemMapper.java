@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.team33.moduleapi.ui.order.dto.OrderItemSimpleResponse;
 import com.team33.moduleapi.ui.order.dto.OrderPostDto;
 import com.team33.moduleapi.ui.order.dto.OrderPostListDto;
-import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.domain.Address;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.Receiver;
 import com.team33.modulecore.order.dto.OrderContext;

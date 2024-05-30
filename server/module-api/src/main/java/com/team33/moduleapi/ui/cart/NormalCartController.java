@@ -18,6 +18,7 @@ import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.cart.mapper.CartResponseMapper;
 import com.team33.moduleapi.ui.cart.mapper.CartServiceMapper;
+import com.team33.modulecore.cart.application.CommonCartItemService;
 import com.team33.modulecore.cart.application.NormalCartItemService;
 import com.team33.modulecore.cart.domain.entity.NormalCart;
 
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NormalCartController {
 
 	private final NormalCartItemService normalCartItemService;
+	private final CommonCartItemService cartItemService;
 	private final CartServiceMapper cartServiceMapper;
 	private final CartResponseMapper cartResponseMapper;
 
@@ -63,7 +65,7 @@ public class NormalCartController {
 		@PathVariable Long cartId,
 		@RequestParam Long cartItemId
 	) {
-		normalCartItemService.removeCartItem(cartId, cartItemId);
+		cartItemService.removeCartItem(cartId, cartItemId);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -73,7 +75,7 @@ public class NormalCartController {
 		@Min(1) @RequestParam int quantity,
 		@RequestParam Long cartItemId
 	) {
-		normalCartItemService.changeQuantity(cartId, cartItemId, quantity);
+		cartItemService.changeQuantity(cartId, cartItemId, quantity);
 	}
 
 }

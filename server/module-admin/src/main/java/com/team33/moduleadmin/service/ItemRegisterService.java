@@ -33,7 +33,7 @@ public class ItemRegisterService {
 
 	private Map<Set<CategoryName>, List<Item>> classifyItemByCategory(List<Item> itemList) {
 		return itemList.stream()
-			.collect(Collectors.groupingBy(CategoryName::classify));
+			.collect(Collectors.groupingBy(item -> CategoryName.classify(item.getInformation().getMainFunction())));
 	}
 
 	private void inputCategoryToItem(final Map<Set<CategoryName>, List<Item>> categorizedItems) {

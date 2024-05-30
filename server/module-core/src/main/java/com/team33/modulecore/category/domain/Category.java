@@ -36,10 +36,6 @@ public class Category extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CategoryName categoryName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    private Item item;
-
     private Category(CategoryName categoryName) {
         this.categoryName = categoryName;
     }

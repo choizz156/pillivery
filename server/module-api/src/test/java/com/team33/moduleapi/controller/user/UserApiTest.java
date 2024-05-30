@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import com.team33.moduleapi.controller.ApiTest;
 import com.team33.moduleapi.controller.UserAccount;
 import com.team33.moduleapi.security.dto.LoginDto;
-import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.domain.Address;
 import com.team33.modulecore.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.dto.UserPatchDto;
 import com.team33.modulecore.user.dto.UserPostDto;

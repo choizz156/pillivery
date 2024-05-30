@@ -1,11 +1,13 @@
 package com.team33.modulecore.item.infra;
 
-import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.Categories;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.persistence.AttributeConverter;
+
+import com.team33.modulecore.category.domain.Categories;
+import com.team33.modulecore.category.domain.CategoryName;
 
 public class CategoryNameConverter implements AttributeConverter<Categories, String> {
 

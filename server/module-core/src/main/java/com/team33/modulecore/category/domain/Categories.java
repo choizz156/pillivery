@@ -1,9 +1,7 @@
-package com.team33.modulecore.item.domain;
+package com.team33.modulecore.category.domain;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import com.team33.modulecore.category.domain.CategoryName;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

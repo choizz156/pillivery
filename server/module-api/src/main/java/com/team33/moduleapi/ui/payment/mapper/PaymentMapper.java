@@ -15,7 +15,6 @@ public class PaymentMapper {
 
 	public RefundContext toRefundContext(RefundDto refundDto, Long orderId) {
 		return RefundContext.builder()
-			.orderId(orderId)
 			.cancelAmount(refundDto.getCancelAmount())
 			.cancelTaxFreeAmount(refundDto.getCancelTaxFreeAmount())
 			.build();

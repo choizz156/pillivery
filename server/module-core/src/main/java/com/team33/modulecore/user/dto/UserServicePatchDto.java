@@ -1,6 +1,6 @@
 package com.team33.modulecore.user.dto;
 
-import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.domain.Address;
 import lombok.Builder;
 import lombok.Data;
 

@@ -9,14 +9,16 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserIdDto {
 	private Long userId;
-	private Long cartId;
+	private Long normalCartId;
+	private Long subscriptionCartId;
 
-	public UserIdDto(Long userId, Long cartId) {
+	public UserIdDto(Long userId, Long normalCartId, Long subscriptionCartId) {
 		this.userId = userId;
-		this.cartId = cartId;
+		this.normalCartId = normalCartId;
+		this.subscriptionCartId = subscriptionCartId;
 	}
 
 	public static UserIdDto from(User user) {
-		return new UserIdDto(user.getId(), user.getCartId());
+		return new UserIdDto(user.getId(), user.getNormalCartId(), user.getSubscriptionCartId());
 	}
 }

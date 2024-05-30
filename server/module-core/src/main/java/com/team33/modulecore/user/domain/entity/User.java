@@ -19,7 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import com.team33.modulecore.common.BaseEntity;
-import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.domain.Address;
 import com.team33.modulecore.user.domain.UserRoles;
 import com.team33.modulecore.user.domain.UserStatus;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;

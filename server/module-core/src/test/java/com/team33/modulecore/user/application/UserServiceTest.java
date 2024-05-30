@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.team33.modulecore.cart.application.CartService;
 import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.order.domain.Address;
+import com.team33.modulecore.user.domain.Address;
 import com.team33.modulecore.user.domain.UserStatus;
 import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulecore.user.dto.OAuthUserServiceDto;

@@ -1,7 +1,7 @@
 package com.team33.modulecore.item.dto.query;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.team33.modulecore.item.domain.Categories;
+import com.team33.modulecore.category.domain.Categories;
 
 import lombok.Builder;
 import lombok.Data;
