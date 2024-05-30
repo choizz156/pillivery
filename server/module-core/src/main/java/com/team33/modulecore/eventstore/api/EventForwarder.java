@@ -31,7 +31,7 @@ public class EventForwarder {
 	@Scheduled(initialDelay = 1000, fixedDelay = 20000)
 	public void getAndSend() {
 		List<ApiEventSet> apiEventSets = eventsRepository
-			.findTop20ByStatusOrderByCreatedAtDesc(EventStatus.READY);
+			.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
 
 		if (!apiEventSets.isEmpty()) {
 			sendEvent(apiEventSets);

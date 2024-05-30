@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoRefundClient implements CancelClient {
+public class KakaoCancelClient implements CancelClient {
 
 	private final KakaoClientSender kakaoClientSender;
 

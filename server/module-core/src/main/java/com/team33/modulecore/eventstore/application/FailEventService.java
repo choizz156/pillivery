@@ -32,6 +32,6 @@ public class FailEventService {
 	}
 
 	public List<FailEvent> findAll() {
-		return failEventRepository.findTop20ByStatusOrderByCreatedAtDesc(EventStatus.FAILED);
+		return failEventRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.FAILED);
 	}
 }

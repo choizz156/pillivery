@@ -12,10 +12,10 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class KakaoApiEventSender implements EventSender {
 
-	private final CancelClient kakaoRefundClient;
+	private final CancelClient kakaoCancelClient;
 
 	@Override
 	public void send(ApiEventSet event) {
-			kakaoRefundClient.send(event.getParameters(), event.getUrl());
+		kakaoCancelClient.send(event.getParameters(), event.getUrl());
 	}
 }

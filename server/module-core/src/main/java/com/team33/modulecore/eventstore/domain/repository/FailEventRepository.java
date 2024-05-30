@@ -8,7 +8,7 @@ import com.team33.modulecore.eventstore.domain.EventStatus;
 import com.team33.modulecore.eventstore.domain.entity.FailEvent;
 
 public interface FailEventRepository extends Repository<FailEvent, Long> {
-	void save(FailEvent event);
 
-	List<FailEvent> findTop20ByStatusOrderByCreatedAtDesc(EventStatus eventStatus);
+	void save(FailEvent event);
+	List<FailEvent> findTop20ByStatusOrderByCreatedAt(EventStatus eventStatus);
 }

@@ -46,13 +46,20 @@ public class ApiEventSet {
 	private LocalDateTime createdAt;
 
 	@Builder
-	public ApiEventSet(String type, String contentType, String parameters, String url) {
+	public ApiEventSet(
+		String type,
+		String contentType,
+		String parameters,
+		String url,
+		EventStatus status,
+		LocalDateTime localDateTime
+	) {
 		this.type = type;
 		this.contentType = contentType;
 		this.parameters = parameters;
 		this.url = url;
-		this.status = EventStatus.READY;
-		this.createdAt = LocalDateTime.now();
+		this.status = status;
+		this.createdAt = localDateTime;
 	}
 
 	public void changeStatusToComplete() {

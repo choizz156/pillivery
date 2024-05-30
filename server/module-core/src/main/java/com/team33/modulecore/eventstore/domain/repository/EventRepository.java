@@ -9,6 +9,6 @@ import com.team33.modulecore.eventstore.domain.entity.ApiEventSet;
 
 public interface EventRepository extends Repository<ApiEventSet, Long> {
 
-	List<ApiEventSet> findTop20ByStatusOrderByCreatedAtDesc(EventStatus eventStatus);
 	void save(ApiEventSet event);
+	List<ApiEventSet> findTop20ByStatusOrderByCreatedAt(EventStatus eventStatus);
 }
