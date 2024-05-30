@@ -27,7 +27,7 @@ class KakaoOneTimeRequestServiceTest {
 			.set("orderPrice", new OrderPrice(3000, 200))
 			.set("orderItems", List.of())
 			.set("receiver", null)
-			.set("sid", "sid")
+			.set("paymentCode.sid", "sid")
 			.sample();
 
 		KakaoRequestService kakaoNormalRequestService =

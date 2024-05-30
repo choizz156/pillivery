@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.payment.dto.ApproveRequest;
-import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
@@ -18,7 +17,7 @@ class KakaoOneTimeApproveServiceTest {
 	void 단건_승인_위임() throws Exception {
 		//given
 
-		ParameterProvider parameterProvider = new ParameterProvider();
+
 		KakaoOneTimeApproveService kakaoNormalApproveService =
 			new KakaoOneTimeApproveService(
 				order -> new KakaoApiApproveResponse()
