@@ -35,12 +35,11 @@ public class KakaoClientSender {
 	}
 
 	public <T> void send(String params, String url, Class<T> responseClass) {
-		System.out.println("============" + params);
+
 		var entity = new HttpEntity<>(params, KakaoHeader.HTTP_HEADERS.getHeaders());
 
 		ResponseEntity<T> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
-		System.out.println("sdfsdfsdfsdfsdf");
-		System.out.println("============" + exchange.getBody());
+
 		checkSuccess(exchange);
 	}
 

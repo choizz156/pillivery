@@ -21,6 +21,7 @@ public class RefundEventHandler {
 
 	@EventListener
 	public void onEventSet(KakaoRefundedEvent apiEvent) {
+
 		ApiEventSet apiEventSet = ApiEventSet.builder()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.parameters(apiEvent.getRefundParams())
