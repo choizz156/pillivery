@@ -35,6 +35,7 @@ class KakaoRefundServiceTest {
 				orderFindHelper,
 				new ObjectMapper()
 			);
+
 		//when
 		 kakaoRefundService.refund(1L, context);
 

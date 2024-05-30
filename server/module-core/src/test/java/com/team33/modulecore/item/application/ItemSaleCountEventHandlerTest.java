@@ -27,28 +27,4 @@ class ItemSaleCountEventHandlerTest {
 
 		verify(itemCommandRepository, times(2)).incrementSales(anyLong());
 	}
-
-
-	@DisplayName("아이템 판매량 카운트 이벤트를 처리할 수 있다.")
-	@Test
-	void event() throws Exception {
-
-		//given
-		ArgumentCaptor<ItemSaleCountedEvent> eventArgumentCaptor = ArgumentCaptor.forClass(ItemSaleCountedEvent.class);
-
-		ApplicationContext applicationContext = mock(ApplicationContext.class);
-		ItemSaleCountEventHandler itemSaleCountEventHandler = mock(ItemSaleCountEventHandler.class);
-		ItemSaleCountedEvent itemSaleCountedEvent = new ItemSaleCountedEvent(List.of(1L, 2L));
-
-		applicationContext.publishEvent(itemSaleCountedEvent);
-
-		verify(applicationContext).publishEvent(eventArgumentCaptor.capture());
-		ItemSaleCountedEvent captorValue = eventArgumentCaptor.getValue();
-
-		//when
-		itemSaleCountEventHandler.onItemSaleCounted(captorValue);
-
-		//then
-		verify(itemSaleCountEventHandler, times(1)).onItemSaleCounted(any(ItemSaleCountedEvent.class));
-	}
 }

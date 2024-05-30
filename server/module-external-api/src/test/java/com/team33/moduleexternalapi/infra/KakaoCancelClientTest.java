@@ -23,7 +23,7 @@ import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class KakaoRefundClientTest {
+class KakaoCancelClientTest {
 
 	private ClientAndServer mockServer;
 
@@ -79,12 +79,12 @@ class KakaoRefundClientTest {
 		Map<String, Object> parameters = getMap("tid");
 		String request = objectMapper.writeValueAsString(parameters);
 
-		KakaoRefundClient kakaoRefundClient = new KakaoRefundClient(
+		KakaoCancelClient kakaoCancelClient = new KakaoCancelClient(
 			new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
 		);
 
 		// Then
-		assertThatNoException().isThrownBy(() -> kakaoRefundClient.send(request, CANCEL_URL));
+		assertThatNoException().isThrownBy(() -> kakaoCancelClient.send(request, CANCEL_URL));
 	}
 
 	@DisplayName("환불 요청 오류 시 예외를 던진다.")
@@ -117,12 +117,12 @@ class KakaoRefundClientTest {
 
 		Map<String, Object> parameters = getMap("ti");
 		String request = objectMapper.writeValueAsString(parameters);
-		KakaoRefundClient kakaoRefundClient = new KakaoRefundClient(
+		KakaoCancelClient kakaoCancelClient = new KakaoCancelClient(
 			new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
 		);
 
 		// when //Then
-		assertThatThrownBy(() -> kakaoRefundClient.send(request, CANCEL_URL))
+		assertThatThrownBy(() -> kakaoCancelClient.send(request, CANCEL_URL))
 			.isInstanceOf(PaymentApiException.class);
 	}
 

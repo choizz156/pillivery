@@ -30,6 +30,7 @@ import com.team33.modulecore.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.order.mock.FakeOrderRepository;
 import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
 import com.team33.modulecore.payment.application.refund.RefundService;
+import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
 import com.team33.modulecore.user.domain.entity.User;
 
@@ -224,6 +225,7 @@ class OrderServiceTest {
 		orderService.processCancel(order.getId(), refundContext);
 
 		//then
+
 		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.Refund);
 		verify(refundService, times(1)).refund(order.getId(), refundContext);
 	}
