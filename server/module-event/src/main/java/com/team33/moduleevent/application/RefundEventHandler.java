@@ -24,7 +24,7 @@ public class RefundEventHandler {
 		ApiEventSet apiEventSet = ApiEventSet.builder()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.parameters(apiEvent.getRefundParams())
-			.url(apiEvent.getRefundParams())
+			.url(apiEvent.getRefundUrl())
 			.type(apiEvent.getClass().getSimpleName())
 			.localDateTime(LocalDateTime.now())
 			.status(EventStatus.READY)
