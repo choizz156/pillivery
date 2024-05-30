@@ -18,8 +18,8 @@ import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.payment.application.request.RequestFacade;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
-import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class PayController {
 
 	private final ApproveFacade<KakaoApproveResponse, KakaoApproveOneTimeRequest> approveFacade;
-	private final RequestFacade<KakaoRequestResponse> requestFacade;
+	private final RequestFacade<KakaoRequestResponse> KakaoRequestFacade;
 	private final PaymentMapper paymentMapper;
 	private final PaymentDataService paymentDataService;
 	private final OrderStatusService orderStatusService;
@@ -40,7 +40,7 @@ public class PayController {
 		@PathVariable Long orderId
 	) {
 
-		KakaoRequestResponse requestResponse = requestFacade.request(orderId);
+		KakaoRequestResponse requestResponse = KakaoRequestFacade.request(orderId);
 		paymentDataService.addData(orderId, requestResponse.getTid());
 		paymentCodeService.addTid(orderId, requestResponse.getTid());
 
@@ -83,9 +83,9 @@ public class PayController {
 		@RequestParam("orderId") Long orderId
 	) {
 
-		KakaoApproveResponse kaKaoApproveResponse = approveFacade.approveSubscription(orderId);
+		KakaoApproveResponse kaKaoApiApproveResponse = approveFacade.approveSubscription(orderId);
 
-		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(kaKaoApproveResponse));
+		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(kaKaoApiApproveResponse));
 	}
 
 	// @GetMapping("/cancel")

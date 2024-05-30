@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.moduleexternalapi.application.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,12 +13,12 @@ public abstract class KaKaoApproveTemplate {
 
 	private static final String KAKAO_APPROVE_URL = "https://open-api.kakaopay.com/online/v1/payment/approve";
 
-	private final PaymentClient<KakaoApproveResponse> kakaoApproveClient;
+	private final PaymentClient<KakaoApiApproveResponse> kakaoApproveClient;
 
 
 	public abstract Map<String, Object> getApproveParams(ApproveRequest approveRequest);
 
-	public KakaoApproveResponse approve(ApproveRequest approveRequest) {
+	public KakaoApiApproveResponse approve(ApproveRequest approveRequest) {
 		Map<String, Object> approveParams = getApproveParams(approveRequest);
 
 		return kakaoApproveClient.send(approveParams, KAKAO_APPROVE_URL);

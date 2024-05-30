@@ -9,7 +9,7 @@ import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.RequestService;
-import com.team33.moduleexternalapi.dto.KakaoPayLookupResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoLookupResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/payments/lookup")
 public class PayLookupController {
 
-	private final RequestService<KakaoPayLookupResponse> kakaoPayLookupService;
+	private final RequestService<KakaoLookupResponse> kakaoPayLookupService;
 	private final OrderFindHelper orderFindHelper;
 
 	@GetMapping("/{orderId}")
@@ -27,7 +27,7 @@ public class PayLookupController {
 	) {
 
 		Order order = orderFindHelper.findOrder(orderId);
-		KakaoPayLookupResponse response = kakaoPayLookupService.request(order);
+		KakaoLookupResponse response = kakaoPayLookupService.request(order);
 		return new SingleResponseDto<>(response);
 	}
 }

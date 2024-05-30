@@ -19,7 +19,7 @@ import org.mockserver.model.Header;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiRequestResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -53,7 +53,7 @@ class KakaoRequestClientTest {
 	void test() throws Exception {
 		// Given
 		ObjectMapper objectMapper = new ObjectMapper();
-		KakaoRequestResponse dto = KakaoRequestResponse.builder().build();
+		KakaoApiRequestResponse dto = KakaoApiRequestResponse.builder().build();
 
 		String response = objectMapper.writeValueAsString(dto);
 
@@ -84,7 +84,7 @@ class KakaoRequestClientTest {
 		);
 
 		//when
-		KakaoRequestResponse send = kakaoRequestClient.send(parameters, REQUEST_URL);
+		KakaoApiRequestResponse send = kakaoRequestClient.send(parameters, REQUEST_URL);
 
 		// Then
 		assertThat(send).isNotNull();
@@ -95,7 +95,7 @@ class KakaoRequestClientTest {
 	void test2() throws Exception {
 		// given
 		ObjectMapper objectMapper = new ObjectMapper();
-		KakaoRequestResponse dto = KakaoRequestResponse.builder().build();
+		KakaoApiRequestResponse dto = KakaoApiRequestResponse.builder().build();
 
 		String response = objectMapper.writeValueAsString(dto);
 
@@ -126,7 +126,7 @@ class KakaoRequestClientTest {
 		);
 
 		//when
-		KakaoRequestResponse send = kakaoRequestClient.send(parameters, REQUEST_URL);
+		KakaoApiRequestResponse send = kakaoRequestClient.send(parameters, REQUEST_URL);
 
 		// Then
 		assertThat(send).isNotNull();
@@ -137,7 +137,7 @@ class KakaoRequestClientTest {
 	void test3() throws Exception {
 		// given
 		ObjectMapper objectMapper = new ObjectMapper();
-		KakaoRequestResponse dto = KakaoRequestResponse.builder().build();
+		KakaoApiRequestResponse dto = KakaoApiRequestResponse.builder().build();
 
 		String response = objectMapper.writeValueAsString(dto);
 

@@ -20,7 +20,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.application.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -54,7 +54,7 @@ class KakaoApproveClientTest {
 	void test() throws Exception {
 		// Given
 		ObjectMapper objectMapper = new ObjectMapper();
-		KakaoApproveResponse dto = KakaoApproveResponse.builder().build();
+		KakaoApiApproveResponse dto = KakaoApiApproveResponse.builder().build();
 		String response = objectMapper.writeValueAsString(dto);
 
 		mockServerClient = new MockServerClient(HOST, PORT);
@@ -76,14 +76,14 @@ class KakaoApproveClientTest {
 				.withBody(response)
 			);
 
-		KakaoApproveResponse send = toSendNormal();
+		KakaoApiApproveResponse send = toSendNormal();
 
 		// Then
 		assertThat(send).isNotNull();
 	}
 
-	private  KakaoApproveResponse toSendNormal() {
-		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
+	private KakaoApiApproveResponse toSendNormal() {
+		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
@@ -103,7 +103,7 @@ class KakaoApproveClientTest {
 		// Given
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		KakaoApproveResponse dto = KakaoApproveResponse.builder().build();
+		KakaoApiApproveResponse dto = KakaoApiApproveResponse.builder().build();
 
 		String response = objectMapper.writeValueAsString(dto);
 
@@ -127,14 +127,14 @@ class KakaoApproveClientTest {
 			);
 
 		//when
-		KakaoApproveResponse send = toSendSubsFirst();
+		KakaoApiApproveResponse send = toSendSubsFirst();
 
 		// Then
 		assertThat(send).isNotNull();
 	}
 
-	private  KakaoApproveResponse toSendSubsFirst() {
-		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
+	private KakaoApiApproveResponse toSendSubsFirst() {
+		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
@@ -154,7 +154,7 @@ class KakaoApproveClientTest {
 	void test6() throws Exception {
 		// Given
 		ObjectMapper objectMapper = new ObjectMapper();
-		KakaoApproveResponse dto = KakaoApproveResponse.builder().build();
+		KakaoApiApproveResponse dto = KakaoApiApproveResponse.builder().build();
 		String response = objectMapper.writeValueAsString(dto);
 
 		mockServerClient = new MockServerClient(HOST, PORT);
@@ -177,15 +177,15 @@ class KakaoApproveClientTest {
 			);
 
 		//when
-		KakaoApproveResponse sendSubs = toSendSubs();
+		KakaoApiApproveResponse sendSubs = toSendSubs();
 
 		// Then
 		assertThat(sendSubs).isNotNull();
 
 	}
 
-	private  KakaoApproveResponse toSendSubs() {
-		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
+	private KakaoApiApproveResponse toSendSubs() {
+		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
@@ -205,7 +205,7 @@ class KakaoApproveClientTest {
 	void test7() throws Exception {
 		// Given
 		ObjectMapper objectMapper = new ObjectMapper();
-		KakaoApproveResponse dto = KakaoApproveResponse.builder().build();
+		KakaoApiApproveResponse dto = KakaoApiApproveResponse.builder().build();
 		String response = objectMapper.writeValueAsString(dto);
 
 		mockServerClient = new MockServerClient(HOST, PORT);
@@ -227,7 +227,7 @@ class KakaoApproveClientTest {
 				.withBody(response)
 			);
 
-		PaymentClient<KakaoApproveResponse> kaKaoApproveClient =
+		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
 			new KakaoApproveClient(new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate()));
 
 		Map<String, Object> parameters = new ConcurrentHashMap<>();

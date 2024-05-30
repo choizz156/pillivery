@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
 
 class KakaoOneTimeApproveServiceTest {
 
@@ -20,7 +21,7 @@ class KakaoOneTimeApproveServiceTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 		KakaoOneTimeApproveService kakaoNormalApproveService =
 			new KakaoOneTimeApproveService(
-				order -> new KakaoApproveResponse()
+				order -> new KakaoApiApproveResponse()
 			);
 
 		ApproveRequest request = KakaoApproveOneTimeRequest.builder()
@@ -30,10 +31,10 @@ class KakaoOneTimeApproveServiceTest {
 			.build();
 
 		//when
-		KakaoApproveResponse kaKaoApproveResponse = kakaoNormalApproveService.approveOneTime(request);
+		KakaoApproveResponse kaKaoApiApproveResponse = kakaoNormalApproveService.approveOneTime(request);
 
 		//then
-		assertThat(kaKaoApproveResponse).isNotNull();
+		assertThat(kaKaoApiApproveResponse).isNotNull();
 	}
 
 }

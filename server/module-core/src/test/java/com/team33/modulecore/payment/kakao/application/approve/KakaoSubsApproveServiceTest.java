@@ -13,7 +13,8 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
 
 class KakaoSubsApproveServiceTest {
 
@@ -24,8 +25,8 @@ class KakaoSubsApproveServiceTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		KakaoSubsApproveService kakaoSubsApproveService = new KakaoSubsApproveService(
-			new KakaoFirstSubsApprove((params, url) -> new KakaoApproveResponse(), parameterProvider),
-			new KakaoSubsApprove((params, url) -> new KakaoApproveResponse(), parameterProvider)
+			new KakaoFirstSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider),
+			new KakaoSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider)
 		);
 
 		ApproveRequest request = KakaoApproveOneTimeRequest.builder()
@@ -35,10 +36,10 @@ class KakaoSubsApproveServiceTest {
 			.build();
 
 		//when
-		KakaoApproveResponse kaKaoApproveResponse = kakaoSubsApproveService.approveFirstTime(request);
+		KakaoApproveResponse kaKaoApiApproveResponse = kakaoSubsApproveService.approveFirstTime(request);
 
 		//then
-		assertThat(kaKaoApproveResponse).isNotNull();
+		assertThat(kaKaoApiApproveResponse).isNotNull();
 	}
 
 	@DisplayName("기존 정기 결제 승인을 위임할 수 있다.")
@@ -49,8 +50,8 @@ class KakaoSubsApproveServiceTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		KakaoSubsApproveService kakaoSubsApproveService = new KakaoSubsApproveService(
-			new KakaoFirstSubsApprove((params, url) -> new KakaoApproveResponse(), parameterProvider),
-			new KakaoSubsApprove((params, url) -> new KakaoApproveResponse(), parameterProvider)
+			new KakaoFirstSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider),
+			new KakaoSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider)
 		);
 
 		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
@@ -67,10 +68,10 @@ class KakaoSubsApproveServiceTest {
 			.sample();
 
 		//when
-		KakaoApproveResponse kaKaoApproveResponse = kakaoSubsApproveService.approveSubscribe(order);
+		KakaoApproveResponse kaKaoApiApproveResponse = kakaoSubsApproveService.approveSubscribe(order);
 
 		//then
-		assertThat(kaKaoApproveResponse).isNotNull();
+		assertThat(kaKaoApiApproveResponse).isNotNull();
 	}
 
 }

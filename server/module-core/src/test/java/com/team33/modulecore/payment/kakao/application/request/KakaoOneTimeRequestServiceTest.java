@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
-
+import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiRequestResponse;
 
 class KakaoOneTimeRequestServiceTest {
 
@@ -31,11 +31,11 @@ class KakaoOneTimeRequestServiceTest {
 			.sample();
 
 		KakaoRequestService kakaoNormalRequestService =
-				new KakaoRequestService(o -> new KakaoRequestResponse());
+				new KakaoRequestService(o -> new KakaoApiRequestResponse());
 		//when
-		KakaoRequestResponse kakaoRequestResponse = kakaoNormalRequestService.request(order);
+		KakaoRequestResponse kakaoApiRequestResponse = kakaoNormalRequestService.request(order);
 		//then
-		assertThat(kakaoRequestResponse).isNotNull();
+		assertThat(kakaoApiRequestResponse).isNotNull();
 	}
 
 }

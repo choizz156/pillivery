@@ -11,7 +11,7 @@ import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiRequestResponse;
 
 
 class KakaoOneTimeRequestTest {
@@ -35,15 +35,15 @@ class KakaoOneTimeRequestTest {
 
 		KakaoOneTimeRequest kakaoNormalRequest =
 			new KakaoOneTimeRequest(
-				(params, url) -> new KakaoRequestResponse(),
+				(params, url) -> new KakaoApiRequestResponse(),
 				parameterProvider
 			);
 
 		//when
-		KakaoRequestResponse kakaoRequestResponse = kakaoNormalRequest.request(order);
+		KakaoApiRequestResponse kakaoApiRequestResponse = kakaoNormalRequest.request(order);
 
 		//then
-		assertThat(kakaoRequestResponse).isNotNull();
+		assertThat(kakaoApiRequestResponse).isNotNull();
 	}
 
 }

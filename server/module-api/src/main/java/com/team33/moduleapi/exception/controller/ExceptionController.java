@@ -53,11 +53,11 @@ public class ExceptionController {
         return ErrorResponse.of(e.getMessage());
     }
 
-    // @ExceptionHandler(RuntimeException.class)
-    // @ResponseStatus(HttpStatus.BAD_REQUEST)
-    // public ErrorResponse illegalArgumentExceptionHandler(RuntimeException e) {
-    //     return ErrorResponse.of(e.getMessage());
-    // }
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse illegalArgumentExceptionHandler(RuntimeException e) {
+        return ErrorResponse.of(e.getMessage());
+    }
 }
 
 

@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.dto;
+package com.team33.modulecore.payment.kakao.dto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakaoPayLookupResponse {
+public class KakaoLookupResponse {
 	public String tid;
 	public String cid;
 	public String status;
@@ -22,41 +22,35 @@ public class KakaoPayLookupResponse {
 	public String item_name;
 	public int quantity;
 
-	@JsonProperty("approved_cancel_amount")
 	private ApprovedCancelAmount approvedCancelAmount;
 
-	@JsonProperty("canceled_amount")
 	private CanceledAmount canceledAmount;
 
-	@JsonProperty("cancel_available_amount")
 	private CancelAvailableAmount cancelAvailableAmount;
 
 	public LocalDateTime created_at;
 	public LocalDateTime approved_at;
 	public ArrayList<PaymentActionDetail> payment_action_details;
 
+	@Data
 	@NoArgsConstructor
-	@Getter
-	public static class Amount {
+	private static class Amount {
 		private int total;
 
-		@JsonProperty("tax_free")
 		private int taxFree;
 
 		private int vat;
 		private int point;
 		private int discount;
 
-		@JsonProperty("green_deposit")
 		private int greenDeposit;
 	}
 
+	@Data
 	@NoArgsConstructor
-	@Getter
 	public static class ApprovedCancelAmount {
 		private int total;
 
-		@JsonProperty("tax_free")
 		private int taxFree;
 
 		private int vat;
@@ -67,12 +61,11 @@ public class KakaoPayLookupResponse {
 		private int greenDeposit;
 	}
 
+	@Data
 	@NoArgsConstructor
-	@Getter
 	public static class CanceledAmount {
 		private int total;
 
-		@JsonProperty("tax_free")
 		private int taxFree;
 
 		private int vat;
@@ -83,24 +76,22 @@ public class KakaoPayLookupResponse {
 		private int greenDeposit;
 	}
 
+	@Data
 	@NoArgsConstructor
-	@Getter
 	public static class CancelAvailableAmount {
 		private int total;
 
-		@JsonProperty("tax_free")
 		private int taxFree;
 
 		private int vat;
 		private int point;
 		private int discount;
 
-		@JsonProperty("green_deposit")
 		private int greenDeposit;
 	}
 
+	@Data
 	@NoArgsConstructor
-	@Getter
 	public static class PaymentActionDetail {
 		public String aid;
 		public String payment_action_type;

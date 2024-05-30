@@ -6,7 +6,7 @@ import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.RequestFacade;
 import com.team33.modulecore.payment.application.request.RequestService;
-import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

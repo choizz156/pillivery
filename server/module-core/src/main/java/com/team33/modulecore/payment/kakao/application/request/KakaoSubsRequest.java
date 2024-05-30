@@ -8,18 +8,18 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.Request;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.application.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiRequestResponse;
 
 @Service
 public class KakaoSubsRequest
 	extends KakaoRequestTemplate
-	implements Request<KakaoRequestResponse>
+	implements Request<KakaoApiRequestResponse>
 {
 
 	private final ParameterProvider parameterProvider;
 
 	public KakaoSubsRequest(
-		PaymentClient<KakaoRequestResponse> KakaoRequestClient,
+		PaymentClient<KakaoApiRequestResponse> KakaoRequestClient,
 		ParameterProvider parameterProvider
 	) {
 		super(KakaoRequestClient);
@@ -27,7 +27,7 @@ public class KakaoSubsRequest
 	}
 
 	@Override
-	public KakaoRequestResponse request(Order order) {
+	public KakaoApiRequestResponse request(Order order) {
 		return super.request(order);
 	}
 

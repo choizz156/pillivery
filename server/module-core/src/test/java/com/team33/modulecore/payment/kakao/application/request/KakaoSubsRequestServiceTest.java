@@ -4,16 +4,14 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.moduleexternalapi.dto.KakaoRequestResponse;
-
+import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiRequestResponse;
 
 class KakaoSubsRequestServiceTest {
 
@@ -34,12 +32,12 @@ class KakaoSubsRequestServiceTest {
 			.sample();
 
 		//given
-		KakaoSubsRequestService kakaoSubsRequestService = new KakaoSubsRequestService(o -> new KakaoRequestResponse());
+		KakaoSubsRequestService kakaoSubsRequestService = new KakaoSubsRequestService(o -> new KakaoApiRequestResponse());
 
 		//when
-		KakaoRequestResponse kakaoRequestResponse = kakaoSubsRequestService.request(order);
+		KakaoRequestResponse kakaoApiRequestResponse = kakaoSubsRequestService.request(order);
 
 		//then
-		assertThat(kakaoRequestResponse).isNotNull();
+		assertThat(kakaoApiRequestResponse).isNotNull();
 	}
 }

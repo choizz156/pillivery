@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class KakaoRequestResponse {
+public class KakaoApiRequestResponse {
 
 	private String tid;
 	private String next_redirect_pc_url;
 
 	@Builder
-	public KakaoRequestResponse(String tid, String next_redirect_pc_url) {
+	public KakaoApiRequestResponse(String tid, String next_redirect_pc_url) {
 		this.tid = tid;
 		this.next_redirect_pc_url = next_redirect_pc_url;
 	}

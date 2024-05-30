@@ -11,7 +11,7 @@ import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
 
 class KakaoSubsApproveTest {
 
@@ -33,15 +33,15 @@ class KakaoSubsApproveTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 		KakaoSubsApprove kakaoSubsApprove =
 			new KakaoSubsApprove(
-				(params, url) -> new KakaoApproveResponse(),
+				(params, url) -> new KakaoApiApproveResponse(),
 				parameterProvider
 			);
 
 		//when
-		KakaoApproveResponse kaKaoApproveResponse = kakaoSubsApprove.approveSubscription(order);
+		KakaoApiApproveResponse kaKaoApiApproveResponse = kakaoSubsApprove.approveSubscription(order);
 
 		//then
-		assertThat(kaKaoApproveResponse).isNotNull();
+		assertThat(kaKaoApiApproveResponse).isNotNull();
 	}
 
 }

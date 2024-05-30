@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
 
 class KakaoFirstSubsApproveTest {
 
@@ -18,7 +18,7 @@ class KakaoFirstSubsApproveTest {
 		//given
 		ParameterProvider parameterProvider = new ParameterProvider();
 		KakaoFirstSubsApprove kakaoFirstSubsApprove = new KakaoFirstSubsApprove(
-			(params, url) -> new KakaoApproveResponse(),
+			(params, url) -> new KakaoApiApproveResponse(),
 			parameterProvider
 		);
 
@@ -28,10 +28,10 @@ class KakaoFirstSubsApproveTest {
 			.pgtoken("pgToken")
 			.tid("tid")
 			.build();
-		KakaoApproveResponse kaKaoApproveResponse = kakaoFirstSubsApprove.approveFirstSubscription(request);
+		KakaoApiApproveResponse kaKaoApiApproveResponse = kakaoFirstSubsApprove.approveFirstSubscription(request);
 
 		//then
-		assertThat(kaKaoApproveResponse).isNotNull();
+		assertThat(kaKaoApiApproveResponse).isNotNull();
 	}
 
 }

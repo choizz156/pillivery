@@ -11,7 +11,7 @@ import com.team33.modulecore.payment.application.approve.OneTimeApproveService;
 import com.team33.modulecore.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.payment.dto.ApproveRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
 
 class KakaoApproveFacadeTest {
 
@@ -36,14 +36,14 @@ class KakaoApproveFacadeTest {
 			.build();
 
 		//when
-		KakaoApproveResponse kakaoApproveResponse = kakaoApproveFacade.approveFirst(request);
+		KakaoApproveResponse kakaoApiApproveResponse = kakaoApproveFacade.approveFirst(request);
 
 		//then
 		verify(subscriptionApproveService, times(1)).approveFirstTime(any(ApproveRequest.class));
 		verify(oneTimeApproveService, times(0)).approveOneTime(any(ApproveRequest.class));
 		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
 
-		assertThat(kakaoApproveResponse).isNotNull();
+		assertThat(kakaoApiApproveResponse).isNotNull();
 	}
 
 	@DisplayName("단건 결제 승인 시 단건 승인 서비스로 위임한다.")
@@ -66,13 +66,13 @@ class KakaoApproveFacadeTest {
 			.build();
 
 		//when
-		KakaoApproveResponse kakaoApproveResponse = kakaoApproveFacade.approveFirst(request);
+		KakaoApproveResponse kakaoApiApproveResponse = kakaoApproveFacade.approveFirst(request);
 
 		//then
 		verify(subscriptionApproveService, times(0)).approveFirstTime(any(ApproveRequest.class));
 		verify(oneTimeApproveService, times(1)).approveOneTime(any(ApproveRequest.class));
 		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
 
-		assertThat(kakaoApproveResponse).isNotNull();
+		assertThat(kakaoApiApproveResponse).isNotNull();
 	}
 }

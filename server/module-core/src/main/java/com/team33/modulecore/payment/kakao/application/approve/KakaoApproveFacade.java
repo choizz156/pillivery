@@ -8,7 +8,7 @@ import com.team33.modulecore.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.payment.application.approve.OneTimeApproveService;
 import com.team33.modulecore.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KakaoApproveResponse;
+import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
 
 import lombok.RequiredArgsConstructor;
 
