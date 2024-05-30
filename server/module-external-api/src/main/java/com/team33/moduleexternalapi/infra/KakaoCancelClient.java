@@ -3,6 +3,7 @@ package com.team33.moduleexternalapi.infra;
 import org.springframework.stereotype.Component;
 
 import com.team33.moduleexternalapi.application.CancelClient;
+import com.team33.moduleexternalapi.dto.KakaoApiCancelResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +15,6 @@ public class KakaoCancelClient implements CancelClient {
 
 	@Override
 	public void send(String params, String url) {
-		kakaoClientSender.send(params, url);
+		kakaoClientSender.send(params, url, KakaoApiCancelResponse.class);
 	}
 }

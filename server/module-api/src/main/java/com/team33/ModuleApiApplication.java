@@ -4,9 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
-@EnableScheduling
+
 @EnableJpaAuditing
 @EnableAsync
 @SpringBootApplication(scanBasePackages = {
@@ -14,7 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 	"com.team33.modulequartz",
 	"com.team33.modulecore",
 	"com.team33.moduleadmin",
-	"com.team33.moduleexternalapi"
+	"com.team33.moduleexternalapi",
+	"com.team33.moduleevent"
 }
 )
 public class ModuleApiApplication {

@@ -19,7 +19,7 @@ import org.mockserver.model.Header;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.moduleexternalapi.dto.KakaoRefundResponse;
+import com.team33.moduleexternalapi.dto.KakaoApiCancelResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -54,7 +54,7 @@ class KakaoCancelClientTest {
 		// Given
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		KakaoRefundResponse dto = KakaoRefundResponse.builder().build();
+		KakaoApiCancelResponse dto = KakaoApiCancelResponse.builder().build();
 		String response = objectMapper.writeValueAsString(dto);
 
 		mockServerClient = new MockServerClient(HOST, PORT);
@@ -93,7 +93,7 @@ class KakaoCancelClientTest {
 		// Given
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		KakaoRefundResponse dto = KakaoRefundResponse.builder().build();
+		KakaoApiCancelResponse dto = KakaoApiCancelResponse.builder().build();
 		String response = objectMapper.writeValueAsString(dto);
 
 		mockServerClient = new MockServerClient(HOST, PORT);
