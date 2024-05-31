@@ -48,7 +48,7 @@ public class RestTemplateErrorHandler implements ResponseErrorHandler {
             errorMessage.set(error);
         }
 
-        public void clear(){
+        public static void clear(){
             errorMessage.remove();
         }
     }

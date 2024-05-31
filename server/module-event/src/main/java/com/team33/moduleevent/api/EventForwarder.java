@@ -2,7 +2,6 @@ package com.team33.moduleevent.api;
 
 import java.util.List;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ public class EventForwarder {
 	private final FailEventService failEventService;
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	@Scheduled(initialDelay = 1000, fixedDelay = 20000)
+	// @Scheduled(initialDelay = 1000, fixedDelay = 20000)
 	public void getAndSend() {
 		List<ApiEventSet> apiEventSets = eventsRepository
 			.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
@@ -56,9 +55,9 @@ public class EventForwarder {
 				if (retry == LIMIT_COUNT) {
 					apiEventSet.changeStatusToFail();
 					String reason = ThreadLocalErrorMessage.get();
-
 					log.error("eventId : {}, type : {}, reason : {}", apiEventSet.getId(), apiEventSet.getType(), reason);
 					failEventService.saveFail(apiEventSet, reason);
+					ThreadLocalErrorMessage.clear();
 				}
 			}
 		}

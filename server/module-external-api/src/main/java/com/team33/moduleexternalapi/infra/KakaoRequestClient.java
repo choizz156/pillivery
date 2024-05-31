@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Component("KakaoRequestClient")
 public class KakaoRequestClient implements PaymentClient<KakaoApiRequestResponse> {
 
 	private final KakaoClientSender kakaoClientSender;

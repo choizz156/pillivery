@@ -18,10 +18,10 @@ public class KakaoOneTimeRequest
 	private final ParameterProvider parameterProvider;
 
 	public KakaoOneTimeRequest(
-		PaymentClient<KakaoApiRequestResponse> KakaoRequestClient,
+		PaymentClient<KakaoApiRequestResponse> webClientRequestClient,
 		ParameterProvider parameterProvider
 	) {
-		super(KakaoRequestClient);
+		super(webClientRequestClient);
 		this.parameterProvider = parameterProvider;
 	}
 

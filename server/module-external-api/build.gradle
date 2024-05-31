@@ -1,4 +1,8 @@
 dependencies {
     implementation 'org.apache.httpcomponents:httpclient'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
     testImplementation 'org.mock-server:mockserver-junit-jupiter-no-dependencies:5.15.0'
+
+    implementation('io.netty:netty-resolver-dns-native-macos:4.1.110.Final:osx-aarch_64')
 }
