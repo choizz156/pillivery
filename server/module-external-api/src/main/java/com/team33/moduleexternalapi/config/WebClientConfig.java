@@ -10,6 +10,8 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.team33.moduleexternalapi.exception.PaymentApiException;
+
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -42,29 +44,17 @@ public class WebClientConfig {
 	private ExchangeFilterFunction errorLog() {
 		return ExchangeFilterFunction.ofResponseProcessor(response -> {
 			if (!response.statusCode().is2xxSuccessful()) {
-				return response.bodyToMono(String.class)
+				 return response.bodyToMono(String.class)
 					.flatMap(body -> {
-						ThreadLocalErrorMessage.set(body);
-						return Mono.just(response);
+						log.error("======payment error=====");
+						log.error("Headers: {}", response.headers());
+						log.error("Response Status : {}", response.statusCode());
+						log.error("Response body: {}", body);
+						log.error("================");
+						return Mono.error(new PaymentApiException("kakao api fail"));
 					});
 			}
 			return Mono.just(response);
 		});
-	}
-
-	public static class ThreadLocalErrorMessage {
-		private static final ThreadLocal<String> errorMessage = new ThreadLocal<>();
-
-		public static String get() {
-			return errorMessage.get();
-		}
-
-		public static void set(String error) {
-			errorMessage.set(error);
-		}
-
-		public void clear(){
-			errorMessage.remove();
-		}
 	}
 }

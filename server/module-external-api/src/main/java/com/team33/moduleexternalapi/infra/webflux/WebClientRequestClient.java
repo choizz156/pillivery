@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component("webClientRequestClient")
 public class WebClientRequestClient implements PaymentClient<KakaoApiRequestResponse> {
 
-	private final WebFluxClient webFluxClient;
+	private final WebClientSender webClientSender;
 
 	@Override
 	public KakaoApiRequestResponse send(Map<String, Object> params, String url)
@@ -37,7 +37,7 @@ public class WebClientRequestClient implements PaymentClient<KakaoApiRequestResp
 
 	private CompletableFuture<KakaoApiRequestResponse> sendRequest(Map<String, Object> params, String url) {
 		try {
-			return webFluxClient.send(params, url, KakaoApiRequestResponse.class);
+			return webClientSender.send(params, url, KakaoApiRequestResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new PaymentApiException(e.getMessage());
 		}

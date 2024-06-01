@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class KakaoCancelClient implements CancelClient {
 
-	private final KakaoClientSender kakaoClientSender;
+	private final KakaoClientSender clientSender;
 
 	@Override
 	public void send(String params, String url) {
-		kakaoClientSender.send(params, url, KakaoApiCancelResponse.class);
+		clientSender.send(params, url, KakaoApiCancelResponse.class);
 	}
 }
