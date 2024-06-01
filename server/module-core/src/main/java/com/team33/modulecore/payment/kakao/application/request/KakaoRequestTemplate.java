@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class KakaoRequestTemplate {
 
-	private final PaymentClient<KakaoApiRequestResponse> KakaoRequestClient;
+	private final PaymentClient<KakaoApiRequestResponse> kakaoRequestClient;
+
 	private static final String READY_URL = "https://open-api.kakaopay.com/online/v1/payment/ready";
 
 	public abstract Map<String, Object> getRequestParams(Order order);
@@ -19,6 +20,6 @@ public abstract class KakaoRequestTemplate {
 	public KakaoApiRequestResponse request(Order order) {
 		Map<String, Object> requestParams = getRequestParams(order);
 
-		return KakaoRequestClient.send(requestParams, READY_URL);
+		return kakaoRequestClient.send(requestParams, READY_URL);
 	}
 }

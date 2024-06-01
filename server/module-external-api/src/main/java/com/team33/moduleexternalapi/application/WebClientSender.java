@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.infra.webflux;
+package com.team33.moduleexternalapi.application;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;

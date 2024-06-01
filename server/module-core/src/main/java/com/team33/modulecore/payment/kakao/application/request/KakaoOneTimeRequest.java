@@ -2,6 +2,7 @@ package com.team33.modulecore.payment.kakao.application.request;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.order.domain.entity.Order;
@@ -18,10 +19,10 @@ public class KakaoOneTimeRequest
 	private final ParameterProvider parameterProvider;
 
 	public KakaoOneTimeRequest(
-		PaymentClient<KakaoApiRequestResponse> webClientRequestClient,
+		@Qualifier("KakaoRequestClient") PaymentClient<KakaoApiRequestResponse> kakaoRequestClient,
 		ParameterProvider parameterProvider
 	) {
-		super(webClientRequestClient);
+		super(kakaoRequestClient);
 		this.parameterProvider = parameterProvider;
 	}
 

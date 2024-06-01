@@ -3,6 +3,7 @@ package com.team33.moduleexternalapi.infra;
 import org.springframework.stereotype.Component;
 
 import com.team33.moduleexternalapi.application.CancelClient;
+import com.team33.moduleexternalapi.application.KakaoClientSender;
 import com.team33.moduleexternalapi.dto.KakaoApiCancelResponse;
 
 import lombok.RequiredArgsConstructor;

@@ -16,9 +16,10 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.Header;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.moduleexternalapi.application.WebClientSender;
 import com.team33.moduleexternalapi.dto.KakaoApiRequestResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
@@ -80,7 +81,7 @@ class KakaoRequestClientTest {
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
 		KakaoRequestClient kakaoRequestClient = new KakaoRequestClient(
-			new KakaoClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
+			new WebClientSender(objectMapper, WebClient.builder().build())
 		);
 
 		//when
@@ -122,7 +123,7 @@ class KakaoRequestClientTest {
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
 		KakaoRequestClient kakaoRequestClient = new KakaoRequestClient(
-			new KakaoClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
+			new WebClientSender(objectMapper, WebClient.builder().build())
 		);
 
 		//when
@@ -164,7 +165,7 @@ class KakaoRequestClientTest {
 		parameters.put("approve_url", "approveUrl" + "/" + 1);
 
 		KakaoRequestClient kakaoRequestClient = new KakaoRequestClient(
-			new KakaoClientSender(objectMapper, new TestRestTemplate().getRestTemplate())
+			new WebClientSender(objectMapper, WebClient.builder().build())
 		);
 
 		//when// Then

@@ -19,6 +19,7 @@ import org.mockserver.model.Header;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.moduleexternalapi.application.KakaoClientSender;
 import com.team33.moduleexternalapi.dto.KakaoApiCancelResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 

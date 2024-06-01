@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.KakaoApiPayLookupResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
-import com.team33.moduleexternalapi.infra.webflux.WebClientSender;
+import com.team33.moduleexternalapi.application.WebClientSender;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +29,8 @@ public class KakaoPayLookupClient implements PaymentClient<KakaoApiPayLookupResp
 
 		try {
 			return futureResponse.get();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		} catch (ExecutionException e) {
-			throw new RuntimeException(e);
+		} catch (InterruptedException | ExecutionException e) {
+			throw new PaymentApiException(e.getMessage());
 		}
 	}
 
