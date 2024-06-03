@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.infra;
+package com.team33.moduleexternalapi.infra.kakao;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -8,31 +8,34 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleexternalapi.application.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
-import com.team33.moduleexternalapi.application.WebClientSender;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
-@Component
-public class KakaoApproveClient implements PaymentClient<KakaoApiApproveResponse> {
+@Component("KakaoRequestClient")
+public class KakaoRequestClient implements PaymentClient<KakaoApiRequestResponse> {
 
 	private final WebClientSender webClientSender;
 
 	@Override
-	public KakaoApiApproveResponse send(Map<String, Object> params, String url) {
-		CompletableFuture<KakaoApiApproveResponse> completableFuture = sendApprove(params, url);
+	public KakaoApiRequestResponse send(Map<String, Object> params, String url) {
+
+		CompletableFuture<KakaoApiRequestResponse> futureResponse = sendRequest(params, url);
+
 		try {
-			return completableFuture.get();
+			return futureResponse.get();
 		} catch (InterruptedException | ExecutionException e) {
 			throw new PaymentApiException(e.getMessage());
 		}
 	}
 
-	private CompletableFuture<KakaoApiApproveResponse> sendApprove(Map<String, Object> params, String url) {
+	private CompletableFuture<KakaoApiRequestResponse> sendRequest(Map<String, Object> params, String url) {
 		try {
-			return webClientSender.send(params, url, KakaoApiApproveResponse.class);
+			return webClientSender.send(params, url, KakaoApiRequestResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new PaymentApiException(e.getMessage());
 		}

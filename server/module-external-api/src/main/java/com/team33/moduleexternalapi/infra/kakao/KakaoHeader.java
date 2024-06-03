@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.infra;
+package com.team33.moduleexternalapi.infra.kakao;
 
 import java.util.function.Supplier;
 

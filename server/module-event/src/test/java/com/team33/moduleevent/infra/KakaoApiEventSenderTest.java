@@ -6,7 +6,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import com.team33.moduleevent.domain.entity.ApiEventSet;
-import com.team33.moduleexternalapi.infra.KakaoCancelClient;
+import com.team33.moduleexternalapi.infra.kakao.KakaoCancelClient;
 
 class KakaoApiEventSenderTest {
 

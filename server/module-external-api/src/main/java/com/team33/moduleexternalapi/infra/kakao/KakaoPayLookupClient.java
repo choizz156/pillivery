@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.infra;
+package com.team33.moduleexternalapi.infra.kakao;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleexternalapi.application.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoApiPayLookupResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
-import com.team33.moduleexternalapi.application.WebClientSender;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

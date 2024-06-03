@@ -1,7 +1,6 @@
-package com.team33.moduleexternalapi.dto;
+package com.team33.moduleexternalapi.dto.kakao;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,19 +9,30 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
-@Getter
 @NoArgsConstructor
+@Getter
+@Builder
 @AllArgsConstructor
-public class KakaoApiPayLookupResponse {
-	public String tid;
-	public String cid;
-	public String status;
-	public String partner_order_id;
-	public String partner_user_id;
-	public String payment_method_type;
-	public String item_name;
-	public int quantity;
+public class KakaoApiCancelResponse {
+
+	private String tid;
+	private String cid;
+	private String status;
+
+	@JsonProperty("partner_order_id")
+	private String partnerOrderId;
+
+	@JsonProperty("partner_user_id")
+	private String partnerUserId;
+
+	@JsonProperty("payment_method_type")
+	private String paymentMethodType;
+
+	@JsonProperty("item_name")
+	private String itemName;
+
+	private int quantity;
+	private Amount amount;
 
 	@JsonProperty("approved_cancel_amount")
 	private ApprovedCancelAmount approvedCancelAmount;
@@ -33,9 +43,14 @@ public class KakaoApiPayLookupResponse {
 	@JsonProperty("cancel_available_amount")
 	private CancelAvailableAmount cancelAvailableAmount;
 
-	public LocalDateTime created_at;
-	public LocalDateTime approved_at;
-	public ArrayList<PaymentActionDetail> payment_action_details;
+	@JsonProperty("created_at")
+	private LocalDateTime createdAt;
+
+	@JsonProperty("approved_at")
+	private LocalDateTime approvedAt;
+
+	@JsonProperty("canceled_at")
+	private LocalDateTime canceledAt;
 
 	@NoArgsConstructor
 	@Getter
@@ -99,18 +114,5 @@ public class KakaoApiPayLookupResponse {
 
 		@JsonProperty("green_deposit")
 		private int greenDeposit;
-	}
-
-	@NoArgsConstructor
-	@Getter
-	public static class PaymentActionDetail {
-		public String aid;
-		public String payment_action_type;
-		public String payment_method_type;
-		public int amount;
-		public int point_amount;
-		public int discount_amount;
-		public LocalDateTime approved_at;
-		public int green_deposit;
 	}
 }

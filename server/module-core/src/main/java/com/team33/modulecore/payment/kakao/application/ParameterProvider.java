@@ -1,5 +1,7 @@
 package com.team33.modulecore.payment.kakao.application;
 
+import static com.team33.modulecore.payment.kakao.application.request.Params.*;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -7,23 +9,25 @@ import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
+import com.team33.modulecore.payment.kakao.application.request.Params;
 import com.team33.modulecore.payment.kakao.dto.PaymentParams;
 
 @Component
-public class ParameterProvider extends ParamsConst {
+public class ParameterProvider {
 
 	public Map<String, Object> getOneTimeReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(CID, ONE_TIME_CID);
-		commonReqsParams.put(APPROVAL_URL, ONE_TIME_APPROVAL_URL + "/" + order.getId());
+		commonReqsParams.put(CID.name(), ONE_TIME_CID.getValue());
+		commonReqsParams.put(APPROVAL_URL.name(), APPROVAL_URL.getValue() + "/" + order.getId());
 
 		return commonReqsParams;
 	}
 
 	public Map<String, Object> getSubscriptionReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(CID, SUBSCRIP_CID);
-		commonReqsParams.put(APPROVAL_URL, SUBSCRIPTION_APPROVAL_URI + "/" + order.getId());
+		commonReqsParams.put(CID.name(), CID.getValue());
+		commonReqsParams.put(APPROVAL_URL.name(),
+			Params.SUBSCRIPTION_APPROVAL_URI.getValue() + "/" + order.getId());
 		return commonReqsParams;
 	}
 
@@ -34,7 +38,7 @@ public class ParameterProvider extends ParamsConst {
 	) {
 		var commonApproveParams =
 			getCommonApproveParams(tid, pgToken, orderId);
-		commonApproveParams.put(CID, ONE_TIME_CID);
+		commonApproveParams.put(CID.name(), ONE_TIME_CID.getValue());
 		return commonApproveParams;
 	}
 
@@ -44,15 +48,15 @@ public class ParameterProvider extends ParamsConst {
 		Long orderId
 	) {
 		var commonSubsParams = getCommonApproveParams(tid, pgToken, orderId);
-		commonSubsParams.put(CID, SUBSCRIP_CID);
+		commonSubsParams.put(CID.name(), Params.SUBSCRIP_CID.getValue());
 
 		return commonSubsParams;
 	}
 
 	public Map<String, Object> getSubscriptionApproveParams(Order order) {
 		var subsApproveParams = getRequestParams(order);
-		subsApproveParams.put(SID, order.getSid());
-		subsApproveParams.put(CID, SUBSCRIP_CID);
+		subsApproveParams.put(SID.name(), order.getSid());
+		subsApproveParams.put(CID.name(), Params.SUBSCRIP_CID.getValue());
 
 		return subsApproveParams;
 	}
@@ -60,10 +64,10 @@ public class ParameterProvider extends ParamsConst {
 	public Map<String, Object> getRefundParams(RefundContext refundContext, String tid) {
 		Map<String, Object> refundParam = new ConcurrentHashMap<>();
 
-		refundParam.put(CANCEL_AMOUNT, refundContext.getCancelAmount());
-		refundParam.put(CANCEL_TAX_FREE_AMOUNT, refundContext.getCancelTaxFreeAmount());
-		refundParam.put(TID, tid);
-		refundParam.put(CID, ONE_TIME_CID);
+		refundParam.put(CANCEL_AMOUNT.name(), refundContext.getCancelAmount());
+		refundParam.put(CANCEL_TAX_FREE_AMOUNT.name(), refundContext.getCancelTaxFreeAmount());
+		refundParam.put(TID.name(), tid);
+		refundParam.put(CID.name(), ONE_TIME_CID.getValue());
 
 		return refundParam;
 	}
@@ -71,16 +75,16 @@ public class ParameterProvider extends ParamsConst {
 	public Map<String, Object> getSubsCancelParams(Order order) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put(CID, SUBSCRIP_CID);
-		parameters.put(SID, order.getSid());
+		parameters.put(CID.name(), Params.SUBSCRIP_CID.getValue());
+		parameters.put(SID.name(), order.getSid());
 
 		return parameters;
 	}
 
 	public Map<String, Object> getLookupParams(String tid) {
 		Map<String, Object> lookupParams = new ConcurrentHashMap<>();
-		lookupParams.put(TID, tid);
-		lookupParams.put(CID, ONE_TIME_CID);
+		lookupParams.put(TID.name(), tid);
+		lookupParams.put(CID.name(), ONE_TIME_CID.getValue());
 
 		return lookupParams;
 	}
@@ -97,10 +101,10 @@ public class ParameterProvider extends ParamsConst {
 	) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put(TID, tid);
-		parameters.put(PARTNER_ORDER_ID, String.valueOf(orderId));
-		parameters.put(PARTNER_USER_ID, PARTNER);
-		parameters.put(PG_TOKEN, pgToken);
+		parameters.put(TID.name(), tid);
+		parameters.put(PARTNER_ORDER_ID.name(), String.valueOf(orderId));
+		parameters.put(PARTNER.name(), PARTNER.getValue());
+		parameters.put(PG_TOKEN.name(), pgToken);
 
 		return parameters;
 	}
@@ -108,14 +112,14 @@ public class ParameterProvider extends ParamsConst {
 	private Map<String, Object> getCommonReqsParams(PaymentParams paymentParams) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put(PARTNER_ORDER_ID, String.valueOf(paymentParams.getOrderId()));
-		parameters.put(PARTNER_USER_ID, PARTNER);
-		parameters.put(ITEM_NAME, paymentParams.getItemName());
-		parameters.put(QUANTITY, String.valueOf(paymentParams.getQuantity()));
-		parameters.put(TOTAL_AMOUNT, String.valueOf(paymentParams.getTotalAmount()));
-		parameters.put(TAX_FREE_AMOUNT, "0");
-		parameters.put(CANCEL_URL, CANCEL_URI);
-		parameters.put(FAIL_URL, FAIL_URI);
+		parameters.put(PARTNER_ORDER_ID.name(), String.valueOf(paymentParams.getOrderId()));
+		parameters.put(PARTNER_USER_ID.name(), PARTNER.getValue());
+		parameters.put(ITEM_NAME.name(), paymentParams.getItemName());
+		parameters.put(QUANTITY.name(), String.valueOf(paymentParams.getQuantity()));
+		parameters.put(TOTAL_AMOUNT.name(), String.valueOf(paymentParams.getTotalAmount()));
+		parameters.put(TAX_FREE_AMOUNT.name(), "0");
+		parameters.put(CANCEL_URL.name(), CANCEL_URI.getValue());
+		parameters.put(FAIL_URL.name(), FAIL_URI);
 
 		return parameters;
 	}

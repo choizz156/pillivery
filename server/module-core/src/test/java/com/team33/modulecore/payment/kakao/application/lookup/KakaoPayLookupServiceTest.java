@@ -1,7 +1,6 @@
 package com.team33.modulecore.payment.kakao.application.lookup;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoLookupResponse;
-import com.team33.moduleexternalapi.dto.KakaoApiPayLookupResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 
 class KakaoPayLookupServiceTest {
 

@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.dto;
+package com.team33.moduleexternalapi.dto.kakao;
 
 import lombok.Builder;
 import lombok.Getter;

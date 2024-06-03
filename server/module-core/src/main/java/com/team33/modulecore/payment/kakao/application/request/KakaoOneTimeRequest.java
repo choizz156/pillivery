@@ -9,7 +9,7 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.Request;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.application.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoApiRequestResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
 @Service
 public class KakaoOneTimeRequest

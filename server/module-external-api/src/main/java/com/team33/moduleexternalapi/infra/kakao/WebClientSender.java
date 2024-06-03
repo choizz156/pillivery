@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.application;
+package com.team33.moduleexternalapi.infra.kakao;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.moduleexternalapi.infra.KakaoHeader;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

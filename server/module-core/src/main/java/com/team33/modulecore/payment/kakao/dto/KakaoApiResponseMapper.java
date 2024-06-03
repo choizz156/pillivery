@@ -4,9 +4,9 @@ import static org.mapstruct.factory.Mappers.*;
 
 import org.mapstruct.Mapper;
 
-import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
-import com.team33.moduleexternalapi.dto.KakaoApiPayLookupResponse;
-import com.team33.moduleexternalapi.dto.KakaoApiRequestResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
 @Mapper(componentModel = "spring")
 public interface KakaoApiResponseMapper {

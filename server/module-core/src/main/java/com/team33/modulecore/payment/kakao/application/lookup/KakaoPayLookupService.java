@@ -10,7 +10,7 @@ import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApiResponseMapper;
 import com.team33.modulecore.payment.kakao.dto.KakaoLookupResponse;
 import com.team33.moduleexternalapi.application.PaymentClient;
-import com.team33.moduleexternalapi.dto.KakaoApiPayLookupResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 
 import lombok.RequiredArgsConstructor;
 

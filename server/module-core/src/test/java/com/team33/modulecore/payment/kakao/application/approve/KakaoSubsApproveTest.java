@@ -11,7 +11,7 @@ import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
 class KakaoSubsApproveTest {
 

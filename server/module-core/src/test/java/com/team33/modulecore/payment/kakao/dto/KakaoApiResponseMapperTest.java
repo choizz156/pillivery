@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
-import com.team33.moduleexternalapi.dto.KakaoApiPayLookupResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 
 class KakaoApiResponseMapperTest {
 

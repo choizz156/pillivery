@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
-import com.team33.moduleexternalapi.dto.KakaoApiApproveResponse;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
 class KakaoFirstSubsApproveTest {
 
