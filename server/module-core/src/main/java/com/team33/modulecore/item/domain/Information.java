@@ -1,6 +1,7 @@
 package com.team33.modulecore.item.domain;
 
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Lob;
@@ -18,8 +19,10 @@ import lombok.ToString;
 @Embeddable
 public class Information {
 
+    @Column(name = "enterprise")
     private String enterprise;
 
+    @Column(name = "product_name")
     private String productName;
 
     private String statementNumber;

@@ -12,13 +12,13 @@ import lombok.RequiredArgsConstructor;
 public enum CategoryName {
 
     EYE("눈"),
-    BONE("뼈"),
+    BONE("뼈, 골다공증"),
     BRAIN("두뇌"),
-    INTESTINE("배변"),
+    INTESTINE("배변, 장"),
     LIVER("간"),
     SKIN("피부"),
     ANTIOXIDANT("항산화"),
-    FATIGUE("피로"),
+    FATIGUE("피로, 혈액순환"),
     ETC("기타");
 
     private final String name;
