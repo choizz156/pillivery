@@ -28,7 +28,7 @@ public class EventForwarder {
 	private final FailEventService failEventService;
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	@Scheduled(initialDelay = 1000, fixedDelay = 20000)
+	@Scheduled(cron = "0 * * * * *")
 	public void getAndSend() {
 		List<ApiEventSet> apiEventSets = eventsRepository
 			.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);

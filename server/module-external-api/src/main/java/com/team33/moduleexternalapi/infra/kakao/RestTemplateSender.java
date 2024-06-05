@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoClientSender {
+public class RestTemplateSender {
 
 	private final ObjectMapper objectMapper;
 	private final RestTemplate restTemplate;

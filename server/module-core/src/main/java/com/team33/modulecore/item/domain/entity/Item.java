@@ -39,7 +39,8 @@ import lombok.NoArgsConstructor;
 	indexes = {
 		@Index(name = "idx_product_name", columnList = "product_name"),
 		@Index(name = "idx_enterprise", columnList = "enterprise")
-})
+	}
+)
 @Entity
 public class Item extends BaseEntity {
 

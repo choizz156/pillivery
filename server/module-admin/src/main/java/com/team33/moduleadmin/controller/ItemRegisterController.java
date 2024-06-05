@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,14 +32,21 @@ import com.navercorp.fixturemonkey.javax.validation.plugin.JavaxValidationPlugin
 public class ItemRegisterController {
 
     private final ItemRegisterService itemRegisterService;
+	FixtureMonkey build = FixtureMonkey.builder()
+		.plugin(new JavaxValidationPlugin())
+		.plugin(new JacksonPlugin())
+		.defaultNotNull(true)
+		.build();
+
+	private List<BodyWrapper> lists = new ArrayList<>(10000);
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
 	public void postItem() {
-		List<BodyWrapper> lists = new ArrayList<>(10000);
+
 		RestTemplate restTemplate = new RestTemplate();
 
-		for (int i = 10; i <= 20 ; i++) {
+		for (int i = 351; i <= 400; i++) {
 			String url = "https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?pageNo="
 				+ i
 				+ "&numOfRows=100&ServiceKey=yZVfQKw1vKRzc5MrFh8Y9y%2BdYV%2Fm465AOUrvcucC428QwNfRrKoJW%2Fx%2FsHz8EPBilmpaGn%2B%2BSM%2BYapFPeKshUg%3D%3D%3D%3D&type=json";
@@ -49,46 +55,25 @@ public class ItemRegisterController {
 			lists.add(forObject);
 		}
 
+		log.warn("list size = {}", lists.size());
 
-		// List<ItemWrapper> itemWrappers = lists.stream()
-		// 	.map(b -> b.getBody().getItems())
-		// 	.flatMap(List::stream)
-		// 	.collect(Collectors.toList());
-		//
-		// List<ItemDto> collect = toBusinessDto(itemWrappers);
-        // List<Information> information = ItemAttributeMapper.toInformation(collect);
-        // itemRegisterService.createItem(information);
     }
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/test")
-	public void postItem1(@RequestBody BodyWrapper bodyWrapper) {
-		List<BodyWrapper> lists = new ArrayList<>(10000);
-		// RestTemplate restTemplate = new RestTemplate();
-
-		// for(int i = 1; i <= 1; i++) {
-		// 	BodyWrapper forObject = restTemplate.getForObject(
-		// 		"https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?pageNo="
-		// 			+ i + "&numOfRows=100&ServiceKey=yZVfQKw1vKRzc5MrFh8Y9y%2BdYV%2Fm465AOUrvcucC428QwNfRrKoJW%2Fx%2FsHz8EPBilmpaGn%2B%2BSM%2BYapFPeKshUg%3D%3D&type=json",
-		// 		BodyWrapper.class);
-
-		// }
-			lists.add(bodyWrapper);
+	public void postItem1() {
 		List<ItemWrapper> itemWrappers = lists.stream()
 			.map(b -> b.getBody().getItems())
 			.flatMap(List::stream)
 			.collect(Collectors.toList());
+
 		List<ItemDto> collect = toBusinessDto(itemWrappers);
 		List<Information> information = ItemAttributeMapper.toInformation(collect);
 		itemRegisterService.createItem(information);
 	}
 
     private List<ItemDto> toBusinessDto(List<ItemWrapper> items) {
-        FixtureMonkey build = FixtureMonkey.builder()
-            .plugin(new JavaxValidationPlugin())
-            .plugin(new JacksonPlugin())
-            .defaultNotNull(true)
-            .build();
+
 
         return items.stream().map(wrapper ->
             build.giveMeBuilder(ItemDto.class)

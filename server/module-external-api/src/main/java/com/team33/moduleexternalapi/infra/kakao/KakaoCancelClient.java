@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class KakaoCancelClient implements CancelClient {
 
-	private final KakaoClientSender clientSender;
+	private final RestTemplateSender clientSender;
 
 	@Override
 	public void send(String params, String url) {

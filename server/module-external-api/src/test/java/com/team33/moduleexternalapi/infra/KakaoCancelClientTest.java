@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiCancelResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.infra.kakao.KakaoCancelClient;
-import com.team33.moduleexternalapi.infra.kakao.KakaoClientSender;
+import com.team33.moduleexternalapi.infra.kakao.RestTemplateSender;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoCancelClientTest {
@@ -82,7 +82,7 @@ class KakaoCancelClientTest {
 		String request = objectMapper.writeValueAsString(parameters);
 
 		KakaoCancelClient kakaoCancelClient = new KakaoCancelClient(
-			new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
+			new RestTemplateSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
 		);
 
 		// Then
@@ -120,7 +120,7 @@ class KakaoCancelClientTest {
 		Map<String, Object> parameters = getMap("ti");
 		String request = objectMapper.writeValueAsString(parameters);
 		KakaoCancelClient kakaoCancelClient = new KakaoCancelClient(
-			new KakaoClientSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
+			new RestTemplateSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
 		);
 
 		// when //Then

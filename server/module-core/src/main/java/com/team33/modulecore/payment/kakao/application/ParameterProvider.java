@@ -18,7 +18,7 @@ public class ParameterProvider {
 	public Map<String, Object> getOneTimeReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
 		commonReqsParams.put(CID.getValue(), ONE_TIME_CID.getValue());
-		commonReqsParams.put(APPROVAL_URL.getValue(), APPROVAL_URL.getValue() + "/" + order.getId());
+		commonReqsParams.put(APPROVAL_URL.getValue(), ONE_TIME_APPROVAL_URL.getValue() + "/" + order.getId());
 
 		return commonReqsParams;
 	}
@@ -26,8 +26,7 @@ public class ParameterProvider {
 	public Map<String, Object> getSubscriptionReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
 		commonReqsParams.put(CID.getValue(), CID.getValue());
-		commonReqsParams.put(APPROVAL_URL.getValue(),
-			Params.SUBSCRIPTION_APPROVAL_URI.getValue() + "/" + order.getId());
+		commonReqsParams.put(APPROVAL_URL.getValue(), SUBSCRIPTION_APPROVAL_URI.getValue() + "/" + order.getId());
 		return commonReqsParams;
 	}
 

@@ -25,10 +25,13 @@ public class Information {
     @Column(name = "product_name")
     private String productName;
 
+    @Lob
     private String statementNumber;
 
+    @Lob
     private String registeredDate;
 
+    @Lob
     private String distributionPeriod;
 
     @Lob
@@ -36,6 +39,7 @@ public class Information {
 
     private String servingUse;
 
+    @Lob
     private String preservePeriod;
 
     @Lob

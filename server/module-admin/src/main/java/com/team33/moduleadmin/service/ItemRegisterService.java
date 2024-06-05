@@ -13,7 +13,9 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ItemRegisterService {
@@ -23,11 +25,8 @@ public class ItemRegisterService {
 	public void createItem(List<Information> itemInfo) {
 
 		List<Item> itemList = itemInfo.stream().map(Item::create).collect(Collectors.toList());
-
 		Map<Set<CategoryName>, List<Item>> categorizedItems = classifyItemByCategory(itemList);
-
 		inputCategoryToItem(categorizedItems);
-
 		itemCommandRepository.saveAll(itemList);
 	}
 
