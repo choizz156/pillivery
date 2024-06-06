@@ -9,7 +9,7 @@ import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 
-class KakaoApiResponseMapperTest {
+class KakaoResponseMapperTest {
 
 	@DisplayName("mapper로 dto를 변환할 수 있다.")
 	@Test
@@ -18,7 +18,7 @@ class KakaoApiResponseMapperTest {
 		KakaoApiPayLookupResponse sample = FixtureMonkeyFactory.get().giveMeBuilder(KakaoApiPayLookupResponse.class).sample();
 		//when
 		KakaoLookupResponse kakaoLookupResponse =
-			KakaoApiResponseMapper.INSTANCE.toKakaoCoreLookupResponse(sample);
+			KakaoResponseMapper.INSTANCE.toKakaoCoreLookupResponse(sample);
 		//then
 		assertThat(kakaoLookupResponse).usingRecursiveComparison().isEqualTo(sample);
 	}
@@ -31,7 +31,7 @@ class KakaoApiResponseMapperTest {
 			.sample();
 		//when
 		KakaoApproveResponse kakaoCoreApproveResponse =
-			KakaoApiResponseMapper.INSTANCE.toKakaoCoreApproveResponse(
+			KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(
 			sample);
 		//then
 		assertThat(kakaoCoreApproveResponse).usingRecursiveComparison().isEqualTo(sample);

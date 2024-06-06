@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.RequestService;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.payment.kakao.dto.KakaoApiResponseMapper;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseMapper;
 import com.team33.modulecore.payment.kakao.dto.KakaoLookupResponse;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
@@ -28,6 +28,6 @@ public class KakaoPayLookupService implements RequestService<KakaoLookupResponse
 
 		KakaoApiPayLookupResponse response = kakaoPayLookupClient.send(lookupParams, LOOKUP_URL);
 
-		return KakaoApiResponseMapper.INSTANCE.toKakaoCoreLookupResponse(response);
+		return KakaoResponseMapper.INSTANCE.toKakaoCoreLookupResponse(response);
 	}
 }

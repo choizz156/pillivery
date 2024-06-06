@@ -1,21 +1,21 @@
 package com.team33.moduleapi.controller;
 
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.repository.UserRepository;
-import com.team33.modulecore.user.application.UserService;
-import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.modulecore.common.UserFindHelper;
+import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 
-@ActiveProfiles({"test", "auth", "quartztest"})
+import io.restassured.RestAssured;
+
+
+@ActiveProfiles({ "auth", "quartztest"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class ApiTest {
 
@@ -23,7 +23,7 @@ public abstract class ApiTest {
     private int port;
 
     @Autowired
-    protected UserService userService;
+    protected UserFindHelper userFindHelper;
 
     @Autowired
     protected UserRepository userRepository;
@@ -36,14 +36,14 @@ public abstract class ApiTest {
         RestAssured.port = port;
     }
 
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
-        userRepository.deleteAll();
-    }
+    // @AfterEach
+    // void tearDown() {
+    //     SecurityContextHolder.clearContext();
+    //     userRepository.deleteAll();
+    // }
 
     protected String getToken() {
-        User loginUser = userService.getLoginUser();
+        User loginUser = userFindHelper.findUser(1L);
         return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
     }
 

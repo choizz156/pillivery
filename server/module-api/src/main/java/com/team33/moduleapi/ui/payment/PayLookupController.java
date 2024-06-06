@@ -21,6 +21,7 @@ public class PayLookupController {
 	private final RequestService<KakaoLookupResponse> kakaoPayLookupService;
 	private final OrderFindHelper orderFindHelper;
 
+
 	@GetMapping("/{orderId}")
 	public SingleResponseDto<?> findOrder(
 		@PathVariable Long orderId
@@ -28,6 +29,7 @@ public class PayLookupController {
 
 		Order order = orderFindHelper.findOrder(orderId);
 		KakaoLookupResponse response = kakaoPayLookupService.request(order);
+
 		return new SingleResponseDto<>(response);
 	}
 }

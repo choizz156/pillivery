@@ -1,10 +1,12 @@
 package com.team33.moduleapi.ui.payment;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.SingleResponseDto;
@@ -33,8 +35,9 @@ public class PayController {
 	private final PaymentMapper paymentMapper;
 	private final PaymentDataService paymentDataService;
 	private final OrderStatusService orderStatusService;
-	private final OrderPaymentCodeService paymentCodeService;
+	private final OrderPaymentCodeService orderPaymentCodeService;
 
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/{orderId}")
 	public SingleResponseDto<?> request(
 		@PathVariable Long orderId
@@ -42,7 +45,7 @@ public class PayController {
 
 		KakaoRequestResponse requestResponse = KakaoRequestFacade.request(orderId);
 		paymentDataService.addData(orderId, requestResponse.getTid());
-		paymentCodeService.addTid(orderId, requestResponse.getTid());
+		orderPaymentCodeService.addTid(orderId, requestResponse.getTid());
 
 		return new SingleResponseDto<>(KaKaoPayNextUrlDto.from(requestResponse));
 	}
@@ -78,7 +81,7 @@ public class PayController {
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
 	}
 
-	@GetMapping("/approve/subscription")
+	@GetMapping("/approve/subscriptions")
 	public SingleResponseDto<?> subscription(
 		@RequestParam("orderId") Long orderId
 	) {
@@ -87,14 +90,4 @@ public class PayController {
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(kaKaoApiApproveResponse));
 	}
-
-	// @GetMapping("/cancel")
-	// @ResponseStatus(HttpStatus.BAD_REQUEST)
-	// public void cancel() {
-	// }
-
-	// @GetMapping("/fail")
-	// @ResponseStatus(HttpStatus.BAD_REQUEST)
-	// public void fail() {
-	// }
 }

@@ -6,7 +6,7 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.approve.SubscriptionApprove;
 import com.team33.modulecore.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.payment.dto.ApproveRequest;
-import com.team33.modulecore.payment.kakao.dto.KakaoApiResponseMapper;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseMapper;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
@@ -26,12 +26,12 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 
 		// doKakaoScheduling(orderId);
 		KakaoApiApproveResponse response= kakaoFirstSubsApprove.approveFirstSubscription(request);
-		return KakaoApiResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
+		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
 	}
 
 	@Override
 	public KakaoApproveResponse approveSubscribe(Order order) {
 		KakaoApiApproveResponse response = subscriptionApprove.approveSubscription(order);
-		return KakaoApiResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
+		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
 	}
 }

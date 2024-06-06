@@ -1,9 +1,5 @@
 package com.team33.moduleapi.controller;
 
-import com.team33.modulecore.user.domain.Address;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.UserRoles;
-import com.team33.modulecore.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -11,6 +7,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
+
+import com.team33.modulecore.user.domain.Address;
+import com.team33.modulecore.user.domain.UserRoles;
+import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 
 public class OauthAccountFactory implements WithSecurityContextFactory<OAuthAccount> {
 

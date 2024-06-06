@@ -1,7 +1,7 @@
 package com.team33.modulecore.payment.kakao.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -30,7 +30,7 @@ public class KakaoLookupResponse {
 
 	public LocalDateTime created_at;
 	public LocalDateTime approved_at;
-	public ArrayList<PaymentActionDetail> payment_action_details;
+	public List<PaymentActionDetail> payment_action_details;
 
 	@Data
 	@NoArgsConstructor
@@ -43,6 +43,7 @@ public class KakaoLookupResponse {
 		private int point;
 		private int discount;
 
+		@JsonProperty("green_deposit")
 		private int greenDeposit;
 	}
 
@@ -87,6 +88,7 @@ public class KakaoLookupResponse {
 		private int point;
 		private int discount;
 
+		@JsonProperty("green_deposit")
 		private int greenDeposit;
 	}
 

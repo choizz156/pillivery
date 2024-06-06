@@ -1,8 +1,5 @@
 package com.team33.moduleapi.controller;
 
-import com.team33.modulecore.user.dto.UserServicePostDto;
-import com.team33.modulecore.user.dto.UserPostDto;
-import com.team33.modulecore.user.application.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -10,6 +7,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
+
+import com.team33.moduleapi.ui.user.UserServiceMapper;
+import com.team33.moduleapi.ui.user.dto.UserPostDto;
+import com.team33.modulecore.user.application.UserService;
+import com.team33.modulecore.user.dto.UserServicePostDto;
 
 public class UserAccountFactory implements WithSecurityContextFactory<UserAccount> {
 
@@ -19,10 +21,13 @@ public class UserAccountFactory implements WithSecurityContextFactory<UserAccoun
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private UserServiceMapper userServiceMapper;
+
     @Override
     public SecurityContext createSecurityContext(UserAccount annotation) {
         UserPostDto dto = getUserDto(annotation);
-        UserServicePostDto userServicePostDto = UserServicePostDto.to(dto);
+        UserServicePostDto userServicePostDto = userServiceMapper.toUserPost(dto);
         userService.join(userServicePostDto);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(dto.getEmail());

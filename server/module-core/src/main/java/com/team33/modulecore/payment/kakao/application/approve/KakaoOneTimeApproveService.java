@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.team33.modulecore.payment.application.approve.OneTimeApprove;
 import com.team33.modulecore.payment.application.approve.OneTimeApproveService;
 import com.team33.modulecore.payment.dto.ApproveRequest;
-import com.team33.modulecore.payment.kakao.dto.KakaoApiResponseMapper;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseMapper;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
@@ -23,6 +23,6 @@ public class KakaoOneTimeApproveService implements OneTimeApproveService<KakaoAp
 		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest) approveRequest;
 
 		KakaoApiApproveResponse response = oneTimeApprove.approveOneTime(request);
-		return KakaoApiResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
+		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
 	}
 }

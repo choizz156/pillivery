@@ -9,8 +9,8 @@ import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
 @Mapper(componentModel = "spring")
-public interface KakaoApiResponseMapper {
-	KakaoApiResponseMapper INSTANCE = getMapper(KakaoApiResponseMapper.class);
+public interface KakaoResponseMapper {
+	KakaoResponseMapper INSTANCE = getMapper(KakaoResponseMapper.class);
 
 	KakaoLookupResponse toKakaoCoreLookupResponse(KakaoApiPayLookupResponse response);
 	KakaoRequestResponse toKakaoCoreRequestResponse(KakaoApiRequestResponse response);

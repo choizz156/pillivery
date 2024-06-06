@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.request.Request;
 import com.team33.modulecore.payment.application.request.RequestService;
-import com.team33.modulecore.payment.kakao.dto.KakaoApiResponseMapper;
+import com.team33.modulecore.payment.kakao.dto.KakaoResponseMapper;
 import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
@@ -19,6 +19,6 @@ public class KakaoRequestService implements RequestService<KakaoRequestResponse>
 
 	public KakaoRequestResponse request(Order order) {
 		KakaoApiRequestResponse response = kakaoOneTimeRequest.request(order);
-		return KakaoApiResponseMapper.INSTANCE.toKakaoCoreRequestResponse(response);
+		return KakaoResponseMapper.INSTANCE.toKakaoCoreRequestResponse(response);
 	}
 }

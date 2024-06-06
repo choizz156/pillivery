@@ -11,17 +11,12 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
 
-    testImplementation 'org.springframework.security:spring-security-test'
-
     //db
     runtimeOnly 'com.h2database:h2'
 
     //quartz
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
 
-    //junit5
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.0-M1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 
     //restdocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
@@ -30,8 +25,6 @@ dependencies {
 
     //rest-assured-mockmvc
     testImplementation 'io.rest-assured:spring-mock-mvc:4.5.1'
-
-    //restassured
     testImplementation 'io.rest-assured:rest-assured-all'
 
     //jpa
@@ -47,8 +40,8 @@ dependencies {
 
     //security
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    testImplementation 'org.springframework.security:spring-security-test'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     //fixturemonkey
 
