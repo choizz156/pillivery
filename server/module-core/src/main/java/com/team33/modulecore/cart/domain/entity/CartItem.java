@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.entity.Item;
@@ -21,12 +22,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "cart_item")
 @Entity
 public class CartItem extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
+	@Column(name = "cart_item_id")
 	private Long id;
 
 	private int totalQuantity;

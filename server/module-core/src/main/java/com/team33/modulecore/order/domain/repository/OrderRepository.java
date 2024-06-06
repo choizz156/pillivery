@@ -14,9 +14,9 @@ public interface OrderRepository extends Repository<Order, Long> {
     Optional<Order> findById(Long id);
     void delete(Order entity);
 
-	@Query("select o.isSubscription from orders o where o.id = :orderId")
+	@Query("select o.isSubscription from Order o where o.id = :orderId")
 	boolean findIsSubscriptionById(@Param("orderId") Long orderId);
 
-	@Query("select o.paymentCode.tid from orders o where o.id = :orderId")
+	@Query("select o.paymentCode.tid from Order o where o.id = :orderId")
 	String findTid(@Param("orderId") Long orderId);
 }

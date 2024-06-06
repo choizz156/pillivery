@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
 @DiscriminatorValue("normal")
+@Entity
 public class NormalCart extends Cart {
 
 	public static NormalCart create() {

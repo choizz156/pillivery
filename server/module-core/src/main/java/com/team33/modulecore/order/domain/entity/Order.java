@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.proxy.HibernateProxy;
@@ -37,10 +38,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Getter
-@DynamicUpdate
-@Entity(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
+@Table(name = "orders")
+@Entity
 public class Order extends BaseEntity {
 
 	@Id

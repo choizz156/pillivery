@@ -14,10 +14,6 @@ dependencies {
     //db
     runtimeOnly 'com.h2database:h2'
 
-    //quartz
-    implementation 'org.springframework.boot:spring-boot-starter-quartz'
-
-
     //restdocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
@@ -44,10 +40,11 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     //fixturemonkey
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14'
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14'
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14'
 
-    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14")
-    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14")
-    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14")
+    implementation 'com.google.guava:guava:33.2.1-jre'
 }
 
 ext { // 전역 변수
