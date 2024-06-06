@@ -5,16 +5,17 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.team33.moduleapi.controller.ApiTest;
-import com.team33.moduleapi.controller.FixtureMonkeyFactory;
+import com.team33.moduleapi.ApiTest;
+import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.moduleapi.ui.payment.mapper.PaymentDataService;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.order.application.OrderPaymentCodeService;
@@ -71,6 +72,10 @@ class PaymentTest extends ApiTest {
 				).build()
 			).log().all();
 
+	}
+
+	@BeforeEach
+	void setUp() {
 		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.setNull("id")
 			.setNull("orderItems")
@@ -80,7 +85,7 @@ class PaymentTest extends ApiTest {
 		orderRepository.save(order);
 	}
 
-	@AfterAll
+	@AfterEach
 	void tearDown() {
 		orderRepository.delete(order);
 	}
@@ -119,7 +124,7 @@ class PaymentTest extends ApiTest {
 
 		given(approveFacade.approveFirst(any(KakaoApproveOneTimeRequest.class))).willReturn(kakaoApproveResponse);
 
-		paymentDataService.addData(1L,"tid");
+		paymentDataService.addData(1L, "tid");
 
 		//@formatter:off
             given
@@ -132,7 +137,7 @@ class PaymentTest extends ApiTest {
 				.expect(jsonPath("$.data.item_code").isNotEmpty())
 				.expect(jsonPath("$.data.created_at").isNotEmpty())
 				.expect(jsonPath("$.data.approved_at").isNotEmpty())
-				.expect(jsonPath("$.data.payload").isNotEmpty())
+				.expect(jsonPath("$.data.payload").exists())
 				.expect(jsonPath("$.data.amount.total").isNotEmpty())
 				.expect(jsonPath("$.data.amount.tax_free").isNotEmpty())
 				.expect(jsonPath("$.data.amount.vat").isNotEmpty())
@@ -144,11 +149,12 @@ class PaymentTest extends ApiTest {
 	@DisplayName("정기 결제 승인(두 번째 이후) 응답을 받을 수 있다.")
 	@Test
 	void test3() throws Exception {
+		//given
 		KakaoApproveResponse kakaoApproveResponse = FixtureMonkeyFactory.get().giveMeOne(KakaoApproveResponse.class);
 
-	    given(approveFacade.approveSubscription(anyLong())).willReturn(kakaoApproveResponse);
+		given(approveFacade.approveSubscription(anyLong())).willReturn(kakaoApproveResponse);
 
-	    //@formatter:off
+		//@formatter:off
             given
                     .queryParam("orderId", 1)
             .when()

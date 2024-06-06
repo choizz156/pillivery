@@ -1,4 +1,4 @@
-package com.team33.moduleapi.controller;
+package com.team33.moduleapi;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

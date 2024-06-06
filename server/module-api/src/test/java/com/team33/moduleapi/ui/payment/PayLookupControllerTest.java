@@ -4,15 +4,14 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.team33.moduleapi.controller.ApiTest;
-import com.team33.moduleapi.controller.FixtureMonkeyFactory;
+import com.team33.moduleapi.ApiTest;
+import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
@@ -38,15 +37,12 @@ class PayLookupControllerTest extends ApiTest {
 			.setNull("id")
 			.setNull("orderItems")
 			.setNull("user")
+			.set("paymentCode.tid", "tid")
 			.sample();
 
 		orderRepository.save(order);
 	}
 
-	@AfterEach
-	void tearDown() {
-		orderRepository.delete(order);
-	}
 
 	@DisplayName("상품 결제 내역을 조회할 수 있다.")
 	@Test
@@ -71,7 +67,7 @@ class PayLookupControllerTest extends ApiTest {
 		//when
 		given
 		.when()
-			.get("/payments/lookup/{orderId}", 1L)
+			.get("/payments/lookup/{orderId}", 1)
 		.then()
 			.log().all()
 		.statusCode(HttpStatus.OK.value())

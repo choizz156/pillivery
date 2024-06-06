@@ -1,4 +1,4 @@
-package com.team33.moduleapi.controller;
+package com.team33.moduleapi;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
