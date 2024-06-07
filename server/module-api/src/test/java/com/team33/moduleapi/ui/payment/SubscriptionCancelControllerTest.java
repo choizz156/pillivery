@@ -1,0 +1,181 @@
+package com.team33.moduleapi.ui.payment;
+
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
+
+import com.team33.moduleapi.ApiTest;
+import com.team33.moduleapi.FixtureMonkeyFactory;
+import com.team33.moduleapi.exception.controller.ExceptionController;
+import com.team33.modulecore.order.application.OrderStatusService;
+import com.team33.modulecore.order.domain.OrderStatus;
+import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.payment.kakao.application.events.KakaoSubsCanceledEvent;
+import com.team33.moduleevent.application.SubsCanceledEventHandler;
+
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
+
+class SubscriptionCancelControllerTest extends ApiTest {
+
+	private Order order;
+
+	@Autowired
+	private OrderStatusService orderStatusService;
+
+	@Autowired
+	private OrderRepository orderRepository;
+
+	@Autowired
+	private ApplicationEventPublisher applicationEventPublisher;
+
+	@MockBean
+	private SubsCanceledEventHandler subscriptionEventHandler;
+
+	private MockMvcRequestSpecification given;
+
+	// @BeforeEach
+	// void setUp() {
+	//
+	// 	List<Item> items = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
+	// 		.setNull("id")
+	// 		.setNull("itemCategory")
+	// 		.setNull("reviewIds")
+	// 		.setNull("categories")
+	// 		.set("statistics.starAvg", 0.0)
+	// 		.set("statistics.reviewCount", 0)
+	// 		.set("statistics.view", 0)
+	// 		.set("statistics.sales", 0)
+	// 		.set("information.price.realPrice", 10000)
+	// 		.set("information.price.discountPrice", 1000)
+	// 		.set("information.price.discountRate", 10.0)
+	// 		.set("information.price.originPrice", 11000)
+	// 		.sampleList(2);
+	//
+	// 	itemCommandRepository.saveAll(items);
+	//
+	// 	OrderItem orderItem1 = OrderItem.builder()
+	// 		.item(items.get(0))
+	// 		.quantity(1)
+	// 		.subscriptionInfo(SubscriptionInfo.of(true, 30))
+	// 		.build();
+	//
+	// 	OrderItem orderItem2 = OrderItem.builder()
+	// 		.item(items.get(0))
+	// 		.quantity(1)
+	// 		.subscriptionInfo(SubscriptionInfo.of(true, 30))
+	// 		.build();
+	//
+	// 	order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+	// 		.setNull("id")
+	// 		.set("orderItems", List.of(orderItem1, orderItem2))
+	// 		.set("orderPrice.totalPrice", 20000)
+	// 		.set("orderPrice.totalDiscountPrice", 2000)
+	// 		.setNull("user")
+	// 		.set("totalQuantity", 2)
+	// 		.set("isSubscription", true)
+	// 		.set("orderStatus", OrderStatus.REQUEST)
+	// 		.set("totalItemsCount", 2)
+	// 		.set("mainItemName", "testItem")
+	// 		.set("paymentCode.tid", "tid")
+	// 		.set("paymentCode.sid", "sid")
+	// 		.sample();
+	//
+	// 	orderRepository.save(order);
+	// }
+
+	@BeforeEach
+	void setUp() {
+		given = RestAssuredMockMvc.given()
+			.mockMvc(standaloneSetup(
+					new SubscriptionCancelController(
+						orderStatusService
+					)
+				)
+					.setControllerAdvice(new ExceptionController())
+					.build()
+			)
+			.log().all();
+	}
+
+	@DisplayName("정기 결제를 취소할 수 있다.")
+	@Test
+	void 정기_결제_취소() throws Exception {
+		//given
+		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.setNull("id")
+			.setNull("user")
+			.setNull("orderItems")
+			.set("isSubscription", true)
+			.set("orderStatus", OrderStatus.SUBSCRIBE)
+			.set("totalItemsCount", 2)
+			.set("mainItemName", "testItem")
+			.set("paymentCode.tid", "tid")
+			.set("paymentCode.sid", "sid")
+			.sample();
+
+		orderRepository.save(order);
+
+		//when
+		//@formatter:off
+		given
+		.when()
+			.post("/payments/subscriptions/cancel/{orderId}", 1)
+		.then()
+			.log().all()
+			.statusCode(HttpStatus.CREATED.value())
+			.body(containsString("complete"));
+		//@formatter:on
+	}
+
+	@DisplayName("sid가 null일 경우 예외를 던진다.")
+	@Test
+	void 정기_결제_취소_예외() throws Exception {
+		//given
+		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.setNull("id")
+			.setNull("user")
+			.setNull("orderItems")
+			.set("isSubscription", true)
+			.set("orderStatus", OrderStatus.SUBSCRIBE)
+			.set("totalItemsCount", 2)
+			.set("mainItemName", "testItem")
+			.set("paymentCode.tid", "tid")
+			.setNull("paymentCode.sid")
+			.sample();
+
+		orderRepository.save(order);
+
+		//@formatter:off
+		given
+		.when()
+			.post("/payments/subscriptions/cancel/{orderId}", 1)
+		.then()
+			.log().all()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body(containsString("알 수 없는 오류가 발생했습니다."));
+		//@formatter:on
+	}
+
+	@DisplayName("정기 결제 취소 이벤트를 발행하면, 이벤트 구독자가 동작한다.")
+	@Test
+	void 정기_결제_취소_이벤트_발행() throws Exception {
+		//given
+		KakaoSubsCanceledEvent kakaoSubsCanceledEvent = new KakaoSubsCanceledEvent("sid", "url");
+
+		//when
+		applicationEventPublisher.publishEvent(kakaoSubsCanceledEvent);
+
+		//then
+		verify(subscriptionEventHandler, times(1)).onEventSet(kakaoSubsCanceledEvent);
+	}
+}
