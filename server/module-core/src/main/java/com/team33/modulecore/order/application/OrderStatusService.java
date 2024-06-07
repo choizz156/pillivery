@@ -65,17 +65,18 @@ public class OrderStatusService {
 		refundService.refund(orderId, refundContext);
 	}
 
+	public void processSubscriptionCancel(Long orderId) {
+		Order order = orderFindHelper.findOrder(orderId);
+
+		order.changeOrderStatus(OrderStatus.SUBSCRIBE_CANCEL);
+
+		kakaoSubsCancelService.cancelSubscription(order);
+	}
+
 	private List<Long> getOrderedIds(Order order) {
 		return order.getOrderItems()
 			.stream()
 			.map(orderItem -> orderItem.getItem().getId())
 			.collect(Collectors.toUnmodifiableList());
-	}
-
-	public void processSubscriptionCancel(Long orderId) {
-		Order order = orderFindHelper.findOrder(orderId);
-		order.changeOrderStatus(OrderStatus.SUBSCRIBE_CANCEL);
-
-		kakaoSubsCancelService.cancelSubscription(orderId);
 	}
 }

@@ -55,8 +55,9 @@ public class ExceptionController {
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse illegalArgumentExceptionHandler(RuntimeException e) {
-        return ErrorResponse.of(e.getMessage());
+    public ErrorResponse runtimeExceptionHandler(RuntimeException e) {
+        log.error("runtime exception :: {}", e.getMessage());
+        return ErrorResponse.of("알 수 없는 오류가 발생했습니다.");
     }
 }
 

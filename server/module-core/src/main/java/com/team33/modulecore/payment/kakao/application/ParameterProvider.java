@@ -71,11 +71,11 @@ public class ParameterProvider {
 		return refundParam;
 	}
 
-	public Map<String, Object> getSubsCancelParams(Order order) {
+	public Map<String, Object> getSubsCancelParams(String sid) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
 		parameters.put(CID.getValue(), Params.SUBSCRIP_CID.getValue());
-		parameters.put(SID.getValue(), order.getSid());
+		parameters.put(SID.getValue(), sid);
 
 		return parameters;
 	}

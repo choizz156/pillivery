@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
 import com.team33.modulecore.payment.kakao.application.ParameterProvider;
@@ -24,16 +23,25 @@ public class KakaoSubsCancelService implements CancelSubscriptionService {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final ParameterProvider parameterProvider;
-	private final OrderFindHelper orderFindHelper;
 	private final ObjectMapper objectMapper;
 
 	@Override
-	public void cancelSubscription(Long orderId) {
+	public void cancelSubscription(Order order) {
 
-		Order order = orderFindHelper.findOrder(orderId);
-		String params = mapToString(parameterProvider.getSubsCancelParams(order));
+		String sid = checkSidNull(order);
+		String params = mapToString(parameterProvider.getSubsCancelParams(sid));
 
 		applicationEventPublisher.publishEvent(new KakaoSubsCanceledEvent(params, CANCEL_URL));
+	}
+
+	private String checkSidNull(Order order) {
+		String sid = order.getSid();
+
+		if (sid == null) {
+			throw new NullPointerException("orderId = "+ order.getId() +"의 sid가 존재하지 않습니다.");
+		}
+
+		return sid;
 	}
 
 	private String mapToString(Map<String, Object> cancelParam) {

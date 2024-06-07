@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class CancelSubscriptionEventHandler {
+public class SubsCanceledEventHandler {
 
 	private final EventRepository eventsRepository;
 

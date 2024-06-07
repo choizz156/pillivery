@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/payments/subscriptions/cancel")
 public class SubscriptionCancelController {
 
-
 	private final OrderStatusService orderStatusService;
 
 	@ResponseStatus(HttpStatus.CREATED)
