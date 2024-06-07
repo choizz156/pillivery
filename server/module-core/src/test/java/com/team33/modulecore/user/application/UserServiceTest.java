@@ -32,8 +32,6 @@ class UserServiceTest {
 		DuplicationVerifier duplicationVerifier = mock(DuplicationVerifier.class);
 		CartService cartService = mock(CartService.class);
 
-
-
 		doNothing().when(duplicationVerifier).checkUserInfo(any(UserServicePostDto.class));
 		when(passwordEncoder.encode(anyString())).thenReturn("password");
 		when(cartService.createNormalCart()).thenReturn(1L);
@@ -68,14 +66,14 @@ class UserServiceTest {
 		var duplicatePhone = getUserServicePostDto("test2@test.com", "test2", "010-1112-1111");
 
 		return Stream.of(
-			Arguments.arguments(duplicateEmail),
-			Arguments.arguments(duplicateDisplayName),
-			Arguments.arguments(duplicatePhone)
+			Arguments.arguments("이메일 중복", duplicateEmail),
+			Arguments.arguments("닉네임 중복", duplicateDisplayName),
+			Arguments.arguments("연락처 중복", duplicatePhone)
 		);
 	}
 
 	@DisplayName("이메일, 닉네임, 전화번호가 중복될 시 예외를 던진다.")
-	@ParameterizedTest
+	@ParameterizedTest(name = "{index} => {0}")
 	@MethodSource("provideDuplicateUserInfoOnJoinDto")
 	void 회원_가입_중복_예외(UserServicePostDto userPostDto) throws Exception {
 		//given
@@ -141,13 +139,13 @@ class UserServiceTest {
 			.build();
 
 		return Stream.of(
-			Arguments.arguments(duplicatePhone),
-			Arguments.arguments(duplicateDisplayName)
+			Arguments.arguments("전화번호 중복", duplicatePhone),
+			Arguments.arguments("닉네임 중복", duplicateDisplayName)
 		);
 	}
 
 	@DisplayName("소셜 회원 주가정보 기입시 전화번호, 닉네임에 중복이 있을 경우 예외를 던진다.")
-	@ParameterizedTest
+	@ParameterizedTest(name = "{index} => {0}")
 	@MethodSource("provideDuplicateUserInfoOnOauth")
 	void 소셜_회원_중복(OAuthUserServiceDto oauthDto) throws Exception {
 		//given

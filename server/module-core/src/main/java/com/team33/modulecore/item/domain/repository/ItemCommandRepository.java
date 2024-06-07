@@ -24,11 +24,10 @@ public interface ItemCommandRepository extends Repository<Item, Long> {
 	 * 아이템 수량을 1 증가시켜 업데이트 합니다.
 	 *
 	 * @param itemId the item id
-	 * @return the item
 	 */
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE Item i SET i.statistics.view = i.statistics.view + 1L WHERE i.id = :itemId")
-	Item incrementView(@Param("itemId") Long itemId);
+	void incrementView(@Param("itemId") Long itemId);
 
 	/**
 	 * 아이템 판매량을 1 증가시켜 업데이트합니다.

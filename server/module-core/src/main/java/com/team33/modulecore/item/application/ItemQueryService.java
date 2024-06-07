@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
@@ -55,7 +54,7 @@ public class ItemQueryService {
 		return itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilter, pageDto);
 	}
 
-	public Page<ItemQueryDto> findByBrand(String keyword, ItemPage searchDto, PriceFilter priceFilter) {
-		return itemQueryRepository.findByBrand(keyword, searchDto, priceFilter);
+	public Page<ItemQueryDto> findByBrand(String brand, ItemPage searchDto, PriceFilter priceFilter) {
+		return itemQueryRepository.findByBrand(brand, searchDto, priceFilter);
 	}
 }

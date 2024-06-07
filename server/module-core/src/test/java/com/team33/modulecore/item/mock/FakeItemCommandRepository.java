@@ -33,15 +33,14 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 	}
 
 	@Override
-	public Item incrementView(Long itemId) {
+	public void incrementView(Long itemId) {
 
-		em.createQuery("update Item i set i.statistics.view = i.statistics.view + 1L where i.id = :id")
+		em.createQuery("update Item i set i.statistics.view = i.statistics.view + 1 where i.id = :id")
 			.setParameter("id", itemId)
 			.executeUpdate();
 
+		em.flush();
 		em.clear(); // update쿼리는 영속성 컨텍스트를 거치지 않으므로 컨텍스트를 비워줘야 다음 조회 때, 영속성 컨텍스트에 엔티티가 업데이트 된다.
-
-		return em.find(Item.class, itemId);
 	}
 
 	@Override

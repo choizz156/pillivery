@@ -22,12 +22,12 @@ class ItemCommandServiceTest {
 	void 아이템_조회수_증가() throws Exception {
 		//given
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
-		when(itemCommandRepository.incrementView(anyLong())).thenReturn(null);
+		doNothing().when(itemCommandRepository).incrementView(anyLong());
 
 		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
 
 		//when
-		itemCommandService.increaseView(1L);
+		itemCommandService.getAndIncreaseView(1L);
 
 		//then
 		verify(itemCommandRepository, times(1)).incrementView(anyLong());

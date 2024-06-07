@@ -63,10 +63,11 @@ class ItemCommandRepositoryTest {
 		em.persist(item);
 
 		//when
-		Item updateItem = itemCommandRepository.incrementView(item.getId());
+		itemCommandRepository.incrementView(item.getId());
 
 		//then
-		assertThat(updateItem.getStatistics().getView()).isEqualTo(1L);
+		Item result = em.find(Item.class, item.getId());
+		assertThat(result.getStatistics().getView()).isEqualTo(1L);
 	}
 
 	@DisplayName("아이템 판매량을 증가시킬 수 있다.")

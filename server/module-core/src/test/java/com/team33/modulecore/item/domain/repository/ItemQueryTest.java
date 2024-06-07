@@ -139,7 +139,7 @@ class ItemQueryTest {
 		//when
 		Page<ItemQueryDto> items = itemQueryRepository.findItemsByCategory(
 			BONE,
-			null,
+			"",
 			priceFilter,
 			itemPage
 		);

@@ -22,9 +22,17 @@ public class Price {
 
 	@Builder
 	public Price(int originPrice, double discountRate) {
+		if(discountRate == 0.0){
+			this.originPrice = originPrice;
+			this.discountRate = 0.0;
+			this.discountPrice = 0;
+			this.realPrice = originPrice;
+			return;
+		}
+
 		this.originPrice = originPrice;
 		this.discountRate = discountRate;
-		this.discountPrice = originPrice - (originPrice / (int)discountRate);
+		this.discountPrice =  originPrice / (int) discountRate;
 		this.realPrice = originPrice - discountPrice;
 	}
 

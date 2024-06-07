@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-import com.team33.moduleapi.ui.user.UserServiceMapper;
+import com.team33.moduleapi.ui.user.mapper.UserServiceMapper;
 import com.team33.moduleapi.ui.user.dto.UserPostDto;
 import com.team33.modulecore.user.application.UserService;
 import com.team33.modulecore.user.dto.UserServicePostDto;

@@ -1,11 +1,7 @@
 package com.team33.moduleapi.ui.item.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.team33.modulecore.category.domain.CategoryName;
+import com.team33.modulecore.category.domain.Categories;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.review.dto.query.ReviewQueryDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,11 +30,9 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
 	private int originPrice;
 	private double discountRate;
 	private int discountPrice;
-	private String servingSize;
 	private int sales;
 	private double starAvg;
-	private List<CategoryName> categories;
-	private List<ReviewQueryDto> reviews;
+	private Categories categories;
 
 	@Builder
 	private ItemDetailResponseDto(
@@ -62,8 +56,7 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
 		int discountPrice,
 		int sales,
 		double starAvg,
-		List<CategoryName> categories,
-		List<ReviewQueryDto> reviews
+		Categories categories
 	) {
 		this.itemId = itemId;
 		this.thumbnail = thumbnail;
@@ -86,7 +79,6 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
 		this.sales = sales;
 		this.starAvg = starAvg;
 		this.categories = categories;
-		this.reviews = reviews;
 	}
 
 	public static ItemDetailResponseDto of(Item item) {
@@ -100,22 +92,20 @@ public class ItemDetailResponseDto { // 아이템 상세 조회
 			.registeredDate(item.getInformation().getRegisteredDate())
 			.distributionPeriod(item.getInformation().getDistributionPeriod())
 			.sungsang(item.getInformation().getSungsang())
+			.servingUse(item.getServingUse())
 			.preservePeriod(item.getInformation().getPreservePeriod())
 			.intake(item.getInformation().getIntake())
 			.mainFunction(item.getInformation().getMainFunction())
 			.baseStandard(item.getInformation().getBaseStandard())
 			.sales(item.getSales())
+			.originPrice(item.getOriginPrice())
 			.realPrice(item.getRealPrice())
 			.discountRate(item.getDiscountRate())
 			.discountPrice(item.getDiscountPrice())
 			.starAvg(item.getStarAvg())
 			.categories(
-				new ArrayList<>(item.getItemCategory())
+				item.getCategories()
 			)
-			//            .reviews(item.getItemReviewsBy5().stream()
-			//                .map(ReviewResponseDto::from)
-			//                .collect(Collectors.toList())
-			//            )
 			.build();
 	}
 }

@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/items")
 public class ItemQueryController {
 
-	private final ItemQueryServiceMapper mapper;
+	private final ItemQueryServiceMapper itemQueryServiceMapper;
 	private final ItemCommandService itemCommandService;
 	private final ItemQueryService itemQueryService;
 
@@ -49,20 +49,22 @@ public class ItemQueryController {
 	}
 
 	@GetMapping("/{itemId}")
-	public SingleResponseDto<ItemDetailResponseDto> getItem(@NotNull @PathVariable Long itemId) {
-		Item item = itemCommandService.increaseView(itemId);
+	public SingleResponseDto<ItemDetailResponseDto> getItem(
+		@NotNull @PathVariable Long itemId
+	) {
+		Item item = itemCommandService.getAndIncreaseView(itemId);
 		return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
 	}
 
 	@GetMapping("/search")
 	public MultiResponseDto<ItemQueryDto> filteredItems(
-		@RequestParam(required = false) String keyword,
+		@RequestParam(required = false, defaultValue = "") String keyword,
 		@RequestParam(required = false, defaultValue = "0") int low,
 		@RequestParam(required = false, defaultValue = "0") int high,
 		@RequestBody ItemPageRequestDto pageDto
 	) {
-		PriceFilter priceFilter = mapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = mapper.toItemPageDto(pageDto);
+		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
+		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(pageDto);
 
 		Page<ItemQueryDto> itemsPage = itemQueryService.findFilteredItem(
 			keyword.replace("_", ""),
@@ -75,16 +77,20 @@ public class ItemQueryController {
 
 	@GetMapping("/on-sale")
 	public MultiResponseDto<ItemQueryDto> searchSaleItems(
-		@RequestParam(required = false) String keyword,
+		@RequestParam(required = false, defaultValue = "") String keyword,
 		@RequestParam(required = false, defaultValue = "0") int low,
 		@RequestParam(required = false, defaultValue = "0") int high,
 		@RequestBody ItemPageRequestDto pageDto
 	) {
 
-		PriceFilter priceFilter = mapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = mapper.toItemPageDto(pageDto);
+		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
+		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(pageDto);
 
-		Page<ItemQueryDto> itemsPage = itemQueryService.findItemOnSale(keyword, searchDto, priceFilter);
+		Page<ItemQueryDto> itemsPage = itemQueryService.findItemOnSale(
+			keyword.replace("_", ""),
+			searchDto,
+			priceFilter
+		);
 
 		return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
 	}
@@ -92,17 +98,17 @@ public class ItemQueryController {
 	@GetMapping("/categories")
 	public MultiResponseDto<ItemQueryDto> searchCategories(
 		@RequestParam CategoryName categoryName,
-		@RequestParam(required = false) String keyword,
+		@RequestParam(required = false, defaultValue = "") String keyword,
 		@RequestParam(required = false, defaultValue = "0") int low,
 		@RequestParam(required = false, defaultValue = "0") int high,
 		@RequestBody ItemPageRequestDto pageDto
 	) {
-		PriceFilter priceFilter = mapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = mapper.toItemPageDto(pageDto);
+		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
+		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(pageDto);
 
 		Page<ItemQueryDto> itemsPage = itemQueryService.findByCategory(
 			categoryName,
-			keyword,
+			keyword.replace("_", ""),
 			priceFilter,
 			searchDto
 		);
@@ -110,18 +116,18 @@ public class ItemQueryController {
 		return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
 	}
 
-	@GetMapping("/brand")
+	@GetMapping("/brands")
 	public MultiResponseDto<ItemQueryDto> searchBrand(
-		@RequestParam String keyword,
+		@RequestParam(defaultValue = "") String brand,
 		@RequestParam(required = false, defaultValue = "0") int low,
 		@RequestParam(required = false, defaultValue = "0") int high,
 		@RequestBody ItemPageRequestDto pageDto
 	) {
 
-		PriceFilter priceFilter = mapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = mapper.toItemPageDto(pageDto);
+		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
+		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(pageDto);
 
-		Page<ItemQueryDto> itemsPage = itemQueryService.findByBrand(keyword, searchDto, priceFilter);
+		Page<ItemQueryDto> itemsPage = itemQueryService.findByBrand(brand, searchDto, priceFilter);
 
 		return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
 	}

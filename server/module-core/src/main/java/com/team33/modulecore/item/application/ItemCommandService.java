@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.review.domain.entity.Review;
@@ -18,8 +20,11 @@ public class ItemCommandService {
 
 	private final ItemCommandRepository itemCommandRepository;
 
-	public Item increaseView(Long itemId) {
-		return itemCommandRepository.incrementView(itemId);
+	public Item getAndIncreaseView(Long itemId) {
+		 itemCommandRepository.incrementView(itemId);
+
+		 return itemCommandRepository.findById(itemId)
+			 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
 	}
 
 	public void addSales(List<Long> orderedItemsId) {

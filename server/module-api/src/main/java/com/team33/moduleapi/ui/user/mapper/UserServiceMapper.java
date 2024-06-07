@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.user;
+package com.team33.moduleapi.ui.user.mapper;
 
 import org.springframework.stereotype.Component;
 

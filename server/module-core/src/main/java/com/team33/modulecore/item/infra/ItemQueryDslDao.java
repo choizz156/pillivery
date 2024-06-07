@@ -208,8 +208,8 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	@Override
-	public Page<ItemQueryDto> findByBrand(String keyword, ItemPage pageDto, PriceFilter priceFilter) {
-		BooleanExpression keywordContainsEnterprise = keywordContainsEnterprise(keyword);
+	public Page<ItemQueryDto> findByBrand(String brand, ItemPage pageDto, PriceFilter priceFilter) {
+		BooleanExpression keywordContainsEnterprise = keywordContainsEnterprise(brand);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
 
 		List<ItemQueryDto> fetch = selectItemQueryDto().
