@@ -23,7 +23,8 @@ class ItemCommandServiceTest {
 		//given
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		doNothing().when(itemCommandRepository).incrementView(anyLong());
-
+		Item item = mock(Item.class);
+		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
 		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
 
 		//when
@@ -31,6 +32,7 @@ class ItemCommandServiceTest {
 
 		//then
 		verify(itemCommandRepository, times(1)).incrementView(anyLong());
+		verify(itemCommandRepository, times(1)).findById(anyLong());
 	}
 
 	@DisplayName("아이템 판매량을 1 증가시켜 업데이트합니다.")

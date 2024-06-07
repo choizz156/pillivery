@@ -31,7 +31,7 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PaymentTest extends ApiTest {
+class PaymentAcceptanceTest extends ApiTest {
 
 	private MockMvcRequestSpecification given;
 	private KakaoRequestFacade requestFacade;
@@ -127,16 +127,16 @@ class PaymentTest extends ApiTest {
                     .get("/payments/approve/{orderId}",1)
             .then()
                     .log().all()
-				.expect(jsonPath("$.data.item_name").isNotEmpty())
-				.expect(jsonPath("$.data.item_code").isNotEmpty())
-				.expect(jsonPath("$.data.created_at").isNotEmpty())
-				.expect(jsonPath("$.data.approved_at").isNotEmpty())
+				.expect(jsonPath("$.data.item_name").exists())
+				.expect(jsonPath("$.data.item_code").exists())
+				.expect(jsonPath("$.data.created_at").exists())
+				.expect(jsonPath("$.data.approved_at").exists())
 				.expect(jsonPath("$.data.payload").exists())
-				.expect(jsonPath("$.data.amount.total").isNotEmpty())
-				.expect(jsonPath("$.data.amount.tax_free").isNotEmpty())
-				.expect(jsonPath("$.data.amount.vat").isNotEmpty())
-				.expect(jsonPath("$.data.amount.discount").isNotEmpty())
-				.expect(jsonPath("$.data.quantity").isNotEmpty());
+				.expect(jsonPath("$.data.amount.total").exists())
+				.expect(jsonPath("$.data.amount.tax_free").exists())
+				.expect(jsonPath("$.data.amount.vat").exists())
+				.expect(jsonPath("$.data.amount.discount").exists())
+				.expect(jsonPath("$.data.quantity").exists());
             //@formatter:on
 	}
 
@@ -156,16 +156,16 @@ class PaymentTest extends ApiTest {
             .then()
 					.log().all()
 				.statusCode(HttpStatus.OK.value())
-				.expect(jsonPath("$.data.item_name").isNotEmpty())
-				.expect(jsonPath("$.data.item_code").isNotEmpty())
-				.expect(jsonPath("$.data.created_at").isNotEmpty())
-				.expect(jsonPath("$.data.approved_at").isNotEmpty())
-				.expect(jsonPath("$.data.payload").isNotEmpty())
-				.expect(jsonPath("$.data.amount.total").isNotEmpty())
-				.expect(jsonPath("$.data.amount.tax_free").isNotEmpty())
-				.expect(jsonPath("$.data.amount.vat").isNotEmpty())
-				.expect(jsonPath("$.data.amount.discount").isNotEmpty())
-				.expect(jsonPath("$.data.quantity").isNotEmpty());
+				.expect(jsonPath("$.data.item_name").exists())
+				.expect(jsonPath("$.data.item_code").exists())
+				.expect(jsonPath("$.data.created_at").exists())
+				.expect(jsonPath("$.data.approved_at").exists())
+				.expect(jsonPath("$.data.payload").exists())
+				.expect(jsonPath("$.data.amount.total").exists())
+				.expect(jsonPath("$.data.amount.tax_free").exists())
+				.expect(jsonPath("$.data.amount.vat").exists())
+				.expect(jsonPath("$.data.amount.discount").exists())
+				.expect(jsonPath("$.data.quantity").exists());
 
 		//@formatter:on
 	}

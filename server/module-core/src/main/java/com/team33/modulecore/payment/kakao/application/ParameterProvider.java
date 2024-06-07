@@ -25,7 +25,7 @@ public class ParameterProvider {
 
 	public Map<String, Object> getSubscriptionReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(CID.getValue(), CID.getValue());
+		commonReqsParams.put(CID.getValue(), SUBSCRIP_CID.getValue());
 		commonReqsParams.put(APPROVAL_URL.getValue(), SUBSCRIPTION_APPROVAL_URI.getValue() + "/" + order.getId());
 		return commonReqsParams;
 	}
@@ -102,7 +102,7 @@ public class ParameterProvider {
 
 		parameters.put(TID.getValue(), tid);
 		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(orderId));
-		parameters.put(PARTNER.getValue(), PARTNER.getValue());
+		parameters.put(PARTNER_USER_ID.getValue(), PARTNER.getValue());
 		parameters.put(PG_TOKEN.getValue(), pgToken);
 
 		return parameters;

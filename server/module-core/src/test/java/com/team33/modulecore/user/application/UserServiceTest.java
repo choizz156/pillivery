@@ -75,7 +75,7 @@ class UserServiceTest {
 	@DisplayName("이메일, 닉네임, 전화번호가 중복될 시 예외를 던진다.")
 	@ParameterizedTest(name = "{index} => {0}")
 	@MethodSource("provideDuplicateUserInfoOnJoinDto")
-	void 회원_가입_중복_예외(UserServicePostDto userPostDto) throws Exception {
+	void 회원_가입_중복_예외(String reason, UserServicePostDto userPostDto) throws Exception {
 		//given
 		DuplicationVerifier duplicationVerifier = new DuplicationVerifier(new FakeUserRepository());
 		UserService userService = new UserService(null, null, null, duplicationVerifier);
@@ -147,7 +147,7 @@ class UserServiceTest {
 	@DisplayName("소셜 회원 주가정보 기입시 전화번호, 닉네임에 중복이 있을 경우 예외를 던진다.")
 	@ParameterizedTest(name = "{index} => {0}")
 	@MethodSource("provideDuplicateUserInfoOnOauth")
-	void 소셜_회원_중복(OAuthUserServiceDto oauthDto) throws Exception {
+	void 소셜_회원_중복(String reason, OAuthUserServiceDto oauthDto) throws Exception {
 		//given
 		DuplicationVerifier duplicationVerifier = new DuplicationVerifier(new FakeUserRepository());
 		UserService userService = new UserService(null, null, null, duplicationVerifier);

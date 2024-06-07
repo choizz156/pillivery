@@ -2,7 +2,7 @@ package com.team33.modulecore.cart.application;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +27,7 @@ class NormalCartItemServiceTest {
 		normalCart = FixtureMonkeyFactory.get().giveMeBuilder(NormalCart.class)
 			.set("id", 1L)
 			.set("price", null)
-			.set("cartItems", new HashSet<>())
+			.set("cartItems", new ArrayList<>())
 			.sample();
 
 		item = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)

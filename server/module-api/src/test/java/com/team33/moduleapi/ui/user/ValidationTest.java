@@ -27,15 +27,15 @@ class ValidationTest extends ApiTest {
         UserPostDto joinDto2 = join("", "sdf", "010-0000-1111");
 
         return Stream.of(
-            Arguments.of(joinDto1),
-            Arguments.of(joinDto2)
+            Arguments.of("@없음", joinDto1),
+            Arguments.of("공백", joinDto2)
         );
     }
 
     @DisplayName("이메일 형식(또는 공백)을 지키지 않으면 예외를 던진다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = "{index} = {0}")
     @MethodSource("provideUserPostDtoWrongEmail")
-    void test1(UserPostDto joinDto) throws Exception {
+    void test1(String reason, UserPostDto joinDto) throws Exception {
 
         //@formatter:off
             ExtractableResponse<Response> response =
@@ -135,15 +135,15 @@ class ValidationTest extends ApiTest {
         UserPostDto joinDto2 = join("test@gmail.com", "sdf", "");
 
         return Stream.of(
-            Arguments.of(joinDto1),
-            Arguments.of(joinDto2)
+            Arguments.of("형식에 어긋남", joinDto1),
+            Arguments.of("빈 문자", joinDto2)
         );
     }
 
     @DisplayName("지정한 연락처 형식이 아닐 경우 예외를 던진다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = "{index} =>  {0}")
     @MethodSource("provideUserPostDtoWrongPhone")
-    void test3(UserPostDto postDto) throws Exception {
+    void test3(String reason, UserPostDto postDto) throws Exception {
 
         //@formatter:off
         ExtractableResponse<Response> response =
@@ -182,16 +182,16 @@ class ValidationTest extends ApiTest {
         shortLength.setPassword("1234a7!");
 
         return Stream.of(
-            Arguments.of(noSpecialSign),
-            Arguments.of(noAlphabet),
-            Arguments.of(shortLength)
+            Arguments.of("특수문자 없음", noSpecialSign),
+            Arguments.of("영문자가 없음",noAlphabet),
+            Arguments.of("8글자 이상이 아님", shortLength)
         );
     }
 
     @DisplayName("비밀번호 형식(공백 포함)을 지키지 않으면 예외를 던진다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = "{index} =>  {0}")
     @MethodSource("provideUserPostDtoWrongPwd")
-    void test4(UserPostDto postDto) throws Exception {
+    void test4(String reason, UserPostDto postDto) throws Exception {
             //@formatter:off
             ExtractableResponse<Response> response =
                 given()

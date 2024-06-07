@@ -18,7 +18,7 @@ import com.team33.modulecore.cart.application.NormalCartItemService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 
-class NormalCartControllerTest extends ApiTest {
+class NormalCartAcceptanceTest extends ApiTest {
 
 	@Autowired
 	private ItemCommandRepository itemCommandRepository;

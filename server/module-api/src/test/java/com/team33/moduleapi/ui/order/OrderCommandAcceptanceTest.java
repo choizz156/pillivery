@@ -32,7 +32,7 @@ import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 
-class OrderCommandControllerTest extends ApiTest {
+class OrderCommandAcceptanceTest extends ApiTest {
 
 	@Autowired
 	private ItemCommandRepository itemCommandRepository;

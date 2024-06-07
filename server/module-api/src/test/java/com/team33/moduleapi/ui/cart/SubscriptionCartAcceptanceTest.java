@@ -22,7 +22,7 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
 
-class SubscriptionCartControllerTest extends ApiTest {
+class SubscriptionCartAcceptanceTest extends ApiTest {
 
 	@Autowired
 	private ItemCommandRepository itemCommandRepository;

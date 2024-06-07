@@ -25,7 +25,7 @@ import com.team33.moduleevent.application.SubsCanceledEventHandler;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
-class SubscriptionCancelControllerTest extends ApiTest {
+class SubscriptionCancelAcceptanceTest extends ApiTest {
 
 	private Order order;
 

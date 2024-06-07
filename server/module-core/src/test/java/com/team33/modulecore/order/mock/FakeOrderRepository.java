@@ -38,14 +38,14 @@ public class FakeOrderRepository implements OrderRepository {
 
 	@Override
 	public boolean findIsSubscriptionById(Long orderId) {
-		return em.createQuery("select o.isSubscription from orders o where o.id = :orderId", Boolean.class)
+		return em.createQuery("select o.isSubscription from Order o where o.id = :orderId", Boolean.class)
 			.setParameter("orderId", orderId)
 			.getSingleResult();
 	}
 
 	@Override
 	public String findTid(Long orderId) {
-		return em.createQuery("select o.paymentCode.tid from orders o where o.id = :orderId", String.class)
+		return em.createQuery("select o.paymentCode.tid from Order o where o.id = :orderId", String.class)
 			.setParameter("orderId", orderId)
 			.getSingleResult();
 	}

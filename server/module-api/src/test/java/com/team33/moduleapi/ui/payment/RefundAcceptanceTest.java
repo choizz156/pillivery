@@ -1,6 +1,5 @@
 package com.team33.moduleapi.ui.payment;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
@@ -23,12 +22,11 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleevent.application.RefundEventHandler;
-import com.team33.moduleevent.application.SubsCanceledEventHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
-class RefundControllerTest extends ApiTest {
+class RefundAcceptanceTest extends ApiTest {
 
 	private Order order;
 
