@@ -1,7 +1,7 @@
 package com.team33.modulecore.cart.domain.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,7 +36,7 @@ public abstract class Cart extends BaseEntity {
 	CartPrice price = new CartPrice(0, 0, 0);
 
 	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-	Set<CartItem> cartItems = new HashSet<>();
+	List<CartItem> cartItems = new ArrayList<>();
 
 	public void removeCartItem(CartItem removedItem) {
 		this.cartItems.remove(removedItem);
