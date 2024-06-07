@@ -60,7 +60,7 @@ public class DataCleaner implements InitializingBean {
 				setColumn(tableName, tableName);
 			}
 		}
-
+		em.createNativeQuery("TRUNCATE TABLE item_category").executeUpdate();
 		em.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
 	}
 

@@ -45,8 +45,8 @@ import lombok.NoArgsConstructor;
 public class Item extends BaseEntity {
 
 	@Id
-	@Column(name = "item_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "item_id")
 	private Long id;
 
 	@Embedded

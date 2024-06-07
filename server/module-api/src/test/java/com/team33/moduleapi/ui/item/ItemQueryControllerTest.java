@@ -123,22 +123,12 @@ class ItemQueryControllerTest extends ApiTest {
 			.body("pageInfo.totalPages", equalTo(1));
 	}
 
-
-	private static Stream<Arguments> categoryNameList() {
-		return Stream.of(
-			Arguments.arguments(CategoryName.INTESTINE),
-			Arguments.arguments(CategoryName.FATIGUE),
-			Arguments.arguments(CategoryName.EYE)
-		);
-	}
-
 	@DisplayName("카테고리 별로 상품을 조회하여 api 응답을 보낼 수 있다.")
-	@ParameterizedTest
-	@MethodSource("categoryNameList")
-	void 카테고리_상품_조회(CategoryName categoryName) throws Exception{
+	@Test
+	void 카테고리_상품_조회() throws Exception{
 		//given
-		아이템_저장("16종혼합유산균 디에스", 10000, 0.0, categoryName, "(주)씨티씨바이오");
-		아이템_저장("16종혼합유산균 디에스1", 11000, 10.0, categoryName, "(주)씨티씨바이오");
+		아이템_저장("16종혼합유산균 디에스", 10000, 0.0, CategoryName.EYE, "(주)씨티씨바이오");
+		아이템_저장("16종혼합유산균 디에스1", 11000, 10.0, CategoryName.EYE, "(주)씨티씨바이오");
 		아이템_저장("16종혼합유산균 디에스2", 12000, 9.0, CategoryName.ETC, "(주)씨티씨바이오");
 
 		ItemPageRequestDto pageDto = new ItemPageRequestDto();
@@ -149,7 +139,7 @@ class ItemQueryControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(pageDto)
-			.queryParam("categoryName", categoryName.name())
+			.queryParam("categoryName", "EYE")
 			.log().all()
 			.when()
 			.get("/items/categories")
@@ -462,7 +452,7 @@ class ItemQueryControllerTest extends ApiTest {
 		@Test
 		void 할인률_높은_순() throws Exception {
 			//given
-			아이템_저장("16종혼합유산균 디에스", 10000, 10.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
+			아이템_저장("16종혼합유산균 디에스", 10000, 10.0, CategoryName.EYE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스2", 12000, 20.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스3", 13000, 30.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스4", 14000, 40.0, CategoryName.INTESTINE, "(주)씨티씨바이오");

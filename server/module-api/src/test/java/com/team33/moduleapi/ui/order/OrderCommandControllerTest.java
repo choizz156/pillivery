@@ -112,7 +112,7 @@ class OrderCommandControllerTest extends ApiTest {
 			.queryParam("quantity", 2)
 			.header("Authorization", getToken())
 			.when()
-			.patch("orders/subscription/1")
+			.patch("/orders/subscriptions/1")
 			.then()
 			.statusCode(HttpStatus.NO_CONTENT.value());
 	}

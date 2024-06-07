@@ -41,7 +41,7 @@ public class SecurityConfig {
     private static final String ORDERS = "/orders/**";
     private static final String REVIEWS = "/reviews/**";
     private static final String SCHEDULE_URL = "/schedule";
-    // private static final String PAYMENTS_URL = "/payments/{orderId}";
+    private static final String PAYMENTS_URL = "/payments/{orderId}";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -81,7 +81,7 @@ public class SecurityConfig {
                 .antMatchers(REVIEWS).hasRole("USER")
                 .antMatchers(PATCH, SCHEDULE_URL).hasRole("USER")
                 .antMatchers(DELETE, SCHEDULE_URL).hasRole("USER")
-                // .antMatchers(GET, PAYMENTS_URL).hasRole("USER")
+                .antMatchers(POST, PAYMENTS_URL).hasRole("USER")
                 .anyRequest().permitAll()
             );
 

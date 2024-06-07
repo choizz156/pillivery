@@ -173,7 +173,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, "itemCategory"))
 			.where(
-				Expressions.enumPath(CategoryName.class, "itemCategory").eq(categoryName),
+				categoryNameEq,
 				productNameContainsKeyword,
 				priceBetween
 			)
@@ -201,10 +201,6 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
 			count::fetchOne
 		);
-	}
-
-	private static boolean isEmpty(List<ItemQueryDto> fetch) {
-		return fetch.isEmpty();
 	}
 
 	@Override
@@ -239,6 +235,10 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
 			count::fetchOne
 		);
+	}
+
+	private boolean isEmpty(List<ItemQueryDto> fetch) {
+		return fetch.isEmpty();
 	}
 
 	private BooleanExpression keywordContainsEnterprise(String keyword) {
