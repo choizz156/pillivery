@@ -1,11 +1,18 @@
 package com.team33.moduleapi;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
+
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.modulecore.common.UserFindHelper;
+import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.user.domain.repository.UserRepository;
 
 import io.restassured.RestAssured;
 
@@ -16,14 +23,14 @@ public abstract class ApiTest {
 	@LocalServerPort
 	private int port;
 
-	// @Autowired
-	// protected UserFindHelper userFindHelper;
-	//
-	// @Autowired
-	// protected UserRepository userRepository;
-	//
-	// @Autowired
-	// protected JwtTokenProvider jwtTokenProvider;
+	@Autowired
+	protected UserFindHelper userFindHelper;
+
+	@Autowired
+	protected UserRepository userRepository;
+
+	@Autowired
+	protected JwtTokenProvider jwtTokenProvider;
 
 	@Autowired
 	private DataCleaner dataCleaner;
@@ -34,18 +41,18 @@ public abstract class ApiTest {
 			RestAssured.port = port;
 			dataCleaner.afterPropertiesSet();
 		}
-		dataCleaner.execute();
+
 	}
 
-	// @AfterEach
-	// void tearDown() {
-	//     SecurityContextHolder.clearContext();
-	//     userRepository.deleteAll();
-	// }
+	@AfterEach
+	void tearDown() {
+		dataCleaner.execute();
+		SecurityContextHolder.clearContext();
+	}
 
-	// protected String getToken() {
-	//     User loginUser = userFindHelper.findUser(1L);
-	//     return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
-	// }
+	protected String getToken() {
+	    User loginUser = userFindHelper.findUser(1L);
+	    return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
+	}
 
 }

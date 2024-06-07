@@ -26,6 +26,7 @@ public class UserAccountFactory implements WithSecurityContextFactory<UserAccoun
 
     @Override
     public SecurityContext createSecurityContext(UserAccount annotation) {
+
         UserPostDto dto = getUserDto(annotation);
         UserServicePostDto userServicePostDto = userServiceMapper.toUserPost(dto);
         userService.join(userServicePostDto);

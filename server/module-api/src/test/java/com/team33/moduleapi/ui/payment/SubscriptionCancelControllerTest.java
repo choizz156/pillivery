@@ -43,55 +43,6 @@ class SubscriptionCancelControllerTest extends ApiTest {
 
 	private MockMvcRequestSpecification given;
 
-	// @BeforeEach
-	// void setUp() {
-	//
-	// 	List<Item> items = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
-	// 		.setNull("id")
-	// 		.setNull("itemCategory")
-	// 		.setNull("reviewIds")
-	// 		.setNull("categories")
-	// 		.set("statistics.starAvg", 0.0)
-	// 		.set("statistics.reviewCount", 0)
-	// 		.set("statistics.view", 0)
-	// 		.set("statistics.sales", 0)
-	// 		.set("information.price.realPrice", 10000)
-	// 		.set("information.price.discountPrice", 1000)
-	// 		.set("information.price.discountRate", 10.0)
-	// 		.set("information.price.originPrice", 11000)
-	// 		.sampleList(2);
-	//
-	// 	itemCommandRepository.saveAll(items);
-	//
-	// 	OrderItem orderItem1 = OrderItem.builder()
-	// 		.item(items.get(0))
-	// 		.quantity(1)
-	// 		.subscriptionInfo(SubscriptionInfo.of(true, 30))
-	// 		.build();
-	//
-	// 	OrderItem orderItem2 = OrderItem.builder()
-	// 		.item(items.get(0))
-	// 		.quantity(1)
-	// 		.subscriptionInfo(SubscriptionInfo.of(true, 30))
-	// 		.build();
-	//
-	// 	order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-	// 		.setNull("id")
-	// 		.set("orderItems", List.of(orderItem1, orderItem2))
-	// 		.set("orderPrice.totalPrice", 20000)
-	// 		.set("orderPrice.totalDiscountPrice", 2000)
-	// 		.setNull("user")
-	// 		.set("totalQuantity", 2)
-	// 		.set("isSubscription", true)
-	// 		.set("orderStatus", OrderStatus.REQUEST)
-	// 		.set("totalItemsCount", 2)
-	// 		.set("mainItemName", "testItem")
-	// 		.set("paymentCode.tid", "tid")
-	// 		.set("paymentCode.sid", "sid")
-	// 		.sample();
-	//
-	// 	orderRepository.save(order);
-	// }
 
 	@BeforeEach
 	void setUp() {
