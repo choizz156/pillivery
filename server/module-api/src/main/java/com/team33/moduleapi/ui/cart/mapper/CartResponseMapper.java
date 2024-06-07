@@ -14,8 +14,7 @@ import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
 @Component
 public class CartResponseMapper {
 
-
-	public CartResponseDto cartNormalResponseDto(NormalCart normalCart){
+	public CartResponseDto cartNormalResponseDto(NormalCart normalCart) {
 
 		return CartResponseDto.builder()
 			.cartId(normalCart.getId())
@@ -39,7 +38,7 @@ public class CartResponseMapper {
 
 	}
 
-	private  List<CartItemResponseDto> toNormalCartItemResponse(NormalCart normalCart) {
+	private List<CartItemResponseDto> toNormalCartItemResponse(NormalCart normalCart) {
 		return normalCart.getCartItems().stream()
 			.map(normalCartItem ->
 				CartItemResponseDto.builder()
@@ -52,7 +51,7 @@ public class CartResponseMapper {
 			.collect(Collectors.toList());
 	}
 
-	private  List<CartItemResponseDto> toSubscriptionCartItemResponse(SubscriptionCart subscriptionCart) {
+	private List<CartItemResponseDto> toSubscriptionCartItemResponse(SubscriptionCart subscriptionCart) {
 		return subscriptionCart.getCartItems().stream()
 			.map(subscriptionCartItem ->
 				CartItemResponseDto.builder()

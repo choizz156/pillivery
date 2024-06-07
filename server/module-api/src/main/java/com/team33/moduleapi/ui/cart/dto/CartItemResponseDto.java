@@ -33,5 +33,6 @@ public class CartItemResponseDto {
 		this.item = item;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.subscription = subscription;
 	}
 }

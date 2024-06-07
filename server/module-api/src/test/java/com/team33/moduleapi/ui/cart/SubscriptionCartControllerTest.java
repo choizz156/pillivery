@@ -10,31 +10,34 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.moduleapi.UserAccount;
-import com.team33.modulecore.cart.application.NormalCartItemService;
+import com.team33.moduleapi.ui.cart.dto.SubscriptionCartItemPostDto;
+import com.team33.modulecore.cart.SubscriptionContext;
+import com.team33.modulecore.cart.application.SubscriptionCartItemService;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.order.domain.SubscriptionInfo;
 
-class NormalCartControllerTest extends ApiTest {
+class SubscriptionCartControllerTest extends ApiTest {
 
 	@Autowired
 	private ItemCommandRepository itemCommandRepository;
 
 	@Autowired
-	private NormalCartItemService normalCartItemService;
-	private List<Item> items;
+	private SubscriptionCartItemService subscriptionCartItemService;
 
 	/**
-	 * {@code @UserAccount}에서 회원 가입이 임의로 진행되고, 회원 가입시 카트(id = 1)가 생성됩니다.
+	 * {@code @UserAccount}에서 회원 가입이 임의로 진행되고, 회원 가입시 카트가 생성(id = 2)됩니다.
 	 * 따라서, 카트를 저장하는 로직은 따로 없습니다.
 	 */
 	@BeforeEach
 	void setUp() {
 
-		items = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
+		List<Item> items = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
 			.setNull("id")
 			.setNull("itemCategory")
 			.setNull("reviewIds")
@@ -51,30 +54,36 @@ class NormalCartControllerTest extends ApiTest {
 
 		itemCommandRepository.saveAll(items);
 
-		normalCartItemService.addItem(1L, items.get(0), 1);
+		SubscriptionContext subscriptionContext = SubscriptionContext.builder()
+			.quantity(1)
+			.item(items.get(0))
+			.subscriptionInfo(SubscriptionInfo.of(true, 30))
+			.build();
+
+		subscriptionCartItemService.addSubscriptionItem(2L, subscriptionContext);
 	}
 
-	@DisplayName("일반 카트를 조회할 수 있다.")
+	@DisplayName("구독 카트를 조회할 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
 	@Test
-	void 일반_카트_조회() throws Exception {
+	void 구독_카트_조회() throws Exception {
 
 		given()
 			.log().all()
 			.header("Authorization", getToken())
 			.when()
-			.get("/carts/normal/1")
+			.get("/carts/subscription/2")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
-			.body("data.cartId", equalTo(1))
+			.body("data.cartId", equalTo(2))
 			.body("data.totalItemCount", equalTo(1))
 			.body("data.totalPrice", equalTo(10000))
 			.body("data.totalDiscountPrice", equalTo(1000))
 			.body("data.expectPrice", equalTo(9000))
 			.body("data.cartItems[0].quantity", equalTo(1))
-			.body("data.cartItems[0].period", equalTo(0))
-			.body("data.cartItems[0].subscription", equalTo(false))
+			.body("data.cartItems[0].period", equalTo(30))
+			.body("data.cartItems[0].subscription", equalTo(true))
 			.body("data.cartItems[0].item.itemId", equalTo(1))
 			.body("data.cartItems[0].item.originPrice", equalTo(11000))
 			.body("data.cartItems[0].item.realPrice", equalTo(0))
@@ -83,49 +92,71 @@ class NormalCartControllerTest extends ApiTest {
 
 	}
 
-	@DisplayName("카트에 상품을 추가할 수 있다.")
+	@DisplayName("구독 카트에 상품을 추가할 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
 	@Test
-	void 일반_카트_상품_추가() throws Exception {
+	void 구독_카트_상품_추가() throws Exception {
+
+		SubscriptionCartItemPostDto postDto = new SubscriptionCartItemPostDto();
+		postDto.setItemId(2L);
+		postDto.setQuantity(1);
+		postDto.setPeriod(30);
+
 		given()
 			.log().all()
 			.header("Authorization", getToken())
-			.queryParam("quantity", 1)
-			.queryParam("itemId", 2)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(postDto)
 			.when()
-			.post("/carts/normal/1")
+			.post("/carts/subscription/2")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.CREATED.value())
 			.body("data", equalTo(2));
 	}
 
-	@DisplayName("카트에 상품을 삭제할 수 있다.")
+	@DisplayName("구독 카트에 상품을 삭제할 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
 	@Test
-	void 일반_카트_상품_삭제() throws Exception {
+	void 구독_카트_상품_삭제() throws Exception {
 		given()
 			.log().all()
 			.header("Authorization", getToken())
 			.queryParam("cartItemId", 1)
 			.when()
-			.delete("/carts/normal/1")
+			.delete("/carts/subscription/2")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.NO_CONTENT.value());
 	}
 
-	@DisplayName("카트에 상품 개수를 변경할 수 있다.")
+	@DisplayName("구독 카트에 상품 개수를 변경할 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
 	@Test
-	void 일반_카트_상품_개수_변경() throws Exception {
+	void 구독_카트_상품_개수_변경() throws Exception {
 		given()
 			.log().all()
 			.header("Authorization", getToken())
 			.queryParam("quantity", 2)
 			.queryParam("cartItemId", 1)
 			.when()
-			.patch("/carts/normal/1")
+			.patch("/carts/subscription/2/quantity")
+			.then()
+			.log().all()
+			.statusCode(HttpStatus.NO_CONTENT.value());
+	}
+
+	@DisplayName(" 구독 카트에 구독 기간을 변경할 수 있다.")
+	@UserAccount({"test", "010-0000-0000"})
+	@Test
+	void 구독_카트_상품_구독_기간_변경() throws Exception {
+		given()
+			.log().all()
+			.header("Authorization", getToken())
+			.queryParam("period", 60)
+			.queryParam("cartItemId", 1)
+			.when()
+			.patch("/carts/subscription/2/period")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.NO_CONTENT.value());
