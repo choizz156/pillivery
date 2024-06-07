@@ -28,9 +28,6 @@ import com.team33.modulecore.order.dto.OrderItemServiceDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * The type Order controller.
- */
 @Slf4j
 @RequiredArgsConstructor
 @Validated
@@ -63,7 +60,7 @@ public class OrderCommandController {
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PatchMapping("/subscription/{orderId}") // 정기 구독 아이템의 수량 변경
+	@PatchMapping("/subscriptions/{orderId}")
 	public void changeSubscriptionItemQuantity(
 		@PathVariable Long orderId,
 		@RequestParam Long orderItemId,

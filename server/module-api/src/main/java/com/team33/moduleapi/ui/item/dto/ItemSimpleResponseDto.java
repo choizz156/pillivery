@@ -43,6 +43,7 @@ public class ItemSimpleResponseDto {
     public static ItemSimpleResponseDto of(Item item) {
         return ItemSimpleResponseDto.builder()
             .itemId(item.getId())
+            .enterprise(item.getInformation().getEnterprise())
             .thumbnail(item.getThumbnailUrl())
             .product(item.getProductName())
             .originPrice(item.getOriginPrice())

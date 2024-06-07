@@ -2,8 +2,11 @@ package com.team33.moduleapi.ui.order.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
 public class OrderPostDto {
     @NotNull
