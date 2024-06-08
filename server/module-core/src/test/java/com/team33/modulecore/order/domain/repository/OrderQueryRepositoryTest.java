@@ -74,7 +74,7 @@ class OrderQueryRepositoryTest {
 		var orderPageRequest = OrderPageRequest.of(orderPageDto);
 
 		var orderFindCondition =
-			OrderFindCondition.to(MOCK_USER, OrderStatus.REQUEST);
+			OrderFindCondition.to(1L, OrderStatus.REQUEST);
 
 		//when
 		Page<Order> allOrders =
@@ -100,7 +100,7 @@ class OrderQueryRepositoryTest {
 
 		var orderPageRequest = OrderPageRequest.of(orderPageDto1);
 
-		var orderFindCondition = OrderFindCondition.to(MOCK_USER, OrderStatus.SUBSCRIBE);
+		var orderFindCondition = OrderFindCondition.to(MOCK_USER.getId(), OrderStatus.SUBSCRIBE);
 
 		//when
 		List<OrderItem> subscriptionOrderItem =
@@ -121,7 +121,7 @@ class OrderQueryRepositoryTest {
 		List<Item> mockItems = getMockItems();
 		mockItems.forEach(em::persist);
 
-		persistMockOrder(MOCK_USER, mockItems);
+		persistMockOrder(mockItems);
 	}
 
 	private User getMockUser() {
@@ -159,12 +159,13 @@ class OrderQueryRepositoryTest {
 		return items;
 	}
 
-	private void persistMockOrder(User user, List<Item> mockItems) {
+	private void persistMockOrder( List<Item> mockItems) {
 		OrderContext orderContext1 = OrderContext.builder()
+			.userId(1L)
 			.isOrderedCart(false)
 			.isSubscription(false)
 			.build();
-		OrderContext orderContext = orderContext1;
+
 		mockItems.stream()
 			.takeWhile(item -> item.getId() <= 8)
 			.map(item -> OrderItem.create(
@@ -173,13 +174,14 @@ class OrderQueryRepositoryTest {
 					1
 				)
 			)
-			.map(orderItem -> Order.create(List.of(orderItem), orderContext1, user))
+			.map(orderItem -> Order.create(List.of(orderItem), orderContext1))
 			.forEach(order -> {
 				order.changeOrderStatus(OrderStatus.COMPLETE);
 				em.persist(order);
 			});
 
 		OrderContext orderContext2 = OrderContext.builder()
+			.userId(1L)
 			.isOrderedCart(false)
 			.isSubscription(true)
 			.build();
@@ -191,7 +193,7 @@ class OrderQueryRepositoryTest {
 				SubscriptionInfo.of(true, 60),
 				1
 			))
-			.map(orderItem -> Order.create(List.of(orderItem), orderContext2, user))
+			.map(orderItem -> Order.create(List.of(orderItem), orderContext2))
 			.forEach(order -> {
 				order.changeOrderStatus(OrderStatus.SUBSCRIBE);
 				em.persist(order);

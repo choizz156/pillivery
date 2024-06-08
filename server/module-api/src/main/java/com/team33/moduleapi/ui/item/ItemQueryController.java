@@ -53,6 +53,7 @@ public class ItemQueryController {
 		@NotNull @PathVariable Long itemId
 	) {
 		Item item = itemCommandService.getAndIncreaseView(itemId);
+
 		return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
 	}
 

@@ -26,7 +26,6 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.user.domain.entity.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +43,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		List<Order> contents = queryFactory
 			.selectFrom(order)
 			.where(
-				userEq(orderFindCondition.getUser()),
+				userEq(orderFindCondition.getUserId()),
 				notOrderStatusRequest(orderFindCondition.getOrderStatus())
 			)
 			.limit(pageRequest.getSize())
@@ -60,7 +59,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 			.select(order.count())
 			.from(order)
 			.where(
-				userEq(orderFindCondition.getUser()),
+				userEq(orderFindCondition.getUserId()),
 				notOrderStatusRequest(orderFindCondition.getOrderStatus())
 			);
 
@@ -104,6 +103,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	@Override
 	public Order findById(Long id) {
 		Order fetch = queryFactory.selectFrom(order).where(order.id.eq(id)).fetchOne();
+
 		if (fetch == null) {
 			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
 		}
@@ -111,7 +111,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	private BooleanExpression orderUserAndOrderItemUserEq() {
-		return orderItem.order.user.id.eq(order.user.id);
+		return orderItem.order.userId.eq(order.userId);
 	}
 
 	private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {
@@ -120,8 +120,8 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 			: null;
 	}
 
-	private BooleanExpression userEq(User user) {
-		return user == null ? null : order.user.eq(user);
+	private BooleanExpression userEq(long userId) {
+		return order.userId.eq(userId);
 	}
 
 	private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {

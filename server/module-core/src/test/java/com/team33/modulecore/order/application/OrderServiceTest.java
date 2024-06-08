@@ -77,7 +77,7 @@ class OrderServiceTest {
 		assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.REQUEST);
 		assertThat(order.getOrderItems()).hasSize(3);
 		assertThat(order.getTotalItemsCount()).isEqualTo(3);
-		assertThat(order.getUser()).isEqualTo(user);
+		assertThat(order.getUserId()).isEqualTo(user.getId());
 	}
 
 	@DisplayName("일반 주문의 주문 상태를 구독 중으로 바꿀 수 있다.")
@@ -303,7 +303,7 @@ class OrderServiceTest {
 
 	private User getMockUser() {
 		return FixtureMonkeyFactory.get().giveMeBuilder(User.class)
-			.set("id", null)
+			.set("id", 1L)
 			.set("cartId", null)
 			.sample();
 	}

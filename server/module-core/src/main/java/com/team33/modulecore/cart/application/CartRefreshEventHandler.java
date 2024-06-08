@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.events.CartRefreshedEvent;
+import com.team33.modulecore.user.domain.entity.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CartRefreshEventHandler {
 
-	private final SubscriptionCartItemService subscriptionCartService;
+	private final UserFindHelper userFindHelper;
 	private final CommonCartItemService cartItemService;
 
 	@Async
@@ -24,13 +26,14 @@ public class CartRefreshEventHandler {
 	@TransactionalEventListener
 	public void onCartRefreshEvent(CartRefreshedEvent event) {
 		Order order = event.getOrder();
+		User user = userFindHelper.findUser(order.getUserId());
 
 		if (isSubscriptionInCart(order)) {
-			refreshCart(order.getUser().getSubscriptionCartId(), event.getOrderedIds());
+			refreshCart(user.getSubscriptionCartId(), event.getOrderedIds());
 			return;
 		}
 
-		refreshCart(order.getUser().getNormalCartId(), event.getOrderedIds());
+		refreshCart(user.getNormalCartId(), event.getOrderedIds());
 	}
 
 	private boolean isSubscriptionInCart(Order order) {

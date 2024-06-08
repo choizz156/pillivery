@@ -10,12 +10,9 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -31,13 +28,11 @@ import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.PaymentCode;
 import com.team33.modulecore.order.domain.Receiver;
 import com.team33.modulecore.order.dto.OrderContext;
-import com.team33.modulecore.user.domain.entity.User;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -74,9 +69,7 @@ public class Order extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus = OrderStatus.REQUEST;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+	private Long userId;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> orderItems = new ArrayList<>();
@@ -87,12 +80,13 @@ public class Order extends BaseEntity {
 		this.totalItemsCount = origin.getTotalItemsCount();
 		this.totalQuantity = origin.getTotalQuantity();
 		this.paymentCode = origin.getPaymentCode();
-		this.orderPrice = 	origin.getOrderPrice();
+		this.orderPrice = origin.getOrderPrice();
 		this.receiver = origin.getReceiver();
 		this.orderStatus = origin.getOrderStatus();
-		this.user = origin.getUser();
+		this.userId = origin.getUserId();
 		this.orderItems = origin.getOrderItems();
 		this.mainItemName = origin.getMainItemName();
+		this.userId = origin.getUserId();
 	}
 
 	@Builder
@@ -106,7 +100,7 @@ public class Order extends BaseEntity {
 		Receiver receiver,
 		OrderStatus orderStatus,
 		int totalQuantity,
-		User user,
+		Long userId,
 		List<OrderItem> orderItems
 	) {
 		this.isSubscription = isSubscription;
@@ -118,16 +112,16 @@ public class Order extends BaseEntity {
 		this.receiver = receiver;
 		this.orderStatus = orderStatus;
 		this.totalQuantity = totalQuantity;
-		this.user = user;
+		this.userId = userId;
 		this.orderItems = orderItems;
 	}
 
-	public static Order create(List<OrderItem> orderItems, OrderContext orderContext, User user) {
+	public static Order create(List<OrderItem> orderItems, OrderContext orderContext) {
 		Order order = Order.builder()
 			.receiver(orderContext.getReceiver())
 			.isSubscription(orderContext.isSubscription())
 			.isOrderedAtCart(orderContext.isOrderedCart())
-			.user(user)
+			.userId(orderContext.getUserId())
 			.orderStatus(OrderStatus.REQUEST)
 			.orderItems(orderItems)
 			.totalItemsCount(orderItems.size())
@@ -152,14 +146,6 @@ public class Order extends BaseEntity {
 
 	public void addTid(String tid) {
 		this.paymentCode = PaymentCode.addTid(tid);
-	}
-
-	public String getOrdererCity() {
-		return this.user.getCityAtAddress();
-	}
-
-	public String getOrdererDetailAddress() {
-		return this.user.getDetailAddress();
 	}
 
 	public Item getFirstItem() {

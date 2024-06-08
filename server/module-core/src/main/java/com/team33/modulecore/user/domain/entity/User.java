@@ -10,7 +10,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -73,7 +72,7 @@ public class User extends BaseEntity {
 
 	private Long subscriptionCartId;
 
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection
 	@CollectionTable(name = "user_review", joinColumns = @JoinColumn(name = "user_id"))
 	@Column(name = "review_id")
 	private Set<Long> reviewIds = new HashSet<>();

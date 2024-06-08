@@ -12,7 +12,6 @@ import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.order.dto.OrderContext;
-import com.team33.modulecore.user.domain.entity.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +41,7 @@ public class OrderCreateService {
 	}
 
 	private Order createOrder(List<OrderItem> orderItems, OrderContext orderContext) {
-		User user = userFindHelper.findUser(orderContext.getUserId());
-		return Order.create(orderItems, orderContext, user);
+
+		return Order.create(orderItems, orderContext);
 	}
 }
