@@ -29,11 +29,12 @@ public class ReviewServiceMapper {
 			.build();
 	}
 
-	public ReviewContext toReviewPatchContext(ReviewPatchDto reviewPostDto) {
+	public ReviewContext toReviewPatchContext(ReviewPatchDto reviewPatchDto) {
 		return ReviewContext.builder()
-			.reviewId(reviewPostDto.getReviewId())
-			.content(reviewPostDto.getContent())
-			.star(reviewPostDto.getStar())
+			.userId(reviewPatchDto.getUserId())
+			.reviewId(reviewPatchDto.getReviewId())
+			.content(reviewPatchDto.getContent())
+			.star(reviewPatchDto.getStar())
 			.build();
 	}
 

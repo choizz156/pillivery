@@ -1,13 +1,14 @@
 package com.team33.moduleapi.ui.review.dto;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class ReviewPatchDto {
-
-	private Long reviewId;
+	private long userId;
+	private long itemId;
+	private long reviewId;
 	private String content;
 	private double star;
 }

@@ -6,16 +6,16 @@ import lombok.Getter;
 @Getter
 public class ReviewContext {
 
-	private Long reviewId;
-	private Long orderId;
+	private long reviewId;
+	private long orderId;
 	private String content;
 	private double star;
-	private Long itemId;
-	private Long userId;
+	private long itemId;
+	private long userId;
 	private String displayName;
 
 	@Builder
-	public ReviewContext(Long reviewId, Long orderId, String content, double star, Long itemId, Long userId, String displayName) {
+	public ReviewContext(long reviewId, long orderId, String content, double star, long itemId, long userId, String displayName) {
 		this.reviewId = reviewId;
 		this.orderId = orderId;
 		this.content = content;

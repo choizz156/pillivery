@@ -1,13 +1,13 @@
 package com.team33.moduleapi.ui.review.dto;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+
 @Data
+@Builder
 public class ReviewDeleteDto {
-
-	private Long reviewId;
-	private Long userId;
-	private Long itemId;
+	private long reviewId;
+	private long itemId;
+	private long userId;
 }

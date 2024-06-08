@@ -14,4 +14,8 @@ public enum OrderStatus {
 	SUBSCRIBE_CANCEL("구독 취소");
 
 	private final String description;
+
+	public boolean isOrdered() {
+		return this != COMPLETE;
+	}
 }

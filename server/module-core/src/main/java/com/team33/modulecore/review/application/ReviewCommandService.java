@@ -22,11 +22,8 @@ public class ReviewCommandService {
 	private final ReviewCommandRepository reviewCommandRepository;
 	private final ItemCommandService itemCommandService;
 	private final UserService userService;
-	private final ReviewValidator reviewValidator;
-
 
 	public Review createReview(ReviewContext context) {
-		reviewValidator.validate(context);
 
 		Review review = reviewCommandRepository.save(Review.create(context));
 
@@ -42,7 +39,7 @@ public class ReviewCommandService {
 	}
 
 	public void deleteReview(ReviewContext context) {
-		Long reviewId = context.getReviewId();
+		long reviewId = context.getReviewId();
 
 		Review review = findReview(reviewId);
 		review.delete(context);

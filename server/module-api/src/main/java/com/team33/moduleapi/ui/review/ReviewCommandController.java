@@ -33,6 +33,7 @@ public class ReviewCommandController {
 	private final ReviewCommandService reviewCommandService;
 	private final ReviewServiceMapper reviewServiceMapper;
 
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public SingleResponseDto<ReviewDetailResponseDto> postReview(
 		@RequestBody ReviewPostDto reviewPostDto
@@ -44,6 +45,7 @@ public class ReviewCommandController {
 
 		return new SingleResponseDto<>(ReviewDetailResponseDto.of(review));
 	}
+
 
 	@PatchMapping
 	public SingleResponseDto<ReviewDetailResponseDto> updateReview(
@@ -58,7 +60,9 @@ public class ReviewCommandController {
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping
-	public void deleteReview(@RequestBody ReviewDeleteDto reviewDeleteDto) {
+	public void deleteReview(
+		@RequestBody ReviewDeleteDto reviewDeleteDto
+	) {
 		ReviewContext reviewContext = reviewServiceMapper.toReviewDeleteContext(reviewDeleteDto);
 
 		reviewCommandService.deleteReview(reviewContext);
