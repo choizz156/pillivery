@@ -84,5 +84,4 @@ public class OrderQueryController {
 
 		return new SingleResponseDto<>(orderDetailResponse);
 	}
-
 }

@@ -78,7 +78,6 @@ class PaymentAcceptanceTest extends ApiTest {
 		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.setNull("id")
 			.setNull("orderItems")
-			.setNull("user")
 			.sample();
 
 		orderCommandRepository.save(order);

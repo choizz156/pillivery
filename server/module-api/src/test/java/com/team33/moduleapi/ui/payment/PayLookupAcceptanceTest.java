@@ -36,7 +36,6 @@ class PayLookupAcceptanceTest extends ApiTest {
 		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.setNull("id")
 			.setNull("orderItems")
-			.setNull("user")
 			.set("paymentCode.tid", "tid")
 			.sample();
 

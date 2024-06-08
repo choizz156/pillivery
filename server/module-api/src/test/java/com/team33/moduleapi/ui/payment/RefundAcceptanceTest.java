@@ -51,7 +51,6 @@ class RefundAcceptanceTest extends ApiTest {
 			.setNull("id")
 			.setNull("orderItems")
 			.set("orderPrice.totalPrice", 1000)
-			.setNull("user")
 			.sample();
 
 		orderCommandRepository.save(order);
