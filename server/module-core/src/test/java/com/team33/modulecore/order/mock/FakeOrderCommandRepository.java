@@ -7,18 +7,18 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 
-public class FakeOrderRepository implements OrderRepository {
+public class FakeOrderCommandRepository implements OrderCommandRepository {
 
 	private Map<Long, Order> store;
 	private EntityManager em;
 
-	public FakeOrderRepository(EntityManager em) {
+	public FakeOrderCommandRepository(EntityManager em) {
 		this.em = em;
 	}
 
-	public FakeOrderRepository() {
+	public FakeOrderCommandRepository() {
 		this.store = new HashMap<>();
 	}
 

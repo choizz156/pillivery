@@ -18,7 +18,7 @@ import com.team33.moduleapi.exception.controller.ExceptionController;
 import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.payment.kakao.application.events.KakaoSubsCanceledEvent;
 import com.team33.moduleevent.application.SubsCanceledEventHandler;
 
@@ -33,7 +33,7 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 	private OrderStatusService orderStatusService;
 
 	@Autowired
-	private OrderRepository orderRepository;
+	private OrderCommandRepository orderCommandRepository;
 
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -74,7 +74,7 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 			.set("paymentCode.sid", "sid")
 			.sample();
 
-		orderRepository.save(order);
+		orderCommandRepository.save(order);
 
 		//when
 		//@formatter:off
@@ -104,7 +104,7 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 			.setNull("paymentCode.sid")
 			.sample();
 
-		orderRepository.save(order);
+		orderCommandRepository.save(order);
 
 		//@formatter:off
 		given

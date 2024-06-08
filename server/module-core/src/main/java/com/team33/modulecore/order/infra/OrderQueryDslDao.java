@@ -110,6 +110,16 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		return fetch;
 	}
 
+	@Override
+	public boolean findIsSubscriptionById(Long orderId) {
+		return queryFactory.select(order.isSubscription).from(order).where(order.id.eq(orderId)).fetchOne();
+	}
+
+	@Override
+	public String findTid(Long orderId) {
+		return queryFactory.select(order.paymentCode.tid).from(order).where(order.id.eq(orderId)).fetchOne();
+	}
+
 	private BooleanExpression orderUserAndOrderItemUserEq() {
 		return orderItem.order.userId.eq(order.userId);
 	}

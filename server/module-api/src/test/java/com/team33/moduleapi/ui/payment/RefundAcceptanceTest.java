@@ -19,7 +19,7 @@ import com.team33.moduleapi.ui.payment.dto.RefundDto;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleevent.application.RefundEventHandler;
 
@@ -31,7 +31,7 @@ class RefundAcceptanceTest extends ApiTest {
 	private Order order;
 
 	@Autowired
-	private OrderRepository orderRepository;
+	private OrderCommandRepository orderCommandRepository;
 
 	@Autowired
 	private OrderStatusService orderStatusService;
@@ -54,7 +54,7 @@ class RefundAcceptanceTest extends ApiTest {
 			.setNull("user")
 			.sample();
 
-		orderRepository.save(order);
+		orderCommandRepository.save(order);
 	}
 
 	@DisplayName("결제를 취소할 수 있다.")

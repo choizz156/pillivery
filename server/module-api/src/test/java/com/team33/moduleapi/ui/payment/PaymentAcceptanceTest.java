@@ -20,7 +20,7 @@ import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
 import com.team33.modulecore.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.payment.kakao.application.approve.KakaoApproveFacade;
 import com.team33.modulecore.payment.kakao.application.request.KakaoRequestFacade;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
@@ -37,7 +37,7 @@ class PaymentAcceptanceTest extends ApiTest {
 	private KakaoRequestFacade requestFacade;
 
 	@Autowired
-	private OrderRepository orderRepository;
+	private OrderCommandRepository orderCommandRepository;
 
 	@Autowired
 	private PaymentMapper paymentMapper;
@@ -81,7 +81,7 @@ class PaymentAcceptanceTest extends ApiTest {
 			.setNull("user")
 			.sample();
 
-		orderRepository.save(order);
+		orderCommandRepository.save(order);
 	}
 
 	@DisplayName("카카오 단건, 정기 결제 요청을 보내면 tid, redirect_url 등을 받을 수 있다.")

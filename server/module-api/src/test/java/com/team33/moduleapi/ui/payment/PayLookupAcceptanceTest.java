@@ -14,7 +14,7 @@ import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.payment.kakao.application.lookup.KakaoPayLookupService;
 import com.team33.modulecore.payment.kakao.dto.KakaoLookupResponse;
 
@@ -26,7 +26,7 @@ class PayLookupAcceptanceTest extends ApiTest {
 	private Order order;
 
 	@Autowired
-	private OrderRepository orderRepository;
+	private OrderCommandRepository orderCommandRepository;
 
 	@Autowired
 	private OrderFindHelper orderFindHelper;
@@ -40,7 +40,7 @@ class PayLookupAcceptanceTest extends ApiTest {
 			.set("paymentCode.tid", "tid")
 			.sample();
 
-		orderRepository.save(order);
+		orderCommandRepository.save(order);
 	}
 
 

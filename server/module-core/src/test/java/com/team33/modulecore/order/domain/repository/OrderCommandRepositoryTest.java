@@ -14,19 +14,19 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.mock.FakeOrderRepository;
+import com.team33.modulecore.order.mock.FakeOrderCommandRepository;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class OrderRepositoryTest {
+class OrderCommandRepositoryTest {
 	private EntityManagerFactory emf;
 	private EntityManager em;
-	private OrderRepository orderRepository;
+	private OrderCommandRepository orderCommandRepository;
 
 	@BeforeAll
 	void beforeAll() {
 		emf = Persistence.createEntityManagerFactory("test");
 		em = emf.createEntityManager();
-		orderRepository = new FakeOrderRepository(em);
+		orderCommandRepository = new FakeOrderCommandRepository(em);
 		em.getTransaction().begin();
 	}
 
@@ -51,7 +51,7 @@ class OrderRepositoryTest {
 		em.persist(order);
 
 		//when
-		boolean isSubscriptionById = orderRepository.findIsSubscriptionById(order.getId());
+		boolean isSubscriptionById = orderCommandRepository.findIsSubscriptionById(order.getId());
 
 		//then
 		assertThat(isSubscriptionById).isTrue();
@@ -71,7 +71,7 @@ class OrderRepositoryTest {
 		em.persist(order);
 
 		//when
-		String tid = orderRepository.findTid(order.getId());
+		String tid = orderCommandRepository.findTid(order.getId());
 
 		//then
 		assertThat(tid).isEqualTo("tid");

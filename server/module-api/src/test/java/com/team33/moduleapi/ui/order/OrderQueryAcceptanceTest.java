@@ -28,7 +28,7 @@ import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 import com.team33.modulecore.order.dto.OrderPage;
@@ -40,7 +40,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 	private ItemCommandRepository itemCommandRepository;
 
 	@Autowired
-	private OrderRepository orderRepository;
+	private OrderCommandRepository orderCommandRepository;
 
 	@Autowired
 	private OrderItemService orderItemService;
@@ -109,7 +109,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 		Order order = orderCreateService.callOrder(orderItems, orderContext);
 
 		order.changeOrderStatus(OrderStatus.COMPLETE);
-		orderRepository.save(order);
+		orderCommandRepository.save(order);
 	}
 
 	private OrderPostListDto 주문_정보(boolean subscription, int period) {

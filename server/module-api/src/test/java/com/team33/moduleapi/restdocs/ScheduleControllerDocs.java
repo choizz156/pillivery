@@ -23,7 +23,7 @@
 // import com.team33.modulecore.order.application.OrderQueryService;
 // import com.team33.modulecore.order.domain.OrderItem;
 // import com.team33.modulecore.order.domain.entity.Order;
-// import com.team33.modulecore.order.domain.repository.OrderRepository;
+// import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 // import com.team33.modulecore.order.application.OrderItemService;
 // import com.team33.modulecore.user.domain.entity.User;
 // import io.restassured.module.mockmvc.response.MockMvcResponse;
@@ -49,7 +49,7 @@
 //     private OrderQueryService orderQueryService;
 //
 //     @MockBean
-//     private OrderRepository orderRepository;
+//     private OrderCommandRepository orderRepository;
 //
 //     @MockBean
 //     private OrderItemService orderItemService;

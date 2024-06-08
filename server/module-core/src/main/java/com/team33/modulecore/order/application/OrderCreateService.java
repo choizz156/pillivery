@@ -10,7 +10,7 @@ import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.order.dto.OrderContext;
 
 import lombok.RequiredArgsConstructor;
@@ -20,23 +20,23 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class OrderCreateService {
 
-	private final OrderRepository orderRepository;
+	private final OrderCommandRepository orderCommandRepository;
 	private final UserFindHelper userFindHelper;
 
 	public Order callOrder(List<OrderItem> orderItems, OrderContext orderContext) {
 		Order order = createOrder(orderItems, orderContext);
-		return orderRepository.save(order);
+		return orderCommandRepository.save(order);
 	}
 
 	public Order deepCopy(Order order) {
 		Order newOrder = new Order(order);
-		orderRepository.save(newOrder);
+		orderCommandRepository.save(newOrder);
 
 		return newOrder;
 	}
 
 	public Order findOrder(long orderId) {
-		return orderRepository.findById(orderId)
+		return orderCommandRepository.findById(orderId)
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
 	}
 

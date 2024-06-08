@@ -8,15 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import com.team33.modulecore.order.domain.entity.Order;
 
-public interface OrderRepository extends Repository<Order, Long> {
+public interface OrderCommandRepository extends Repository<Order, Long> {
 
     Order save(Order order);
     Optional<Order> findById(Long id);
     void delete(Order entity);
-
-	@Query("select o.isSubscription from Order o where o.id = :orderId")
-	boolean findIsSubscriptionById(@Param("orderId") Long orderId);
-
-	@Query("select o.paymentCode.tid from Order o where o.id = :orderId")
-	String findTid(@Param("orderId") Long orderId);
 }

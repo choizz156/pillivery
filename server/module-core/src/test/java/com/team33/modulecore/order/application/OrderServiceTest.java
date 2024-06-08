@@ -23,11 +23,11 @@ import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.Receiver;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderRepository;
+import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.events.CartRefreshedEvent;
 import com.team33.modulecore.order.events.ItemSaleCountedEvent;
-import com.team33.modulecore.order.mock.FakeOrderRepository;
+import com.team33.modulecore.order.mock.FakeOrderCommandRepository;
 import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
 import com.team33.modulecore.payment.application.refund.RefundService;
 import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
@@ -37,13 +37,13 @@ import com.team33.modulecore.user.domain.entity.User;
 class OrderServiceTest {
 
 	private User user;
-	private OrderRepository orderRepository;
+	private OrderCommandRepository orderCommandRepository;
 
 	@BeforeAll
 	void beforeAll() {
 		getMockItem();
 		user = getMockUser();
-		orderRepository = new FakeOrderRepository();
+		orderCommandRepository = new FakeOrderCommandRepository();
 	}
 
 	@DisplayName("order 객체를 생성할 수 있다.")
@@ -67,7 +67,7 @@ class OrderServiceTest {
 		given(userFindHelper.findUser(anyLong())).willReturn(user);
 
 		var orderService =
-			new OrderCreateService(orderRepository, userFindHelper);
+			new OrderCreateService(orderCommandRepository, userFindHelper);
 
 		//when
 		Order order = orderService.callOrder(orderItems, orderContext);
@@ -84,7 +84,7 @@ class OrderServiceTest {
 	@Test
 	void 주문_상태_변경1() throws Exception {
 		//given
-		var order = orderRepository.save(getNoCartOrder());
+		var order = orderCommandRepository.save(getNoCartOrder());
 
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
@@ -96,7 +96,7 @@ class OrderServiceTest {
 		var orderService =
 			new OrderStatusService(
 				applicationContext,
-				new OrderFindHelper(orderRepository),
+				new OrderFindHelper(orderCommandRepository),
 				new OrderPaymentCodeService(orderFindHelper),
 				cancelSubscriptionService,
 				refundService
@@ -116,12 +116,12 @@ class OrderServiceTest {
 	@Test
 	void 주문_상태_변경2() throws Exception {
 		//given
-		var order = orderRepository.save(getCartOrder());
+		var order = orderCommandRepository.save(getCartOrder());
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 		CancelSubscriptionService cancelSubscriptionService = mock(CancelSubscriptionService.class);
 		RefundService refundService = mock(RefundService.class);
 
-		OrderFindHelper orderFindHelper = new OrderFindHelper(orderRepository);
+		OrderFindHelper orderFindHelper = new OrderFindHelper(orderCommandRepository);
 
 		var orderService =
 			new OrderStatusService(
@@ -153,12 +153,12 @@ class OrderServiceTest {
 			.setNull("orderItems")
 			.sample();
 
-		var order = orderRepository.save(sample);
+		var order = orderCommandRepository.save(sample);
 
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository), null, null, null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository), null, null, null);
 
 		//when
 		orderService.processOneTimeStatus(order.getId());
@@ -181,11 +181,11 @@ class OrderServiceTest {
 			.setNull("orderItems")
 			.sample();
 
-		var order = orderRepository.save(sample);
+		var order = orderCommandRepository.save(sample);
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository), null, null, null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository), null, null, null);
 
 		//when
 		orderService.processOneTimeStatus(order.getId());
@@ -212,13 +212,13 @@ class OrderServiceTest {
 			.cancelTaxFreeAmount(0)
 			.build();
 
-		var order = orderRepository.save(sample);
+		var order = orderCommandRepository.save(sample);
 
 		RefundService refundService = mock(RefundService.class);
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderRepository), null, null, refundService);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository), null, null, refundService);
 
 		//when
 		orderService.processCancel(order.getId(), refundContext);
@@ -240,10 +240,10 @@ class OrderServiceTest {
 			.setNull("orderItems")
 			.sample();
 
-		var order = orderRepository.save(sample);
+		var order = orderCommandRepository.save(sample);
 
 		var orderService =
-			new OrderPaymentCodeService(new OrderFindHelper(orderRepository));
+			new OrderPaymentCodeService(new OrderFindHelper(orderCommandRepository));
 
 		//when
 		orderService.addTid(order.getId(), "tid");
@@ -256,10 +256,10 @@ class OrderServiceTest {
 	@Test
 	void 정기_구독_수량_조정() throws Exception {
 		//given
-		var order = orderRepository.save(getMockOrderWithOrderItem());
+		var order = orderCommandRepository.save(getMockOrderWithOrderItem());
 
 		var orderService =
-			new OrderSubscriptionService(new OrderFindHelper(orderRepository));
+			new OrderSubscriptionService(new OrderFindHelper(orderCommandRepository));
 
 		//when
 		orderService.changeSubscriptionItemQuantity(
@@ -279,7 +279,7 @@ class OrderServiceTest {
 	void 주문_복사() throws Exception {
 		//given
 		var orderService =
-			new OrderCreateService(orderRepository, null);
+			new OrderCreateService(orderCommandRepository, null);
 		Order order = getMockOrderWithOrderItem();
 
 		//when

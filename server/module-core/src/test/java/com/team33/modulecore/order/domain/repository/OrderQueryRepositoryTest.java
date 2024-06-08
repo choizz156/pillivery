@@ -127,7 +127,6 @@ class OrderQueryRepositoryTest {
 	private User getMockUser() {
 		return FixtureMonkeyFactory.get().giveMeBuilder(User.class)
 			.set("id", null)
-			.set("cartId", null)
 			.sample();
 	}
 
