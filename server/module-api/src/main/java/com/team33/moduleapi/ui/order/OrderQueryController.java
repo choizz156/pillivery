@@ -38,7 +38,6 @@ public class OrderQueryController {
 	private final OrderQueryService orderQueryService;
 	private final OrderItemMapper orderItemMapper;
 
-
 	@GetMapping
 	public MultiResponseDto<?> getOrders(
 		@RequestParam Long userId,

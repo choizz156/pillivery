@@ -19,7 +19,7 @@ public class OrderSimpleResponseDto { // 주문 목록 조회
     private int totalItems;
     private int expectPrice;
     private boolean subscription;
-    private ItemSimpleResponseDto item;
+    private ItemSimpleResponseDto firstItem;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
@@ -39,7 +39,7 @@ public class OrderSimpleResponseDto { // 주문 목록 조회
         this.totalItems = totalItems;
         this.expectPrice = expectPrice;
         this.subscription = subscription;
-        this.item = item;
+        this.firstItem = item;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

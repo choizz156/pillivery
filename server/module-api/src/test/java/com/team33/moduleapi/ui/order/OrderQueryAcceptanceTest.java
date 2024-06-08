@@ -1,6 +1,5 @@
 package com.team33.moduleapi.ui.order;
 
-import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
@@ -27,13 +26,16 @@ import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderRepository;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
+import com.team33.modulecore.order.dto.OrderPage;
 
-class OrderCommandAcceptanceTest extends ApiTest {
+import io.restassured.RestAssured;
 
+class OrderQueryAcceptanceTest extends ApiTest {
 	@Autowired
 	private ItemCommandRepository itemCommandRepository;
 
@@ -49,76 +51,55 @@ class OrderCommandAcceptanceTest extends ApiTest {
 	@Autowired
 	private OrderCreateService orderCreateService;
 
-	@DisplayName("주문 객체를 생성하여 api 응답을 보낼 수 있다.")
+	@DisplayName("주문 정보를 조회하여 api 응답을 보낼 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
 	@Test
-	void 주문_생성() throws Exception {
+	void 주문_조회() throws Exception {
 		//given
-		아이템_저장("test", 10000, 0.0, CategoryName.INTESTINE, "brand");
+		주문_저장(주문_정보(false, 0));
+		주문_저장(주문_정보(false, 0));
 
-		OrderPostListDto postListDto = 주문_정보(false, 0);
+		OrderPage page = new OrderPage();
+		page.setPage(1);
+		page.setSize(10);
 
-		//when
-		given()
+		RestAssured.given()
+			.queryParam("userId", 1)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(postListDto)
+			.body(page)
 			.header("Authorization", getToken())
 			.log().all()
 			.when()
-			.post("/orders")
+			.get("/orders")
 			.then()
-			.statusCode(HttpStatus.CREATED.value())
-			.body("data.orderId", equalTo(1))
-			.body("data.totalItems", equalTo(1))
-			.body("data.totalPrice", equalTo(10000))
-			.body("data.totalDiscountPrice", equalTo(0))
-			.body("data.expectPrice", equalTo(10000))
-			.body("data.subscription", equalTo(false))
+			.log().all()
+			.statusCode(HttpStatus.OK.value())
+			.body("data.size()", is(2))
+			.body("data[0].orderId", equalTo(2))
+			.body("data[0].orderStatus", equalTo("COMPLETE"))
+			.body("data[0].totalItems", equalTo(2))
+			.body("data[0].expectPrice", equalTo(20000))
+			.body("data[0].subscription", equalTo(false))
+			.body("data[0].firstItem.itemId", equalTo(1))
+			.body("data[0].firstItem.enterprise", equalTo("(주)씨티씨바이오"))
+			.body("data[0].firstItem.thumbnail", equalTo("thumbnailUrl"))
+			.body("data[0].firstItem.product", equalTo("16종혼합유산균 디에스"))
+			.body("data[0].firstItem.originPrice", equalTo(10000))
+			.body("data[0].firstItem.realPrice", equalTo(0))
+			.body("data[0].firstItem.discountRate", equalTo(0.0f))
+			.body("data[0].firstItem.discountPrice", equalTo(0))
 
-			.body("data.itemOrders[0].orderItemId", equalTo(1))
-			.body("data.itemOrders[0].quantity", equalTo(1))
-			.body("data.itemOrders[0].period", equalTo(0))
-			.body("data.itemOrders[0].subscription", equalTo(false))
+			.body("data[1].orderId", equalTo(1))
 
-			.body("data.itemOrders[0].item.itemId", equalTo(1))
-			.body("data.itemOrders[0].item.enterprise", equalTo("brand"))
-			.body("data.itemOrders[0].item.thumbnail", equalTo("thumbnailUrl"))
-			.body("data.itemOrders[0].item.product", equalTo("test"))
-			.body("data.itemOrders[0].item.originPrice", equalTo(10000))
-			.body("data.itemOrders[0].item.realPrice", equalTo(0))
-			.body("data.itemOrders[0].item.discountRate", equalTo(0.0f))
-			.body("data.itemOrders[0].item.discountPrice", equalTo(0))
-
-			.body("data.orderStatus", equalTo("REQUEST"))
-			.body("data.totalQuantity", equalTo(1))
-
-			.body("data.receiver.realName", equalTo("홍길동"))
-			.body("data.receiver.phone", equalTo("010-1111-1111"))
-			.body("data.receiver.address.city", equalTo("서울"))
-			.body("data.receiver.address.detailAddress", equalTo("101 번지"));
+			.body("pageInfo.page", equalTo(1))
+			.body("pageInfo.size", equalTo(10))
+			.body("pageInfo.totalElements", equalTo(2))
+			.body("pageInfo.totalPages", equalTo(1));
 	}
 
-	@DisplayName("정기 결제 진행 중인 아이템의 수량을 변경할 수 있다.")
-	@UserAccount({"test", "010-0000-0000"})
-	@Test
-	void 정기_주문_수량_변경() throws Exception {
-		//given
-		아이템_저장("test", 10000, 0.0, CategoryName.INTESTINE, "brand");
-		주문_저장();
-
-		//when
-		given()
-			.queryParam("orderItemId", 1)
-			.queryParam("quantity", 2)
-			.header("Authorization", getToken())
-			.when()
-			.patch("/orders/subscriptions/1")
-			.then()
-			.statusCode(HttpStatus.NO_CONTENT.value());
-	}
-
-	private void 주문_저장() {
-		OrderPostListDto postListDto = 주문_정보(true, 30);
+	public void 주문_저장(OrderPostListDto postListDto) {
+		아이템_저장("16종혼합유산균 디에스", 10000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
+		아이템_저장("종혼합유산균 디에스2", 10000, 0, CategoryName.EYE, "(주)씨티씨바이오");
 
 		List<OrderItemServiceDto> orderItemPostDto = orderItemMapper.toOrderItemPostDto(
 			postListDto.getOrderPostDtoList());
@@ -126,10 +107,14 @@ class OrderCommandAcceptanceTest extends ApiTest {
 		List<OrderItem> orderItems = orderItemService.toOrderItems(orderItemPostDto);
 
 		Order order = orderCreateService.callOrder(orderItems, orderContext);
+
+		order.changeOrderStatus(OrderStatus.COMPLETE);
+		orderRepository.save(order);
 	}
 
 	private OrderPostListDto 주문_정보(boolean subscription, int period) {
-		OrderPostListDto postListDto = OrderPostListDto.builder()
+
+		return OrderPostListDto.builder()
 			.userId(1L)
 			.subscription(subscription)
 			.orderedAtCart(false)
@@ -143,12 +128,16 @@ class OrderCommandAcceptanceTest extends ApiTest {
 						.period(period)
 						.quantity(1)
 						.subscription(subscription)
+						.build(),
+					OrderPostDto.builder()
+						.itemId(2L)
+						.period(period)
+						.quantity(1)
+						.subscription(subscription)
 						.build()
 				)
 			)
 			.build();
-
-		return postListDto;
 	}
 
 	private void 아이템_저장(
@@ -192,5 +181,4 @@ class OrderCommandAcceptanceTest extends ApiTest {
 
 		itemCommandRepository.save(item);
 	}
-
 }

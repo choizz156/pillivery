@@ -1,10 +1,11 @@
 package com.team33.moduleapi;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.DiscriminatorType;
+import javax.persistence.CollectionTable;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -24,6 +25,7 @@ public class DataCleaner implements InitializingBean {
 	private EntityManager em;
 
 	private List<String> tableNames;
+	private List<String> collectionTableNames;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -44,32 +46,44 @@ public class DataCleaner implements InitializingBean {
 			.collect(Collectors.toList());
 
 		tableNames.addAll(onlyEntity);
+
+		collectionTableNames = entities.stream()
+			.flatMap(e -> Arrays.stream(e.getJavaType().getDeclaredFields()))
+			.filter(field -> field.getAnnotation(CollectionTable.class) != null)
+			.map(field -> field.getAnnotation(CollectionTable.class).name())
+			.collect(Collectors.toList());
 	}
 
 	@Transactional
-	public void execute(){
+	public void execute() {
 		em.flush();
 		em.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
 		for (String tableName : tableNames) {
 			em.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
 
-			if(tableName.endsWith("s")){
+			if (tableName.endsWith("s")) {
 				setColumn(tableName, tableName.substring(0, tableName.length() - 1));
-			}else{
+			} else {
 				setColumn(tableName, tableName);
 			}
 		}
-		em.createNativeQuery("TRUNCATE TABLE item_category").executeUpdate();
+
+		collectionTableNames.stream()
+			.map(tableName -> "TRUNCATE TABLE " + tableName)
+			.forEach(sql -> em.createNativeQuery(sql).executeUpdate());
+
 		em.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
 	}
 
 	private void setColumn(String tableName, String idName) {
-		em.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN " + idName + "_id" + " RESTART WITH 1").executeUpdate();
+		em.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN " + idName + "_id" + " RESTART WITH 1")
+			.executeUpdate();
 	}
 
 	private boolean isEntity(EntityType<?> e) {
-		if(e.getJavaType().getAnnotation(DiscriminatorValue.class) != null){
+
+		if (e.getJavaType().getAnnotation(DiscriminatorValue.class) != null) {
 			return false;
 		}
 		return e.getJavaType().getAnnotation(Entity.class) != null;
