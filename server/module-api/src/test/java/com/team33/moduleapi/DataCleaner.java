@@ -21,6 +21,7 @@ import com.google.common.base.CaseFormat;
 
 @Component
 public class DataCleaner implements InitializingBean {
+
 	@PersistenceContext
 	private EntityManager em;
 

@@ -17,7 +17,6 @@ import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.user.domain.Address;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
@@ -31,6 +30,7 @@ import com.team33.modulecore.order.mock.FakeOrderCommandRepository;
 import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
 import com.team33.modulecore.payment.application.refund.RefundService;
 import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
+import com.team33.modulecore.user.domain.Address;
 import com.team33.modulecore.user.domain.entity.User;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -96,7 +96,7 @@ class OrderServiceTest {
 		var orderService =
 			new OrderStatusService(
 				applicationContext,
-				new OrderFindHelper(orderCommandRepository),
+				new OrderFindHelper(orderCommandRepository, null),
 				new OrderPaymentCodeService(orderFindHelper),
 				cancelSubscriptionService,
 				refundService
@@ -121,7 +121,7 @@ class OrderServiceTest {
 		CancelSubscriptionService cancelSubscriptionService = mock(CancelSubscriptionService.class);
 		RefundService refundService = mock(RefundService.class);
 
-		OrderFindHelper orderFindHelper = new OrderFindHelper(orderCommandRepository);
+		OrderFindHelper orderFindHelper = new OrderFindHelper(orderCommandRepository, null);
 
 		var orderService =
 			new OrderStatusService(
@@ -158,7 +158,8 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository), null, null, null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null,
+				null);
 
 		//when
 		orderService.processOneTimeStatus(order.getId());
@@ -185,7 +186,8 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository), null, null, null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null,
+				null);
 
 		//when
 		orderService.processOneTimeStatus(order.getId());
@@ -218,7 +220,8 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository), null, null, refundService);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null,
+				refundService);
 
 		//when
 		orderService.processCancel(order.getId(), refundContext);
@@ -243,7 +246,7 @@ class OrderServiceTest {
 		var order = orderCommandRepository.save(sample);
 
 		var orderService =
-			new OrderPaymentCodeService(new OrderFindHelper(orderCommandRepository));
+			new OrderPaymentCodeService(new OrderFindHelper(orderCommandRepository, null));
 
 		//when
 		orderService.addTid(order.getId(), "tid");
@@ -259,7 +262,7 @@ class OrderServiceTest {
 		var order = orderCommandRepository.save(getMockOrderWithOrderItem());
 
 		var orderService =
-			new OrderSubscriptionService(new OrderFindHelper(orderCommandRepository));
+			new OrderSubscriptionService(new OrderFindHelper(orderCommandRepository, null));
 
 		//when
 		orderService.changeSubscriptionItemQuantity(

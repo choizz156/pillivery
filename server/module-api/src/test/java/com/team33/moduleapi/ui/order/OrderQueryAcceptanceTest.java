@@ -200,9 +200,9 @@ class OrderQueryAcceptanceTest extends ApiTest {
 
 	}
 
-	public void 주문_저장(OrderPostListDto postListDto, OrderStatus orderStatus) {
-		아이템_저장("16종혼합유산균 디에스", 10000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
-		아이템_저장("종혼합유산균 디에스2", 10000, 0, CategoryName.EYE, "(주)씨티씨바이오");
+	private void 주문_저장(OrderPostListDto postListDto, OrderStatus orderStatus) {
+		아이템_저장("16종혼합유산균 디에스", CategoryName.INTESTINE);
+		아이템_저장("종혼합유산균 디에스2", CategoryName.EYE);
 
 		List<OrderItemServiceDto> orderItemPostDto =
 			orderItemMapper.toOrderItemPostDto(postListDto.getOrderPostDtoList());
@@ -245,13 +245,10 @@ class OrderQueryAcceptanceTest extends ApiTest {
 
 	private void 아이템_저장(
 		String productName,
-		int originPrice,
-		double discountRate,
-		CategoryName categoryName,
-		String enterprise
+		CategoryName categoryName
 	) {
 		Information information = Information.builder()
-			.enterprise(enterprise)
+			.enterprise("(주)씨티씨바이오")
 			.productName(productName)
 			.statementNumber("20040017059225")
 			.registeredDate("20220225")
@@ -271,7 +268,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 				"4. 납(mg/kg) : 1.0 이하\n" +
 				"5. 카드뮴(mg/kg) : 0.3 이하")
 			.image(new Image("thumbnailUrl", "descriptionImage"))
-			.price(new Price(originPrice, discountRate))
+			.price(new Price(10000, 0))
 			.build();
 
 		Item item = Item.builder()

@@ -45,15 +45,13 @@ class ReviewCommandServiceTest {
 		ReviewCommandRepository reviewCommandRepository = mock(ReviewCommandRepository.class);
 		UserService userService = mock(UserService.class);
 		ItemCommandService itemCommandService = mock(ItemCommandService.class);
-		ReviewValidator reviewValidator= mock(ReviewValidator.class);
 
 		when(reviewCommandRepository.save(any(Review.class))).thenReturn(reviewSample);
 
 		ReviewCommandService reviewCommandService = new ReviewCommandService(
 			reviewCommandRepository,
 			itemCommandService,
-			userService,
-			reviewValidator
+			userService
 		);
 
 		//when
@@ -63,7 +61,6 @@ class ReviewCommandServiceTest {
 		verify(reviewCommandRepository, times(1)).save(any(Review.class));
 		verify(userService, times(1)).addReviewId(anyLong(), anyLong());
 		verify(itemCommandService, times(1)).addReviewId(anyLong(), anyLong(), anyDouble());
-		verify(reviewValidator, times(1)).validate(any(ReviewContext.class));
 	}
 
 	@DisplayName("리뷰를 수정할 수 있다.")
@@ -89,7 +86,7 @@ class ReviewCommandServiceTest {
 		ReviewCommandRepository reviewCommandRepository = mock(ReviewCommandRepository.class);
 		when(reviewCommandRepository.findById(anyLong())).thenReturn(Optional.of(review));
 
-		ReviewCommandService reviewCommandService = new ReviewCommandService(reviewCommandRepository, null, null, null);
+		ReviewCommandService reviewCommandService = new ReviewCommandService(reviewCommandRepository, null, null);
 
 		//when
 		Review update = reviewCommandService.updateReview(context);
@@ -127,8 +124,7 @@ class ReviewCommandServiceTest {
 		ReviewCommandService reviewCommandService = new ReviewCommandService(
 			reviewCommandRepository,
 			itemCommandService,
-			userService,
-			null
+			userService
 		);
 
 		//when

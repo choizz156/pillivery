@@ -67,23 +67,26 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 		return null;
 	}
 
+	@Override
+	public boolean findIsSubscriptionById(Long orderId) {
+		return orders.get(orderId).getSid() != null;
+	}
+
+	@Override
+	public String findTid(Long orderId) {
+		return orders.get(orderId).getTid();
+	}
+
 	private List<Order> getMockOrders() {
 		OrderItem mockOrderItem = getMockOrderItem();
-		List<Order> orders1 = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-			.set("orderItems", List.of(mockOrderItem))
-			.set("user", null)
-			.set("orderStatus", OrderStatus.COMPLETE)
-			.set("orderPrice", null)
-			.sampleList(7);
 
-		List<Order> orders2 = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.set("orderItems", List.of(mockOrderItem))
-			.set("user", null)
 			.set("orderStatus", OrderStatus.SUBSCRIBE)
+			.set("paymentCode.sid", "sid")
+			.set("paymentCode.tid", "tid")
 			.set("orderPrice", null)
 			.sampleList(7);
-		orders1.addAll(orders2);
-		return orders1;
 	}
 
 	private OrderItem getMockOrderItem() {

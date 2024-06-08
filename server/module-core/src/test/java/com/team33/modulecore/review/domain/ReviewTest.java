@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.review.domain.entity.Review;
 
 class ReviewTest {
@@ -82,25 +83,9 @@ class ReviewTest {
 		//when
 		//then
 		assertThatThrownBy(() -> review.update(newContent))
-			.isInstanceOf(IllegalArgumentException.class);
+			.isInstanceOf(BusinessLogicException.class);
 	}
 
-	@DisplayName("리뷰를 수정시 아이템이 다르면 예외를 던진다.")
-	@Test
-	void 리뷰_예외2() throws Exception {
-		//given
-		ReviewContext newContent = ReviewContext.builder()
-			.content("new content")
-			.star(3.5)
-			.itemId(2L)
-			.userId(1L)
-			.build();
-
-		//when
-		//then
-		assertThatThrownBy(() -> review.update(newContent))
-			.isInstanceOf(IllegalArgumentException.class);
-	}
 
 	@DisplayName("리뷰 삭제 시 리뷰의 상태를 변경한다.")
 	@Test

@@ -29,7 +29,7 @@ import io.restassured.response.Response;
 /**
  * {@Code @UserAccount}는 회원가입을 하여 security Context에 정보를 저장합니다.
  */
-class UseAcceptanceTest extends ApiTest {
+class UserAcceptanceTest extends ApiTest {
 
 	@Autowired
 	private UserService userService;

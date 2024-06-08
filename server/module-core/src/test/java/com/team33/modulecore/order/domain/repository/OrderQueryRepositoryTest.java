@@ -114,6 +114,47 @@ class OrderQueryRepositoryTest {
 
 	}
 
+	@DisplayName("구독 정보를 조회할 수 있다.")
+	@Test
+	void 구독_정보_조회() throws Exception {
+		//given
+		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.setNull("id")
+			.set("paymentCode.sid", "sid")
+			.set("paymentCode.tid", "tid")
+			.setNull("orderItems")
+			.set("isSubscription", true)
+			.sample();
+
+		em.persist(order);
+
+		//when
+		boolean isSubscriptionById = orderQueryRepository.findIsSubscriptionById(order.getId());
+
+		//then
+		assertThat(isSubscriptionById).isTrue();
+	}
+
+	@DisplayName("tid를 조회할 수 있다.")
+	@Test
+	void tid_조회() throws Exception {
+
+		//given
+		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.setNull("id")
+			.setNull("orderItems")
+			.setNull("user")
+			.set("paymentCode.tid", "tid").sample();
+
+		em.persist(order);
+
+		//when
+		String tid = orderQueryRepository.findTid(order.getId());
+
+		//then
+		assertThat(tid).isEqualTo("tid");
+	}
+
 	private void persistOrder() {
 		MOCK_USER = getMockUser();
 		em.persist(MOCK_USER);
