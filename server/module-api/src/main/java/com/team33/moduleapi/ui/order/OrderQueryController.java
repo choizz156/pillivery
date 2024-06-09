@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +22,6 @@ import com.team33.moduleapi.ui.order.mapper.OrderItemMapper;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.dto.OrderPage;
 import com.team33.modulecore.order.dto.OrderPageRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -40,10 +39,12 @@ public class OrderQueryController {
 
 	@GetMapping
 	public MultiResponseDto<?> getOrders(
-		@RequestParam Long userId,
-		@RequestBody OrderPage pageDto
+		@RequestParam long userId,
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "8") int size,
+		@RequestParam(defaultValue = "DESC") Direction sort
 	) {
-		OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
+		OrderPageRequest orderPageRequest = OrderPageRequest.of(page, size, sort);
 
 		Page<Order> allOrders = orderQueryService.findAllOrders(userId, orderPageRequest);
 		List<Order> orders = allOrders.getContent();
@@ -56,9 +57,11 @@ public class OrderQueryController {
 	@GetMapping("/subscriptions")
 	public MultiResponseDto<?> getSubscriptionsOrder(
 		@RequestParam Long userId,
-		@RequestBody OrderPage pageDto
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "8") int size,
+		@RequestParam(defaultValue = "DESC") Direction sort
 	) {
-		OrderPageRequest orderPageRequest = OrderPageRequest.of(pageDto);
+		OrderPageRequest orderPageRequest = OrderPageRequest.of(page, size, sort);
 
 		List<OrderItem> allSubscriptions = orderQueryService.findAllSubscriptions(userId, orderPageRequest);
 
@@ -69,7 +72,7 @@ public class OrderQueryController {
 			orderSimpleResponse,
 			new PageImpl<>(
 				orderSimpleResponse,
-				PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
+				PageRequest.of(page - 1, size),
 				orderSimpleResponse.size()
 			)
 		);

@@ -22,7 +22,7 @@ public class OrderFindCondition {
 		this.orderStatus = orderStatus;
 	}
 
-	public static OrderFindCondition to(Long userId, OrderStatus orderStatus) {
+	public static OrderFindCondition to(long userId, OrderStatus orderStatus) {
 		return OrderFindCondition.builder()
 			.userId(userId)
 			.orderStatus(orderStatus)

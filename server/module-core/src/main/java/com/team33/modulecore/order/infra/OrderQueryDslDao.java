@@ -101,7 +101,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public Order findById(Long id) {
+	public Order findById(long id) {
 		Order fetch = queryFactory.selectFrom(order).where(order.id.eq(id)).fetchOne();
 
 		if (fetch == null) {
@@ -111,12 +111,12 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public boolean findIsSubscriptionById(Long orderId) {
+	public boolean findIsSubscriptionById(long orderId) {
 		return queryFactory.select(order.isSubscription).from(order).where(order.id.eq(orderId)).fetchOne();
 	}
 
 	@Override
-	public String findTid(Long orderId) {
+	public String findTid(long orderId) {
 		return queryFactory.select(order.paymentCode.tid).from(order).where(order.id.eq(orderId)).fetchOne();
 	}
 

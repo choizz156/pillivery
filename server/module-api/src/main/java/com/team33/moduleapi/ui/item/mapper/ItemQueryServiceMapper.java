@@ -5,7 +5,6 @@ import static com.team33.modulecore.item.domain.ItemSortOption.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import com.team33.moduleapi.ui.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.PriceFilter;
@@ -23,15 +22,15 @@ public class ItemQueryServiceMapper {
 		return new PriceFilter(low, high);
 	}
 
-	public ItemPage toItemPageDto(ItemPageRequestDto dto) {
+	public ItemPage toItemPageDto(int page, int size, ItemSortOption sort) {
 		return ItemPage.builder()
-			.page(Math.max(dto.getPage(), MIN_SIZE))
-			.size(getSize(dto.getSize()))
-			.sort(dto.getDirection() == Sort.Direction.ASC ? Sort.Direction.ASC : DEFAULT_SORT_TYPE)
+			.page(Math.max(page, MIN_SIZE))
+			.size(getSize(size))
 			.sortOption(
-				dto.getSortOption() == SALES
+				sort == SALES
 					? DEFAULT_ITEM_SORT_OPTION
-					: dto.getSortOption())
+					: sort
+			)
 			.build();
 	}
 

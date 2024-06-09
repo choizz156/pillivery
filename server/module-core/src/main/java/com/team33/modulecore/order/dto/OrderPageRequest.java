@@ -32,7 +32,15 @@ public class OrderPageRequest {
             .build();
     }
 
-    public long getOffset() {
+    public static OrderPageRequest of(int page, int size, Direction sort) {
+        return OrderPageRequest.builder()
+            .page(Math.max(page, MIN_SIZE))
+            .size(getSize(size))
+            .sort(sort == Direction.ASC ? Direction.ASC : Direction.DESC)
+            .build();
+    }
+
+	public long getOffset() {
         return ((long) (this.page - 1) * this.size);
     }
 

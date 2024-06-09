@@ -7,7 +7,7 @@ import com.team33.modulecore.review.dto.query.ReviewQueryDto;
 
 public interface ReviewQueryRepository {
 	ReviewQueryDto findById(Long reviewId);
-	Page<ReviewQueryDto> findAllByItemId(Long itemId, ReviewPage reviewPage);
-	Page<ReviewQueryDto> findAllByUserId(Long userId, ReviewPage reviewPage);
+	Page<ReviewQueryDto> findAllByItemId(long itemId, ReviewPage reviewPage);
+	Page<ReviewQueryDto> findAllByUserId(long userId, ReviewPage reviewPage);
 
 }

@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.common.UserFindHelper;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
@@ -23,7 +22,7 @@ public class OrderQueryService {
 
 	private final OrderQueryRepository orderQueryRepository;
 
-	public Page<Order> findAllOrders(Long userId, OrderPageRequest orderPageRequest) {
+	public Page<Order> findAllOrders(long userId, OrderPageRequest orderPageRequest) {
 
 		return orderQueryRepository.findOrders(
 			orderPageRequest,

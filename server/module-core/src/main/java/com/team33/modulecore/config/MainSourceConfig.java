@@ -8,7 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -17,12 +16,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.team33.modulecore.item.infra.ItemQueryDslDao;
-import com.team33.modulecore.order.infra.OrderQueryDslDao;
-import com.team33.modulecore.review.infra.ReviewQueryDslDao;
-
 @Profile("prod")
-
 @EnableJpaRepositories(
     entityManagerFactoryRef = "mainEntityManager",
     transactionManagerRef = "mainTransactionManager",

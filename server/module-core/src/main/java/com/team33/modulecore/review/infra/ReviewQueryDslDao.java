@@ -35,7 +35,7 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 		ReviewQueryDto reviewQueryDto = selectReviewQeuryDtoFromReview()
 			.where(
 				review.id.eq(reviewId),
-				getStatusActive()
+				StatusActiveEqActive()
 			)
 			.fetchFirst();
 
@@ -47,12 +47,13 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 	}
 
 	@Override
-	public Page<ReviewQueryDto> findAllByItemId(Long itemId, ReviewPage reviewPage) {
-		BooleanExpression statusActive = getStatusActive();
+	public Page<ReviewQueryDto> findAllByItemId(long itemId, ReviewPage reviewPage) {
+		BooleanExpression statusActive = StatusActiveEqActive();
+		BooleanExpression itemIdEq = itemIdEq(itemId);
 
 		List<ReviewQueryDto> fetch = selectReviewQeuryDtoFromReview()
 			.where(
-				review.itemId.eq(itemId),
+				itemIdEq,
 				statusActive
 			)
 			.orderBy(getOrderSort(reviewPage.getSortOption()))
@@ -68,7 +69,7 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 			select(review.count())
 			.from(review)
 			.where(
-				review.itemId.eq(itemId),
+				itemIdEq,
 				statusActive
 			);
 
@@ -79,9 +80,13 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 		);
 	}
 
+	private static BooleanExpression itemIdEq(long itemId) {
+		return review.itemId.eq(itemId);
+	}
+
 	@Override
-	public Page<ReviewQueryDto> findAllByUserId(Long userId, ReviewPage reviewPage) {
-		BooleanExpression statusActive = getStatusActive();
+	public Page<ReviewQueryDto> findAllByUserId(long userId, ReviewPage reviewPage) {
+		BooleanExpression statusActive = StatusActiveEqActive();
 
 		List<ReviewQueryDto> fetch = queryFactory.select(new QReviewQueryDto(
 					review.id,
@@ -124,7 +129,7 @@ public class ReviewQueryDslDao implements ReviewQueryRepository {
 		);
 	}
 
-	private BooleanExpression getStatusActive() {
+	private BooleanExpression StatusActiveEqActive() {
 		return review.reviewStatus.eq(ReviewStatus.ACTIVE);
 	}
 

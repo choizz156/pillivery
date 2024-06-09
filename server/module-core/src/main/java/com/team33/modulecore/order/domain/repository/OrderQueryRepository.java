@@ -23,7 +23,7 @@ public interface OrderQueryRepository{
         OrderFindCondition orderFindCondition
     );
 
-    Order findById(Long id);
-    boolean findIsSubscriptionById(@Param("orderId") Long orderId);
-    String findTid(@Param("orderId") Long orderId);
+    Order findById(long id);
+    boolean findIsSubscriptionById(@Param("orderId") long orderId);
+    String findTid(@Param("orderId") long orderId);
 }

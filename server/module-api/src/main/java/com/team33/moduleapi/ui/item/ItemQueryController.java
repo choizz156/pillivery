@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +15,11 @@ import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.item.dto.ItemDetailResponseDto;
 import com.team33.moduleapi.ui.item.dto.ItemMainResponseDto;
-import com.team33.moduleapi.ui.item.dto.ItemPageRequestDto;
 import com.team33.moduleapi.ui.item.mapper.ItemQueryServiceMapper;
 import com.team33.modulecore.category.domain.CategoryName;
 import com.team33.modulecore.item.application.ItemCommandService;
 import com.team33.modulecore.item.application.ItemQueryService;
+import com.team33.modulecore.item.domain.ItemSortOption;
 import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.item.dto.query.ItemPage;
 import com.team33.modulecore.item.dto.query.ItemQueryDto;
@@ -62,10 +61,12 @@ public class ItemQueryController {
 		@RequestParam(required = false, defaultValue = "") String keyword,
 		@RequestParam(required = false, defaultValue = "0") int low,
 		@RequestParam(required = false, defaultValue = "0") int high,
-		@RequestBody ItemPageRequestDto pageDto
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "8") int size,
+		@RequestParam(defaultValue = "SALES") ItemSortOption sort
 	) {
 		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(pageDto);
+		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(page, size, sort);
 
 		Page<ItemQueryDto> itemsPage = itemQueryService.findFilteredItem(
 			keyword.replace("_", ""),
@@ -81,11 +82,13 @@ public class ItemQueryController {
 		@RequestParam(required = false, defaultValue = "") String keyword,
 		@RequestParam(required = false, defaultValue = "0") int low,
 		@RequestParam(required = false, defaultValue = "0") int high,
-		@RequestBody ItemPageRequestDto pageDto
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "8") int size,
+		@RequestParam(defaultValue = "SALES") ItemSortOption sort
 	) {
 
 		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(pageDto);
+		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(page, size, sort);
 
 		Page<ItemQueryDto> itemsPage = itemQueryService.findItemOnSale(
 			keyword.replace("_", ""),
@@ -102,10 +105,12 @@ public class ItemQueryController {
 		@RequestParam(required = false, defaultValue = "") String keyword,
 		@RequestParam(required = false, defaultValue = "0") int low,
 		@RequestParam(required = false, defaultValue = "0") int high,
-		@RequestBody ItemPageRequestDto pageDto
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "8") int size,
+		@RequestParam(defaultValue = "SALES") ItemSortOption sort
 	) {
 		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(pageDto);
+		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(page, size, sort);
 
 		Page<ItemQueryDto> itemsPage = itemQueryService.findByCategory(
 			categoryName,
@@ -122,11 +127,13 @@ public class ItemQueryController {
 		@RequestParam(defaultValue = "") String brand,
 		@RequestParam(required = false, defaultValue = "0") int low,
 		@RequestParam(required = false, defaultValue = "0") int high,
-		@RequestBody ItemPageRequestDto pageDto
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "8") int size,
+		@RequestParam(defaultValue = "SALES") ItemSortOption sort
 	) {
 
 		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(pageDto);
+		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(page, size, sort);
 
 		Page<ItemQueryDto> itemsPage = itemQueryService.findByBrand(brand, searchDto, priceFilter);
 
