@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.UserAccount;
@@ -32,7 +31,6 @@ import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
-import com.team33.modulecore.order.dto.OrderPage;
 
 class OrderQueryAcceptanceTest extends ApiTest {
 	@Autowired
@@ -58,14 +56,8 @@ class OrderQueryAcceptanceTest extends ApiTest {
 		주문_저장(주문_정보(false, 0), OrderStatus.COMPLETE);
 		주문_저장(주문_정보(false, 0), OrderStatus.COMPLETE);
 
-		OrderPage page = new OrderPage();
-		page.setPage(1);
-		page.setSize(10);
-
 		given()
 			.queryParam("userId", 1)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(page)
 			.header("Authorization", getToken())
 			.log().all()
 			.when()
@@ -91,7 +83,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.body("data[1].orderId", equalTo(1))
 
 			.body("pageInfo.page", equalTo(1))
-			.body("pageInfo.size", equalTo(10))
+			.body("pageInfo.size", equalTo(8))
 			.body("pageInfo.totalElements", equalTo(2))
 			.body("pageInfo.totalPages", equalTo(1));
 	}
@@ -104,14 +96,9 @@ class OrderQueryAcceptanceTest extends ApiTest {
 		주문_저장(주문_정보(true, 30), OrderStatus.SUBSCRIBE);
 		주문_저장(주문_정보(true, 60), OrderStatus.SUBSCRIBE);
 
-		OrderPage page = new OrderPage();
-		page.setPage(1);
-		page.setSize(10);
 
 		given()
 			.queryParam("userId", 1)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(page)
 			.header("Authorization", getToken())
 			.log().all()
 			.when()
@@ -136,7 +123,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.body("data[2].period", equalTo(30))
 			.body("data[3].period", equalTo(30))
 			.body("pageInfo.page", equalTo(1))
-			.body("pageInfo.size", equalTo(10))
+			.body("pageInfo.size", equalTo(8))
 			.body("pageInfo.totalElements", equalTo(4))
 			.body("pageInfo.totalPages", equalTo(1));
 

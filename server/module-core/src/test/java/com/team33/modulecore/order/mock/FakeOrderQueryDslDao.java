@@ -63,17 +63,17 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public Order findById(Long id) {
+	public Order findById(long id) {
 		return null;
 	}
 
 	@Override
-	public boolean findIsSubscriptionById(Long orderId) {
+	public boolean findIsSubscriptionById(long orderId) {
 		return orders.get(orderId).getSid() != null;
 	}
 
 	@Override
-	public String findTid(Long orderId) {
+	public String findTid(long orderId) {
 		return orders.get(orderId).getTid();
 	}
 

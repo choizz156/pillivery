@@ -26,6 +26,8 @@ import com.team33.moduleevent.application.RefundEventHandler;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
+
+@DisplayName("결제 취소 api 인수 테스트")
 class RefundAcceptanceTest extends ApiTest {
 
 	private Order order;

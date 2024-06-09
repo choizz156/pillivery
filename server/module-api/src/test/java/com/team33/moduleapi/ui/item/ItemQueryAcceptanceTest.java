@@ -234,14 +234,8 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			아이템_저장("16종혼합유산균 디에스", 10000, 10.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스2", 20000, 20.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 
-			ItemPageRequestDto pageDto = new ItemPageRequestDto();
-			pageDto.setPage(1);
-			pageDto.setSize(10);
-
 			//when
 			given()
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(pageDto)
 				.log().all()
 				.queryParam("keyword", "디에스")
 				.when()
@@ -293,13 +287,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			아이템_저장("16종혼합유산균 디에스4", 14000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스5", 15000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 
-			ItemPageRequestDto pageDto = new ItemPageRequestDto();
-			pageDto.setPage(1);
-			pageDto.setSize(10);
-
 			given()
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(pageDto)
 				.queryParam("low", 10000)
 				.queryParam("high", 14999)
 				.log().all()
@@ -330,13 +318,8 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			//given
 			아이템_저장("16종혼합유산균 디에스", 10000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 
-			ItemPageRequestDto pageDto = new ItemPageRequestDto();
-			pageDto.setPage(1);
-			pageDto.setSize(10);
 
 			given()
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(pageDto)
 				.queryParam("low", 0)
 				.queryParam("high", 9999)
 				.log().all()
@@ -367,15 +350,12 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			아이템_저장("16종혼합유산균 디에스3", 13000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스4", 14000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스5", 15000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
-
-			ItemPageRequestDto pageDto = new ItemPageRequestDto();
-			pageDto.setPage(1);
-			pageDto.setSize(10);
-			pageDto.setSortOption(ItemSortOption.PRICE_L);
-
+			
+			//when
 			given()
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(pageDto)
+				.queryParam("page", 1)
+				.queryParam("size", 2)
+				.queryParam("sort", "PRICE_L")
 				.queryParam("keyword", "디에스")
 				.log().all()
 				.when()
@@ -411,14 +391,11 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			아이템_저장("16종혼합유산균 디에스4", 14000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스5", 15000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 
-			ItemPageRequestDto pageDto = new ItemPageRequestDto();
-			pageDto.setPage(1);
-			pageDto.setSize(10);
-			pageDto.setSortOption(ItemSortOption.PRICE_H);
 
 			given()
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(pageDto)
+				.queryParam("page", 1)
+				.queryParam("size", 2)
+				.queryParam("sort", "PRICE_H")
 				.queryParam("keyword", "디에스")
 				.log().all()
 				.when()
@@ -454,14 +431,10 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			아이템_저장("16종혼합유산균 디에스4", 14000, 40.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스5", 15000, 50.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 
-			ItemPageRequestDto pageDto = new ItemPageRequestDto();
-			pageDto.setPage(1);
-			pageDto.setSize(10);
-			pageDto.setSortOption(ItemSortOption.DISCOUNT_RATE_H);
-
 			given()
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(pageDto)
+				.queryParam("page", 1)
+				.queryParam("size", 2)
+				.queryParam("sort", "DISCOUNT_RATE_H")
 				.log().all()
 				.when()
 				.get("/items/search")
@@ -496,14 +469,11 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			아이템_저장("16종혼합유산균 디에스4", 14000, 40.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스5", 15000, 50.0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 
-			ItemPageRequestDto pageDto = new ItemPageRequestDto();
-			pageDto.setPage(1);
-			pageDto.setSize(10);
-			pageDto.setSortOption(ItemSortOption.DISCOUNT_RATE_L);
 
 			given()
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.body(pageDto)
+				.queryParam("page", 1)
+				.queryParam("size", 2)
+				.queryParam("sort", "DISCOUNT_RATE_L")
 				.log().all()
 				.when()
 				.get("/items/search")

@@ -25,6 +25,7 @@ import com.team33.moduleevent.application.SubsCanceledEventHandler;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
+@DisplayName("정기 결제 취소 api 인수 테스트")
 class SubscriptionCancelAcceptanceTest extends ApiTest {
 
 	private Order order;

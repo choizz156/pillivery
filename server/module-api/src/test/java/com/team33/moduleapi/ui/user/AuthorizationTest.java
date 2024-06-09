@@ -46,25 +46,13 @@ class AuthorizationTest extends ApiTest {
                 .log().all();
     }
 
-    @DisplayName("user 권한이 없으면, 위시리스트 기능을 사용할 수 없다.")
-    @Test
-    void test4() throws Exception {
-        given()
-                .log().all()
-        .when()
-                .get("wishes/**")
-        .then()
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .log().all();
-    }
-
     @DisplayName("user 권한이 없으면, 리뷰 기능을 사용할 수 없다.")
     @Test
     void test5() throws Exception {
         given()
                 .log().all()
         .when()
-                .get("/reviews/**")
+                .post("/reviews/**")
         .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .log().all();

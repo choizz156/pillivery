@@ -37,7 +37,7 @@ import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 import com.team33.modulecore.review.application.ReviewCommandService;
 import com.team33.modulecore.review.domain.ReviewContext;
-
+@DisplayName("리뷰 생성, 삭제, 수정 api 인수 테스트")
 class ReviewCommandAcceptanceTest extends ApiTest {
 
 	@Autowired
@@ -295,7 +295,7 @@ class ReviewCommandAcceptanceTest extends ApiTest {
 	}
 
 	private void 주문_저장(OrderPostListDto postListDto, OrderStatus orderStatus) {
-		아이템_저장("16종혼합유산균 디에스", CategoryName.INTESTINE);
+		아이템_저장();
 
 		List<OrderItemServiceDto> orderItemPostDto =
 			orderItemMapper.toOrderItemPostDto(postListDto.getOrderPostDtoList());
@@ -331,12 +331,10 @@ class ReviewCommandAcceptanceTest extends ApiTest {
 	}
 
 	private void 아이템_저장(
-		String productName,
-		CategoryName categoryName
-	) {
+		) {
 		Information information = Information.builder()
 			.enterprise("(주)씨티씨바이오")
-			.productName(productName)
+			.productName("16종혼합유산균 디에스")
 			.statementNumber("20040017059225")
 			.registeredDate("20220225")
 			.distributionPeriod("제조일로부터 24개월까지")
@@ -363,8 +361,8 @@ class ReviewCommandAcceptanceTest extends ApiTest {
 			.statistics(new Statistic())
 			.build();
 
-		item.addIncludedCategory(Set.of(categoryName));
-		item.getItemCategory().add(categoryName);
+		item.addIncludedCategory(Set.of(CategoryName.INTESTINE));
+		item.getItemCategory().add(CategoryName.INTESTINE);
 
 		itemCommandRepository.save(item);
 	}

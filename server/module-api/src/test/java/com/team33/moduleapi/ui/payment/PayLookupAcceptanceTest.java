@@ -21,6 +21,7 @@ import com.team33.modulecore.payment.kakao.dto.KakaoLookupResponse;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
+@DisplayName("결제 조회 api 인수 테스트")
 class PayLookupAcceptanceTest extends ApiTest {
 
 	private Order order;

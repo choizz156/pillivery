@@ -30,6 +30,7 @@ import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
+@DisplayName("결제 요청, 승인 api 인수 테스트(정기 결제 포함)")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PaymentAcceptanceTest extends ApiTest {
 
