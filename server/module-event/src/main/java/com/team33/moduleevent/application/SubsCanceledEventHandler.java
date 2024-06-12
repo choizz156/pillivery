@@ -2,6 +2,7 @@ package com.team33.moduleevent.application;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.payment.kakao.application.events.ScheduleRegisteredEvent;
@@ -18,6 +19,7 @@ public class SubsCanceledEventHandler {
 
 	private final EventRepository eventsRepository;
 
+	@Async
 	@EventListener
 	public void onEventSet(ScheduleRegisteredEvent apiEvent) {
 
