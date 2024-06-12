@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.data.repository.Repository;
 
-import com.team33.modulecore.eventstore.domain.EventStatus;
-import com.team33.moduleevent.domain.entity.ApiEventSet;
+import com.team33.moduleevent.domain.EventStatus;
+import com.team33.moduleevent.domain.entity.ApiEvent;
 
-public interface EventRepository extends Repository<ApiEventSet, Long> {
+public interface EventRepository extends Repository<ApiEvent, Long> {
 
-	void save(ApiEventSet event);
-	List<ApiEventSet> findTop20ByStatusOrderByCreatedAt(EventStatus eventStatus);
+	void save(ApiEvent event);
+	List<ApiEvent> findTop20ByStatusOrderByCreatedAt(EventStatus eventStatus);
 }

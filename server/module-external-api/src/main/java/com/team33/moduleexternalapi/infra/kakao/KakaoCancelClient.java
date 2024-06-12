@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.team33.moduleexternalapi.application.CancelClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiCancelResponse;
+import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 import lombok.RequiredArgsConstructor;
 

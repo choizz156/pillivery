@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.infra.kakao;
+package com.team33.moduleexternalapi.infra;
 
 import java.util.Map;
 
@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleexternalapi.infra.kakao.KakaoHeader;
 
 import lombok.RequiredArgsConstructor;
 

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
-import com.team33.moduleevent.domain.entity.ApiEventSet;
+import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleexternalapi.infra.kakao.KakaoCancelClient;
 
 class KakaoApiEventSenderTest {
@@ -19,13 +19,13 @@ class KakaoApiEventSenderTest {
 
 		KakaoApiEventSender kakaoApiEventSender = new KakaoApiEventSender(kakaoCancelClient);
 
-		ApiEventSet apiEventSet = ApiEventSet.builder()
+		ApiEvent apiEvent = ApiEvent.builder()
 			.parameters("parameters")
 			.url("url")
 			.build();
 
 		//when
-		kakaoApiEventSender.send(apiEventSet);
+		kakaoApiEventSender.send(apiEvent);
 
 		//then
 		Mockito.verify(kakaoCancelClient, Mockito.times(1)).send(

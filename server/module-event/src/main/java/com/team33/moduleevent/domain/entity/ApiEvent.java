@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 
-import com.team33.modulecore.eventstore.domain.EventStatus;
+import com.team33.moduleevent.domain.EventStatus;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,13 +24,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
-@Table(name = "api_event_set")
+@Table(name = "api_event")
 @Entity
-public class ApiEventSet {
+public class ApiEvent {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "api_event_set_id")
+	@Column(name = "api_event_id")
 	private Long id;
 
 	private String type;
@@ -48,7 +48,7 @@ public class ApiEventSet {
 	private LocalDateTime createdAt;
 
 	@Builder
-	public ApiEventSet(
+	public ApiEvent(
 		String type,
 		String contentType,
 		String parameters,

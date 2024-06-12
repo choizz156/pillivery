@@ -1,5 +1,7 @@
 package com.team33.modulecore.order.domain;
 
+import java.time.ZonedDateTime;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -22,6 +24,10 @@ public class SubscriptionInfo {
     @Column(name = "subscription")
     private boolean subscription;
 
+    private ZonedDateTime nextDelivery;
+
+    private ZonedDateTime paymentDay;
+
     @Builder
     public SubscriptionInfo(int period, boolean subscription) {
         this.period = period;
@@ -41,5 +47,13 @@ public class SubscriptionInfo {
 
     public void cancelSubscription() {
         this.subscription = false;
+    }
+
+    public void addPaymentDay(ZonedDateTime paymentDay) {
+        this.paymentDay = paymentDay;
+    }
+
+    public void applyNextDelivery() {
+        this.nextDelivery = paymentDay.plusDays(period);
     }
 }

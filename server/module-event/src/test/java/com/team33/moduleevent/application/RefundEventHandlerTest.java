@@ -6,7 +6,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
-import com.team33.moduleevent.domain.entity.ApiEventSet;
+import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
 
 class RefundEventHandlerTest {
@@ -16,7 +16,7 @@ class RefundEventHandlerTest {
 	void onEventSet() {
 		// given
 		EventRepository eventRepository = Mockito.mock(EventRepository.class);
-		Mockito.doNothing().when(eventRepository).save(ArgumentMatchers.any(ApiEventSet.class));
+		Mockito.doNothing().when(eventRepository).save(ArgumentMatchers.any(ApiEvent.class));
 
 		RefundEventHandler refundEventHandler = new RefundEventHandler(eventRepository);
 
@@ -24,6 +24,6 @@ class RefundEventHandlerTest {
 		refundEventHandler.onEventSet(new KakaoRefundedEvent("refundParams", "refundUrl"));
 
 		// then
-		Mockito.verify(eventRepository, Mockito.times(1)).save(ArgumentMatchers.any(ApiEventSet.class));
+		Mockito.verify(eventRepository, Mockito.times(1)).save(ArgumentMatchers.any(ApiEvent.class));
 	}
 }

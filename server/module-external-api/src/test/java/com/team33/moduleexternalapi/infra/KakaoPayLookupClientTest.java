@@ -25,7 +25,6 @@ import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.infra.kakao.KakaoApproveClient;
 import com.team33.moduleexternalapi.infra.kakao.KakaoPayLookupClient;
-import com.team33.moduleexternalapi.infra.kakao.WebClientSender;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoPayLookupClientTest {

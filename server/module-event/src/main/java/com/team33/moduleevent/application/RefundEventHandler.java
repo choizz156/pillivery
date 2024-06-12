@@ -6,9 +6,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.eventstore.domain.EventStatus;
 import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
-import com.team33.moduleevent.domain.entity.ApiEventSet;
+import com.team33.moduleevent.domain.EventStatus;
+import com.team33.moduleevent.domain.EventType;
+import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,11 +23,11 @@ public class RefundEventHandler {
 	@EventListener
 	public void onEventSet(KakaoRefundedEvent apiEvent) {
 
-		ApiEventSet apiEventSet = ApiEventSet.builder()
+		ApiEvent apiEventSet = ApiEvent.builder()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.parameters(apiEvent.getRefundParams())
 			.url(apiEvent.getRefundUrl())
-			.type(apiEvent.getClass().getSimpleName())
+			.type(EventType.KAKAO_REFUNDED.name())
 			.localDateTime(LocalDateTime.now())
 			.status(EventStatus.READY)
 			.build();

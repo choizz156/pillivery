@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiCancelResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.infra.kakao.KakaoCancelClient;
-import com.team33.moduleexternalapi.infra.kakao.RestTemplateSender;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoCancelClientTest {

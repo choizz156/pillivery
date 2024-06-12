@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.eventstore.domain.EventStatus;
-import com.team33.moduleevent.domain.entity.ApiEventSet;
+import com.team33.moduleevent.domain.EventStatus;
+import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.entity.FailEvent;
 import com.team33.moduleevent.domain.repository.FailEventRepository;
 
@@ -19,12 +19,12 @@ public class FailEventService {
 
 	private final FailEventRepository failEventRepository;
 
-	public void saveFail(ApiEventSet apiEventSet, String reason) {
-		log.error("eventId : {}, type : {}, reason : {}", apiEventSet.getId(), apiEventSet.getType(), reason);
+	public void saveFail(ApiEvent apiEvent, String reason) {
+		log.error("eventId : {}, type : {}, reason : {}", apiEvent.getId(), apiEvent.getType(), reason);
 
 		FailEvent failEvent = FailEvent.builder()
-			.type(apiEventSet.getType())
-			.payload(apiEventSet.getParameters())
+			.type(apiEvent.getType())
+			.payload(apiEvent.getParameters())
 			.reason(reason)
 			.build();
 

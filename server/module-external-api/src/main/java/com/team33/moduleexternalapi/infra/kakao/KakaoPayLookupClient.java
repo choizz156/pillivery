@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleexternalapi.infra.WebClientSender;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class KakaoPayLookupClient implements PaymentClient<KakaoApiPayLookupResp
 
 	private CompletableFuture<KakaoApiPayLookupResponse> sendRequest(Map<String, Object> params, String url) {
 		try {
-			return webClientSender.send(params, url, KakaoApiPayLookupResponse.class);
+			return webClientSender.sendToPost(params, url, KakaoApiPayLookupResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new PaymentApiException(e.getMessage());
 		}

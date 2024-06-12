@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleexternalapi.infra.WebClientSender;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +32,7 @@ public class KakaoApproveClient implements PaymentClient<KakaoApiApproveResponse
 
 	private CompletableFuture<KakaoApiApproveResponse> sendApprove(Map<String, Object> params, String url) {
 		try {
-			return webClientSender.send(params, url, KakaoApiApproveResponse.class);
+			return webClientSender.sendToPost(params, url, KakaoApiApproveResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new PaymentApiException(e.getMessage());
 		}

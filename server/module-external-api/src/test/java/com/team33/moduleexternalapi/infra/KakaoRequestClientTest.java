@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.infra.kakao.KakaoRequestClient;
-import com.team33.moduleexternalapi.infra.kakao.WebClientSender;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoRequestClientTest {

@@ -11,7 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.team33.modulecore.eventstore.domain.EventStatus;
+import org.springframework.data.annotation.CreatedDate;
+
+import com.team33.moduleevent.domain.EventStatus;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "fail_events")
 @Entity
 public class FailEvent {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "fail_event_id")
@@ -37,14 +40,15 @@ public class FailEvent {
 	@Enumerated(EnumType.STRING)
 	private EventStatus status;
 
+	@CreatedDate
 	private LocalDateTime createdAt;
 
 	@Builder
-	public FailEvent(String type, String payload, String reason) {
+	public FailEvent(String type, String payload, String reason, LocalDateTime createdAt) {
 		this.type = type;
 		this.payload = payload;
 		this.reason = reason;
 		this.status = EventStatus.FAILED;
-		this.createdAt = LocalDateTime.now();
+		this.createdAt = createdAt;
 	}
 }

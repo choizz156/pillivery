@@ -15,8 +15,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.team33.modulecore.eventstore.domain.EventStatus;
-import com.team33.moduleevent.domain.entity.ApiEventSet;
+import com.team33.moduleevent.domain.EventStatus;
+import com.team33.moduleevent.domain.EventType;
+import com.team33.moduleevent.domain.entity.ApiEvent;
 
 @EnableAutoConfiguration
 @ContextConfiguration(classes = {
@@ -30,14 +31,14 @@ class EventRepositoryTest {
 	@Autowired
 	private EventRepository eventRepository;
 
-	@DisplayName("20개까지 이벤트를 가지고 올 수 있다.")
+	@DisplayName("이벤트를 조회할 수 있다.")
 	@Test
 	void findTop20ByStatusOrderByCreatedAt() {
 		//given
-
 		IntStream.range(0, 10).forEach(
 			i -> eventRepository.save(
-				ApiEventSet.builder()
+				ApiEvent.builder()
+					.type(EventType.SUBS_CANCELED.name())
 					.localDateTime(LocalDateTime.of(2020, 1, 1, i, 0, 0))
 					.status(EventStatus.READY)
 					.build()
@@ -46,7 +47,8 @@ class EventRepositoryTest {
 
 		IntStream.range(1, 20).forEach(
 			i -> eventRepository.save(
-				ApiEventSet.builder()
+				ApiEvent.builder()
+					.type(EventType.KAKAO_REFUNDED.name())
 					.localDateTime(LocalDateTime.of(2020, 1, 1, i, 0, 0))
 					.status(EventStatus.COMPLETE)
 					.build()
@@ -54,11 +56,11 @@ class EventRepositoryTest {
 		);
 
 		//when
-		List<ApiEventSet> list = eventRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
+		List<ApiEvent> list = eventRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
 
 		//then
 		Assertions.assertThat(list).hasSize(10)
-			.isSortedAccordingTo(Comparator.comparing(ApiEventSet::getCreatedAt));
+			.isSortedAccordingTo(Comparator.comparing(ApiEvent::getCreatedAt));
 
 	}
 }
