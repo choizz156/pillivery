@@ -1,6 +1,7 @@
 package com.team33.modulecore.order.domain;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -39,9 +40,6 @@ public class OrderItem extends BaseEntity {
     @Embedded
     private SubscriptionInfo subscriptionInfo;
 
-    private ZonedDateTime nextDelivery;
-
-    private ZonedDateTime paymentDay;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
@@ -58,17 +56,17 @@ public class OrderItem extends BaseEntity {
         this.item = item;
     }
 
-    public OrderItem(OrderItem origin) {
-        this.subscriptionInfo = new SubscriptionInfo(
-            origin.getSubscriptionInfo().getPeriod(),
-            origin.getSubscriptionInfo().isSubscription()
-        );
-        this.quantity = origin.getQuantity();
-        this.nextDelivery = origin.getNextDelivery();
-        this.paymentDay = origin.getPaymentDay();
-        this.item = origin.getItem();
-        this.order = origin.getOrder();
-    }
+    // public OrderItem(OrderItem origin) {
+    //     this.subscriptionInfo = new SubscriptionInfo(
+    //         origin.getSubscriptionInfo().getPeriod(),
+    //         origin.getSubscriptionInfo().isSubscription()
+    //     );
+    //     this.quantity = origin.getQuantity();
+    //     this.nextDelivery = origin.getNextDelivery();
+    //     this.paymentDay = origin.getPaymentDay();
+    //     this.item = origin.getItem();
+    //     this.order = origin.getOrder();
+    // }
 
     public static OrderItem create(
         Item item,
@@ -108,5 +106,17 @@ public class OrderItem extends BaseEntity {
 
     public boolean containsItem(Long id) {
         return item.getId().equals(id);
+    }
+
+    public void addPaymentDay(ZonedDateTime paymentDay) {
+        this.subscriptionInfo.addPaymentDay(paymentDay);
+    }
+
+    public void applyNextDelivery() {
+        this.subscriptionInfo.applyNextDelivery();
+    }
+
+    public Date getNextDelivery() {
+        return Date.from(subscriptionInfo.getNextDelivery().toInstant());
     }
 }

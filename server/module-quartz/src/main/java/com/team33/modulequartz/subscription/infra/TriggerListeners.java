@@ -1,10 +1,11 @@
 package com.team33.modulequartz.subscription.infra;
 
-import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
 import org.quartz.TriggerListener;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class TriggerListeners implements TriggerListener{

@@ -83,7 +83,6 @@ public class Order extends BaseEntity {
 		this.orderPrice = origin.getOrderPrice();
 		this.receiver = origin.getReceiver();
 		this.orderStatus = origin.getOrderStatus();
-		this.userId = origin.getUserId();
 		this.orderItems = origin.getOrderItems();
 		this.mainItemName = origin.getMainItemName();
 		this.userId = origin.getUserId();

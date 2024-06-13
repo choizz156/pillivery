@@ -41,39 +41,38 @@ public class OrderItemService {
 		log.error("주기변경 = {}", orderItem.getPeriod());
 	}
 
-	public OrderItem delayDelivery(Long orderId, Integer delay, OrderItem orderItem1) {
-
-		Order order = orderFindHelper.findOrder(orderId);
-
-		OrderItem orderItem = getItemOrder(orderItem1, order);
-		ZonedDateTime nextDelivery = orderItem.getNextDelivery().plusDays(delay);
-		// orderItem.setNextDelivery(nextDelivery);
-		return orderItem;
-	}
-
+	// public OrderItem delayDelivery(Long orderId, Integer delay, OrderItem orderItem1) {
+	//
+	// 	Order order = orderFindHelper.findOrder(orderId);
+	//
+	// 	OrderItem orderItem = getItemOrder(orderItem1, order);
+	// 	ZonedDateTime nextDelivery = orderItem.getNextDelivery().plusDays(delay);
+	// 	// orderItem.setNextDelivery(nextDelivery);
+	// 	return orderItem;
+	// }
+	//
 	public OrderItem updateDeliveryInfo(
 		ZonedDateTime paymentDay,
-		ZonedDateTime nextDelivery,
 		OrderItem orderItem
 	) {
-		// orderItem.setPaymentDay(paymentDay);
-		// orderItem.setNextDelivery(nextDelivery);
+		orderItem.addPaymentDay(paymentDay);
+		orderItem.applyNextDelivery();
 		return orderItem;
 	}
-
-	public OrderItem itemOrderCopy(Long lastOrderId, Order newOrder, OrderItem itemOrder) {
-		Order order = orderFindHelper.findOrder(lastOrderId);
-
-		OrderItem orderItem = new OrderItem(getItemOrder(itemOrder, order));
-		// orderItem.setOrder(newOrder);
-		return orderItem;
-	}
-
-	public void cancelItemOrder(Long orderId, OrderItem orderItem) {
-		Order order = orderFindHelper.findOrder(orderId);
-		OrderItem orderInOrderItem = getItemOrder(orderItem, order);
-		orderInOrderItem.cancelSubscription();
-	}
+	//
+	// public OrderItem itemOrderCopy(Long lastOrderId, Order newOrder, OrderItem itemOrder) {
+	// 	Order order = orderFindHelper.findOrder(lastOrderId);
+	//
+	// 	OrderItem orderItem = new OrderItem(getItemOrder(itemOrder, order));
+	// 	// orderItem.setOrder(newOrder);
+	// 	return orderItem;
+	// }
+	//
+	// public void cancelItemOrder(Long orderId, OrderItem orderItem) {
+	// 	Order order = orderFindHelper.findOrder(orderId);
+	// 	OrderItem orderInOrderItem = getItemOrder(orderItem, order);
+	// 	orderInOrderItem.cancelSubscription();
+	// }
 
 
 	private Item findItem(long id) {

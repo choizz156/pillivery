@@ -1,9 +1,9 @@
-package com.team33.moduleapi.ui.scheduler;
+package com.team33.modulequartz.api;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,12 +28,10 @@ public class ScheduleController {
 	private final OrderFindHelper orderFindHelper;
 	private final OrderItemService orderItemService;
 
-	private static final String SUCCESS_SHCHDULE = "스케쥴 구성 완료";
-
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@GetMapping
+	@PostMapping
 	public void schedule(
-		@RequestParam(name = "orderId") Long orderId
+		@RequestParam(name = "orderId") long orderId
 	) {
 		Order order = orderFindHelper.findOrder(orderId);
 		List<OrderItem> orderItems = order.getOrderItems();
@@ -53,17 +51,6 @@ public class ScheduleController {
 	// 		itemOrderMapper.itemOrderToSubResponse(orderItem, itemMapper)
 	// 	);
 	// }
-
-	//    @PatchMapping("/delay")
-	//    public SingleResponseDto<SubResponse> delay(
-	//        @RequestParam(name = "orderId") Long orderId,
-	//        @RequestParam(name = "delay") Integer delay,
-	//        @RequestParam(name = "itemOrderId") Long itemOrderId
-	//    ) {
-	//        ItemOrder itemOrder = subscriptionService.delayDelivery(orderId, delay, itemOrderId);
-	//        return new SingleResponseDto<>(
-	//            itemOrderMapper.itemOrderToSubResponse(itemOrder, itemMapper));
-	//    }
 
 	// @DeleteMapping
 	// public SingleResponseDto<ZonedDateTime> delete(
