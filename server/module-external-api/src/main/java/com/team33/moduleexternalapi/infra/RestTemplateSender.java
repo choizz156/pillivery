@@ -3,6 +3,7 @@ package com.team33.moduleexternalapi.infra;
 import java.util.Map;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
-import com.team33.moduleexternalapi.infra.kakao.KakaoHeader;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,10 +22,11 @@ public class RestTemplateSender {
 	private final ObjectMapper objectMapper;
 	private final RestTemplate restTemplate;
 
-	public <T> T send(Map<String, Object> params, String url, Class<T> responseClass) throws JsonProcessingException {
+	public <T> T sendToPost(Map<String, Object> params, String url, HttpHeaders headers, Class<T> responseClass)
+		throws JsonProcessingException {
 
 		String kakaoRequest = objectMapper.writeValueAsString(params);
-		var entity = new HttpEntity<>(kakaoRequest, KakaoHeader.HTTP_HEADERS.getHeaders());
+		HttpEntity<String> entity = new HttpEntity<>(kakaoRequest, headers);
 
 		ResponseEntity<T> exchange =
 			restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
@@ -35,9 +36,9 @@ public class RestTemplateSender {
 		return exchange.getBody();
 	}
 
-	public <T> void send(String params, String url, Class<T> responseClass) {
+	public <T> void sendToPost(String params, String url, HttpHeaders headers, Class<T> responseClass) {
 
-		var entity = new HttpEntity<>(params, KakaoHeader.HTTP_HEADERS.getHeaders());
+		HttpEntity<String> entity = new HttpEntity<>(params, headers);
 
 		ResponseEntity<T> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
 
@@ -46,7 +47,7 @@ public class RestTemplateSender {
 
 	private void checkSuccess(ResponseEntity<?> exchange) {
 		if (!exchange.getStatusCode().is2xxSuccessful()) {
-			throw new PaymentApiException("kakao api fail");
+			throw new PaymentApiException("api 통신에 오류가 발생했습니다.");
 		}
 	}
 }

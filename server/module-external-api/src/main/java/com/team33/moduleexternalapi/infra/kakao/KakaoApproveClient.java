@@ -32,7 +32,12 @@ public class KakaoApproveClient implements PaymentClient<KakaoApiApproveResponse
 
 	private CompletableFuture<KakaoApiApproveResponse> sendApprove(Map<String, Object> params, String url) {
 		try {
-			return webClientSender.sendToPost(params, url, KakaoApiApproveResponse.class);
+			return webClientSender.sendToPost(
+				params,
+				url,
+				KakaoHeader.HTTP_HEADERS.getHeaders(),
+				KakaoApiApproveResponse.class
+			);
 		} catch (JsonProcessingException e) {
 			throw new PaymentApiException(e.getMessage());
 		}

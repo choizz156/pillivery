@@ -36,7 +36,12 @@ public class KakaoRequestClient implements PaymentClient<KakaoApiRequestResponse
 
 	private CompletableFuture<KakaoApiRequestResponse> sendRequest(Map<String, Object> params, String url) {
 		try {
-			return webClientSender.sendToPost(params, url, KakaoApiRequestResponse.class);
+			return webClientSender.sendToPost(
+				params,
+				url,
+				KakaoHeader.HTTP_HEADERS.getHeaders(),
+				KakaoApiRequestResponse.class
+			);
 		} catch (JsonProcessingException e) {
 			throw new PaymentApiException(e.getMessage());
 		}
