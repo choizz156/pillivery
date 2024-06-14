@@ -18,12 +18,16 @@ public interface OrderQueryRepository{
         OrderFindCondition orderFindCondition
     );
 
-    List<OrderItem> findSubscriptionOrderItem(
+    List<OrderItem> findSubscriptionOrderItems(
         OrderPageRequest pageRequest,
         OrderFindCondition orderFindCondition
     );
 
+    OrderItem findSubscriptionOrderItemBy(long id);
+
     Order findById(long id);
+
     boolean findIsSubscriptionById(@Param("orderId") long orderId);
+
     String findTid(@Param("orderId") long orderId);
 }

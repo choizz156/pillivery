@@ -104,7 +104,7 @@ class OrderQueryRepositoryTest {
 
 		//when
 		List<OrderItem> subscriptionOrderItem =
-			orderQueryRepository.findSubscriptionOrderItem(orderPageRequest, orderFindCondition);
+			orderQueryRepository.findSubscriptionOrderItems(orderPageRequest, orderFindCondition);
 
 		//then
 		assertThat(subscriptionOrderItem).hasSize(8)

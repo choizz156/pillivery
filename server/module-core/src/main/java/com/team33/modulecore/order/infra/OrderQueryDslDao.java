@@ -75,29 +75,44 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public List<OrderItem> findSubscriptionOrderItem(
+	public List<OrderItem> findSubscriptionOrderItems(
 		OrderPageRequest pageRequest,
 		OrderFindCondition orderFindCondition
 	) {
 
 		List<OrderItem> fetch = queryFactory
-		    .select(orderItem).
-		    from(orderItem)
-		    .innerJoin(orderItem.order, order)
-		    .where(
-		        orderUserAndOrderItemUserEq(),
-		        subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
-		    )
-		    .limit(pageRequest.getSize())
-		    .offset(pageRequest.getOffset())
-		    .orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
-		    .fetch();
+			.select(orderItem)
+			.from(orderItem)
+			.innerJoin(orderItem.order, order)
+			.where(
+				orderUserAndOrderItemUserEq(),
+				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
+			)
+			.limit(pageRequest.getSize())
+			.offset(pageRequest.getOffset())
+			.orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
+			.fetch();
 
 		if (fetch.isEmpty()) {
 			return List.of();
 		}
 
 		return Collections.unmodifiableList(fetch);
+	}
+
+	@Override
+	public OrderItem findSubscriptionOrderItemBy(long id) {
+		OrderItem fetch = queryFactory
+			.select(orderItem)
+			.from(orderItem)
+			.where(orderItem.id.eq(id))
+			.fetchOne();
+
+		if(fetch == null) {
+			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
+		}
+
+		return fetch;
 	}
 
 	@Override
@@ -112,7 +127,9 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 	@Override
 	public boolean findIsSubscriptionById(long orderId) {
-		return queryFactory.select(order.isSubscription).from(order).where(order.id.eq(orderId)).fetchOne();
+		return Boolean.TRUE.equals(
+			queryFactory.select(order.isSubscription).from(order).where(order.id.eq(orderId)).fetchOne()
+		);
 	}
 
 	@Override

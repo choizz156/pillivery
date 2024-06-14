@@ -35,7 +35,7 @@ public class OrderQueryService {
 		OrderPageRequest orderPageRequest
 	) {
 
-		return orderQueryRepository.findSubscriptionOrderItem(
+		return orderQueryRepository.findSubscriptionOrderItems(
 			orderPageRequest,
 			OrderFindCondition.to(userId, OrderStatus.SUBSCRIBE)
 		);

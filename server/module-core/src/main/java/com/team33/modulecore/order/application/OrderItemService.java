@@ -14,6 +14,7 @@ import com.team33.modulecore.item.domain.entity.Item;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
 import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class OrderItemService {
 	private final ItemCommandService itemCommandService;
 	private final OrderFindHelper orderFindHelper;
 	private final ItemFindHelper itemFindHelper;
+	private final OrderQueryRepository orderQueryRepository;
 
 	@Transactional(readOnly = true)
 	public List<OrderItem> toOrderItems(List<OrderItemServiceDto> dtos) {
@@ -41,23 +43,12 @@ public class OrderItemService {
 		log.error("주기변경 = {}", orderItem.getPeriod());
 	}
 
-	// public OrderItem delayDelivery(Long orderId, Integer delay, OrderItem orderItem1) {
-	//
-	// 	Order order = orderFindHelper.findOrder(orderId);
-	//
-	// 	OrderItem orderItem = getItemOrder(orderItem1, order);
-	// 	ZonedDateTime nextDelivery = orderItem.getNextDelivery().plusDays(delay);
-	// 	// orderItem.setNextDelivery(nextDelivery);
-	// 	return orderItem;
-	// }
-	//
-	public OrderItem updateDeliveryInfo(
+	public void updatePaymentInfo(
 		ZonedDateTime paymentDay,
 		OrderItem orderItem
 	) {
 		orderItem.addPaymentDay(paymentDay);
 		orderItem.applyNextDelivery();
-		return orderItem;
 	}
 	//
 	// public OrderItem itemOrderCopy(Long lastOrderId, Order newOrder, OrderItem itemOrder) {
@@ -94,9 +85,7 @@ public class OrderItemService {
 		);
 	}
 
-	//TODO: subscriptionservice에서 사용
-
-	public OrderItem findOrderItem(Long itemOrderId) {
-		return null;
+	public OrderItem findOrderItem(long itemOrderId) {
+		return orderQueryRepository.findSubscriptionOrderItemBy(itemOrderId);
 	}
 }

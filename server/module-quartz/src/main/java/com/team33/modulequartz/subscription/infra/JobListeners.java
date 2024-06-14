@@ -111,7 +111,7 @@ public class JobListeners implements JobListener {
 		OrderItem orderItem = (OrderItem)jobDataMap.get("orderItem");
 		// Long orderId = (Long)jobDataMap.get("orderId");
 
-		 updateDeliveryDate(orderItem);
+		 updatePaymentDate(orderItem);
 		// JobDetail jobDetail = createNewJob(newOrderItem, orderId);
 		// triggerService.build(context.getJobDetail().getKey(), orderItem);
 		// replaceJob(context, jobDetail);
@@ -142,9 +142,9 @@ public class JobListeners implements JobListener {
 	// 	return orderCreateService.deepCopy(order);
 	// }
 
-	private void updateDeliveryDate(final OrderItem orderItem) {
+	private void updatePaymentDate(final OrderItem orderItem) {
 		ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-		orderItemService.updateDeliveryInfo(paymentDay, orderItem);
+		orderItemService.updatePaymentInfo(paymentDay, orderItem);
 	}
 
 	private void cancelSchedule(final JobExecutionContext context, final int retryCount) {

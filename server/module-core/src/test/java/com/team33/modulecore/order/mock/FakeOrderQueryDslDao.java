@@ -51,7 +51,7 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public List<OrderItem> findSubscriptionOrderItem(
+	public List<OrderItem> findSubscriptionOrderItems(
 		OrderPageRequest pageRequest,
 		OrderFindCondition orderFindCondition
 	) {
@@ -60,6 +60,11 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 			.map(Order::getOrderItems)
 			.flatMap(List::stream)
 			.collect(Collectors.toUnmodifiableList());
+	}
+
+	@Override
+	public OrderItem findSubscriptionOrderItemBy(long id) {
+		return null;
 	}
 
 	@Override

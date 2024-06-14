@@ -19,7 +19,6 @@ import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.user.domain.entity.User;
 import com.team33.modulequartz.subscription.infra.JobListeners;
 import com.team33.modulequartz.subscription.infra.TriggerListeners;
 
@@ -42,8 +41,6 @@ public class SubscriptionService {
 
 	public void applySchedule(Order order, List<OrderItem> orderItems) {
 		long orderId = order.getId();
-		long userId = order.getUserId();
-
 		orderItems.stream()
 			.filter(OrderItem::isSubscription)
 			.forEach(orderItem -> applySchedule(orderId, orderItem));
@@ -77,17 +74,18 @@ public class SubscriptionService {
 	//        return itemOrder;
 
 	//    }
-	// @Transactional
-	// public void cancelScheduler(Long orderId, Long itemOrderId) {
-	// 	log.info("cancelScheduler");
-	// 	Order order = orderQueryService.findOrder(orderId);
-	// 	OrderItem orderItem = getItemOrder(itemOrderId);
-	//
-	// 	deleteSchedule(order, orderItem);
-	// 	orderItemService.cancelItemOrder(orderId, orderItem);
-	// 	log.info("canceled item title = {}", orderItem.getItem().getProductName());
 
-	// }
+	@Transactional
+	public void cancelScheduler(long orderId, Long itemOrderId) {
+		log.info("cancelScheduler");
+		// Order order = orderQueryService.findOrder(orderId);
+		OrderItem orderItem = findItemOrder(itemOrderId);
+
+		deleteSchedule(orderId, orderItem.getItem().getProductName());
+		// orderItemService.cancelItemOrder(orderId, orderItem);
+		log.info("canceled item title = {}", orderItem.getItem().getProductName());
+	}
+
 	// private OrderItem getChangedItemOrder(final Order order, final OrderItem orderItem) {
 	// 	var paymentDay = orderItem.getPaymentDay();
 	// 	var nextDelivery = paymentDay.plusDays(orderItem.getPeriod());
@@ -120,17 +118,16 @@ public class SubscriptionService {
 	// 	deleteSchedule(orderItem, user);
 	// }
 
-	private void deleteSchedule(final OrderItem orderItem, final User user) {
+	private void deleteSchedule(long orderId, String productName) {
+		JobKey jobkey = JobKeyGenerator.build(orderId, productName);
+		deleteSchedule(jobkey);
+	}
+
+	private void deleteSchedule(JobKey jobkey) {
 		try {
-			scheduler.deleteJob(jobKey(
-				user.getId() + orderItem.getItem().getProductName(),
-				String.valueOf(user.getId()))
-			);
+			scheduler.deleteJob(jobkey);
 		} catch (SchedulerException e) {
-			log.error(
-				"스케쥴 삭제 실패 job => {},{}",
-				JobKey.jobKey("user.getUserId() + itemOrder.getItem().getTitle()")
-			);
+			log.error("스케쥴 삭제 실패 job => {}", e.getMessage());
 		}
 	}
 
@@ -144,12 +141,12 @@ public class SubscriptionService {
 	// 	startSchedule(order, orderItem);
 	// }
 
-	private OrderItem getItemOrder(Long itemOrderId) {
+	private OrderItem findItemOrder(Long itemOrderId) {
 		return orderItemService.findOrderItem(itemOrderId);
 	}
 
 	private OrderItem findItemOrderInOrder(Order order, Long itemOrderId) {
-		OrderItem orderItem = getItemOrder(itemOrderId);
+		OrderItem orderItem = findItemOrder(itemOrderId);
 		int i = order.getOrderItems().indexOf(orderItem);
 		return order.getOrderItems().get(i);
 	}

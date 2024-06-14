@@ -1,8 +1,10 @@
 package com.team33.modulequartz.api;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,14 +54,15 @@ public class ScheduleController {
 	// 	);
 	// }
 
-	// @DeleteMapping
-	// public SingleResponseDto<ZonedDateTime> delete(
-	// 	@RequestParam(name = "orderId") Long orderId,
-	// 	@RequestParam(name = "itemOrderId") Long itemOrderId
-	// ) {
-	// 	subscriptionService.cancelScheduler(orderId, itemOrderId);
-	// 	return new SingleResponseDto<>(ZonedDateTime.now());
-	// }
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping
+	public ZonedDateTime delete(
+		@RequestParam(name = "orderId") Long orderId,
+		@RequestParam(name = "itemOrderId") Long itemOrderId
+	) {
+		subscriptionService.cancelScheduler(orderId, itemOrderId);
+		return ZonedDateTime.now();
+	}
 }
 
 
