@@ -1,10 +1,11 @@
-package com.team33.modulequartz.api;
+package com.team33.moduleapi.ui.schedule;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,9 +32,9 @@ public class ScheduleController {
 	private final OrderItemService orderItemService;
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PostMapping
+	@PostMapping("/{orderId}")
 	public void schedule(
-		@RequestParam(name = "orderId") long orderId
+		@PathVariable(name = "orderId") long orderId
 	) {
 		Order order = orderFindHelper.findOrder(orderId);
 		List<OrderItem> orderItems = order.getOrderItems();
