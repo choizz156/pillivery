@@ -40,7 +40,7 @@ public class PayController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/{orderId}")
 	public SingleResponseDto<?> request(
-		@PathVariable Long orderId
+		@PathVariable long orderId
 	) {
 
 		KakaoRequestResponse requestResponse = KakaoRequestFacade.request(orderId);
@@ -53,7 +53,7 @@ public class PayController {
 	@GetMapping("/approve/subscription/{orderId}")
 	public SingleResponseDto<?> subscription(
 		@RequestParam("pg_token") String pgToken,
-		@PathVariable Long orderId
+		@PathVariable long orderId
 	) {
 		PaymentData data = paymentDataService.getData(orderId);
 		KakaoApproveOneTimeRequest approveOneTimeRequest =
@@ -68,7 +68,7 @@ public class PayController {
 	@GetMapping("/approve/{orderId}")
 	public SingleResponseDto<?> success(
 		@RequestParam("pg_token") String pgToken,
-		@PathVariable Long orderId
+		@PathVariable long orderId
 	) {
 
 		PaymentData data = paymentDataService.getData(orderId);
@@ -81,11 +81,10 @@ public class PayController {
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
 	}
 
-	@GetMapping("/approve/subscriptions")
+	@PostMapping("/approve/subscriptions/{orderId}")
 	public SingleResponseDto<?> subscription(
-		@RequestParam("orderId") Long orderId
+		@PathVariable long orderId
 	) {
-
 		KakaoApproveResponse kaKaoApiApproveResponse = approveFacade.approveSubscription(orderId);
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(kaKaoApiApproveResponse));

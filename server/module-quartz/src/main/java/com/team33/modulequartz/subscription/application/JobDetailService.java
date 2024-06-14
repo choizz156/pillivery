@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JobDetailService {
 
-	public JobDetail build(JobKey jobKey, Long orderId, OrderItem orderItem) {
+	public JobDetail build(JobKey jobKey, long orderId, OrderItem orderItem) {
 
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("orderId", orderId);
