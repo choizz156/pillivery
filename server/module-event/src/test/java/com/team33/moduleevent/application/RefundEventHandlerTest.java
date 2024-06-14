@@ -11,7 +11,7 @@ import com.team33.moduleevent.domain.repository.EventRepository;
 
 class RefundEventHandlerTest {
 
-	@DisplayName("이벤트를 저장할 수 있다.")
+	@DisplayName("환불 이벤트를 저장할 수 있다.")
 	@Test
 	void onEventSet() {
 		// given

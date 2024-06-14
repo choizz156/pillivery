@@ -36,7 +36,7 @@ class OrderItemServiceTest {
 
 		ItemFindHelper itemFindHelper = mock(ItemFindHelper.class);
 
-		OrderItemService orderItemService = new OrderItemService(null, null, itemFindHelper);
+		OrderItemService orderItemService = new OrderItemService(null, null, itemFindHelper, null);
 
 		//when
 		List<OrderItem> orderItems = orderItemService.toOrderItems(dtos);

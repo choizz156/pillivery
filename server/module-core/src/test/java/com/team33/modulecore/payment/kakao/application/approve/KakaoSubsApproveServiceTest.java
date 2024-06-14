@@ -25,6 +25,7 @@ class KakaoSubsApproveServiceTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		KakaoSubsApproveService kakaoSubsApproveService = new KakaoSubsApproveService(
+			applicationEventPublisher -> {},
 			new KakaoFirstSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider),
 			new KakaoSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider)
 		);
@@ -50,6 +51,7 @@ class KakaoSubsApproveServiceTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		KakaoSubsApproveService kakaoSubsApproveService = new KakaoSubsApproveService(
+			applicationEventPublisher -> {},
 			new KakaoFirstSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider),
 			new KakaoSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider)
 		);

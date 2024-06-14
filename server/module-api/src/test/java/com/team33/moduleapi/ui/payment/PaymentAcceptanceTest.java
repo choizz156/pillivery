@@ -11,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
@@ -22,10 +24,12 @@ import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.payment.kakao.application.approve.KakaoApproveFacade;
+import com.team33.modulecore.payment.kakao.application.events.ScheduleRegisteredEvent;
 import com.team33.modulecore.payment.kakao.application.request.KakaoRequestFacade;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
+import com.team33.moduleevent.application.ScheduleRegisterHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
@@ -51,7 +55,13 @@ class PaymentAcceptanceTest extends ApiTest {
 
 	@Autowired
 	private OrderPaymentCodeService paymentCodeService;
-	private Order order;
+
+	@Autowired
+	private ApplicationEventPublisher applicationEventPublisher;
+
+	@MockBean
+	private ScheduleRegisterHandler scheduleRegisterHandler;
+
 	private KakaoApproveFacade approveFacade;
 
 	@BeforeAll
@@ -76,7 +86,7 @@ class PaymentAcceptanceTest extends ApiTest {
 
 	@BeforeEach
 	void setUp() {
-		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.setNull("id")
 			.setNull("orderItems")
 			.sample();
@@ -169,46 +179,17 @@ class PaymentAcceptanceTest extends ApiTest {
 
 		//@formatter:on
 	}
-	//
-	// @DisplayName("결제 승인 취소")
-	// @Test
-	// void test4() throws Exception {
-	//
-	//     KakaoFailResponseDto kakaoFailResponse = fixtureMonkey.giveMeBuilder(KakaoFailResponseDto.class)
-	//         .set("code", -780)
-	//         .set("msg", "approval failure!").sample();
-	//
-	//     //@formatter:off
-    //         given
-    //                 .body(kakaoFailResponse)
-    //         .when()
-    //                 .get("/payments/kakao/cancel")
-    //         .then()
-    //                 .statusCode(HttpStatus.BAD_REQUEST.value())
-    //                 .expect(jsonPath("$.code").value(-780))
-    //                 .expect(jsonPath("$.msg").value("approval failure!"))
-    //                 .log().all();
-    //     //@formatter:on
-	// }
-	//
-	// @DisplayName("정기 결제 승인 실패")
-	// @Test
-	// void test5() throws Exception {
-	//
-	//     KakaoFailResponseDto kakaoFailResponse = fixtureMonkey.giveMeBuilder(KakaoFailResponseDto.class)
-	//         .set("code", -780)
-	//         .set("msg", "approval failure!").sample();
-	//
-	//     //@formatter:off
-    //         given
-    //                 .body(kakaoFailResponse)
-    //         .when()
-    //                 .get("/payments/kakao/fail")
-    //         .then()
-    //                  .statusCode(HttpStatus.BAD_REQUEST.value())
-    //                  .expect(jsonPath("$.code").value(-780))
-    //                  .expect(jsonPath("$.msg").value("approval failure!"))
-    //                  .log().all();
-    //     //@formatter:on
-	// }
+
+	@DisplayName("스케쥴 등록 이벤트가 발행되면, 이벤트 핸들로가 동작한다.")
+	@Test
+	void 스케쥴_등록_이벤트() throws Exception{
+		//given
+		ScheduleRegisteredEvent scheduleRegisteredEvent = new ScheduleRegisteredEvent(1L);
+
+		//when
+		applicationEventPublisher.publishEvent(scheduleRegisteredEvent);
+
+		//then
+		verify(scheduleRegisterHandler, times(1)).onEventSet(scheduleRegisteredEvent);
+	}
 }
