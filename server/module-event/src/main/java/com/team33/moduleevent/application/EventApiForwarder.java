@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
@@ -21,8 +22,9 @@ public class EventApiForwarder {
 	private final EventRepository eventsRepository;
 	private final EventSender kakaoApiEventSender;
 	private final EventSender scheduleRegisterEventSender;
-	private final EventProcessor eventProcessor;
+	private final EventDispatcher eventDispatcher;
 
+	@Transactional
 	@Scheduled(cron = "0 * * * * *")
 	public void getAndSend() {
 		List<ApiEvent> apiEvents = eventsRepository
@@ -36,10 +38,10 @@ public class EventApiForwarder {
 	private void sendEvents(List<ApiEvent> apiEvents) {
 		for (ApiEvent apiEvent : apiEvents) {
 			if (isScheduleRegistered(apiEvent)) {
-				eventProcessor.register(apiEvent, scheduleRegisterEventSender);
+				eventDispatcher.register(apiEvent, scheduleRegisterEventSender);
 				continue;
 			}
-			eventProcessor.register(apiEvent, kakaoApiEventSender);
+			eventDispatcher.register(apiEvent, kakaoApiEventSender);
 		}
 	}
 
