@@ -1,10 +1,7 @@
 package com.team33.moduleevent.application;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.entity.FailEvent;
 import com.team33.moduleevent.domain.repository.FailEventRepository;
@@ -19,7 +16,7 @@ public class FailEventService {
 
 	private final FailEventRepository failEventRepository;
 
-	public void saveFail(ApiEvent apiEvent, String reason) {
+	public void saveFailEvent(ApiEvent apiEvent, String reason) {
 		log.error("eventId : {}, type : {}, reason : {}", apiEvent.getId(), apiEvent.getType(), reason);
 
 		FailEvent failEvent = FailEvent.builder()
@@ -29,9 +26,5 @@ public class FailEventService {
 			.build();
 
 		failEventRepository.save(failEvent);
-	}
-
-	public List<FailEvent> findAll() {
-		return failEventRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.FAILED);
 	}
 }

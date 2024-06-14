@@ -16,8 +16,7 @@ public class ScheduleRegisterEventSender implements EventSender {
 
 	@Override
 	public void send(ApiEvent event) {
-
 		String url = event.getUrl() + "/" + event.getParameters();
-		restTemplateSender.sendToPost("scheduler register event", url, null,String.class);
+		restTemplateSender.sendToPost("scheduler register event", url, null, String.class);
 	}
 }

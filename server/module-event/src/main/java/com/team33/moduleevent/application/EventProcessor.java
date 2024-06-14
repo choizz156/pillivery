@@ -33,7 +33,7 @@ public class EventProcessor {
 					apiEvent.changeStatusToFail();
 					String reason = RestTemplateErrorHandler.ThreadLocalErrorMessage.get();
 
-					failEventService.saveFail(apiEvent, reason);
+					failEventService.saveFailEvent(apiEvent, reason);
 
 					RestTemplateErrorHandler.ThreadLocalErrorMessage.clear();
 				}
