@@ -37,12 +37,16 @@ public class EventApiForwarder {
 
 	private void sendEvents(List<ApiEvent> apiEvents) {
 		for (ApiEvent apiEvent : apiEvents) {
-			if (isScheduleRegistered(apiEvent)) {
-				eventDispatcher.register(apiEvent, scheduleRegisterEventSender);
-				continue;
-			}
-			eventDispatcher.register(apiEvent, kakaoApiEventSender);
+			registerEventWithDispatcher(apiEvent);
 		}
+	}
+
+	private void registerEventWithDispatcher(ApiEvent apiEvent) {
+		if (isScheduleRegistered(apiEvent)) {
+			eventDispatcher.register(apiEvent, scheduleRegisterEventSender);
+			return;
+		}
+		eventDispatcher.register(apiEvent, kakaoApiEventSender);
 	}
 
 	private boolean isScheduleRegistered(ApiEvent apiEvent) {
