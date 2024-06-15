@@ -25,8 +25,8 @@ public class RestTemplateSender {
 	public <T> T sendToPost(Map<String, Object> params, String url, HttpHeaders headers, Class<T> responseClass)
 		throws JsonProcessingException {
 
-		String kakaoRequest = objectMapper.writeValueAsString(params);
-		HttpEntity<String> entity = new HttpEntity<>(kakaoRequest, headers);
+		String request = objectMapper.writeValueAsString(params);
+		HttpEntity<String> entity = new HttpEntity<>(request, headers);
 
 		ResponseEntity<T> exchange =
 			restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
