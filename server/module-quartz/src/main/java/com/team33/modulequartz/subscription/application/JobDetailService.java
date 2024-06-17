@@ -33,6 +33,19 @@ public class JobDetailService {
 			.build();
 	}
 
+	public JobDetail build(JobKey jobKey, long orderId) {
+
+		JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put("orderId", orderId);
+		jobDataMap.put("retry", 0);
+
+		return newJob(KaKaoSubscriptionJob.class)
+			.withIdentity(jobKey.getName(), jobKey.getGroup())
+			.storeDurably(true)
+			.usingJobData(jobDataMap)
+			.build();
+	}
+
 	public JobDetail build(JobKey jobKey, Order order) {
 
 		JobDataMap jobDataMap = new JobDataMap();
