@@ -1,7 +1,5 @@
 package com.team33.modulequartz.subscription.application;
 
-import static org.quartz.JobKey.*;
-
 import java.util.List;
 
 import org.quartz.JobDetail;
@@ -153,14 +151,14 @@ public class SubscriptionService {
 
 	private void applySchedule(long orderId, OrderItem orderItem) {
 
-		JobKey jobkey = jobKey(
-			orderId + "-" + orderItem.getItem().getProductName(),
-			String.valueOf(orderId)
-		);
-		JobDetail paymentDay = jobDetailService.build(jobkey, orderId, orderItem);
-		Trigger lastTrigger = trigger.build(jobkey, orderItem);
+		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getItem().getProductName());
 
-		schedule(paymentDay, lastTrigger);
+		// JobDetail paymentDay = jobDetailService.build(jobkey, orderId, orderItem);
+		// Trigger lastTrigger = trigger.build(jobkey, orderItem);
+
+		JobDetail jobDetail = jobDetailService.build(jobKey, orderId);
+		Trigger lastTrigger = trigger.build(jobKey, orderItem);
+		schedule(jobDetail, lastTrigger);
 	}
 
 	private void schedule(JobDetail jobDetail, Trigger lastTrigger) {
