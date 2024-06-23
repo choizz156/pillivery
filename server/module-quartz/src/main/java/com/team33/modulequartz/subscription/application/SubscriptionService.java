@@ -1,7 +1,5 @@
 package com.team33.modulequartz.subscription.application;
 
-import java.util.List;
-
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.ListenerManager;
@@ -11,6 +9,7 @@ import org.quartz.Trigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
@@ -36,10 +35,11 @@ public class SubscriptionService {
 	private final OrderStatusService orderStatusService;
 	private final OrderItemService orderItemService;
 	private final OrderQueryService orderQueryService;
+	private final OrderFindHelper orderFindHelper;
 
-	public void applySchedule(Order order, List<OrderItem> orderItems) {
-		long orderId = order.getId();
-		orderItems.stream()
+	public void applySchedule(long orderId) {
+		Order order = orderFindHelper.findOrder(orderId);
+		order.getOrderItems().stream()
 			.filter(OrderItem::isSubscription)
 			.forEach(orderItem -> applySchedule(orderId, orderItem));
 	}

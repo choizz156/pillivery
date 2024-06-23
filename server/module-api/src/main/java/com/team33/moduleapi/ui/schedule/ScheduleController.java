@@ -1,7 +1,6 @@
 package com.team33.moduleapi.ui.schedule;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.domain.OrderItem;
-import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulequartz.subscription.application.SubscriptionService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,10 +33,7 @@ public class ScheduleController {
 	public void schedule(
 		@PathVariable(name = "orderId") long orderId
 	) {
-		Order order = orderFindHelper.findOrder(orderId);
-		List<OrderItem> orderItems = order.getOrderItems();
-
-		subscriptionService.applySchedule(order, orderItems);
+		subscriptionService.applySchedule(orderId);
 	}
 
 	// @PatchMapping
