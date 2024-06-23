@@ -5,5 +5,11 @@ dependencies {
 
     //jdbc
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+
+    //fixturemonkey
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14'
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14'
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14'
 }
 

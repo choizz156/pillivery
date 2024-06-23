@@ -311,15 +311,6 @@ class OrderServiceTest {
 			.sample();
 	}
 
-	private List<OrderItem> getMockOrderItems() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
-			.set("item", getMockItem())
-			.set("quantity", 3)
-			.set("item.information.price.realPrice", 1000)
-			.set("item.information.price.discountPrice", 500)
-			.sampleList(3);
-	}
-
 	private Order getNoCartOrder() {
 		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.set("isOrderedAtCart", false)
@@ -345,5 +336,14 @@ class OrderServiceTest {
 			.set("user", user)
 			.set("paymentCode.sid", "sid")
 			.sample();
+	}
+
+	private List<OrderItem> getMockOrderItems() {
+		return FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
+			.set("item", getMockItem())
+			.set("quantity", 3)
+			.set("item.information.price.realPrice", 1000)
+			.set("item.information.price.discountPrice", 500)
+			.sampleList(3);
 	}
 }
