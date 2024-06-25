@@ -16,7 +16,7 @@ import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulequartz.subscription.infra.JobListeners;
+import com.team33.modulequartz.subscription.infra.PaymentJobListeners;
 import com.team33.modulequartz.subscription.infra.TriggerListeners;
 
 import lombok.RequiredArgsConstructor;
@@ -165,7 +165,7 @@ public class SubscriptionService {
 		try {
 			ListenerManager listenerManager = scheduler.getListenerManager();
 			listenerManager.addJobListener(
-				new JobListeners(
+				new PaymentJobListeners(
 					trigger,
 					orderItemService,
 					orderCreateService,
