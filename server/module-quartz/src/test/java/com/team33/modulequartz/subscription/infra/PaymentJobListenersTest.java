@@ -92,7 +92,7 @@ class PaymentJobListenersTest {
 		//when
 		scheduler.scheduleJob(jobDetail, trigger);
 		scheduler.start();
-		Thread.sleep(1000);
+		Thread.sleep(500);
 
 		//then
 		verify(listenersTest, times(1)).jobToBeExecuted(any(JobExecutionContext.class));

@@ -175,7 +175,6 @@ public class SubscriptionService {
 				)
 			);
 
-			listenerManager.addTriggerListener(new TriggerListeners());
 			scheduler.scheduleJob(jobDetail, lastTrigger);
 		} catch (SchedulerException e) {
 			log.error("스케쥴 등록 실패 job => {},{}", jobDetail.getKey().getName());
