@@ -102,5 +102,6 @@ project(':module-event'){
     dependencies {
         implementation project(':module-external-api')
         implementation project(':module-core')
+        implementation project(':module-quartz')
     }
 }

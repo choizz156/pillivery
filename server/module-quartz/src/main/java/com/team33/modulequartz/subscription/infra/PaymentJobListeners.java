@@ -101,7 +101,6 @@ public class PaymentJobListeners implements JobListener {
 		if (jobException != null) {
 			log.warn("job exception = {}", jobException.getMessage());
 			retryImmediately(jobException, jobDataMap, retryCount);
-			retryInOneHour(context, jobDataMap, retryCount);
 			cancelSchedule(context, retryCount);
 		}
 	}
@@ -160,21 +159,8 @@ public class PaymentJobListeners implements JobListener {
 				//TODO: 취소된것도 조회가되나???
 				// throw new BusinessLogicException(ExceptionCode.PAYMENT_FAIL);
 			} catch (SchedulerException e) {
-				log.error("스케쥴 삭제 실패");
+				log.error("스케쥴 삭제 실패 = {}, key = {}", e.getMessage(), context.getJobDetail().getKey());
 			}
-		}
-	}
-
-	private void retryInOneHour(
-		final JobExecutionContext context,
-		final JobDataMap jobDataMap,
-		int retryCount
-	) {
-		if (retryCount == 1) {
-			log.warn("재시도");
-			jobDataMap.put(RETRY, ++retryCount);
-			Trigger trigger = triggerService.retryTrigger();
-			reschedule(context, trigger);
 		}
 	}
 
@@ -183,24 +169,10 @@ public class PaymentJobListeners implements JobListener {
 		final JobDataMap jobDataMap,
 		int retryCount
 	) {
-		if (retryCount == 0) {
+		if (retryCount  < 2) {
 			log.warn("최초 재시도");
 			jobDataMap.put(RETRY, ++retryCount);
 			jobException.setRefireImmediately(true);
-		}
-	}
-
-	private void reschedule(final JobExecutionContext context, final Trigger retryTrigger) {
-		try {
-			String name = context.getJobDetail().getKey().getName();
-			String group = context.getJobDetail().getKey().getGroup();
-
-			context
-				.getScheduler()
-				.rescheduleJob(new TriggerKey(name, group), retryTrigger);
-
-		} catch (SchedulerException e) {
-			log.error("retry schdule error = {}", e.getMessage());
 		}
 	}
 }
