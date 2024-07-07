@@ -8,9 +8,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.JobListener;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerKey;
 
 import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
@@ -71,7 +68,6 @@ public class PaymentJobListeners implements JobListener {
 	 * job 실행 후 예외가 발생할 경우,
 	 * - 첫 번째 예외 발생 시, 바로 job을 재실행한다.
 	 * - 두 번째 예외 발생 시, 한 시간 후에 다시 재시도.
-	 * - 세 번째 예외 발생 시, 스케쥴링 취소.
 	 * 예외가 발생하지 않은 경우, 다음 job을 등록한다.
 	 *
 	 * @param context
@@ -101,7 +97,7 @@ public class PaymentJobListeners implements JobListener {
 		if (jobException != null) {
 			log.warn("job exception = {}", jobException.getMessage());
 			retryImmediately(jobException, jobDataMap, retryCount);
-			cancelSchedule(context, retryCount);
+			// cancelSchedule(context, retryCount);
 		}
 	}
 
@@ -149,20 +145,20 @@ public class PaymentJobListeners implements JobListener {
 		orderItemService.updatePaymentInfo(paymentDay, orderItem);
 	}
 
-	private void cancelSchedule(final JobExecutionContext context, final int retryCount) {
-		if (retryCount >= 2) {
-			log.error("job 예외로 인한 스케쥴 취소");
-
-			try {
-				JobKey key = context.getJobDetail().getKey();
-				context.getScheduler().deleteJob(key);
-				//TODO: 취소된것도 조회가되나???
-				// throw new BusinessLogicException(ExceptionCode.PAYMENT_FAIL);
-			} catch (SchedulerException e) {
-				log.error("스케쥴 삭제 실패 = {}, key = {}", e.getMessage(), context.getJobDetail().getKey());
-			}
-		}
-	}
+	// private void cancelSchedule(final JobExecutionContext context, final int retryCount) {
+	// 	if (retryCount >= 2) {
+	// 		log.error("job 예외로 인한 스케쥴 취소");
+	//
+	// 		try {
+	// 			JobKey key = context.getJobDetail().getKey();
+	// 			context.getScheduler().deleteJob(key);
+	// 			//TODO: 취소된것도 조회가되나???
+	// 			// throw new BusinessLogicException(ExceptionCode.PAYMENT_FAIL);
+	// 		} catch (SchedulerException e) {
+	// 			log.error("스케쥴 삭제 실패 = {}, key = {}", e.getMessage(), context.getJobDetail().getKey());
+	// 		}
+	// 	}
+	// }
 
 	private void retryImmediately(
 		final JobExecutionException jobException,
