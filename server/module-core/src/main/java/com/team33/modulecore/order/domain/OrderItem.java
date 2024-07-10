@@ -108,12 +108,9 @@ public class OrderItem extends BaseEntity {
         return item.getId().equals(id);
     }
 
-    public void addPaymentDay(ZonedDateTime paymentDay) {
+    public void applyNextPaymentDate(ZonedDateTime paymentDay) {
         this.subscriptionInfo.addPaymentDay(paymentDay);
-    }
-
-    public void applyNextDelivery() {
-        this.subscriptionInfo.applyNextDelivery();
+        this.subscriptionInfo.applyNextPayment();
     }
 
     public Date getNextDelivery() {

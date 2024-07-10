@@ -60,7 +60,7 @@ public class SubscriptionInfo {
 		this.paymentDay = paymentDay;
 	}
 
-	public void applyNextDelivery() {
+	public void applyNextPayment() {
 		this.nextDelivery = paymentDay.plusDays(period);
 	}
 }

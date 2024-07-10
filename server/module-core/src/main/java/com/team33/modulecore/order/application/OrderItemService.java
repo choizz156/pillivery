@@ -43,12 +43,11 @@ public class OrderItemService {
 		log.error("주기변경 = {}", orderItem.getPeriod());
 	}
 
-	public void updatePaymentInfo(
+	public void updateNextPaymentDate(
 		ZonedDateTime paymentDay,
 		OrderItem orderItem
 	) {
-		orderItem.addPaymentDay(paymentDay);
-		orderItem.applyNextDelivery();
+		orderItem.applyNextPaymentDate(paymentDay);
 	}
 	//
 	// public OrderItem itemOrderCopy(Long lastOrderId, Order newOrder, OrderItem itemOrder) {

@@ -8,6 +8,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.JobListener;
+import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
@@ -16,6 +17,7 @@ import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulequartz.subscription.application.JobDetailService;
 import com.team33.modulequartz.subscription.application.TriggerService;
+import com.team33.modulequartz.subscription.domain.PaymentUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PaymentJobListeners implements JobListener {
 
+	private final ApplicationEventPublisher applicationEventPublisher;
 	private final TriggerService triggerService;
 	private final OrderItemService orderItemService;
 	private final OrderCreateService orderCreateService;
@@ -85,7 +88,9 @@ public class PaymentJobListeners implements JobListener {
 		log.info("실행된 job의 jobkey = {}", key);
 
 		retryOrDeleteIfJobException(context, jobException, jobDataMap, retryCount);
-		updatePaymentDay(context, jobDataMap);
+		// updatePaymentDay(context, jobDataMap);
+		OrderItem orderItem = (OrderItem)jobDataMap.get("orderItem");
+		applicationEventPublisher.publishEvent(new PaymentUpdatedEvent(orderItem));
 	}
 
 	private void retryOrDeleteIfJobException(
@@ -101,19 +106,19 @@ public class PaymentJobListeners implements JobListener {
 		}
 	}
 
-	private void updatePaymentDay(
-		final JobExecutionContext context,
-		final JobDataMap jobDataMap
-	) {
-
-		OrderItem orderItem = (OrderItem)jobDataMap.get("orderItem");
+	// private void updatePaymentDay(
+	// 	final JobExecutionContext context,
+	// 	final JobDataMap jobDataMap
+	// ) {
+	//
+	// 	OrderItem orderItem = (OrderItem)jobDataMap.get("orderItem");
 		// Long orderId = (Long)jobDataMap.get("orderId");
 
-		 updatePaymentDate(orderItem);
+		 // updatePaymentDate(orderItem);
 		// JobDetail jobDetail = createNewJob(newOrderItem, orderId);
 		// triggerService.build(context.getJobDetail().getKey(), orderItem);
 		// replaceJob(context, jobDetail);
-	}
+	// }
 
 	// private void replaceJob(final JobExecutionContext context, final JobDetail jobDetail) {
 	// 	try {
@@ -142,7 +147,7 @@ public class PaymentJobListeners implements JobListener {
 
 	private void updatePaymentDate(final OrderItem orderItem) {
 		ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-		orderItemService.updatePaymentInfo(paymentDay, orderItem);
+		orderItemService.updateNextPaymentDate(paymentDay, orderItem);
 	}
 
 	// private void cancelSchedule(final JobExecutionContext context, final int retryCount) {
