@@ -11,11 +11,12 @@ import lombok.Getter;
 @Getter
 public class OrderItemSimpleResponse {
 
-    private long orderItemId;
-    private int quantity;
-    private int period;
-    private boolean subscription;
-    private ItemSimpleResponseDto item;
+    private final long orderItemId;
+    private final int quantity;
+    private final int period;
+    private final boolean subscription;
+    private final ZonedDateTime nextPaymentDay;
+    private final ItemSimpleResponseDto item;
 
     @Builder
     public OrderItemSimpleResponse(
@@ -23,13 +24,15 @@ public class OrderItemSimpleResponse {
         int quantity,
         int period,
         boolean subscription,
+        ZonedDateTime nextPaymentDay,
         ItemSimpleResponseDto item
     ) {
         this.orderItemId = orderItemId;
         this.quantity = quantity;
         this.period = period;
         this.subscription = subscription;
-        this.item = item;
+		this.nextPaymentDay = nextPaymentDay;
+		this.item = item;
     }
 
     public static OrderItemSimpleResponse of(OrderItem orderItem) {
@@ -37,6 +40,7 @@ public class OrderItemSimpleResponse {
             .orderItemId(orderItem.getId())
             .quantity(orderItem.getQuantity())
             .period(orderItem.getPeriod())
+            .nextPaymentDay(orderItem.getPaymentDay())
             .subscription(orderItem.isSubscription())
             .item(ItemSimpleResponseDto.of(orderItem.getItem()))
             .build();

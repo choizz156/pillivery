@@ -84,10 +84,6 @@ public class OrderItem extends BaseEntity {
         this.order = order;
     }
 
-    public void addPeriod(int period){
-        this.subscriptionInfo.addPeriod(period);
-    }
-
     public void cancelSubscription(){
         this.subscriptionInfo.cancelSubscription();
     }
@@ -115,5 +111,13 @@ public class OrderItem extends BaseEntity {
 
     public Date getNextDelivery() {
         return Date.from(subscriptionInfo.getNextDelivery().toInstant());
+    }
+
+    public void changePeriod(int period) {
+        this.subscriptionInfo.changePeriod(period);
+    }
+
+    public ZonedDateTime getPaymentDay(){
+        return subscriptionInfo.getPaymentDay();
     }
 }

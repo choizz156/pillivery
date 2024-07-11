@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.moduleapi.ui.order.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.order.application.OrderItemService;
+import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulequartz.subscription.application.SubscriptionService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,18 +40,18 @@ public class ScheduleController {
 		subscriptionService.applySchedule(orderId);
 	}
 
-	// @PatchMapping
-	// public SingleResponseDto<SubResponse> changePeriod(
-	// 	@RequestParam(name = "orderId") Long orderId,
-	// 	@RequestParam(name = "period") Integer period,
-	// 	@RequestParam(name = "itemOrderId") Long itemOrderId
-	// ) {
-	// 	log.info("스케쥴 변화");
-	// 	OrderItem orderItem = subscriptionService.changePeriod(orderId, period, itemOrderId);
-	// 	return new SingleResponseDto<>(
-	// 		itemOrderMapper.itemOrderToSubResponse(orderItem, itemMapper)
-	// 	);
-	// }
+	@PatchMapping
+	public SingleResponseDto<?> changePeriod(
+		@RequestParam(name = "orderId") long orderId,
+		@RequestParam(name = "period") int period,
+		@RequestParam(name = "itemOrderId") long itemOrderId
+	) {
+		OrderItem orderItem = subscriptionService.changePeriod(orderId, period, itemOrderId);
+
+		return new SingleResponseDto<>(
+			OrderItemSimpleResponse.of(orderItem)
+		);
+	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping

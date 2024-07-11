@@ -6,10 +6,12 @@ import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.common.OrderFindHelper;
+import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
@@ -17,7 +19,6 @@ import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulequartz.subscription.infra.PaymentJobListeners;
-import com.team33.modulequartz.subscription.infra.TriggerListeners;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class SubscriptionService {
 	private final OrderItemService orderItemService;
 	private final OrderQueryService orderQueryService;
 	private final OrderFindHelper orderFindHelper;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public void applySchedule(long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);
@@ -44,44 +46,38 @@ public class SubscriptionService {
 			.forEach(orderItem -> applySchedule(orderId, orderItem));
 	}
 
-	// @Transactional
-	// public OrderItem changePeriod(Long orderId, Integer period, Long itemOrderId) {
-	//
-	// 	Order order = orderQueryService.findOrder(orderId);
-	// 	OrderItem orderItem = findItemOrderInOrder(order, itemOrderId);
-	//
-	// 	orderItemService.setItemPeriod(period, orderItem);
-	// 	log.info("기존 아이템 결제 주기 ={}", orderItem.getPeriod());
-	//
-	// 	if (isPaymentDirectly(order, period, orderItem)) {
-	// 		orderItem.getPaymentDay().plusDays(orderItem.getPeriod());
-	// 		return orderItem;
-	// 	}
-	// 	return getChangedItemOrder(order, orderItem);
+	@Transactional
+	public OrderItem changePeriod(long orderId, int period, long itemOrderId) {
 
-	// }
-	//    @Transactional
-	//    public ItemOrder delayDelivery(Long orderId, Integer delay, Long itemOrderId) {
-	//        log.info("delay Delivery");
-	//        Order order = orderService.findOrder(orderId);
-	//        ItemOrder itemOrder =
-	//            itemOrderService.delayDelivery(
-	//                orderId, delay, findItemOrderInOrder(order, itemOrderId)
-	//            );
-	//        resetSchedule(order, itemOrder);
-	//        return itemOrder;
+		OrderItem orderItem = orderItemService.findOrderItem(itemOrderId);
 
-	//    }
+		orderItemService.changeItemPeriod(period, orderItem);
+
+		//TODO: 트리거 변경 로직
+		Trigger newTrigger = trigger.build(JobKeyGenerator.build(orderId, orderItem.getItem().getProductName()), orderItem);
+
+		changeTrigger(newTrigger);
+
+		return orderItem;
+	}
 
 	@Transactional
-	public void cancelScheduler(long orderId, Long itemOrderId) {
+	public void cancelScheduler(long orderId, long itemOrderId) {
 		log.info("cancelScheduler");
 		// Order order = orderQueryService.findOrder(orderId);
-		OrderItem orderItem = findItemOrder(itemOrderId);
+		OrderItem orderItem =orderItemService.findOrderItem(itemOrderId);
 
 		deleteSchedule(orderId, orderItem.getItem().getProductName());
 		// orderItemService.cancelItemOrder(orderId, orderItem);
 		log.info("canceled item title = {}", orderItem.getItem().getProductName());
+	}
+
+	private void changeTrigger(Trigger newTrigger) {
+		try {
+			scheduler.rescheduleJob(newTrigger.getKey(), newTrigger);
+		} catch (SchedulerException e) {
+			throw new BusinessLogicException(e.getMessage());
+		}
 	}
 
 	// private OrderItem getChangedItemOrder(final Order order, final OrderItem orderItem) {
@@ -96,19 +92,10 @@ public class SubscriptionService {
 	// 	return updatedOrderItem;
 
 	// }
-	// private boolean isPaymentDirectly(Order order, Integer period, OrderItem orderItem) {
-	// 	boolean noMargin = orderItem.getPaymentDay()
-	// 		.plusDays(period)
-	// 		.isBefore(ZonedDateTime.now(ZoneId.of("Asia/Seoul")));
-	//
-	// 	if (noMargin) {
-	// 		log.info("directly pay");
-	// 		resetSchedule(order, orderItem);
-	// 		return true;
-	// 	}
-	// 	return false;
-
-	// }
+	/**
+	 * 만약 기간을 변경할 경우, 다음 결제 날짜가 현재보다 이전이면, 즉, 기간을 줄이면 기존 결제 예정일에 결제 후 주기 변경
+	 *
+	 */
 
 	// private void deleteSchedule(Order order, OrderItem orderItem) {
 	// 	log.info("delete schedule");
@@ -129,26 +116,6 @@ public class SubscriptionService {
 		}
 	}
 
-	// private void extendPeriod(Order order, OrderItem orderItem) {
-	// 	log.warn("extendPeriod = {}", orderItem.getPeriod());
-	// 	resetSchedule(order, orderItem);
-	// }
-
-	// private void resetSchedule(Order order, OrderItem orderItem) {
-	// 	deleteSchedule(order, orderItem);
-	// 	startSchedule(order, orderItem);
-	// }
-
-	private OrderItem findItemOrder(Long itemOrderId) {
-		return orderItemService.findOrderItem(itemOrderId);
-	}
-
-	private OrderItem findItemOrderInOrder(Order order, Long itemOrderId) {
-		OrderItem orderItem = findItemOrder(itemOrderId);
-		int i = order.getOrderItems().indexOf(orderItem);
-		return order.getOrderItems().get(i);
-	}
-
 	private void applySchedule(long orderId, OrderItem orderItem) {
 
 		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getItem().getProductName());
@@ -166,6 +133,7 @@ public class SubscriptionService {
 			ListenerManager listenerManager = scheduler.getListenerManager();
 			listenerManager.addJobListener(
 				new PaymentJobListeners(
+					applicationEventPublisher,
 					trigger,
 					orderItemService,
 					orderCreateService,

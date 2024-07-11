@@ -48,10 +48,6 @@ public class SubscriptionInfo {
 			.build();
 	}
 
-	public void addPeriod(int period) {
-		this.period += period;
-	}
-
 	public void cancelSubscription() {
 		this.subscription = false;
 	}
@@ -62,5 +58,9 @@ public class SubscriptionInfo {
 
 	public void applyNextPayment() {
 		this.nextDelivery = paymentDay.plusDays(period);
+	}
+
+	public void changePeriod(int period) {
+		this.period = period;
 	}
 }

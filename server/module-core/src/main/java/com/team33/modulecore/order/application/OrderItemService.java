@@ -38,9 +38,8 @@ public class OrderItemService {
 			.collect(Collectors.toList());
 	}
 
-	public void setItemPeriod(int period, OrderItem orderItem) {
-		orderItem.addPeriod(period);
-		log.error("주기변경 = {}", orderItem.getPeriod());
+	public void changeItemPeriod(int period, OrderItem orderItem) {
+		orderItem.changePeriod(period);
 	}
 
 	public void updateNextPaymentDate(
