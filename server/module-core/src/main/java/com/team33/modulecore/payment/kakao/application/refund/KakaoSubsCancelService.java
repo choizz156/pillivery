@@ -32,6 +32,7 @@ public class KakaoSubsCancelService implements CancelSubscriptionService {
 		String params = mapToString(parameterProvider.getSubsCancelParams(sid));
 
 		applicationEventPublisher.publishEvent(new KakaoSubsCanceledEvent(params, CANCEL_URL));
+		applicationEventPublisher.publishEvent(new SchedulerCanceledEvent(order.getId()));
 	}
 
 	private String checkSidNull(Order order) {

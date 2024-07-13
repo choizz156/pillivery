@@ -1,4 +1,4 @@
-package com.team33.moduleevent.application;
+package com.team33.moduleevent.handler;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

@@ -29,7 +29,7 @@ import com.team33.modulecore.payment.kakao.application.request.KakaoRequestFacad
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.modulecore.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
-import com.team33.moduleevent.application.ScheduleRegisterHandler;
+import com.team33.moduleevent.handler.ScheduleRegisterHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;

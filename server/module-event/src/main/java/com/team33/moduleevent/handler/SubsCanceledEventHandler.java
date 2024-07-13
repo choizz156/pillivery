@@ -1,12 +1,10 @@
-package com.team33.moduleevent.application;
-
-import java.time.LocalDateTime;
+package com.team33.moduleevent.handler;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
+import com.team33.modulecore.payment.kakao.application.events.KakaoSubsCanceledEvent;
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
@@ -16,22 +14,21 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class RefundEventHandler {
+public class SubsCanceledEventHandler {
 
 	private final EventRepository eventsRepository;
 
 	@EventListener
-	public void onEventSet(KakaoRefundedEvent apiEvent) {
+	public void onEventSet(KakaoSubsCanceledEvent apiEvent) {
 
-		ApiEvent apiEventSet = ApiEvent.builder()
+		ApiEvent refund = ApiEvent.builder()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.parameters(apiEvent.getRefundParams())
-			.url(apiEvent.getRefundUrl())
-			.type(EventType.KAKAO_REFUNDED.name())
-			.localDateTime(LocalDateTime.now())
+			.parameters(apiEvent.getCancelParam())
+			.url(apiEvent.getCancelUrl())
+			.type(EventType.SUBS_CANCELED.name())
 			.status(EventStatus.READY)
 			.build();
 
-		eventsRepository.save(apiEventSet);
+		eventsRepository.save(refund);
 	}
 }

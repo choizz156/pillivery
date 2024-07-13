@@ -21,7 +21,7 @@ import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
-import com.team33.moduleevent.application.RefundEventHandler;
+import com.team33.moduleevent.handler.RefundEventHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;

@@ -20,7 +20,7 @@ import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.payment.kakao.application.events.KakaoSubsCanceledEvent;
-import com.team33.moduleevent.application.SubsCanceledEventHandler;
+import com.team33.moduleevent.handler.SubsCanceledEventHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;

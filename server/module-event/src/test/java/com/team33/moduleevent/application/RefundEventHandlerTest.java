@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
+import com.team33.moduleevent.handler.RefundEventHandler;
 
 class RefundEventHandlerTest {
 

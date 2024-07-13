@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.team33.modulecore.payment.kakao.application.events.ScheduleRegisteredEvent;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
+import com.team33.moduleevent.handler.ScheduleRegisterHandler;
 
 class ScheduleRegisterHandlerTest {
 
