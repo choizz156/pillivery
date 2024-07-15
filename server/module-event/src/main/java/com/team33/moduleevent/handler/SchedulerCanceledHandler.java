@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class SchedulerCanceledHandler {
 
+	private static final String SCHEDULES_CANCEL_URL = "http://localhost:8080/schedules/cancel";
 	private final EventRepository eventsRepository;
 
 	@Async
@@ -25,7 +26,7 @@ public class SchedulerCanceledHandler {
 		ApiEvent event = ApiEvent.builder()
 			.contentType("String")
 			.parameters(String.valueOf(apiEvent.getOrderId()))
-			.url("http://localhost:8080/schedules/cancel")
+			.url(SCHEDULES_CANCEL_URL)
 			.type(EventType.SCHEDULE_CANCELED.name())
 			.status(EventStatus.READY)
 			.build();
