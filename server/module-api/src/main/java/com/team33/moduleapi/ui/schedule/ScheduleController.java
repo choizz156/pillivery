@@ -3,7 +3,6 @@ package com.team33.moduleapi.ui.schedule;
 import java.time.ZonedDateTime;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,8 +52,9 @@ public class ScheduleController {
 		);
 	}
 
+	//TODO: ItemOrderIdㄱㅏ 필요한지 확인
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping
+	@PostMapping
 	public ZonedDateTime delete(
 		@RequestParam(name = "orderId") Long orderId,
 		@RequestParam(name = "itemOrderId") Long itemOrderId
