@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.order.dto.OrderItemSimpleResponse;
-import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulequartz.subscription.application.SubscriptionService;
 
@@ -28,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ScheduleController {
 
 	private final SubscriptionService subscriptionService;
-	private final OrderFindHelper orderFindHelper;
-	private final OrderItemService orderItemService;
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PostMapping("/{orderId}")
