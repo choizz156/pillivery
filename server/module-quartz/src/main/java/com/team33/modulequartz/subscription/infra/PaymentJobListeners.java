@@ -10,13 +10,8 @@ import org.quartz.JobKey;
 import org.quartz.JobListener;
 import org.springframework.context.ApplicationEventPublisher;
 
-import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderQueryService;
-import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.OrderItem;
-import com.team33.modulequartz.subscription.application.JobDetailService;
-import com.team33.modulequartz.subscription.application.TriggerService;
 import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -27,12 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentJobListeners implements JobListener {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
-	private final TriggerService triggerService;
 	private final OrderItemService orderItemService;
-	private final OrderCreateService orderCreateService;
-	private final OrderStatusService paymentService;
-	private final JobDetailService jobDetailService;
-	private final OrderQueryService orderQueryService;
 
 	private static final String PAYMENT_JOB = "payment Job";
 	private static final String RETRY = "retry";
@@ -42,18 +32,8 @@ public class PaymentJobListeners implements JobListener {
 		return PAYMENT_JOB;
 	}
 
-	/**
-	 * job 수행전
-	 *
-	 * @param context
-	 */
 	@Override
 	public void jobToBeExecuted(final JobExecutionContext context) {
-		if (context.getJobDetail() == null) {
-			log.info("start job");
-		}
-		JobKey key = context.getJobDetail().getKey();
-		log.info("실행될 job의 jobkey = {}", key);
 	}
 
 	/**
@@ -64,7 +44,7 @@ public class PaymentJobListeners implements JobListener {
 	@Override
 	public void jobExecutionVetoed(final JobExecutionContext context) {
 		JobKey key = context.getJobDetail().getKey();
-		log.info("중단된 job의 jobkey = {}", key);
+		log.error("중단된 job의 jobkey = {}", key);
 	}
 
 	/**

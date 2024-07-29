@@ -140,12 +140,7 @@ public class SubscriptionService {
 		listenerManager.addJobListener(
 			new PaymentJobListeners(
 				applicationEventPublisher,
-				triggerService,
-				orderItemService,
-				orderCreateService,
-				orderStatusService,
-				jobDetailService,
-				orderQueryService
+				orderItemService
 			)
 		);
 	}
