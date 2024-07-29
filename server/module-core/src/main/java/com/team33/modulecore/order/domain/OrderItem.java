@@ -120,4 +120,8 @@ public class OrderItem extends BaseEntity {
     public ZonedDateTime getPaymentDay(){
         return subscriptionInfo.getPaymentDay();
     }
+
+    public String getProductName(){
+        return item.getProductName();
+    }
 }

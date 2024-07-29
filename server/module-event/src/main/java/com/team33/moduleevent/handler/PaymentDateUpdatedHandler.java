@@ -8,20 +8,20 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulequartz.subscription.domain.PaymentUpdatedEvent;
+import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class PaymentUpdatedHandler {
+public class PaymentDateUpdatedHandler {
 
 	private final OrderItemService orderItemService;
 
 
 	@Async
 	@EventListener
-	public void onEventSet(PaymentUpdatedEvent apiEvent) {
+	public void onEventSet(PaymentDateUpdatedEvent apiEvent) {
 		ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 		orderItemService.updateNextPaymentDate(paymentDay, apiEvent.getOrderItem());
 	}

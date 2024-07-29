@@ -5,11 +5,11 @@ import com.team33.modulecore.order.domain.OrderItem;
 import lombok.Getter;
 
 @Getter
-public class PaymentUpdatedEvent {
+public class PaymentDateUpdatedEvent {
 
 	private final OrderItem orderItem;
 
-	public PaymentUpdatedEvent(OrderItem orderItem) {
+	public PaymentDateUpdatedEvent(OrderItem orderItem) {
 		this.orderItem = orderItem;
 	}
 }

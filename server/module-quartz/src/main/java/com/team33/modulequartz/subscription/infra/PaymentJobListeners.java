@@ -17,7 +17,7 @@ import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulequartz.subscription.application.JobDetailService;
 import com.team33.modulequartz.subscription.application.TriggerService;
-import com.team33.modulequartz.subscription.domain.PaymentUpdatedEvent;
+import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,16 +81,14 @@ public class PaymentJobListeners implements JobListener {
 		final JobExecutionContext context,
 		final JobExecutionException jobException
 	) {
-		JobKey key = context.getJobDetail().getKey();
 		JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
 		int retryCount = (int)jobDataMap.get(RETRY);
 
-		log.info("실행된 job의 jobkey = {}", key);
-
 		retryOrDeleteIfJobException(context, jobException, jobDataMap, retryCount);
 		// updatePaymentDay(context, jobDataMap);
+
 		OrderItem orderItem = (OrderItem)jobDataMap.get("orderItem");
-		applicationEventPublisher.publishEvent(new PaymentUpdatedEvent(orderItem));
+		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(orderItem));
 	}
 
 	private void retryOrDeleteIfJobException(

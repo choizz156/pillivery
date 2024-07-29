@@ -25,12 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class SubscriptionService {
 
 	private final Scheduler scheduler;
-	private final TriggerService trigger;
+	private final TriggerService triggerService;
 	private final JobDetailService jobDetailService;
 	private final OrderCreateService orderCreateService;
 	private final OrderStatusService orderStatusService;
@@ -54,7 +53,7 @@ public class SubscriptionService {
 		orderItemService.changeItemPeriod(period, orderItem);
 
 		//TODO: 트리거 변경 로직
-		Trigger newTrigger = trigger.build(JobKeyGenerator.build(orderId, orderItem.getItem().getProductName()), orderItem);
+		Trigger newTrigger = triggerService.build(JobKeyGenerator.build(orderId, orderItem.getItem().getProductName()), orderItem);
 
 		changeTrigger(newTrigger);
 
@@ -118,34 +117,36 @@ public class SubscriptionService {
 
 	private void applySchedule(long orderId, OrderItem orderItem) {
 
-		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getItem().getProductName());
+		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getProductName());
 
-		// JobDetail paymentDay = jobDetailService.build(jobkey, orderId, orderItem);
-		// Trigger lastTrigger = trigger.build(jobkey, orderItem);
+		JobDetail jobDetail = jobDetailService.build(jobKey, orderId, orderItem);
+		// JobDetail jobDetail = jobDetailService.build(jobKey, orderId);
+		Trigger lastTrigger = triggerService.build(jobKey, orderItem);
 
-		JobDetail jobDetail = jobDetailService.build(jobKey, orderId);
-		Trigger lastTrigger = trigger.build(jobKey, orderItem);
-		schedule(jobDetail, lastTrigger);
+		toSchedule(jobDetail, lastTrigger);
 	}
 
-	private void schedule(JobDetail jobDetail, Trigger lastTrigger) {
+	private void toSchedule(JobDetail jobDetail, Trigger lastTrigger) {
 		try {
-			ListenerManager listenerManager = scheduler.getListenerManager();
-			listenerManager.addJobListener(
-				new PaymentJobListeners(
-					applicationEventPublisher,
-					trigger,
-					orderItemService,
-					orderCreateService,
-					orderStatusService,
-					jobDetailService,
-					orderQueryService
-				)
-			);
-
+			applyJobListener();
 			scheduler.scheduleJob(jobDetail, lastTrigger);
 		} catch (SchedulerException e) {
 			log.error("스케쥴 등록 실패 job => {},{}", jobDetail.getKey().getName());
 		}
+	}
+
+	private void applyJobListener() throws SchedulerException {
+		ListenerManager listenerManager = scheduler.getListenerManager();
+		listenerManager.addJobListener(
+			new PaymentJobListeners(
+				applicationEventPublisher,
+				triggerService,
+				orderItemService,
+				orderCreateService,
+				orderStatusService,
+				jobDetailService,
+				orderQueryService
+			)
+		);
 	}
 }
