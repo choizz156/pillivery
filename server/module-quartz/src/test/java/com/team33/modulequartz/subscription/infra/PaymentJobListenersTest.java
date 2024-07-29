@@ -1,4 +1,5 @@
-import static org.assertj.core.api.Assertions.*;
+package com.team33.modulequartz.subscription.infra;
+
 import static org.mockito.Mockito.*;
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
@@ -13,22 +14,21 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
 import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
-import com.team33.modulequartz.subscription.infra.PaymentJobListeners;
+import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
 
 @ExtendWith(OutputCaptureExtension.class)
 class PaymentJobListenersTest {
 
 	private Scheduler scheduler;
-
 
 	@BeforeEach
 	void setUp() throws SchedulerException {
@@ -40,36 +40,14 @@ class PaymentJobListenersTest {
 		scheduler.shutdown();
 	}
 
-	@DisplayName("job이 수행되기 전에 로그를 남길 수 있다.")
+	@DisplayName("job이 수행된 후 이벤트를 발행할 수 있다.")
 	@Test
-	void toBeExecuted(CapturedOutput output) throws Exception{
+	void job_수행_후_이벤트_발행() throws Exception{
 		//given
-		PaymentJobListeners paymentJobListeners = new PaymentJobListeners(null, null, null, null, null, null);
-
-		JobExecutionContext jobExecutionContext = mock(JobExecutionContext.class);
-
-		JobKey jobKey = new JobKey("testJob","testGroup");
-
-		JobDetail jobDetail = newJob(MockJob.class)
-			.withIdentity(jobKey)
-			.build();
-
-		when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
-
-		//when
-		paymentJobListeners.jobToBeExecuted(jobExecutionContext);
-
-		//then
-		assertThat(output).contains(" 실행될 job의 jobkey = testGroup.testJob");
-	}
-
-	@DisplayName("job 수행 전 jobToBeExecuted가 수행된다.")
-	@Test
-	void job_수행() throws Exception {
-
-		//given
+		OrderItem orderItem = mock(OrderItem.class);
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("orderId", 1L);
+		jobDataMap.put("orderItem", orderItem);
 		jobDataMap.put("retry", 0);
 
 		JobDetail jobDetail = newJob(MockJob.class)
@@ -83,11 +61,14 @@ class PaymentJobListenersTest {
 			.startNow()
 			.build();
 
-		PaymentJobListeners listenersTest = mock(PaymentJobListeners.class);
-		when(listenersTest.getName()).thenReturn("testListener");
+		ApplicationEventPublisher applicationContext = mock(ApplicationEventPublisher.class);
+		doNothing().when(applicationContext).publishEvent(any(PaymentDateUpdatedEvent.class));
+
+		PaymentJobListeners paymentJobListeners = new PaymentJobListeners(applicationContext, null);
 
 		ListenerManager listenerManager = scheduler.getListenerManager();
-		listenerManager.addJobListener(listenersTest);
+		listenerManager.addJobListener(paymentJobListeners);
+
 
 		//when
 		scheduler.scheduleJob(jobDetail, trigger);
@@ -95,8 +76,9 @@ class PaymentJobListenersTest {
 		Thread.sleep(500);
 
 		//then
-		verify(listenersTest, times(1)).jobToBeExecuted(any(JobExecutionContext.class));
+		verify(applicationContext, times(1)).publishEvent(any(PaymentDateUpdatedEvent.class));
 	}
+
 
 	public static class MockJob implements Job {
 		@Override

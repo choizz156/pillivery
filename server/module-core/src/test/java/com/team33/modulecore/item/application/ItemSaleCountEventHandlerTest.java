@@ -6,8 +6,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.context.ApplicationContext;
+
 
 import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.order.events.ItemSaleCountedEvent;
