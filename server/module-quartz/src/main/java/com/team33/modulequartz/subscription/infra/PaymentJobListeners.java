@@ -62,9 +62,9 @@ public class PaymentJobListeners implements JobListener {
 		final JobExecutionException jobException
 	) {
 		JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-		int retryCount = (int)jobDataMap.get(RETRY);
+		int retryCount = jobDataMap.getInt(RETRY);
 
-		retryOrDeleteIfJobException(context, jobException, jobDataMap, retryCount);
+		retryOrDeleteIfJobException( jobException, jobDataMap, retryCount);
 		// updatePaymentDay(context, jobDataMap);
 
 		OrderItem orderItem = (OrderItem)jobDataMap.get("orderItem");
@@ -72,7 +72,6 @@ public class PaymentJobListeners implements JobListener {
 	}
 
 	private void retryOrDeleteIfJobException(
-		final JobExecutionContext context,
 		final JobExecutionException jobException,
 		final JobDataMap jobDataMap,
 		final int retryCount
