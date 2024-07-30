@@ -47,7 +47,7 @@ public class RestTemplateSender {
 
 	private void checkSuccess(ResponseEntity<?> exchange) {
 		if (!exchange.getStatusCode().is2xxSuccessful()) {
-			throw new PaymentApiException("api 통신에 오류가 발생했습니다.");
+			throw new PaymentApiException("api 오류가 발생했습니다.");
 		}
 	}
 }
