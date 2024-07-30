@@ -28,7 +28,7 @@ public class KaKaoSubscriptionJob implements Job {
 
 		JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
 
-		long orderId = (long)mergedJobDataMap.get("orderId");
+		long orderId = mergedJobDataMap.getLong("orderId");
 		log.info("start orderId = {}", orderId);
 
 		checkOrder(orderId);
