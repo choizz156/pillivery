@@ -28,7 +28,7 @@ public class TriggerService {
 				calendarIntervalSchedule().withIntervalInDays(orderItem.getPeriod())
 			)
 			.withIdentity(new TriggerKey(jobKey.getName(), jobKey.getGroup()))
-			.startAt(Date.from(orderItem.getNextDelivery().toInstant()))
+			.startAt(Date.from(orderItem.getNextPaymentDay().toInstant()))
 			.build();
 	}
 

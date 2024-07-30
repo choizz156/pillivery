@@ -30,9 +30,9 @@ class TriggerServiceTest {
 		//then
 		assertThat(trigger.getKey().getName()).isEqualTo("1");
 		assertThat(trigger.getKey().getGroup()).isEqualTo("1");
-		assertThat(trigger.getStartTime()).isEqualTo(Date.from(orderItem.getNextDelivery().toInstant()));
+		assertThat(trigger.getStartTime()).isEqualTo(Date.from(orderItem.getNextPaymentDay().toInstant()));
 		assertThat(trigger.getFireTimeAfter(trigger.getStartTime()))
-			.isEqualTo(Date.from(orderItem.getSubscriptionInfo().getNextDelivery().plusDays(30).toInstant()));
+			.isEqualTo(Date.from(orderItem.getSubscriptionInfo().getNextPaymentDay().plusDays(30).toInstant()));
 	}
 
 }

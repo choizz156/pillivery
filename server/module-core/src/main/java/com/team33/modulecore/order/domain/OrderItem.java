@@ -40,7 +40,6 @@ public class OrderItem extends BaseEntity {
     @Embedded
     private SubscriptionInfo subscriptionInfo;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
@@ -109,8 +108,8 @@ public class OrderItem extends BaseEntity {
         this.subscriptionInfo.applyNextPayment();
     }
 
-    public Date getNextDelivery() {
-        return Date.from(subscriptionInfo.getNextDelivery().toInstant());
+    public Date getNextPaymentDay() {
+        return Date.from(subscriptionInfo.getNextPaymentDay().toInstant());
     }
 
     public void changePeriod(int period) {

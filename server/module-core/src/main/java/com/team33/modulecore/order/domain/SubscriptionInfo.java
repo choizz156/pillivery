@@ -25,15 +25,15 @@ public class SubscriptionInfo {
 	@Column(name = "subscription")
 	private boolean subscription;
 
-	private ZonedDateTime nextDelivery;
+	private ZonedDateTime nextPaymentDay;
 
 	private ZonedDateTime paymentDay;
 
 	@Builder
-	public SubscriptionInfo(int period, boolean subscription, ZonedDateTime nextDelivery, ZonedDateTime paymentDay) {
+	public SubscriptionInfo(int period, boolean subscription, ZonedDateTime nextPaymentDay, ZonedDateTime paymentDay) {
 		this.period = period;
 		this.subscription = subscription;
-		this.nextDelivery = nextDelivery;
+		this.nextPaymentDay = nextPaymentDay;
 		this.paymentDay = paymentDay;
 	}
 
@@ -44,7 +44,7 @@ public class SubscriptionInfo {
 		return SubscriptionInfo.builder()
 			.subscription(isSubscription)
 			.period(period)
-			.nextDelivery(now.plusDays(period))
+			.nextPaymentDay(now.plusDays(period))
 			.build();
 	}
 
@@ -57,7 +57,7 @@ public class SubscriptionInfo {
 	}
 
 	public void applyNextPayment() {
-		this.nextDelivery = paymentDay.plusDays(period);
+		this.nextPaymentDay = paymentDay.plusDays(period);
 	}
 
 	public void changePeriod(int period) {
