@@ -138,10 +138,7 @@ public class SubscriptionService {
 	private void applyJobListener() throws SchedulerException {
 		ListenerManager listenerManager = scheduler.getListenerManager();
 		listenerManager.addJobListener(
-			new PaymentJobListeners(
-				applicationEventPublisher,
-				orderItemService
-			)
+			new PaymentJobListeners(applicationEventPublisher)
 		);
 	}
 }
