@@ -28,7 +28,7 @@ public class RefundEventHandler {
 			.parameters(apiEvent.getRefundParams())
 			.url(apiEvent.getRefundUrl())
 			.type(EventType.KAKAO_REFUNDED.name())
-			.localDateTime(LocalDateTime.now())
+			.createdAt(LocalDateTime.now())
 			.status(EventStatus.READY)
 			.build();
 

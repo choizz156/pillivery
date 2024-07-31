@@ -44,8 +44,9 @@ public class OrderItemService {
 
 	public void updateNextPaymentDate(
 		ZonedDateTime paymentDay,
-		OrderItem orderItem
+		long orderItemId
 	) {
+		OrderItem orderItem = orderQueryRepository.findSubscriptionOrderItemBy(orderItemId);
 		orderItem.applyNextPaymentDate(paymentDay);
 	}
 	//

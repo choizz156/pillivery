@@ -16,8 +16,8 @@ import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderQueryService;
 import com.team33.modulecore.order.application.OrderStatusService;
-import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulequartz.subscription.infra.PaymentJobListeners;
 
 import lombok.RequiredArgsConstructor;
@@ -38,11 +38,12 @@ public class SubscriptionService {
 	private final OrderFindHelper orderFindHelper;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
+	@Transactional(readOnly = true)
 	public void applySchedule(long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);
 		order.getOrderItems().stream()
 			.filter(OrderItem::isSubscription)
-			.forEach(orderItem -> applySchedule(orderId, orderItem));
+			.forEach(orderItem -> startSchedule(orderId, orderItem));
 	}
 
 	@Transactional
@@ -53,7 +54,8 @@ public class SubscriptionService {
 		orderItemService.changeItemPeriod(period, orderItem);
 
 		//TODO: 트리거 변경 로직
-		Trigger newTrigger = triggerService.build(JobKeyGenerator.build(orderId, orderItem.getItem().getProductName()), orderItem);
+		Trigger newTrigger = triggerService.build(JobKeyGenerator.build(orderId, orderItem.getItem().getProductName()),
+			orderItem);
 
 		changeTrigger(newTrigger);
 
@@ -64,7 +66,7 @@ public class SubscriptionService {
 	public void cancelScheduler(long orderId, long itemOrderId) {
 		log.info("cancelScheduler");
 		// Order order = orderQueryService.findOrder(orderId);
-		OrderItem orderItem =orderItemService.findOrderItem(itemOrderId);
+		OrderItem orderItem = orderItemService.findOrderItem(itemOrderId);
 
 		deleteSchedule(orderId, orderItem.getItem().getProductName());
 		// orderItemService.cancelItemOrder(orderId, orderItem);
@@ -91,6 +93,7 @@ public class SubscriptionService {
 	// 	return updatedOrderItem;
 
 	// }
+
 	/**
 	 * 만약 기간을 변경할 경우, 다음 결제 날짜가 현재보다 이전이면, 즉, 기간을 줄이면 기존 결제 예정일에 결제 후 주기 변경
 	 *
@@ -101,7 +104,6 @@ public class SubscriptionService {
 	// 	User user = userFindHelper.findUser(order.getUserId());
 	// 	deleteSchedule(orderItem, user);
 	// }
-
 	private void deleteSchedule(long orderId, String productName) {
 		JobKey jobkey = JobKeyGenerator.build(orderId, productName);
 		deleteSchedule(jobkey);
@@ -115,11 +117,11 @@ public class SubscriptionService {
 		}
 	}
 
-	private void applySchedule(long orderId, OrderItem orderItem) {
+	private void startSchedule(long orderId, OrderItem orderItem) {
 
 		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getProductName());
 
-		JobDetail jobDetail = jobDetailService.build(jobKey, orderId, orderItem);
+		JobDetail jobDetail = jobDetailService.build(jobKey, orderId, orderItem.getId());
 		// JobDetail jobDetail = jobDetailService.build(jobKey, orderId);
 		Trigger lastTrigger = triggerService.build(jobKey, orderItem);
 
@@ -131,7 +133,7 @@ public class SubscriptionService {
 			applyJobListener();
 			scheduler.scheduleJob(jobDetail, lastTrigger);
 		} catch (SchedulerException e) {
-			log.error("스케쥴 등록 실패 job => {},{}", jobDetail.getKey().getName());
+			log.error("스케쥴 등록 실패 job => {},{}", jobDetail.getKey().getName(), e.getMessage());
 		}
 	}
 

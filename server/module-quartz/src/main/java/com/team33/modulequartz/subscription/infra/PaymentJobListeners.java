@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -65,8 +64,8 @@ public class PaymentJobListeners implements JobListener {
 		deleteJobIfJobExceptionMoreThan2(context.getJobDetail().getKey(), retryCount, jobException);
 		// updatePaymentDay(context, jobDataMap);
 
-		OrderItem orderItem = (OrderItem)jobDataMap.get("orderItem");
-		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(orderItem));
+		long orderItemId = jobDataMap.getLong("orderItemId");
+		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(orderItemId));
 	}
 
 	private void deleteJobIfJobExceptionMoreThan2(JobKey key, int retryCount, JobExecutionException jobException) {

@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
 
 import com.team33.moduleevent.domain.EventStatus;
 
@@ -44,7 +43,6 @@ public class ApiEvent {
 	@Enumerated(EnumType.STRING)
 	private EventStatus status;
 
-	@CreatedDate
 	private LocalDateTime createdAt;
 
 	@Builder
@@ -54,14 +52,14 @@ public class ApiEvent {
 		String parameters,
 		String url,
 		EventStatus status,
-		LocalDateTime localDateTime
+		LocalDateTime createdAt
 	) {
 		this.type = type;
 		this.contentType = contentType;
 		this.parameters = parameters;
 		this.url = url;
 		this.status = status;
-		this.createdAt = localDateTime;
+		this.createdAt = createdAt;
 	}
 
 	public void changeStatusToComplete() {

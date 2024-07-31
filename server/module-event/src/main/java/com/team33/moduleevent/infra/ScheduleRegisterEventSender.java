@@ -7,7 +7,9 @@ import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class ScheduleRegisterEventSender implements EventSender {
@@ -17,6 +19,8 @@ public class ScheduleRegisterEventSender implements EventSender {
 	@Override
 	public void send(ApiEvent event) {
 		String url = event.getUrl() + "/" + event.getParameters();
+
+		log.info("url : {}", url);
 		restTemplateSender.sendToPost("scheduler register event", url, null, String.class);
 	}
 }

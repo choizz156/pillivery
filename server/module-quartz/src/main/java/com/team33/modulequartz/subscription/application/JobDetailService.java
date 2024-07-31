@@ -7,7 +7,6 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulequartz.subscription.domain.KaKaoSubscriptionJob;
 
@@ -19,11 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JobDetailService {
 
-	public JobDetail build(JobKey jobKey, long orderId, OrderItem orderItem) {
+	public JobDetail build(JobKey jobKey, long orderId, long orderItemId) {
 
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("orderId", orderId);
-		jobDataMap.put("orderItem", orderItem);
+		jobDataMap.put("orderItemId", orderItemId);
 		jobDataMap.put("retry", 0);
 
 		return newJob(KaKaoSubscriptionJob.class)

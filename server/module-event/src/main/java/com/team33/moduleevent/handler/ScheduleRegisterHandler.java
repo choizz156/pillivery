@@ -1,5 +1,7 @@
 package com.team33.moduleevent.handler;
 
+import java.time.LocalDateTime;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -29,6 +31,7 @@ public class ScheduleRegisterHandler {
 			.url("http://localhost:8080/schedules")
 			.type(EventType.SCHEDULE_REGISTERED.name())
 			.status(EventStatus.READY)
+			.createdAt(LocalDateTime.now())
 			.build();
 
 		eventsRepository.save(refund);

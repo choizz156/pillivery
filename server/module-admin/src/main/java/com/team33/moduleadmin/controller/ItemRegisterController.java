@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,13 +46,13 @@ public class ItemRegisterController {
 	public void postItem() {
 
 		RestTemplate restTemplate = new RestTemplate();
-
-		for (int i = 351; i <= 400; i++) {
+		for (int i = 1; i <= 1; i++) {
 			String url = "https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?pageNo="
 				+ i
-				+ "&numOfRows=100&ServiceKey=yZVfQKw1vKRzc5MrFh8Y9y%2BdYV%2Fm465AOUrvcucC428QwNfRrKoJW%2Fx%2FsHz8EPBilmpaGn%2B%2BSM%2BYapFPeKshUg%3D%3D%3D%3D&type=json";
+				+ "&numOfRows=100&ServiceKey=yZVfQKw1vKRzc5MrFh8Y9y%2BdYV%2Fm465AOUrvcucC428QwNfRrKoJW%2Fx%2FsHz8EPBilmpaGn%2B%2BSM%2BYapFPeKshUg%3D%3D&type=json";
 
 			BodyWrapper forObject = restTemplate.getForObject(url, BodyWrapper.class);
+
 			lists.add(forObject);
 		}
 
@@ -59,9 +60,24 @@ public class ItemRegisterController {
 
     }
 
+	// @ResponseStatus(HttpStatus.CREATED)
+	// @PostMapping("/test")
+	// public void postItem1() {
+	// 	List<ItemWrapper> itemWrappers = lists.stream()
+	// 		.map(b -> b.getBody().getItems())
+	// 		.flatMap(List::stream)
+	// 		.collect(Collectors.toList());
+	//
+	// 	List<ItemDto> collect = toBusinessDto(itemWrappers);
+	// 	List<Information> information = ItemAttributeMapper.toInformation(collect);
+	// 	itemRegisterService.createItem(information);
+	// }
+
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/test")
-	public void postItem1() {
+	public void postItem1(@RequestBody BodyWrapper bodyWrapper) {
+		lists.add(bodyWrapper);
+
 		List<ItemWrapper> itemWrappers = lists.stream()
 			.map(b -> b.getBody().getItems())
 			.flatMap(List::stream)
@@ -71,6 +87,8 @@ public class ItemRegisterController {
 		List<Information> information = ItemAttributeMapper.toInformation(collect);
 		itemRegisterService.createItem(information);
 	}
+
+
 
     private List<ItemDto> toBusinessDto(List<ItemWrapper> items) {
 
