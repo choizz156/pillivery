@@ -16,14 +16,11 @@ class PaymentDateUpdatedHandlerTest {
 	@Test
 	void 결제일_변경() throws Exception {
 		//given
-		OrderItem orderItem = OrderItem.builder()
-			.subscriptionInfo(SubscriptionInfo.of(true, 30))
-			.build();
 
 		OrderItemService orderItemService = mock(OrderItemService.class);
 		PaymentDateUpdatedHandler paymentDateUpdatedHandler = new PaymentDateUpdatedHandler(orderItemService);
 
-		PaymentDateUpdatedEvent apiEvent = new PaymentDateUpdatedEvent(orderItem);
+		PaymentDateUpdatedEvent apiEvent = new PaymentDateUpdatedEvent(1L);
 
 		//when
 		paymentDateUpdatedHandler.onEventSet(apiEvent);
@@ -32,7 +29,7 @@ class PaymentDateUpdatedHandlerTest {
 		verify(orderItemService, times(1))
 			.updateNextPaymentDate(
 				apiEvent.getPaymentDay(),
-				orderItem
+				1L
 			);
 	}
 }

@@ -39,7 +39,7 @@ class EventRepositoryTest {
 			i -> eventRepository.save(
 				ApiEvent.builder()
 					.type(EventType.SUBS_CANCELED.name())
-					.localDateTime(LocalDateTime.of(2020, 1, 1, i, 0, 0))
+					.createdAt(LocalDateTime.of(2020, 1, 1, i, 0, 0))
 					.status(EventStatus.READY)
 					.build()
 			)
@@ -49,7 +49,7 @@ class EventRepositoryTest {
 			i -> eventRepository.save(
 				ApiEvent.builder()
 					.type(EventType.KAKAO_REFUNDED.name())
-					.localDateTime(LocalDateTime.of(2020, 1, 1, i, 0, 0))
+					.createdAt(LocalDateTime.of(2020, 1, 1, i, 0, 0))
 					.status(EventStatus.COMPLETE)
 					.build()
 			)
