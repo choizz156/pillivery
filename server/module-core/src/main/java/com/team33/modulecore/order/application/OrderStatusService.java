@@ -51,7 +51,7 @@ public class OrderStatusService {
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
 		List<Long> orderedItemsId = getOrderedIds(order);
 
-		orderPaymentCodeService.addSid(order, sid);
+		orderPaymentCodeService.addSid(orderId, sid);
 
 		applicationContext.publishEvent(new ItemSaleCountedEvent(orderedItemsId));
 		applicationContext.publishEvent(new CartRefreshedEvent(order, orderedItemsId));

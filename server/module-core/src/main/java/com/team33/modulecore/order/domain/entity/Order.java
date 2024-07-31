@@ -22,7 +22,6 @@ import org.hibernate.proxy.HibernateProxy;
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderPrice;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.PaymentCode;

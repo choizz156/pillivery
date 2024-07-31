@@ -44,6 +44,7 @@ public class SubscriptionInfo {
 		return SubscriptionInfo.builder()
 			.subscription(isSubscription)
 			.period(period)
+			.paymentDay(now)
 			.nextPaymentDay(now.plusDays(period))
 			.build();
 	}

@@ -26,7 +26,7 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
 
 @ExtendWith(OutputCaptureExtension.class)

@@ -13,7 +13,7 @@
     <class>com.team33.modulecore.itemcart.domain.ItemCart</class>
     <class>com.team33.modulecore.item.domain.entity.ItemCategory</class>
     <class>com.team33.modulecore.order.domain.entity.Order</class>
-    <class>com.team33.modulecore.order.domain.OrderItem</class>
+    <class>com.team33.modulecore.order.domain.entity.OrderItem</class>
     <properties>
       <!-- 필수 속성 -->
       <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>

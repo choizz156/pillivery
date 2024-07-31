@@ -33,8 +33,8 @@ public class OrderPaymentCodeService {
 	}
 
 	@Async
-	public void addSid(Order order, String sid) {
-
+	public void addSid(long orderId, String sid) {
+		Order order = orderFindHelper.findOrder(orderId);
 		try {
 			order.addSid(sid);
 		} catch (DataAccessException e) {

@@ -3,7 +3,7 @@ package com.team33.modulequartz.subscription.domain;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.OrderItem;
 
 import lombok.Getter;
 

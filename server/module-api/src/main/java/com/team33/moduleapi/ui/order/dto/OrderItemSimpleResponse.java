@@ -3,7 +3,7 @@ package com.team33.moduleapi.ui.order.dto;
 import java.time.ZonedDateTime;
 
 import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.OrderItem;
 
 import lombok.Builder;
 import lombok.Getter;

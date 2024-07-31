@@ -20,7 +20,7 @@ import com.team33.moduleapi.ui.order.mapper.OrderItemMapper;
 import com.team33.modulecore.order.application.OrderItemService;
 import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderSubscriptionService;
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.dto.OrderContext;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;

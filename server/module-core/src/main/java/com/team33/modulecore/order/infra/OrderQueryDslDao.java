@@ -1,8 +1,8 @@
 package com.team33.modulecore.order.infra;
 
 import static com.team33.modulecore.order.domain.OrderStatus.*;
-import static com.team33.modulecore.order.domain.QOrderItem.*;
 import static com.team33.modulecore.order.domain.entity.QOrder.*;
+import static com.team33.modulecore.order.domain.entity.QOrderItem.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,9 +20,9 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.order.domain.OrderItem;
 import com.team33.modulecore.order.domain.OrderStatus;
 import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.order.dto.OrderFindCondition;
 import com.team33.modulecore.order.dto.OrderPageRequest;
@@ -108,7 +108,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 			.where(orderItem.id.eq(id))
 			.fetchOne();
 
-		if(fetch == null) {
+		if (fetch == null) {
 			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
 		}
 

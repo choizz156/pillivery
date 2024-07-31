@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.common.ItemFindHelper;
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulecore.order.domain.SubscriptionInfo;
 import com.team33.modulecore.order.dto.OrderItemServiceDto;
 

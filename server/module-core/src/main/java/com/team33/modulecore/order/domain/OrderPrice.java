@@ -2,6 +2,9 @@ package com.team33.modulecore.order.domain;
 
 import java.util.List;
 import javax.persistence.Embeddable;
+
+import com.team33.modulecore.order.domain.entity.OrderItem;
+
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -7,7 +7,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.order.domain.OrderItem;
+import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulequartz.subscription.domain.KaKaoSubscriptionJob;
 

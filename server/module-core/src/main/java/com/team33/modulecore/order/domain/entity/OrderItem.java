@@ -1,4 +1,4 @@
-package com.team33.modulecore.order.domain;
+package com.team33.modulecore.order.domain.entity;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 import com.team33.modulecore.common.BaseEntity;
 import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.order.domain.SubscriptionInfo;
 
 import lombok.AccessLevel;
 import lombok.Builder;
