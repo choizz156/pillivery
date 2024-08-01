@@ -91,7 +91,7 @@ class SubscriptionServiceTest {
 		verify(orderFindHelper, times(1)).findOrder(anyLong());
 		verify(scheduler, times(1)).scheduleJob(any(), any());
 		verify(triggerService, times(1)).build(any(), any());
-		verify(jobDetailService, times(1)).build(any(JobKey.class), anyLong());
+		verify(jobDetailService, times(1)).build(any(JobKey.class), anyLong(),anyLong());
 	}
 
 	@DisplayName("스케쥴 주기를 변경할 수 있다.")
@@ -129,6 +129,37 @@ class SubscriptionServiceTest {
 		assertThat(mockOrderItem.getPeriod()).isEqualTo(60);
 		assertThat(nextFireTime).isEqualTo(now.plusDays(60).toLocalDate());
 		assertThat(startTime).isEqualTo(now.plusDays(60).toLocalDate());
+	}
+
+	@DisplayName("스케쥴을 취소할 수 있다.")
+	@Test
+	void 스케쥴_취소() throws Exception{
+		//given
+		ZonedDateTime now = ZonedDateTime.now();
+		스케쥴_설정(now);
+
+		OrderQueryRepository orderQueryRepository = mock(OrderQueryRepository.class);
+		OrderItem mockOrderItem = getMockOrderItems();
+		when(orderQueryRepository.findSubscriptionOrderItemBy(anyLong())).thenReturn(mockOrderItem);
+
+		SubscriptionService subscriptionService = new SubscriptionService(
+			scheduler,
+			new TriggerService(),
+			null,
+			null,
+			null,
+			new OrderItemService(null, null, null, orderQueryRepository),
+			null,
+			null,
+			null
+		);
+
+		//when
+		subscriptionService.cancelScheduler(1L,1L);
+
+		//then
+		boolean result = scheduler.checkExists(TriggerKey.triggerKey("1-mockItem", "1"));
+		assertThat(result).isFalse();
 	}
 
 	private void 스케쥴_설정(ZonedDateTime now) throws SchedulerException {

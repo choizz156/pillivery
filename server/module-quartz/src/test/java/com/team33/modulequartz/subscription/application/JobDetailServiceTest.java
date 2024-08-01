@@ -17,7 +17,7 @@ class JobDetailServiceTest {
 
 		//when
 		JobDetailService jobDetailService = new JobDetailService();
-		JobDetail jobDetail = jobDetailService.build(jobKey, 1L);
+		JobDetail jobDetail = jobDetailService.build(jobKey, 1L,1L);
 
 		//then
 		assertThat(jobDetail.getKey().getName()).isEqualTo("1-product");
