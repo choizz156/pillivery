@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.team33.moduleevent.domain.EventStatus;
+import com.team33.moduleevent.domain.EventType;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,7 +33,8 @@ public class ApiEvent {
 	@Column(name = "api_event_id")
 	private Long id;
 
-	private String type;
+	@Enumerated(EnumType.STRING)
+	private EventType type;
 
 	private String contentType;
 
@@ -47,7 +49,7 @@ public class ApiEvent {
 
 	@Builder
 	public ApiEvent(
-		String type,
+		EventType type,
 		String contentType,
 		String parameters,
 		String url,

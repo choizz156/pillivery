@@ -27,7 +27,7 @@ public class SchedulerCanceledHandler {
 			.contentType("String")
 			.parameters(String.valueOf(apiEvent.getOrderId()))
 			.url(SCHEDULES_CANCEL_URL)
-			.type(EventType.SCHEDULE_CANCELED.name())
+			.type(EventType.SCHEDULE_CANCELED)
 			.status(EventStatus.READY)
 			.build();
 

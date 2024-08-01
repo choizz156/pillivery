@@ -48,7 +48,7 @@ public class ScheduleController {
 		);
 	}
 
-	//TODO: ItemOrderIdㄱㅏ 필요한지 확인
+
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PostMapping
 	public ZonedDateTime delete(

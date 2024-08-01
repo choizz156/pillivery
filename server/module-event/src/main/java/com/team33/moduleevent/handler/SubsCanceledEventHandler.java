@@ -25,7 +25,7 @@ public class SubsCanceledEventHandler {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.parameters(apiEvent.getCancelParam())
 			.url(apiEvent.getCancelUrl())
-			.type(EventType.SUBS_CANCELED.name())
+			.type(EventType.SUBS_CANCELED)
 			.status(EventStatus.READY)
 			.build();
 

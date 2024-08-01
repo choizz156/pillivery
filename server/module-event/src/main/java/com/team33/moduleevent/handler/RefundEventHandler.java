@@ -27,7 +27,7 @@ public class RefundEventHandler {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.parameters(apiEvent.getRefundParams())
 			.url(apiEvent.getRefundUrl())
-			.type(EventType.KAKAO_REFUNDED.name())
+			.type(EventType.KAKAO_REFUNDED)
 			.createdAt(LocalDateTime.now())
 			.status(EventStatus.READY)
 			.build();
