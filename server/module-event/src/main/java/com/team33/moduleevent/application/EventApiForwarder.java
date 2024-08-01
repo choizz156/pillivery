@@ -44,7 +44,7 @@ public class EventApiForwarder {
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 * * * * *")
+	@Scheduled(cron = "0 0 * * * *")
 	public void getAndSend() {
 		List<ApiEvent> apiEvents = eventsRepository
 			.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
