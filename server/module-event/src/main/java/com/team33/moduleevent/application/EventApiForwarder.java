@@ -21,8 +21,6 @@ public class EventApiForwarder {
 
 	private final EventRepository eventsRepository;
 	private final EventSender kakaoApiEventSender;
-	private final EventSender scheduleRegisterEventSender;
-	private final EventSender scheduleCancelEventSender;
 	private final EventDispatcher eventDispatcher;
 	private final Map<EventType, EventSender> eventTypeEventSenderMap;
 
@@ -35,8 +33,6 @@ public class EventApiForwarder {
 	) {
 		this.eventsRepository = eventsRepository;
 		this.kakaoApiEventSender = kakaoApiEventSender;
-		this.scheduleRegisterEventSender = scheduleRegisterEventSender;
-		this.scheduleCancelEventSender = scheduleCancelEventSender;
 		this.eventDispatcher = eventDispatcher;
 
 		eventTypeEventSenderMap = new EnumMap<>(EventType.class);
@@ -68,13 +64,5 @@ public class EventApiForwarder {
 		EventType type = apiEvent.getType();
 		EventSender eventSender = eventTypeEventSenderMap.getOrDefault(type, kakaoApiEventSender);
 		eventDispatcher.register(apiEvent, eventSender);
-	}
-
-	private boolean isScheduleCancelEvent(String apiEvent) {
-		return apiEvent.equals(EventType.SCHEDULE_CANCELED.name());
-	}
-
-	private boolean isScheduleRegisterEvent(String apiEvent) {
-		return apiEvent.equals(EventType.SCHEDULE_REGISTERED.name());
 	}
 }
