@@ -29,7 +29,6 @@ public class KaKaoSubscriptionJob implements Job {
 		JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
 
 		long orderId = mergedJobDataMap.getLong("orderId");
-		log.info("start orderId = {}", orderId);
 
 		checkOrder(orderId);
 
@@ -46,22 +45,4 @@ public class KaKaoSubscriptionJob implements Job {
 			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
 		}
 	}
-
-	// private String connectKaKaoPay(Long orderId) {
-	//
-	//     MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-	//
-	//     parameters.add("orderId", String.valueOf(orderId));
-	//
-	//     URI uri = UriComponentsBuilder.newInstance()
-	//         .scheme("http")
-	//         .host("http://localhost:8080/")
-	//         .port(8080)
-	//         .path("/payments/kakao/subscription")
-	//         .queryParams(parameters)
-	//         .build().toUri();
-	//
-	//     return restTemplate.postForObject(uri, null, String.class);
-	// }
-
 }

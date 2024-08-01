@@ -65,9 +65,8 @@ public class OrderStatusService {
 		refundService.refund(orderId, refundContext);
 	}
 
-	public void processSubscriptionCancel(Long orderId) {
+	public void processSubscriptionCancel(long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);
-
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE_CANCEL);
 
 		kakaoSubsCancelService.cancelSubscription(order);

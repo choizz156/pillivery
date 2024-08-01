@@ -87,63 +87,6 @@ public class PaymentJobListeners implements JobListener {
 		}
 	}
 
-	// private void updatePaymentDay(
-	// 	final JobExecutionContext context,
-	// 	final JobDataMap jobDataMap
-	// ) {
-	//
-	// 	OrderItem orderItem = (OrderItem)jobDataMap.get("orderItem");
-	// Long orderId = (Long)jobDataMap.get("orderId");
-
-	// updatePaymentDate(orderItem);
-	// JobDetail jobDetail = createNewJob(newOrderItem, orderId);
-	// triggerService.build(context.getJobDetail().getKey(), orderItem);
-	// replaceJob(context, jobDetail);
-	// }
-
-	// private void replaceJob(final JobExecutionContext context, final JobDetail jobDetail) {
-	// 	try {
-	// 		context.getScheduler().addJob(jobDetail, true);
-	// 		log.info("스케쥴 업데이트 완료");
-	// 	} catch (SchedulerException e) {
-	// 		log.error("스케쥴 업데이트 실패");
-	// 	}
-	// }
-	//
-	// private JobDetail createNewJob(OrderItem newOrderItem, long orderId) {
-	//
-	// 	JobKey jobkey =
-	// 		jobKey(orderId + newOrderItem.getItem().getProductName(),
-	// 			String.valueOf(orderId)
-	// 		);
-	//
-	// 	return jobDetailService.build(jobkey, orderId, newOrderItem);
-	// }
-	//
-	//
-	// private Order getOrder(Long orderId) {
-	// 	Order order = orderQueryService.findOrder(orderId);
-	// 	return orderCreateService.deepCopy(order);
-	// }
-
-	// private void updatePaymentDate(final OrderItem orderItem) {
-	// 	ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-	// 	orderItemService.updateNextPaymentDate(paymentDay, orderItem);
-	// }
-
-	// private void cancelSchedule(final JobExecutionContext context) {
-	// 	log.error("job 예외로 인한 스케쥴 취소");
-	//
-	// 	try {
-	// 		JobKey key = context.getJobDetail().getKey();
-	// 		context.getScheduler().deleteJob(key);
-	// 		//TODO: 취소된것도 조회가되나???
-	// 		// throw new BusinessLogicException(ExceptionCode.PAYMENT_FAIL);
-	// 	} catch (SchedulerException e) {
-	// 		log.error("스케쥴 삭제 실패 = {}, key = {}", e.getMessage(), context.getJobDetail().getKey());
-	// 	}
-	// }
-
 	private void retryImmediately(
 		final JobExecutionException jobException,
 		final JobDataMap jobDataMap,

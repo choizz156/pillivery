@@ -31,10 +31,7 @@ public class SubscriptionService {
 	private final Scheduler scheduler;
 	private final TriggerService triggerService;
 	private final JobDetailService jobDetailService;
-	private final OrderCreateService orderCreateService;
-	private final OrderStatusService orderStatusService;
 	private final OrderItemService orderItemService;
-	private final OrderQueryService orderQueryService;
 	private final OrderFindHelper orderFindHelper;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -53,9 +50,8 @@ public class SubscriptionService {
 
 		orderItemService.changeItemPeriod(period, orderItem);
 
-		//TODO: 트리거 변경 로직
-		Trigger newTrigger = triggerService.build(JobKeyGenerator.build(orderId, orderItem.getItem().getProductName()),
-			orderItem);
+		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getItem().getProductName());
+		Trigger newTrigger = triggerService.build(jobKey, orderItem);
 
 		changeTrigger(newTrigger);
 
@@ -64,13 +60,9 @@ public class SubscriptionService {
 
 	@Transactional
 	public void cancelScheduler(long orderId, long itemOrderId) {
-		log.info("cancelScheduler");
-		// Order order = orderQueryService.findOrder(orderId);
 		OrderItem orderItem = orderItemService.findOrderItem(itemOrderId);
 
 		deleteSchedule(orderId, orderItem.getItem().getProductName());
-		// orderItemService.cancelItemOrder(orderId, orderItem);
-		log.info("canceled item title = {}", orderItem.getItem().getProductName());
 	}
 
 	private void changeTrigger(Trigger newTrigger) {
@@ -81,29 +73,6 @@ public class SubscriptionService {
 		}
 	}
 
-	// private OrderItem getChangedItemOrder(final Order order, final OrderItem orderItem) {
-	// 	var paymentDay = orderItem.getPaymentDay();
-	// 	var nextDelivery = paymentDay.plusDays(orderItem.getPeriod());
-	// 	OrderItem updatedOrderItem =
-	// 		orderItemService.updateDeliveryInfo(paymentDay, nextDelivery, orderItem);
-	// 	log.info("{}", updatedOrderItem.getPaymentDay());
-	// 	extendPeriod(order, updatedOrderItem);
-	//
-	// 	paymentDay.plusDays(orderItem.getPeriod());
-	// 	return updatedOrderItem;
-
-	// }
-
-	/**
-	 * 만약 기간을 변경할 경우, 다음 결제 날짜가 현재보다 이전이면, 즉, 기간을 줄이면 기존 결제 예정일에 결제 후 주기 변경
-	 *
-	 */
-
-	// private void deleteSchedule(Order order, OrderItem orderItem) {
-	// 	log.info("delete schedule");
-	// 	User user = userFindHelper.findUser(order.getUserId());
-	// 	deleteSchedule(orderItem, user);
-	// }
 	private void deleteSchedule(long orderId, String productName) {
 		JobKey jobkey = JobKeyGenerator.build(orderId, productName);
 		deleteSchedule(jobkey);
@@ -122,7 +91,6 @@ public class SubscriptionService {
 		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getProductName());
 
 		JobDetail jobDetail = jobDetailService.build(jobKey, orderId, orderItem.getId());
-		// JobDetail jobDetail = jobDetailService.build(jobKey, orderId);
 		Trigger lastTrigger = triggerService.build(jobKey, orderItem);
 
 		toSchedule(jobDetail, lastTrigger);
