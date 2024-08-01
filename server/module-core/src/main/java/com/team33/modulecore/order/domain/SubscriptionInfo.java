@@ -63,5 +63,10 @@ public class SubscriptionInfo {
 
 	public void changePeriod(int period) {
 		this.period = period;
+		changeNextPaymentDay(period);
+	}
+
+	private void changeNextPaymentDay(int newPeriod) {
+		this.nextPaymentDay = paymentDay.plusDays(newPeriod);
 	}
 }
