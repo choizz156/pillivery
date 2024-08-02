@@ -14,7 +14,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 	"com.team33.modulecore",
 	"com.team33.moduleadmin",
 	"com.team33.moduleexternalapi",
-	"com.team33.moduleevent"
+	"com.team33.moduleevent",
+	"com.team33.modulelogging"
 }
 )
 public class ModuleApiApplication {

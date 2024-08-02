@@ -1,2 +1,2 @@
 rootProject.name = 'team33'
-include 'module-core', 'module-quartz', 'module-api', 'module-admin', 'module-external-api', 'module-event'
+include 'module-core', 'module-quartz', 'module-api', 'module-admin', 'module-external-api', 'module-event', 'module-logging'

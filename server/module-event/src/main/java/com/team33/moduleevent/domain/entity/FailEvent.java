@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.team33.moduleevent.domain.EventStatus;
+import com.team33.moduleevent.domain.EventType;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,7 +32,8 @@ public class FailEvent {
 	@Column(name = "fail_event_id")
 	private Long id;
 
-	private String type;
+	@Enumerated(EnumType.STRING)
+	private EventType type;
 
 	private String payload;
 
@@ -44,7 +46,7 @@ public class FailEvent {
 	private LocalDateTime createdAt;
 
 	@Builder
-	public FailEvent(String type, String payload, String reason, LocalDateTime createdAt) {
+	public FailEvent(EventType type, String payload, String reason, LocalDateTime createdAt) {
 		this.type = type;
 		this.payload = payload;
 		this.reason = reason;

@@ -39,6 +39,12 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
         implementation 'org.codehaus.groovy:groovy-all:3.0.18'
+
+        //log
+        implementation 'net.logstash.logback:logstash-logback-encoder:6.1'
+
+        //aop
+        implementation 'org.springframework.boot:spring-boot-starter-aop'
     }
 
     test {
@@ -52,6 +58,7 @@ project(':module-core') {
 
     dependencies {
         implementation project(':module-external-api')
+        implementation project(':module-logging')
     }
 }
 
@@ -65,6 +72,7 @@ project(':module-api') {
         implementation project(':module-admin')
         implementation project(':module-external-api')
         implementation project(':module-event')
+        implementation project(':module-logging')
     }
 }
 
@@ -75,6 +83,7 @@ project(':module-quartz') {
     dependencies {
         implementation project(':module-core')
         implementation project(':module-external-api')
+        implementation project(':module-logging')
     }
 }
 
@@ -92,6 +101,7 @@ project(':module-external-api'){
     jar { enabled = true }
 
     dependencies {
+        implementation project(':module-logging')
     }
 }
 
@@ -103,5 +113,14 @@ project(':module-event'){
         implementation project(':module-external-api')
         implementation project(':module-core')
         implementation project(':module-quartz')
+        implementation project(':module-logging')
+    }
+}
+
+project(':module-logging'){
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
     }
 }
