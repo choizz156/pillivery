@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+<!--  <property name="home" value="/home/ubuntu/api-module/logs/"/>-->
+  <property name="home" value="/Users/choi/pillivery/server/module-logging/logs/"/>
+
+  <appender name="warnLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <file>${home}warn.log</file>
+
+<!--    <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--      <level>WARN</level>-->
+<!--      <onMatch>ACCEPT</onMatch>-->
+<!--      <onMismatch>DENY</onMismatch>-->
+<!--    </filter>-->
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${home}was/warnlog.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
+      <maxHistory>1</maxHistory>
+      <maxFileSize>15MB</maxFileSize>
+    </rollingPolicy>
+
+    <encoder>
+      <charset>utf8</charset>
+      <Pattern>
+        %d{yyyy-MM-dd HH:mm:ss.SSS, ${logback.timezone:-Asia/Seoul}} [%thread] [TRACE_ID=%X{TRACE_ID}] [%X{TARGET:-auth}]  %-5level %logger - %m%n
+      </Pattern>
+    </encoder>
+  </appender>
+
+</included>

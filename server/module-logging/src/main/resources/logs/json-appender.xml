@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<included>
+<!--  <property name="home" value="/home/ubuntu/api-module/logs/"/>-->
+  <property name="home" value="/Users/choi/pillivery/server/module-logging/logs/"/>
+
+
+  <appender name="jsonLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <file>${home}json.log</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${home}json-%d{yyyyMMdd}-%i.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+      <maxFileSize>15MB</maxFileSize>
+    </rollingPolicy>
+
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <includeContext>true</includeContext>
+      <includeCallerData>true</includeCallerData>
+      <timestampPattern>yyyy-MM-dd HH:mm:ss.SSS</timestampPattern>
+      <fieldNames>
+        <timestamp>timestamp</timestamp>
+        <!--        <traceId>[trace.id=%X{trace.id}]</traceId>-->
+        <thread>thread</thread>
+        <message>message</message>
+        <stackTrace>exception</stackTrace>
+        <mdc>context</mdc>
+      </fieldNames>
+    </encoder>
+  </appender>
+</included>
