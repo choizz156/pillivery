@@ -5,6 +5,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.JobListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.exception.BusinessLogicException;
@@ -12,14 +14,13 @@ import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 public class PaymentJobListeners implements JobListener {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 
+	public static final Logger log = LoggerFactory.getLogger("fileLog");
 	private static final String PAYMENT_JOB = "payment Job";
 	private static final String RETRY = "retry";
 
@@ -40,7 +41,7 @@ public class PaymentJobListeners implements JobListener {
 	@Override
 	public void jobExecutionVetoed(final JobExecutionContext context) {
 		JobKey key = context.getJobDetail().getKey();
-		log.error("중단된 job의 jobkey = {}", key);
+		log.warn("중단된 job의 jobkey = {}", key);
 	}
 
 	/**
@@ -62,17 +63,16 @@ public class PaymentJobListeners implements JobListener {
 
 		retryIfJobException(jobException, jobDataMap, retryCount);
 		deleteJobIfJobExceptionMoreThan2(context.getJobDetail().getKey(), retryCount, jobException);
-		// updatePaymentDay(context, jobDataMap);
 
 		long orderItemId = jobDataMap.getLong("orderItemId");
 		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(orderItemId));
 	}
 
 	private void deleteJobIfJobExceptionMoreThan2(JobKey key, int retryCount, JobExecutionException jobException) {
-		if(retryCount >= 2){
-				jobException.setUnscheduleAllTriggers(true);
-				log.error("job 예외로 인한 스케쥴 취소 = {}, 재시도 횟수 = {}, 메시지 = {}", key, retryCount, jobException.getMessage());
-				throw new BusinessLogicException(ExceptionCode.SCHEDULE_CANCEL);
+		if (retryCount >= 2) {
+			jobException.setUnscheduleAllTriggers(true);
+			log.warn("job 예외로 인한 스케쥴 취소 = {}, 재시도 횟수 = {}, 메시지 = {}", key, retryCount, jobException.getMessage());
+			throw new BusinessLogicException(ExceptionCode.SCHEDULE_CANCEL);
 		}
 	}
 

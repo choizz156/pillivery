@@ -4,6 +4,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.autoconfigure.quartz.SchedulerFactoryBeanCustomizer;
@@ -16,12 +18,12 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class QuartzConfig {
+
+	public static final Logger log = LoggerFactory.getLogger("fileLog");
 
 	@Bean
 	public SchedulerFactoryBeanCustomizer schedulerFactoryBeanCustomizer(){
@@ -54,7 +56,8 @@ public class QuartzConfig {
 			propertiesFactoryBean.afterPropertiesSet();
 			properties = propertiesFactoryBean.getObject();
 		} catch (Exception e) {
-			log.error("error", e);
+			log.error("quartzConfig error", e.getMessage());
+			throw new RuntimeException(e);
 		}
 		return properties;
 	}

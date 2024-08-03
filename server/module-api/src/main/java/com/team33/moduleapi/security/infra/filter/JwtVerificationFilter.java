@@ -1,31 +1,34 @@
 package com.team33.moduleapi.security.infra.filter;
 
-
-import com.team33.moduleapi.security.application.ResponseTokenService;
-import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.moduleapi.security.application.LogoutService;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.team33.moduleapi.security.application.LogoutService;
+import com.team33.moduleapi.security.application.ResponseTokenService;
+import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,7 +43,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private final LogoutService logoutService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
+    protected void doFilterInternal(
+        HttpServletRequest request,
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
@@ -50,7 +54,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        log.info("shouldNotFilter 진입");
         if (isRequestRefreshToken(request)) {
             return true;
         }
@@ -65,10 +68,10 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             return true;
         }
 
-        return checkLogout(request, authorization);
+        return checkLogout(request);
     }
 
-    private boolean checkLogout(final HttpServletRequest request, final String authorization) {
+    private boolean checkLogout(final HttpServletRequest request) {
         if (logoutService.isLogoutAlready(request)) {
             log.error(ExpiredJwtException.class.getSimpleName());
             request.setAttribute(EXCEPTION_KEY, new BusinessLogicException(ExceptionCode.ALREADY_LOGOUT));

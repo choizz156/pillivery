@@ -1,4 +1,4 @@
-package com.team33.modulelogging.aop;
+package com.team33.moduleapi.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;

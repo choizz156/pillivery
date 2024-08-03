@@ -32,7 +32,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                                                     HttpServletRequest request,
                                                     HttpServletResponse response
     ) throws AuthenticationException{
-        log.info("로그인 시도");
         LoginDto loginDto = getLoginDto(request);
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
@@ -47,8 +46,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain chain,
                                             Authentication authResult
     ) throws ServletException, IOException {
-        log.info("로그인 성공");
-
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }
 

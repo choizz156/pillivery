@@ -6,27 +6,26 @@ import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.common.OrderFindHelper;
 import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.order.application.OrderCreateService;
 import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.application.OrderQueryService;
-import com.team33.modulecore.order.application.OrderStatusService;
 import com.team33.modulecore.order.domain.entity.Order;
 import com.team33.modulecore.order.domain.entity.OrderItem;
 import com.team33.modulequartz.subscription.infra.PaymentJobListeners;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SubscriptionService {
+
+	public static final Logger log = LoggerFactory.getLogger("fileLog");
 
 	private final Scheduler scheduler;
 	private final TriggerService triggerService;
@@ -82,7 +81,7 @@ public class SubscriptionService {
 		try {
 			scheduler.deleteJob(jobkey);
 		} catch (SchedulerException e) {
-			log.error("스케쥴 삭제 실패 job => {}", e.getMessage());
+			log.warn("스케쥴 삭제 실패 job => {}", e.getMessage());
 		}
 	}
 
@@ -101,7 +100,7 @@ public class SubscriptionService {
 			applyJobListener();
 			scheduler.scheduleJob(jobDetail, lastTrigger);
 		} catch (SchedulerException e) {
-			log.error("스케쥴 등록 실패 job => {},{}", jobDetail.getKey().getName(), e.getMessage());
+			log.warn("스케쥴 등록 실패 job => {},{}", jobDetail.getKey().getName(), e.getMessage());
 		}
 	}
 
