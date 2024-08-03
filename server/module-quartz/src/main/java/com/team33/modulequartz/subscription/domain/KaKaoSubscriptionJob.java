@@ -7,9 +7,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.PersistJobDataAfterExecution;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.moduleexternalapi.infra.RestTemplateSender;
+import com.team33.moduleexternalapi.infra.WebClientSender;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @PersistJobDataAfterExecution
 public class KaKaoSubscriptionJob implements Job {
 
-	private final RestTemplateSender restTemplateSender;
+	private final WebClientSender webClientSender;
 
 	@Override
 	public void execute(JobExecutionContext context) {
@@ -32,12 +33,20 @@ public class KaKaoSubscriptionJob implements Job {
 
 		checkOrder(orderId);
 
-		restTemplateSender.sendToPost(
-			"",
-			"http://localhost:8080/payments/approve/subscriptions/" + orderId,
-			null,
-			String.class
-		);
+		send(orderId);
+	}
+
+	private void send(long orderId) {
+		try {
+			webClientSender.sendToPost(
+				null,
+				"http://localhost:8080/payments/approve/subscriptions/" + orderId,
+				null,
+				String.class
+			);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	private void checkOrder(long orderId) {
