@@ -18,51 +18,53 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @EnableJpaRepositories(
-    entityManagerFactoryRef = "mainEntityManager",
-    transactionManagerRef = "mainTransactionManager",
-    basePackages = {"com.team33.modulecore", "com.team33.moduleevent"}
+	entityManagerFactoryRef = "mainEntityManager",
+	transactionManagerRef = "mainTransactionManager",
+	basePackages = {"com.team33.modulecore", "com.team33.moduleevent", "com.team33.moduleadmin"}
 )
 @Configuration
 public class MainSourceConfig {
 
-    @Autowired
-    private Environment env;
+	@Autowired
+	private Environment env;
 
-    @Primary
-    @Bean
-    public PlatformTransactionManager mainTransactionManager() {
-        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-        jpaTransactionManager.setEntityManagerFactory(mainEntityManager().getObject());
-        return jpaTransactionManager;
-    }
+	@Primary
+	@Bean
+	public PlatformTransactionManager mainTransactionManager() {
+		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
+		jpaTransactionManager.setEntityManagerFactory(mainEntityManager().getObject());
+		return jpaTransactionManager;
+	}
 
-    @Primary
-    @Bean
-    public LocalContainerEntityManagerFactoryBean mainEntityManager() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(mainDataSource());
-        em.setPackagesToScan("com.team33.modulecore", "com.team33.moduleevent");
-        em.setJpaProperties(getJpaProperties());
+	@Primary
+	@Bean
+	public LocalContainerEntityManagerFactoryBean mainEntityManager() {
+		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+		em.setDataSource(mainDataSource());
+		em.setPackagesToScan("com.team33.modulecore", "com.team33.moduleevent", "com.team33.moduleadmin");
+		em.setJpaProperties(getJpaProperties());
 
-        HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
-        jpaVendorAdapter.setGenerateDdl(true);
-        em.setJpaVendorAdapter(jpaVendorAdapter);
+		HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+		jpaVendorAdapter.setGenerateDdl(true);
+		em.setJpaVendorAdapter(jpaVendorAdapter);
 
-        return em;
-    }
+		return em;
+	}
 
-    private Properties getJpaProperties() {
-        Properties properties = new Properties();
-        properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.properties.hibernate.hbm2ddl.auto"));
-        properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
-        properties.put("hibernate.show_sql", env.getProperty("spring.jpa.properties.hibernate.show_sql"));
-        properties.put("hibernate.format_sql", env.getProperty("spring.jpa.properties.hibernate.format_sql"));
-        return properties;
-    }
+	private Properties getJpaProperties() {
+		Properties properties = new Properties();
+		properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.properties.hibernate.hbm2ddl.auto"));
+		properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
+		properties.put("hibernate.show_sql", env.getProperty("spring.jpa.properties.hibernate.show_sql"));
+		properties.put("hibernate.format_sql", env.getProperty("spring.jpa.properties.hibernate.format_sql"));
+		properties.put("hibernate.jdbc.batch_size", env.getProperty("spring.jpa.properties.hibernate.jdbc.batch_size"));
+		properties.put("hibernate.order_inserts", env.getProperty("spring.jpa.properties.hibernate.order_inserts"));
+		return properties;
+	}
 
-    @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.main")
-    public DataSource mainDataSource() {
-        return DataSourceBuilder.create().build();
-    }
+	@Bean
+	@ConfigurationProperties(prefix = "spring.datasource.main")
+	public DataSource mainDataSource() {
+		return DataSourceBuilder.create().build();
+	}
 }

@@ -1,7 +1,7 @@
 package com.team33.modulecore.user.domain.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -13,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
@@ -35,11 +34,12 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "users", indexes = {
-	@Index(name = "idx_email", columnList = "email"),
-	@Index(name = "idx_phone", columnList = "phone"),
-	@Index(name = "idx_display_name", columnList = "displayName")
-})
+// @Table(name = "users", indexes = {
+// 	@Index(name = "idx_email", columnList = "email"),
+// 	@Index(name = "idx_phone", columnList = "phone"),
+// 	@Index(name = "idx_display_name", columnList = "displayName")
+// })
+@Table(name = "user")
 public class User extends BaseEntity {
 
 	@Id
@@ -75,7 +75,7 @@ public class User extends BaseEntity {
 	@ElementCollection
 	@CollectionTable(name = "user_review", joinColumns = @JoinColumn(name = "user_id"))
 	@Column(name = "review_id")
-	private Set<Long> reviewIds = new HashSet<>();
+	private List<Long> reviewIds = new ArrayList<>();
 
 	@Builder
 	private User(
