@@ -13,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
@@ -34,12 +35,11 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-// @Table(name = "users", indexes = {
-// 	@Index(name = "idx_email", columnList = "email"),
-// 	@Index(name = "idx_phone", columnList = "phone"),
-// 	@Index(name = "idx_display_name", columnList = "displayName")
-// })
-@Table(name = "user")
+@Table(name = "user", indexes = {
+	@Index(name = "idx_email", columnList = "email"),
+	@Index(name = "idx_phone", columnList = "phone"),
+	@Index(name = "idx_display_name", columnList = "displayName")
+})
 public class User extends BaseEntity {
 
 	@Id
