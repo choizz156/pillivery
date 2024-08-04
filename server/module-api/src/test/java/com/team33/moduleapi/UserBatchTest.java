@@ -14,21 +14,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.moduleadmin.repository.UserBatchRepository;
+import com.team33.moduleadmin.service.UserBatchService;
 import com.team33.modulecore.user.domain.Address;
 import com.team33.modulecore.user.domain.UserRoles;
 import com.team33.modulecore.user.domain.UserStatus;
 import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.repository.UserRepository;
 
 @Commit
 @ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 @SpringBootTest
-public class UserIdTest {
+public class UserBatchTest {
 
 	@Autowired
-	private UserRepository userRepository;
+	private UserBatchService userBatchService;
 
 	@Autowired
 	private UserBatchRepository userBatchRepositoryImpl;
@@ -58,7 +58,12 @@ public class UserIdTest {
 	@Test
 	@DisplayName("Identity 전략 jdbc batchInsert 싱글스레드")
 	void test3() throws Exception {
-		System.out.println("======" + users.get(0).getId());
 		userBatchRepositoryImpl.saveAll(users);
+	}
+
+	@Test
+	@DisplayName("Identity 전략 jdbc batchInsert 멀티스레드")
+	void test4() throws Exception {
+		userBatchService.saveAll(users);
 	}
 }
