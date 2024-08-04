@@ -1,5 +1,7 @@
 package com.team33.moduleevent.application;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,12 +9,12 @@ import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleexternalapi.config.RestTemplateErrorHandler;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class EventDispatcher {
+
+	private static final Logger log = LoggerFactory.getLogger("fileLog");
 
 	private static final int LIMIT_COUNT = 2;
 

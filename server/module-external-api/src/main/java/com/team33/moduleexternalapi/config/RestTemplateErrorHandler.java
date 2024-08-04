@@ -4,15 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class RestTemplateErrorHandler implements ResponseErrorHandler {
 
+    private final static Logger log = LoggerFactory.getLogger("fileLog");
 
     @Override
     public boolean hasError(final ClientHttpResponse response) throws IOException {

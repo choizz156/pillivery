@@ -1,5 +1,7 @@
 package com.team33.moduleevent.application;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -10,18 +12,19 @@ import com.team33.moduleevent.domain.entity.FailEvent;
 import com.team33.moduleevent.domain.repository.FailEventRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class FailEventService {
+
+
+	private static final Logger log = LoggerFactory.getLogger("fileLog");
 
 	private final FailEventRepository failEventRepository;
 
 	@Async
 	public void saveFailEvent(ApiEvent apiEvent, String reason) {
-		log.error("eventId : {}, type : {}, reason : {}", apiEvent.getId(), apiEvent.getType(), reason);
+		log.warn("eventId : {}, type : {}, reason : {}", apiEvent.getId(), apiEvent.getType(), reason);
 
 		FailEvent failEvent = FailEvent.builder()
 			.type(apiEvent.getType())
@@ -36,7 +39,7 @@ public class FailEventService {
 		try {
 			failEventRepository.save(failEvent);
 		} catch (DataAccessException e) {
-			log.error(
+			log.warn(
 				"fail event save error: eventId : {}, type : {}", apiEvent.getId(), apiEvent.getType());
 			throw new DataSaveException(e.getMessage());
 		}

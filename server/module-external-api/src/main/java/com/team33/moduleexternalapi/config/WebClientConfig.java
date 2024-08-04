@@ -3,6 +3,8 @@ package com.team33.moduleexternalapi.config;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +17,13 @@ import com.team33.moduleexternalapi.exception.PaymentApiException;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
-@Slf4j
 @Configuration
 public class WebClientConfig {
+
+	private final static Logger log = LoggerFactory.getLogger("fileLog");
 
 	@Qualifier("kakao")
 	@Bean
