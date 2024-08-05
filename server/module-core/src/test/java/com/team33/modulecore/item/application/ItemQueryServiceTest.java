@@ -17,11 +17,12 @@ class ItemQueryServiceTest {
 
 	private ItemQueryRepository itemQueryRepository;
 	private ItemQueryService itemQueryService;
+	private CacheClient cacheClient;
 
 	@BeforeEach
 	void setUp() {
 		itemQueryRepository = mock(ItemQueryRepository.class);
-		CacheClient cacheClient = mock(CacheClient.class);
+		cacheClient = mock(CacheClient.class);
 		itemQueryService = new ItemQueryService(cacheClient, itemQueryRepository);
 	}
 
@@ -29,26 +30,26 @@ class ItemQueryServiceTest {
 	@Test
 	void 아이템_조회() throws Exception {
 		//given
-		when(itemQueryRepository.findItemsWithDiscountRateMain()).thenReturn(null);
+		when(cacheClient.getMainDiscountItem()).thenReturn(null);
 
 		//when
 		itemQueryService.findMainDiscountItems();
 
 		//then
-		verify(itemQueryRepository, times(1)).findItemsWithDiscountRateMain();
+		verify(cacheClient, times(1)).getMainDiscountItem();
 	}
 
 	@DisplayName("판매량이 많은 메인 아이템들을 조회할 수 있다.")
 	@Test
 	void 아이템_조회2() throws Exception {
 		//given
-		when(itemQueryRepository.findItemsWithSalesMain()).thenReturn(null);
+		when(cacheClient.getMainSalesItem()).thenReturn(null);
 
 		//when
 		itemQueryService.findMainSaleItems();
 
 		//then
-		verify(itemQueryRepository, times(1)).findItemsWithSalesMain();
+		verify(cacheClient, times(1)).getMainSalesItem();
 	}
 
 	@DisplayName("조회 필터링이 있는 아이템들을 조회할 수 있다.")

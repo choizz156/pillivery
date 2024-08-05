@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "user", indexes = {
+@Table(name = "users", indexes = {
 	@Index(name = "idx_email", columnList = "email"),
 	@Index(name = "idx_phone", columnList = "phone"),
 	@Index(name = "idx_display_name", columnList = "displayName")

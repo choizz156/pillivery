@@ -43,7 +43,7 @@ public class CustomFilterConfigurer extends
 			new JwtVerificationFilter(jwtTokenProvider, responseTokenService, logoutService);
 
 		builder.addFilter(jwtLoginFilter)
-			.addFilterBefore(new LogTraceFilter(), JwtVerificationFilter.class)
+			.addFilterBefore(new LogTraceFilter(), JwtLoginFilter.class)
 			.addFilterAfter(jwtVerificationFilter, JwtLoginFilter.class);
 	}
 }
