@@ -11,6 +11,10 @@ spring:
     username: sa
     password:
 
+  data:
+    redis:
+      port: 6379
+      host: localhost
 
   h2:
     console:
