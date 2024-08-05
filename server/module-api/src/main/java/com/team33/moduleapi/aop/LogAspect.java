@@ -29,13 +29,11 @@ public class LogAspect {
 
 	@Before("controllerPointcut()")
 	public void before(JoinPoint joinPoint) {
-		MDC.put(TRACE_ID, (String)joinPoint.getArgs()[0]);
 		MDC.put(TARGET, joinPoint.getSignature().getDeclaringType().getSimpleName());
 	}
 
 	@AfterReturning("exceptionControllerPointcut()")
 	public void exceptionLog(JoinPoint joinPoint) {
 		logger.error("exception :: {}", joinPoint.getSignature());
-		MDC.clear();
 	}
 }

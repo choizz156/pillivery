@@ -11,6 +11,7 @@ import com.team33.moduleapi.security.application.ResponseTokenService;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
 import com.team33.moduleapi.security.infra.filter.JwtLoginFilter;
 import com.team33.moduleapi.security.infra.filter.JwtVerificationFilter;
+import com.team33.moduleapi.security.infra.filter.LogTraceFilter;
 import com.team33.moduleapi.security.infra.handler.ErrorResponser;
 import com.team33.moduleapi.security.infra.handler.UserAuthFailureHandler;
 import com.team33.moduleapi.security.infra.handler.UserAuthSuccessHandler;
@@ -35,16 +36,14 @@ public class CustomFilterConfigurer extends
 
 		JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(authenticationManager, objectMapper);
 		jwtLoginFilter.setFilterProcessesUrl("/users/login");
-
 		jwtLoginFilter.setAuthenticationFailureHandler(new UserAuthFailureHandler(errorResponser));
-		jwtLoginFilter.setAuthenticationSuccessHandler(
-			new UserAuthSuccessHandler(responseTokenService)
-		);
+		jwtLoginFilter.setAuthenticationSuccessHandler(new UserAuthSuccessHandler(responseTokenService));
 
 		JwtVerificationFilter jwtVerificationFilter =
 			new JwtVerificationFilter(jwtTokenProvider, responseTokenService, logoutService);
 
 		builder.addFilter(jwtLoginFilter)
+			.addFilterBefore(new LogTraceFilter(), JwtVerificationFilter.class)
 			.addFilterAfter(jwtVerificationFilter, JwtLoginFilter.class);
 	}
 }

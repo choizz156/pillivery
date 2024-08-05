@@ -7,11 +7,11 @@
 
     <file>${home}warn.log</file>
 
-<!--    <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
-<!--      <level>WARN</level>-->
-<!--      <onMatch>ACCEPT</onMatch>-->
-<!--      <onMismatch>DENY</onMismatch>-->
-<!--    </filter>-->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>WARN</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <fileNamePattern>${home}was/warnlog.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
