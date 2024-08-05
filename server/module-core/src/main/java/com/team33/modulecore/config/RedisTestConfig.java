@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,9 +30,6 @@ public class RedisTestConfig {
     @Value("${spring.data.redis.host}")
     private String host;
 
-    @Value("${spring.data.redis.password}")
-    private String password;
-
     private RedisServer redisServer;
 
     @Bean
@@ -41,7 +37,6 @@ public class RedisTestConfig {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
 
         config.setPort(redisPort);
-        config.setPassword(RedisPassword.of(password));
         config.setHostName(host);
 
         return new LettuceConnectionFactory(config);
