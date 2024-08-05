@@ -160,9 +160,8 @@ class PaymentAcceptanceTest extends ApiTest {
 
 		//@formatter:off
             given
-                    .queryParam("orderId", 1)
             .when()
-                    .get("/payments/approve/subscriptions")
+                    .post("/payments/approve/subscriptions/{orderId}", 1)
             .then()
 					.log().all()
 				.statusCode(HttpStatus.OK.value())
