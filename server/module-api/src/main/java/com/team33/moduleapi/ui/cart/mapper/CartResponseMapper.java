@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import com.team33.moduleapi.ui.cart.dto.CartItemResponseDto;
 import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
-import com.team33.modulecore.cart.domain.entity.NormalCart;
-import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
+import com.team33.modulecore.core.cart.domain.entity.NormalCart;
+import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
 
 @Component
 public class CartResponseMapper {

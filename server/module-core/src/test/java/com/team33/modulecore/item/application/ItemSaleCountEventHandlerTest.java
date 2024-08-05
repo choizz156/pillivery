@@ -7,9 +7,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
-import com.team33.modulecore.order.events.ItemSaleCountedEvent;
+import com.team33.modulecore.core.item.application.ItemSaleCountEventHandler;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 
 class ItemSaleCountEventHandlerTest {
 

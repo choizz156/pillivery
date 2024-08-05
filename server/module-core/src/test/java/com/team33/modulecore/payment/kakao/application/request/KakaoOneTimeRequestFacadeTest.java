@@ -9,11 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.order.domain.OrderPrice;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.payment.application.request.RequestFacade;
-import com.team33.modulecore.payment.kakao.dto.KakaoRequestResponse;
+import com.team33.modulecore.core.common.OrderFindHelper;
+import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.payment.application.request.RequestFacade;
+import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestFacade;
+import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestService;
+import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubsRequestService;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 
 class KakaoOneTimeRequestFacadeTest {
 

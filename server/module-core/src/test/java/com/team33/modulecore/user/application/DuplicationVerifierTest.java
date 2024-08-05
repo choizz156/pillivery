@@ -14,13 +14,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
+import com.team33.modulecore.core.user.application.DuplicationVerifier;
 import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.user.domain.Address;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.repository.UserRepository;
-import com.team33.modulecore.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.user.dto.UserServicePatchDto;
-import com.team33.modulecore.user.dto.UserServicePostDto;
+import com.team33.modulecore.core.user.domain.Address;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.repository.UserRepository;
+import com.team33.modulecore.core.user.dto.OAuthUserServiceDto;
+import com.team33.modulecore.core.user.dto.UserServicePatchDto;
+import com.team33.modulecore.core.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.mock.FakeUserRepository;
 
 class DuplicationVerifierTest {

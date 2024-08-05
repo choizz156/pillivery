@@ -5,8 +5,9 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
+import com.team33.modulecore.core.payment.kakao.application.approve.KakaoFirstSubsApprove;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveOneTimeRequest;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
 class KakaoFirstSubsApproveTest {

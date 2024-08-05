@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
+import com.team33.modulecore.core.common.OrderFindHelper;
+import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
+import com.team33.modulecore.core.payment.kakao.application.refund.KakaoRefundService;
+import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 
 class KakaoRefundServiceTest {
 

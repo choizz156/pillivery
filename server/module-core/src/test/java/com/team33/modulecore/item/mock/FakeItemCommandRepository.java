@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 
 public class FakeItemCommandRepository implements ItemCommandRepository {
 

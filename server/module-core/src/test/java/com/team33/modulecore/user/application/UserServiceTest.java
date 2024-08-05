@@ -12,14 +12,16 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.team33.modulecore.cart.application.CartService;
+import com.team33.modulecore.core.cart.application.CartService;
+import com.team33.modulecore.core.user.application.DuplicationVerifier;
+import com.team33.modulecore.core.user.application.UserService;
 import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.user.domain.Address;
-import com.team33.modulecore.user.domain.UserStatus;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.user.dto.UserServicePatchDto;
-import com.team33.modulecore.user.dto.UserServicePostDto;
+import com.team33.modulecore.core.user.domain.Address;
+import com.team33.modulecore.core.user.domain.UserStatus;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.dto.OAuthUserServiceDto;
+import com.team33.modulecore.core.user.dto.UserServicePatchDto;
+import com.team33.modulecore.core.user.dto.UserServicePostDto;
 import com.team33.modulecore.user.mock.FakeUserRepository;
 
 class UserServiceTest {

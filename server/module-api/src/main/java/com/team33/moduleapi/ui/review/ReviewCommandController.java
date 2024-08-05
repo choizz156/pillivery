@@ -16,9 +16,9 @@ import com.team33.moduleapi.ui.review.dto.ReviewDetailResponseDto;
 import com.team33.moduleapi.ui.review.dto.ReviewPatchDto;
 import com.team33.moduleapi.ui.review.dto.ReviewPostDto;
 import com.team33.moduleapi.ui.review.mapper.ReviewServiceMapper;
-import com.team33.modulecore.review.application.ReviewCommandService;
-import com.team33.modulecore.review.domain.ReviewContext;
-import com.team33.modulecore.review.domain.entity.Review;
+import com.team33.modulecore.core.review.application.ReviewCommandService;
+import com.team33.modulecore.core.review.domain.ReviewContext;
+import com.team33.modulecore.core.review.domain.entity.Review;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

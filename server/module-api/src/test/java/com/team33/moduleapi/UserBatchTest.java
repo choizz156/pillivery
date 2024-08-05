@@ -15,10 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.moduleadmin.repository.UserBatchRepository;
 import com.team33.moduleadmin.service.UserBatchService;
-import com.team33.modulecore.user.domain.Address;
-import com.team33.modulecore.user.domain.UserRoles;
-import com.team33.modulecore.user.domain.UserStatus;
-import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.Address;
+import com.team33.modulecore.core.user.domain.UserRoles;
+import com.team33.modulecore.core.user.domain.UserStatus;
+import com.team33.modulecore.core.user.domain.entity.User;
 
 @Commit
 @ActiveProfiles("local")

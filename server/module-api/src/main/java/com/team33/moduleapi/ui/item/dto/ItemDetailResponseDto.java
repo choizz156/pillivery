@@ -1,7 +1,7 @@
 package com.team33.moduleapi.ui.item.dto;
 
-import com.team33.modulecore.category.domain.Categories;
-import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.core.category.domain.Categories;
+import com.team33.modulecore.core.item.domain.entity.Item;
 
 import lombok.AccessLevel;
 import lombok.Builder;

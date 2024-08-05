@@ -6,6 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoLookupResponse;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoResponseMapper;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 

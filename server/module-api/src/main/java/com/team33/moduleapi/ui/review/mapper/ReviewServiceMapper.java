@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import com.team33.moduleapi.ui.review.dto.ReviewDeleteDto;
 import com.team33.moduleapi.ui.review.dto.ReviewPatchDto;
 import com.team33.moduleapi.ui.review.dto.ReviewPostDto;
-import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.review.domain.ReviewContext;
+import com.team33.modulecore.core.common.OrderFindHelper;
+import com.team33.modulecore.core.order.domain.OrderStatus;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.review.domain.ReviewContext;
 
 import lombok.RequiredArgsConstructor;
 

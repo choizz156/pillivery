@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
 
-import com.team33.modulecore.order.domain.entity.OrderItem;
-import com.team33.modulecore.order.domain.SubscriptionInfo;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 
 class TriggerServiceTest {
 

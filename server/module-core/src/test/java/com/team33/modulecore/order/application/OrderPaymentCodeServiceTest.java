@@ -10,9 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 
-import com.team33.modulecore.common.OrderFindHelper;
+import com.team33.modulecore.core.common.OrderFindHelper;
+import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.exception.DataSaveException;
-import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.Order;
 
 @ExtendWith(OutputCaptureExtension.class)
 class OrderPaymentCodeServiceTest {

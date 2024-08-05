@@ -15,15 +15,14 @@ import org.springframework.http.MediaType;
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.moduleapi.ui.item.dto.ItemPageRequestDto;
-import com.team33.modulecore.category.domain.Categories;
-import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.Image;
-import com.team33.modulecore.item.domain.Information;
-import com.team33.modulecore.item.domain.ItemSortOption;
-import com.team33.modulecore.item.domain.Price;
-import com.team33.modulecore.item.domain.Statistic;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.category.domain.Categories;
+import com.team33.modulecore.core.category.domain.CategoryName;
+import com.team33.modulecore.core.item.domain.Image;
+import com.team33.modulecore.core.item.domain.Information;
+import com.team33.modulecore.core.item.domain.Price;
+import com.team33.modulecore.core.item.domain.Statistic;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 
 class ItemQueryAcceptanceTest extends ApiTest {
 

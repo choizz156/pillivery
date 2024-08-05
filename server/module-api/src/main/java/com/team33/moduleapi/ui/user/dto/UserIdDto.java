@@ -1,6 +1,6 @@
 package com.team33.moduleapi.ui.user.dto;
 
-import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.entity.User;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

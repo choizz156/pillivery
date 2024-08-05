@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 // import com.team33.moduleadmin.dto.ItemInfoDto;
 import com.team33.moduleadmin.dto.ItemDto;
-import com.team33.modulecore.item.domain.Image;
-import com.team33.modulecore.item.domain.Information;
-import com.team33.modulecore.item.domain.Price;
+import com.team33.modulecore.core.item.domain.Image;
+import com.team33.modulecore.core.item.domain.Information;
+import com.team33.modulecore.core.item.domain.Price;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

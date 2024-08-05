@@ -8,10 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-import com.team33.modulecore.user.domain.Address;
-import com.team33.modulecore.user.domain.UserRoles;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.repository.UserRepository;
+import com.team33.modulecore.core.user.domain.Address;
+import com.team33.modulecore.core.user.domain.UserRoles;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.repository.UserRepository;
 
 public class OauthAccountFactory implements WithSecurityContextFactory<OAuthAccount> {
 

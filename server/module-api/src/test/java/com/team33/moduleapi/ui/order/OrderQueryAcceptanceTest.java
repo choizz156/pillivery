@@ -16,21 +16,21 @@ import com.team33.moduleapi.UserAccount;
 import com.team33.moduleapi.ui.order.dto.OrderPostDto;
 import com.team33.moduleapi.ui.order.dto.OrderPostListDto;
 import com.team33.moduleapi.ui.order.mapper.OrderItemMapper;
-import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.Image;
-import com.team33.modulecore.item.domain.Information;
-import com.team33.modulecore.item.domain.Price;
-import com.team33.modulecore.item.domain.Statistic;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
-import com.team33.modulecore.order.application.OrderCreateService;
-import com.team33.modulecore.order.application.OrderItemService;
-import com.team33.modulecore.order.domain.entity.OrderItem;
-import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
-import com.team33.modulecore.order.dto.OrderContext;
-import com.team33.modulecore.order.dto.OrderItemServiceDto;
+import com.team33.modulecore.core.category.domain.CategoryName;
+import com.team33.modulecore.core.item.domain.Image;
+import com.team33.modulecore.core.item.domain.Information;
+import com.team33.modulecore.core.item.domain.Price;
+import com.team33.modulecore.core.item.domain.Statistic;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.order.application.OrderCreateService;
+import com.team33.modulecore.core.order.application.OrderItemService;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.OrderStatus;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
+import com.team33.modulecore.core.order.dto.OrderContext;
+import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
 class OrderQueryAcceptanceTest extends ApiTest {
 	@Autowired

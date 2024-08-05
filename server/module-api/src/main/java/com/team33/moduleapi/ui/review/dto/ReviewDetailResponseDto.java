@@ -2,7 +2,7 @@ package com.team33.moduleapi.ui.review.dto;
 
 import java.time.ZonedDateTime;
 
-import com.team33.modulecore.review.domain.entity.Review;
+import com.team33.modulecore.core.review.domain.entity.Review;
 
 import lombok.Builder;
 import lombok.Data;

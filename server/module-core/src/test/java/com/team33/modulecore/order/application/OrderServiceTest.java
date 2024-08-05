@@ -14,24 +14,28 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.context.ApplicationContext;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.common.UserFindHelper;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.entity.OrderItem;
-import com.team33.modulecore.order.domain.OrderPrice;
-import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.domain.Receiver;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
-import com.team33.modulecore.order.dto.OrderContext;
-import com.team33.modulecore.order.events.CartRefreshedEvent;
-import com.team33.modulecore.order.events.ItemSaleCountedEvent;
+import com.team33.modulecore.core.common.OrderFindHelper;
+import com.team33.modulecore.core.common.UserFindHelper;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.order.application.OrderCreateService;
+import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
+import com.team33.modulecore.core.order.application.OrderStatusService;
+import com.team33.modulecore.core.order.application.OrderSubscriptionService;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.OrderStatus;
+import com.team33.modulecore.core.order.domain.Receiver;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
+import com.team33.modulecore.core.order.dto.OrderContext;
+import com.team33.modulecore.core.order.events.CartRefreshedEvent;
+import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.order.mock.FakeOrderCommandRepository;
-import com.team33.modulecore.payment.application.cancel.CancelSubscriptionService;
-import com.team33.modulecore.payment.application.refund.RefundService;
-import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
-import com.team33.modulecore.user.domain.Address;
-import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.core.payment.application.cancel.CancelSubscriptionService;
+import com.team33.modulecore.core.payment.application.refund.RefundService;
+import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
+import com.team33.modulecore.core.user.domain.Address;
+import com.team33.modulecore.core.user.domain.entity.User;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class OrderServiceTest {

@@ -8,10 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.order.domain.OrderPrice;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.payment.kakao.dto.KakaoLookupResponse;
+import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
+import com.team33.modulecore.core.payment.kakao.application.lookup.KakaoPayLookupService;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoLookupResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
 
 class KakaoPayLookupServiceTest {

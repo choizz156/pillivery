@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.review.domain.entity.Review;
+import com.team33.modulecore.core.review.domain.entity.Review;
+import com.team33.modulecore.core.review.domain.repository.ReviewCommandRepository;
 import com.team33.modulecore.review.domain.mock.FakeReviewCommandRepository;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

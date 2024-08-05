@@ -5,10 +5,11 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulecore.common.UserFindHelper;
-import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
-import com.team33.modulecore.order.dto.OrderFindCondition;
-import com.team33.modulecore.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.common.UserFindHelper;
+import com.team33.modulecore.core.order.application.OrderQueryService;
+import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
+import com.team33.modulecore.core.order.dto.OrderFindCondition;
+import com.team33.modulecore.core.order.dto.OrderPageRequest;
 
 class OrderQueryServiceTest {
 

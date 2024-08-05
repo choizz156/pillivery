@@ -19,10 +19,10 @@ import com.team33.moduleapi.ui.order.dto.OrderDetailResponse;
 import com.team33.moduleapi.ui.order.dto.OrderItemSimpleResponse;
 import com.team33.moduleapi.ui.order.dto.OrderSimpleResponseDto;
 import com.team33.moduleapi.ui.order.mapper.OrderItemMapper;
-import com.team33.modulecore.order.application.OrderQueryService;
-import com.team33.modulecore.order.domain.entity.OrderItem;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.application.OrderQueryService;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.dto.OrderPageRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

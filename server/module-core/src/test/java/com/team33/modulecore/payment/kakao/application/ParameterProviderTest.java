@@ -12,8 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.order.domain.OrderPrice;
-import com.team33.modulecore.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParameterProviderTest {

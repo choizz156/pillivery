@@ -10,9 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
-import com.team33.modulecore.common.UserFindHelper;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.repository.UserRepository;
+import com.team33.modulecore.core.common.UserFindHelper;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.repository.UserRepository;
 
 import io.restassured.RestAssured;
 

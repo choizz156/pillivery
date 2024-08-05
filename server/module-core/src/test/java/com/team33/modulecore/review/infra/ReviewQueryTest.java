@@ -21,12 +21,13 @@ import org.springframework.data.domain.Page;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.review.domain.ReviewStatus;
-import com.team33.modulecore.review.domain.entity.Review;
-import com.team33.modulecore.review.dto.query.ReviewPage;
-import com.team33.modulecore.review.dto.query.ReviewQueryDto;
-import com.team33.modulecore.review.dto.query.ReviewSortOption;
-import com.team33.modulecore.review.domain.repository.ReviewQueryRepository;
+import com.team33.modulecore.core.review.domain.ReviewStatus;
+import com.team33.modulecore.core.review.domain.entity.Review;
+import com.team33.modulecore.core.review.dto.query.ReviewPage;
+import com.team33.modulecore.core.review.dto.query.ReviewQueryDto;
+import com.team33.modulecore.core.review.dto.query.ReviewSortOption;
+import com.team33.modulecore.core.review.domain.repository.ReviewQueryRepository;
+import com.team33.modulecore.core.review.infra.ReviewQueryDslDao;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class ReviewQueryTest {

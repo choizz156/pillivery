@@ -4,7 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import com.team33.modulecore.user.infra.NotSpace;
+import com.team33.modulecore.core.user.infra.NotSpace;
 
 import lombok.Builder;
 import lombok.Data;

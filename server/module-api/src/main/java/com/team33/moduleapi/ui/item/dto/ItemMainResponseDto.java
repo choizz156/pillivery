@@ -2,7 +2,7 @@ package com.team33.moduleapi.ui.item.dto;
 
 import java.util.List;
 
-import com.team33.modulecore.item.dto.query.ItemQueryDto;
+import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
 
 import lombok.Data;
 

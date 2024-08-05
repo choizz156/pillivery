@@ -6,8 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.team33.modulecore.core.review.domain.ReviewContext;
+import com.team33.modulecore.core.review.domain.ReviewStatus;
 import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.review.domain.entity.Review;
+import com.team33.modulecore.core.review.domain.entity.Review;
 
 class ReviewTest {
 

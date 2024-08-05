@@ -7,8 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.SubscriptionInfo;
+import com.team33.modulecore.core.cart.domain.entity.Cart;
+import com.team33.modulecore.core.cart.domain.entity.CartItem;
+import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 
 public class SubscriptionCartTest {
 

@@ -4,7 +4,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.payment.kakao.application.refund.SchedulerCanceledEvent;
+import com.team33.modulecore.core.payment.kakao.application.refund.SchedulerCanceledEvent;
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;

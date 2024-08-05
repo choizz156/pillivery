@@ -1,7 +1,7 @@
 package com.team33.moduleapi.security.domain;
 
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.UserStatus;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.UserStatus;
 import java.util.Collection;
 import java.util.Map;
 import lombok.Builder;

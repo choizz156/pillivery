@@ -3,7 +3,7 @@ package com.team33.moduleapi.security.infra.handler;
 
 import com.team33.moduleapi.security.domain.UserDetailsEntity;
 import com.team33.moduleapi.security.application.ResponseTokenService;
-import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.entity.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

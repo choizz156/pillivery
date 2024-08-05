@@ -11,11 +11,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.cart.SubscriptionContext;
-import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
+import com.team33.modulecore.core.cart.SubscriptionContext;
+import com.team33.modulecore.core.cart.application.CommonCartItemService;
+import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
+import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
 import com.team33.modulecore.cart.mock.FakeCartRepository;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.SubscriptionInfo;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 
 class SubscriptionCartServiceTest {
 

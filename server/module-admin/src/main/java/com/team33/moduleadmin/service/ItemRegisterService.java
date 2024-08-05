@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.Information;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.category.domain.CategoryName;
+import com.team33.modulecore.core.item.domain.Information;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

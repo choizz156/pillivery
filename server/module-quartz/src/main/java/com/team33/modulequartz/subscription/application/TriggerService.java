@@ -12,7 +12,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.team33.moduleadmin.repository.UserBatchRepository;
-import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.entity.User;
 import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.RequiredArgsConstructor;

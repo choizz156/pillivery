@@ -1,6 +1,6 @@
 package com.team33.modulecore.order.domain.repository;
 
-import static com.team33.modulecore.category.domain.CategoryName.*;
+import static com.team33.modulecore.core.category.domain.CategoryName.*;
 import static java.util.Comparator.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -24,17 +24,18 @@ import org.springframework.data.domain.Page;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.order.domain.entity.OrderItem;
-import com.team33.modulecore.order.domain.OrderStatus;
-import com.team33.modulecore.order.domain.SubscriptionInfo;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.dto.OrderContext;
-import com.team33.modulecore.order.dto.OrderFindCondition;
-import com.team33.modulecore.order.dto.OrderPage;
-import com.team33.modulecore.order.dto.OrderPageRequest;
-import com.team33.modulecore.order.infra.OrderQueryDslDao;
-import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.OrderStatus;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
+import com.team33.modulecore.core.order.dto.OrderContext;
+import com.team33.modulecore.core.order.dto.OrderFindCondition;
+import com.team33.modulecore.core.order.dto.OrderPage;
+import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.infra.OrderQueryDslDao;
+import com.team33.modulecore.core.user.domain.entity.User;
 
 import lombok.extern.slf4j.Slf4j;
 

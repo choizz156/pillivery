@@ -10,8 +10,8 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 
 import com.team33.moduleapi.ui.user.mapper.UserServiceMapper;
 import com.team33.moduleapi.ui.user.dto.UserPostDto;
-import com.team33.modulecore.user.application.UserService;
-import com.team33.modulecore.user.dto.UserServicePostDto;
+import com.team33.modulecore.core.user.application.UserService;
+import com.team33.modulecore.core.user.dto.UserServicePostDto;
 
 public class UserAccountFactory implements WithSecurityContextFactory<UserAccount> {
 

@@ -1,6 +1,6 @@
 package com.team33.moduleadmin.service;
 
-import static com.team33.modulecore.category.domain.CategoryName.*;
+import static com.team33.modulecore.core.category.domain.CategoryName.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulecore.item.domain.Information;
-import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.Information;
+import com.team33.modulecore.core.item.domain.entity.Item;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.jackson.plugin.JacksonPlugin;

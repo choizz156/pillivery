@@ -6,10 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulecore.category.domain.CategoryName;
-import com.team33.modulecore.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.item.dto.query.ItemPage;
-import com.team33.modulecore.item.dto.query.PriceFilter;
+import com.team33.modulecore.cache.CacheClient;
+import com.team33.modulecore.core.category.domain.CategoryName;
+import com.team33.modulecore.core.item.application.ItemQueryService;
+import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
+import com.team33.modulecore.core.item.dto.query.ItemPage;
+import com.team33.modulecore.core.item.dto.query.PriceFilter;
 
 class ItemQueryServiceTest {
 
@@ -19,7 +21,8 @@ class ItemQueryServiceTest {
 	@BeforeEach
 	void setUp() {
 		itemQueryRepository = mock(ItemQueryRepository.class);
-		itemQueryService = new ItemQueryService(itemQueryRepository);
+		CacheClient cacheClient = mock(CacheClient.class);
+		itemQueryService = new ItemQueryService(cacheClient, itemQueryRepository);
 	}
 
 	@DisplayName("할인 중인 메인 아이템들을 조회할 수 있다.")

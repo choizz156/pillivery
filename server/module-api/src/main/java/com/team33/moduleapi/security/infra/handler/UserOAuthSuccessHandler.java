@@ -4,7 +4,7 @@ package com.team33.moduleapi.security.infra.handler;
 import com.team33.moduleapi.security.domain.UserDetailsEntity;
 import com.team33.moduleapi.security.infra.JwtTokenProvider;
 import com.team33.moduleapi.security.repository.RefreshTokenRepository;
-import com.team33.modulecore.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.entity.User;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;

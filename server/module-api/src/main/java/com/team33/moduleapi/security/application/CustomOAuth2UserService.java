@@ -2,8 +2,8 @@ package com.team33.moduleapi.security.application;
 
 import com.team33.moduleapi.security.domain.UserDetailsEntity;
 import com.team33.moduleapi.security.dto.OAuthAttributes;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.repository.UserRepository;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

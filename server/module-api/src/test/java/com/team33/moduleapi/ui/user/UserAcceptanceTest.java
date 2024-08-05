@@ -17,11 +17,11 @@ import com.team33.moduleapi.ui.user.dto.UserPatchDto;
 import com.team33.moduleapi.ui.user.dto.UserPostDto;
 import com.team33.moduleapi.ui.user.dto.UserPostOauthDto;
 import com.team33.moduleapi.ui.user.mapper.UserServiceMapper;
-import com.team33.modulecore.user.application.UserService;
-import com.team33.modulecore.user.domain.Address;
-import com.team33.modulecore.user.domain.UserRoles;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.dto.UserServicePostDto;
+import com.team33.modulecore.core.user.application.UserService;
+import com.team33.modulecore.core.user.domain.Address;
+import com.team33.modulecore.core.user.domain.UserRoles;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.dto.UserServicePostDto;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

@@ -11,11 +11,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.common.ItemFindHelper;
-import com.team33.modulecore.order.domain.SubscriptionInfo;
-import com.team33.modulecore.order.domain.entity.OrderItem;
-import com.team33.modulecore.order.domain.repository.OrderQueryRepository;
-import com.team33.modulecore.order.dto.OrderItemServiceDto;
+import com.team33.modulecore.core.common.ItemFindHelper;
+import com.team33.modulecore.core.order.application.OrderItemService;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
+import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
 class OrderItemServiceTest {
 

@@ -17,7 +17,7 @@ import com.team33.moduleadmin.dto.ItemDto;
 import com.team33.moduleadmin.dto.ItemWrapper;
 import com.team33.moduleadmin.service.ItemAttributeMapper;
 import com.team33.moduleadmin.service.ItemRegisterService;
-import com.team33.modulecore.item.domain.Information;
+import com.team33.modulecore.core.item.domain.Information;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

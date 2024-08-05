@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogAspect {
 
-	private static final String TRACE_ID = "TRACE_ID";
 	private static final String TARGET = "TARGET";
 	private static final Logger logger = LoggerFactory.getLogger("fileLog");
 

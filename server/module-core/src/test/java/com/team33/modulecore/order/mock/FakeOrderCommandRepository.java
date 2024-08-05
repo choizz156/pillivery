@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 
 public class FakeOrderCommandRepository implements OrderCommandRepository {
 

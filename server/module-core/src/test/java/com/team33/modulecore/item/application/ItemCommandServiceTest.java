@@ -11,9 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
-import com.team33.modulecore.review.domain.entity.Review;
+import com.team33.modulecore.core.item.application.ItemCommandService;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.review.domain.entity.Review;
 
 class ItemCommandServiceTest {
 

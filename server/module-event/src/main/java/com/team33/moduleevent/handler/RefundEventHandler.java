@@ -6,7 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;

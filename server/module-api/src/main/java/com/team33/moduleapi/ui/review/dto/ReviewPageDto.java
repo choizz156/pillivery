@@ -1,6 +1,6 @@
 package com.team33.moduleapi.ui.review.dto;
 
-import com.team33.modulecore.review.dto.query.ReviewSortOption;
+import com.team33.modulecore.core.review.dto.query.ReviewSortOption;
 
 import lombok.Data;
 

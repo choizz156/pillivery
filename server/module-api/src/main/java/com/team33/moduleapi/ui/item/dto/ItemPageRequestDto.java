@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.domain.Sort.Direction;
 
-import com.team33.modulecore.item.domain.ItemSortOption;
+import com.team33.modulecore.core.item.domain.ItemSortOption;
 
 import lombok.Data;
 

@@ -17,10 +17,10 @@ import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.moduleapi.ui.payment.dto.RefundDto;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
-import com.team33.modulecore.order.application.OrderStatusService;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
-import com.team33.modulecore.payment.kakao.application.events.KakaoRefundedEvent;
+import com.team33.modulecore.core.order.application.OrderStatusService;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleevent.handler.RefundEventHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.payment.dto.RefundDto;
 import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
-import com.team33.modulecore.order.application.OrderStatusService;
-import com.team33.modulecore.payment.kakao.application.refund.RefundContext;
+import com.team33.modulecore.core.order.application.OrderStatusService;
+import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 
 import lombok.RequiredArgsConstructor;
 

@@ -2,9 +2,9 @@ package com.team33.moduleapi.security.dto;
 
 import java.util.Map;
 
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.domain.UserRoles;
-import com.team33.modulecore.user.domain.UserStatus;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.UserRoles;
+import com.team33.modulecore.core.user.domain.UserStatus;
 
 import lombok.Builder;
 import lombok.Getter;

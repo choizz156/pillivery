@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
-import com.team33.modulecore.review.domain.entity.Review;
-import com.team33.modulecore.review.domain.repository.ReviewCommandRepository;
+import com.team33.modulecore.core.review.domain.entity.Review;
+import com.team33.modulecore.core.review.domain.repository.ReviewCommandRepository;
 
 public class FakeReviewCommandRepository implements ReviewCommandRepository {
 	private EntityManager em;

@@ -2,8 +2,8 @@ package com.team33.moduleapi.ui.review.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.review.dto.query.ReviewPage;
-import com.team33.modulecore.review.dto.query.ReviewSortOption;
+import com.team33.modulecore.core.review.dto.query.ReviewPage;
+import com.team33.modulecore.core.review.dto.query.ReviewSortOption;
 
 @Component
 public class ReviewPageMapper {

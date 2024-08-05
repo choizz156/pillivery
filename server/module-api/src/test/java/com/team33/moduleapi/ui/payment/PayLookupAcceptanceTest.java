@@ -12,11 +12,11 @@ import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.modulecore.common.OrderFindHelper;
-import com.team33.modulecore.order.domain.entity.Order;
-import com.team33.modulecore.order.domain.repository.OrderCommandRepository;
-import com.team33.modulecore.payment.kakao.application.lookup.KakaoPayLookupService;
-import com.team33.modulecore.payment.kakao.dto.KakaoLookupResponse;
+import com.team33.modulecore.core.common.OrderFindHelper;
+import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
+import com.team33.modulecore.core.payment.kakao.application.lookup.KakaoPayLookupService;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoLookupResponse;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;

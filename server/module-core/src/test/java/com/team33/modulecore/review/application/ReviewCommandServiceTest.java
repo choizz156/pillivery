@@ -9,12 +9,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.item.application.ItemCommandService;
-import com.team33.modulecore.review.domain.ReviewContext;
-import com.team33.modulecore.review.domain.ReviewStatus;
-import com.team33.modulecore.review.domain.entity.Review;
-import com.team33.modulecore.review.domain.repository.ReviewCommandRepository;
-import com.team33.modulecore.user.application.UserService;
+import com.team33.modulecore.core.item.application.ItemCommandService;
+import com.team33.modulecore.core.review.application.ReviewCommandService;
+import com.team33.modulecore.core.review.domain.ReviewContext;
+import com.team33.modulecore.core.review.domain.ReviewStatus;
+import com.team33.modulecore.core.review.domain.entity.Review;
+import com.team33.modulecore.core.review.domain.repository.ReviewCommandRepository;
+import com.team33.modulecore.core.user.application.UserService;
 
 class ReviewCommandServiceTest {
 

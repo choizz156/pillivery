@@ -14,9 +14,9 @@ import org.springframework.http.HttpStatus;
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.moduleapi.UserAccount;
-import com.team33.modulecore.cart.application.NormalCartItemService;
-import com.team33.modulecore.item.domain.entity.Item;
-import com.team33.modulecore.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.cart.application.NormalCartItemService;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 
 class NormalCartAcceptanceTest extends ApiTest {
 

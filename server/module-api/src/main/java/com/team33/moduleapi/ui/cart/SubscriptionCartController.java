@@ -20,10 +20,10 @@ import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.cart.dto.SubscriptionCartItemPostDto;
 import com.team33.moduleapi.ui.cart.mapper.CartResponseMapper;
 import com.team33.moduleapi.ui.cart.mapper.CartServiceMapper;
-import com.team33.modulecore.cart.SubscriptionContext;
-import com.team33.modulecore.cart.application.CommonCartItemService;
-import com.team33.modulecore.cart.application.SubscriptionCartItemService;
-import com.team33.modulecore.cart.domain.entity.SubscriptionCart;
+import com.team33.modulecore.core.cart.SubscriptionContext;
+import com.team33.modulecore.core.cart.application.CommonCartItemService;
+import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
+import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

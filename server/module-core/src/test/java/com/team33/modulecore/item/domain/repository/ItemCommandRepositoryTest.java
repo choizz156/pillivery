@@ -16,7 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.item.mock.FakeItemCommandRepository;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

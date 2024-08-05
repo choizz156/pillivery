@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.team33.moduleapi.dto.MultiResponseDto;
 import com.team33.moduleapi.dto.SingleResponseDto;
 import com.team33.moduleapi.ui.review.mapper.ReviewPageMapper;
-import com.team33.modulecore.review.domain.repository.ReviewQueryRepository;
-import com.team33.modulecore.review.dto.query.ReviewPage;
-import com.team33.modulecore.review.dto.query.ReviewQueryDto;
-import com.team33.modulecore.review.dto.query.ReviewSortOption;
+import com.team33.modulecore.core.review.domain.repository.ReviewQueryRepository;
+import com.team33.modulecore.core.review.dto.query.ReviewPage;
+import com.team33.modulecore.core.review.dto.query.ReviewQueryDto;
+import com.team33.modulecore.core.review.dto.query.ReviewSortOption;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

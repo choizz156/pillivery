@@ -1,13 +1,13 @@
 package com.team33.moduleapi.ui.item.mapper;
 
-import static com.team33.modulecore.item.domain.ItemSortOption.*;
+import static com.team33.modulecore.core.item.domain.ItemSortOption.*;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.item.domain.ItemSortOption;
-import com.team33.modulecore.item.dto.query.ItemPage;
-import com.team33.modulecore.item.dto.query.PriceFilter;
+import com.team33.modulecore.core.item.domain.ItemSortOption;
+import com.team33.modulecore.core.item.dto.query.ItemPage;
+import com.team33.modulecore.core.item.dto.query.PriceFilter;
 
 @Component
 public class ItemQueryServiceMapper {

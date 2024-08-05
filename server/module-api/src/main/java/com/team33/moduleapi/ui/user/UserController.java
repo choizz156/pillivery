@@ -26,11 +26,11 @@ import com.team33.moduleapi.ui.user.dto.UserPostDto;
 import com.team33.moduleapi.ui.user.dto.UserPostOauthDto;
 import com.team33.moduleapi.ui.user.dto.UserResponse;
 import com.team33.moduleapi.ui.user.mapper.UserServiceMapper;
-import com.team33.modulecore.user.application.UserService;
-import com.team33.modulecore.user.domain.entity.User;
-import com.team33.modulecore.user.dto.OAuthUserServiceDto;
-import com.team33.modulecore.user.dto.UserServicePatchDto;
-import com.team33.modulecore.user.dto.UserServicePostDto;
+import com.team33.modulecore.core.user.application.UserService;
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.dto.OAuthUserServiceDto;
+import com.team33.modulecore.core.user.dto.UserServicePatchDto;
+import com.team33.modulecore.core.user.dto.UserServicePostDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
