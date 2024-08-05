@@ -20,7 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import redis.embedded.RedisServer;
 
-@Profile("test || local")
+@Profile("test" )
 @Configuration
 public class RedisTestConfig {
 

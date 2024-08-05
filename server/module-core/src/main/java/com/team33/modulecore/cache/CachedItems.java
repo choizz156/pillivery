@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Data
+@Getter
 public class CachedItems implements Serializable {
 
 	private List<ItemQueryDto> mainItems;
@@ -18,7 +18,7 @@ public class CachedItems implements Serializable {
 		this.mainItems = mainItems;
 	}
 
-	public static CachedItems of(List<ItemQueryDto> itemsWithDiscountRateMain) {
-		return new CachedItems(itemsWithDiscountRateMain);
+	public static CachedItems of(List<ItemQueryDto> items) {
+		return new CachedItems(items);
 	}
 }

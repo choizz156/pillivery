@@ -2,10 +2,11 @@ package com.team33.modulecore.cache;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
@@ -13,39 +14,36 @@ import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class CacheClient {
 
 	private static final String MAIN_DISCOUNT_ITEM = "mainDiscountItem";
 	private static final String MAIN_SALES_ITEM = "mainSalesItem";
+	private static final int TIMEOUT = 7;
 
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final ItemQueryRepository itemQueryRepository;
 
-	public List<ItemQueryDto> getMainDiscountItem() {
-		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		CachedItems cachedItems = (CachedItems)ops.get(MAIN_DISCOUNT_ITEM);
-
-		if(cachedItems == null){
-			List<ItemQueryDto> itemsWithDiscountRateMain = itemQueryRepository.findItemsWithDiscountRateMain();
-
-			ops.set(MAIN_DISCOUNT_ITEM, CachedItems.of(itemsWithDiscountRateMain), 7, TimeUnit.DAYS);
-			return itemsWithDiscountRateMain;
-		}
-
-		return cachedItems.getMainItems();
+	public CachedItems getMainDiscountItem() {
+		return getMainItemFromCache(MAIN_DISCOUNT_ITEM, itemQueryRepository::findItemsWithDiscountRateMain);
 	}
 
-	public List<ItemQueryDto> getMainSalesItem() {
+	public CachedItems getMainSalesItem() {
+		return getMainItemFromCache(MAIN_SALES_ITEM, itemQueryRepository::findItemsWithSalesMain);
+	}
+
+	private CachedItems getMainItemFromCache(String key, Supplier<List<ItemQueryDto>> supplier) {
 		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		CachedItems cachedItems = (CachedItems)ops.get(MAIN_SALES_ITEM);
+		CachedItems cachedItems = (CachedItems)ops.get(key);
 
-		if(cachedItems == null){
-			List<ItemQueryDto> itemsWithSalesMain = itemQueryRepository.findItemsWithSalesMain();
+		if (cachedItems == null) {
+			List<ItemQueryDto> mainItem = supplier.get();
+			CachedItems value = CachedItems.of(mainItem);
 
-			ops.set(MAIN_SALES_ITEM, itemsWithSalesMain, 7, TimeUnit.DAYS);
-			return itemsWithSalesMain;
+			ops.set(key, value, TIMEOUT, TimeUnit.DAYS);
+			return value;
 		}
-		return cachedItems.getMainItems();
+
+		return cachedItems;
 	}
 }
