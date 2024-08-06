@@ -4,12 +4,18 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
+import com.team33.modulecore.core.item.dto.query.ItemPage;
 import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
+import com.team33.modulecore.core.item.dto.query.PriceFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,31 +25,50 @@ public class CacheClient {
 
 	private static final String MAIN_DISCOUNT_ITEM = "mainDiscountItem";
 	private static final String MAIN_SALES_ITEM = "mainSalesItem";
-	private static final int TIMEOUT = 7;
+	private static final int MAIN_ITEM_TIMEOUT = 7;
+	private static final int CATEGORY_ITEM_TIMEOUT = 3;
+	private static final Logger log = LoggerFactory.getLogger(CacheClient.class);
 
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final ItemQueryRepository itemQueryRepository;
 
-	public CachedItems getMainDiscountItem() {
+	public CachedMainItems getMainDiscountItem() {
 		return getMainItemFromCache(MAIN_DISCOUNT_ITEM, itemQueryRepository::findItemsWithDiscountRateMain);
 	}
 
-	public CachedItems getMainSalesItem() {
+	public CachedMainItems getMainSalesItem() {
 		return getMainItemFromCache(MAIN_SALES_ITEM, itemQueryRepository::findItemsWithSalesMain);
 	}
 
-	private CachedItems getMainItemFromCache(String key, Supplier<List<ItemQueryDto>> supplier) {
+	private CachedMainItems getMainItemFromCache(String key, Supplier<List<ItemQueryDto>> supplier) {
 		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		CachedItems cachedItems = (CachedItems)ops.get(key);
+		CachedMainItems cachedMainItems = (CachedMainItems)ops.get(key);
 
-		if (cachedItems == null) {
+		if (cachedMainItems == null) {
 			List<ItemQueryDto> mainItem = supplier.get();
-			CachedItems value = CachedItems.of(mainItem);
+			CachedMainItems value = CachedMainItems.of(mainItem);
 
-			ops.set(key, value, TIMEOUT, TimeUnit.DAYS);
+			ops.set(key, value, MAIN_ITEM_TIMEOUT, TimeUnit.DAYS);
 			return value;
 		}
 
-		return cachedItems;
+		return cachedMainItems;
+	}
+
+	public CachedCategoryItems<ItemQueryDto> getCategoryItems(CategoryName categoryName, String keyword, PriceFilter priceFilter, ItemPage pageDto) {
+		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+		CachedCategoryItems<ItemQueryDto> cachedCategoryItems = (CachedCategoryItems<ItemQueryDto>)ops.get(categoryName.name());
+
+		if(cachedCategoryItems == null) {
+			Page<ItemQueryDto> itemsByCategory =
+				itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilter, pageDto);
+
+			CachedCategoryItems<ItemQueryDto> value = new CachedCategoryItems<>(itemsByCategory);
+			ops.set(categoryName.name(), value, CATEGORY_ITEM_TIMEOUT, TimeUnit.DAYS);
+
+			return value;
+		}
+
+		return cachedCategoryItems;
 	}
 }

@@ -8,33 +8,33 @@ import lombok.NoArgsConstructor;
 @Getter
 public class PriceFilter {
 
-    private int lowPrice;
-    private int highPrice;
+    private int Low;
+    private int High;
 
     @Builder
-    public PriceFilter(int lowPrice, int highPrice) {
-        this.lowPrice = lowPrice;
-        this.highPrice = highPrice;
+    public PriceFilter(int Low, int High) {
+        this.Low = Low;
+        this.High = High;
     }
 
 
     public boolean isSamePriceEach() {
-        return this.lowPrice == this.highPrice && this.lowPrice != 0;
+        return this.Low == this.High && this.Low != 0;
     }
 
     public void checkReversedPrice() {
-        if (this.lowPrice > this.highPrice) {
+        if (this.Low > this.High) {
             changePrice();
         }
     }
 
     private void changePrice() {
-        int tmp = this.lowPrice;
-        this.lowPrice = this.highPrice;
-        this.highPrice = tmp;
+        int tmp = this.Low;
+        this.Low = this.High;
+        this.High = tmp;
     }
 
     public boolean isSumZero() {
-        return lowPrice + highPrice == 0;
+        return Low + High == 0;
     }
 }

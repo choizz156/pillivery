@@ -251,14 +251,14 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		}
 
 		if (priceFilter.isSamePriceEach()) {
-			return item.information.price.realPrice.eq(priceFilter.getLowPrice());
+			return item.information.price.realPrice.eq(priceFilter.getLow());
 		}
 
 		priceFilter.checkReversedPrice();
 
 		return item.information.price.realPrice.between(
-			priceFilter.getLowPrice(),
-			priceFilter.getHighPrice()
+			priceFilter.getLow(),
+			priceFilter.getHigh()
 		);
 	}
 

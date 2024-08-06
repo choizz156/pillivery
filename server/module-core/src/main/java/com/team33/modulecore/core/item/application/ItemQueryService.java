@@ -2,11 +2,14 @@ package com.team33.modulecore.core.item.application;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.cache.CacheClient;
-import com.team33.modulecore.cache.CachedItems;
+import com.team33.modulecore.cache.CachedCategoryItems;
+import com.team33.modulecore.cache.CachedMainItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.item.dto.query.ItemPage;
@@ -19,19 +22,20 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ItemQueryService {
 
+	private static final Logger log = LoggerFactory.getLogger(ItemQueryService.class);
 	private final CacheClient cacheClient;
 	private final ItemQueryRepository itemQueryRepository;
 
 	public List<ItemQueryDto> findMainDiscountItems() {
 		// return itemQueryRepository.findItemsWithDiscountRateMain();
-		CachedItems cachedItems = cacheClient.getMainDiscountItem();
-		return cachedItems.getMainItems();
+		CachedMainItems cachedMainItems = cacheClient.getMainDiscountItem();
+		return cachedMainItems.getCachedItems();
 	}
 
 	public List<ItemQueryDto> findMainSaleItems() {
 		// return itemQueryRepository.findItemsWithSalesMain();
-		CachedItems cachedItems = cacheClient.getMainSalesItem();
-		return cachedItems.getMainItems();
+		CachedMainItems cachedMainItems = cacheClient.getMainSalesItem();
+		return cachedMainItems.getCachedItems();
 	}
 
 	public Page<ItemQueryDto> findFilteredItem(
@@ -39,7 +43,7 @@ public class ItemQueryService {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
-		return 	itemQueryRepository.findFilteredItems(keyword, priceFilter, pageDto);
+		return itemQueryRepository.findFilteredItems(keyword, priceFilter, pageDto);
 	}
 
 	public Page<ItemQueryDto> findItemOnSale(
@@ -56,7 +60,12 @@ public class ItemQueryService {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
-		return itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilter, pageDto);
+
+		CachedCategoryItems<ItemQueryDto> categoryItems =
+			cacheClient.getCategoryItems(categoryName, keyword, priceFilter, pageDto);
+
+		return categoryItems.toPage();
+		// return itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilter, pageDto);
 	}
 
 	public Page<ItemQueryDto> findByBrand(String brand, ItemPage searchDto, PriceFilter priceFilter) {

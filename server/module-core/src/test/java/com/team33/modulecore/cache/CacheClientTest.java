@@ -49,13 +49,13 @@ class CacheClientTest {
 		CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
 
 		//when
-		CachedItems result = cacheClient.getMainDiscountItem();
+		CachedMainItems result = cacheClient.getMainDiscountItem();
 
 		//then
-		List<ItemQueryDto> mainItems = result.getMainItems();
+		List<ItemQueryDto> mainItems = result.getCachedItems();
 
 		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		CachedItems cachedItems = (CachedItems)ops.get("mainDiscountItem");
+		CachedMainItems cachedMainItems = (CachedMainItems)ops.get("mainDiscountItem");
 
 		Long expireTime = redisTemplate.getExpire("mainDiscountItem", TimeUnit.DAYS); //남은 만료시간
 
@@ -64,7 +64,7 @@ class CacheClientTest {
 			.extracting("enterprise")
 			.contains("test");
 
-		assertThat(mainItems).usingRecursiveComparison().isEqualTo(cachedItems.getMainItems());
+		assertThat(mainItems).usingRecursiveComparison().isEqualTo(cachedMainItems.getCachedItems());
 	}
 
 	@DisplayName("캐싱돼 있는 아이템이 있는 경우 db를 거치지 않는다.")
@@ -80,7 +80,7 @@ class CacheClientTest {
 
 		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
 		ops.set("mainDiscountItem",
-			CachedItems.of(
+			CachedMainItems.of(
 				List.of(ItemQueryDto.builder()
 					.enterprise("test")
 					.build()
@@ -90,10 +90,10 @@ class CacheClientTest {
 		CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
 
 		//when
-		CachedItems cachedItems = cacheClient.getMainDiscountItem();
+		CachedMainItems cachedMainItems = cacheClient.getMainDiscountItem();
 
 		//then
-		assertThat(cachedItems.getMainItems()).hasSize(1)
+		assertThat(cachedMainItems.getCachedItems()).hasSize(1)
 			.extracting("enterprise")
 			.contains("test");
 
