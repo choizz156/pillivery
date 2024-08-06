@@ -1,5 +1,7 @@
 package com.team33.moduleadmin.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,16 +45,17 @@ public class ItemRegisterController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-	public void postItem() {
+	public void postItem() throws URISyntaxException {
 
 		RestTemplate restTemplate = new RestTemplate();
-		for (int i = 1; i <= 1; i++) {
+		for (int i = 71; i <= 300; i++) {
 			String url = "https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?pageNo="
 				+ i
 				+ "&numOfRows=100&ServiceKey=yZVfQKw1vKRzc5MrFh8Y9y%2BdYV%2Fm465AOUrvcucC428QwNfRrKoJW%2Fx%2FsHz8EPBilmpaGn%2B%2BSM%2BYapFPeKshUg%3D%3D&type=json";
 
-			BodyWrapper forObject = restTemplate.getForObject(url, BodyWrapper.class);
+			URI uri = new URI(url);
 
+			BodyWrapper forObject = restTemplate.getForObject(uri, BodyWrapper.class);
 			lists.add(forObject);
 		}
 
@@ -75,8 +78,8 @@ public class ItemRegisterController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/test")
-	public void postItem1(@RequestBody BodyWrapper bodyWrapper) {
-		lists.add(bodyWrapper);
+	public void postItem1() {
+		// lists.add(bodyWrapper);
 
 		List<ItemWrapper> itemWrappers = lists.stream()
 			.map(b -> b.getBody().getItems())
