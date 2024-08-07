@@ -62,7 +62,6 @@ public class MainSourceConfig {
 		properties.put("hibernate.format_sql", env.getProperty("spring.jpa.properties.hibernate.format_sql"));
 		properties.put("hibernate.jdbc.batch_size", env.getProperty("spring.jpa.properties.hibernate.jdbc.batch_size"));
 		properties.put("hibernate.order_inserts", env.getProperty("spring.jpa.properties.hibernate.order_inserts"));
-		properties.put("hibernate.order_updates", env.getProperty("spring.jpa.properties.hibernate.order_updates"));
 
 		return properties;
 	}

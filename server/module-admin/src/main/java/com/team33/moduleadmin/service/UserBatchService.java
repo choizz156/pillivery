@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.team33.moduleadmin.repository.UserBatchRepository;
+import com.team33.moduleadmin.repository.UserBatchDao;
 import com.team33.modulecore.core.user.domain.entity.User;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class UserBatchService {
 
 	private final DataSource jdbcDataSource;
-	private final UserBatchRepository userBatchRepositoryImpl;
+	private final UserBatchDao userBatchDao;
 
 	@Value("${spring.jpa.properties.hibernate.jdbc.batch_size}")
 	private int batchSize;
@@ -34,7 +34,7 @@ public class UserBatchService {
 		List<List<User>> userSubList = getUserSubList(users);
 
 		List<Callable<Void>> collect = userSubList.stream().map(subList -> (Callable<Void>)() -> {
-			userBatchRepositoryImpl.saveAll(subList);
+			userBatchDao.saveAll(subList);
 			return null;
 		}).collect(Collectors.toList());
 

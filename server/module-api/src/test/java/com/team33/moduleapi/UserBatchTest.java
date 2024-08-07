@@ -14,7 +14,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.moduleadmin.repository.UserBatchRepository;
+import com.team33.moduleadmin.repository.UserBatchDao;
 import com.team33.moduleadmin.service.UserBatchService;
 import com.team33.modulecore.core.user.domain.Address;
 import com.team33.modulecore.core.user.domain.UserRoles;
@@ -33,7 +33,7 @@ public class UserBatchTest {
 	private UserBatchService userBatchService;
 
 	@Autowired
-	private UserBatchRepository userBatchRepositoryImpl;
+	private UserBatchDao userBatchDao;
 
 	private List<User> users;
 
@@ -60,7 +60,7 @@ public class UserBatchTest {
 	@Test
 	@DisplayName("Identity 전략 jdbc batchInsert 싱글스레드")
 	void test3() throws Exception {
-		userBatchRepositoryImpl.saveAll(users);
+		userBatchDao.saveAll(users);
 	}
 
 	@Test

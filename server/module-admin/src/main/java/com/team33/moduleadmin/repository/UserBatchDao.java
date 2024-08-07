@@ -18,36 +18,33 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class UserBatchRepositoryImpl implements UserBatchRepository {
+public class UserBatchDao{
 
 	private final JdbcTemplate jdbcTemplate;
 
 	@Value("${spring.jpa.properties.hibernate.jdbc.batch_size}")
 	private int batchSize;
 
-	@Override
 	public void saveAll(List<User> users) {
 		log.info("batch size : {}", batchSize);
 		log.info("users size : {}", users.size());
 		int batchCount = 0;
-		int index = 0;
 		List<User> subUsers = new ArrayList<>(104);
 		for (int i = 0; i < users.size(); i++) {
 			subUsers.add(users.get(i));
 			if ((i + 1) % batchSize == 0) {
-				batchCount = batchInsert(subUsers, batchCount, i);
+				batchCount = batchInsert(subUsers, batchCount);
 			}
-			index = i;
 		}
 		if(!subUsers.isEmpty()) {
-			batchCount = batchInsert(subUsers, batchCount, index);
+			batchCount = batchInsert(subUsers, batchCount);
 		}
 		log.info("batchCount : {}", batchCount);
 	}
 
-	private int batchInsert(List<User> subUsers, int batchCount, int index) {
+	private int batchInsert(List<User> subUsers, int batchCount) {
 		jdbcTemplate.batchUpdate(
-			"insert into user ("
+			"insert into users ("
 				+ "email, displayName, phone, password, city, detailAddress, realName, roles, userStatus, subscriptionCartId, normalCartId, oauthId) "
 				+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 			new BatchPreparedStatementSetter() {
