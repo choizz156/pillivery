@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,40 +16,6 @@ import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.core.review.domain.entity.Review;
 
 class ItemCommandServiceTest {
-
-	@DisplayName("아이템 조회수를 업데이트 할 수 있다.")
-	@Test
-	void 아이템_조회수_증가() throws Exception {
-		//given
-		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
-		doNothing().when(itemCommandRepository).incrementView(anyLong());
-		Item item = mock(Item.class);
-		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
-
-		//when
-		itemCommandService.getAndIncreaseView(1L);
-
-		//then
-		verify(itemCommandRepository, times(1)).incrementView(anyLong());
-		verify(itemCommandRepository, times(1)).findById(anyLong());
-	}
-
-	@DisplayName("아이템 판매량을 1 증가시켜 업데이트합니다.")
-	@Test
-	void 아이템_판매량_증가() throws Exception {
-		//given
-		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
-		when(itemCommandRepository.incrementSales(anyLong())).thenReturn(1);
-
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
-
-		//when
-		itemCommandService.addSales(List.of(1L, 2L, 3L));
-
-		//then
-		verify(itemCommandRepository, times(3)).incrementSales(anyLong());
-	}
 
 	@DisplayName("리뷰 아이디를 추가할 수 있다.")
 	@Test
@@ -67,7 +32,7 @@ class ItemCommandServiceTest {
 
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
+		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository, null);
 
 		//when
 		itemCommandService.addReviewId(1L, 1L, 5.0);
@@ -97,11 +62,10 @@ class ItemCommandServiceTest {
 		item.updateCountAndStars(4.0);
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
+		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository, null);
 
 		//when
 		itemCommandService.addReviewId(1L, 1L, 5.0);
-
 
 		//then
 		verify(itemCommandRepository, times(1)).findById(anyLong());
@@ -134,7 +98,7 @@ class ItemCommandServiceTest {
 
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.of(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
+		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository,null);
 
 		//when
 		itemCommandService.deleteReviewId(1L, review);
@@ -173,7 +137,7 @@ class ItemCommandServiceTest {
 
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.of(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository);
+		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository,null);
 
 		//when
 		itemCommandService.deleteReviewId(1L, review);

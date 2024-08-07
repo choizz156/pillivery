@@ -327,8 +327,8 @@ class ItemQueryTest {
 		void 가격_필터링1() throws Exception {
 			//given
 			PriceFilter priceFilter = PriceFilter.builder()
-				.highPrice(15000)
-				.lowPrice(10000)
+				.High(15000)
+				.Low(10000)
 				.build();
 
 			ItemPage itemPage = ItemPage.builder()
@@ -368,8 +368,8 @@ class ItemQueryTest {
 		void 가격_필터링2() throws Exception {
 			//given
 			PriceFilter priceFilter = PriceFilter.builder()
-				.highPrice(1000)
-				.lowPrice(14999)
+				.High(1000)
+				.Low(14999)
 				.build();
 
 			ItemPage itemPage = ItemPage.builder()
@@ -402,8 +402,8 @@ class ItemQueryTest {
 		void 가격_필터링3() throws Exception {
 			//given
 			PriceFilter priceFilter = PriceFilter.builder()
-				.highPrice(1000)
-				.lowPrice(1000)
+				.High(1000)
+				.Low(1000)
 				.build();
 
 			ItemPage itemPage = ItemPage.builder()
@@ -435,8 +435,8 @@ class ItemQueryTest {
 		void 가격_필터링4() throws Exception {
 			//given
 			PriceFilter priceFilter = PriceFilter.builder()
-				.highPrice(100110)
-				.lowPrice(100110)
+				.High(100110)
+				.Low(100110)
 				.build();
 
 			ItemPage itemPage = ItemPage.builder()
