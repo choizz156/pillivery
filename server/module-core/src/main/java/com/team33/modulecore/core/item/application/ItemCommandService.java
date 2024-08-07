@@ -1,10 +1,13 @@
 package com.team33.modulecore.core.item.application;
 
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.cache.CacheClient;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.core.item.domain.entity.Item;
@@ -19,13 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class ItemCommandService {
 
 	private final ItemCommandRepository itemCommandRepository;
-
-	public Item getAndIncreaseView(Long itemId) {
-		 // itemCommandRepository.incrementView(itemId);
-
-		 return itemCommandRepository.findById(itemId)
-			 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
-	}
+	private final CacheClient cacheClient;
 
 	public void addSales(List<Long> orderedItemsId) {
 		orderedItemsId.forEach(itemCommandRepository::incrementSales);
@@ -50,4 +47,12 @@ public class ItemCommandService {
 			);
 	}
 
+	@Scheduled(cron = "0 0 2 * * *")
+	public void increaseView() {
+		Map<String, Long> viewCount = cacheClient.getViewCount();
+
+		viewCount.forEach((key, value) ->
+			itemCommandRepository.incrementView(Long.valueOf(key),value)
+		);
+	}
 }

@@ -35,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ItemQueryController {
 
 	private final ItemQueryServiceMapper itemQueryServiceMapper;
-	private final ItemCommandService itemCommandService;
 	private final ItemQueryService itemQueryService;
 
 	@GetMapping("/main")
@@ -51,7 +50,7 @@ public class ItemQueryController {
 	public SingleResponseDto<ItemDetailResponseDto> getItem(
 		@NotNull @PathVariable long itemId
 	) {
-		Item item = itemCommandService.getAndIncreaseView(itemId);
+		Item item = itemQueryService.findByItemId(itemId);
 
 		return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
 	}

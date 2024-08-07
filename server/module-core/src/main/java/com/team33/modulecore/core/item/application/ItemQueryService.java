@@ -6,9 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.cache.CacheClient;
-import com.team33.modulecore.cache.CachedCategoryItems;
-import com.team33.modulecore.cache.CachedMainItems;
+import com.team33.modulecore.cache.dto.CachedCategoryItems;
+import com.team33.modulecore.cache.dto.CachedMainItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
+import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.item.dto.query.ItemPage;
 import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
@@ -22,6 +23,10 @@ public class ItemQueryService {
 
 	private final CacheClient cacheClient;
 	private final ItemQueryRepository itemQueryRepository;
+
+	public Item findByItemId(long itemId) {
+		return itemQueryRepository.findById(itemId);
+	}
 
 	public List<ItemQueryDto> findMainDiscountItems() {
 		CachedMainItems cachedMainItems = cacheClient.getMainDiscountItem();

@@ -26,8 +26,8 @@ public interface ItemCommandRepository extends Repository<Item, Long> {
 	 * @param itemId the item id
 	 */
 	@Modifying(clearAutomatically = true)
-	@Query("UPDATE Item i SET i.statistics.view = i.statistics.view + 1L WHERE i.id = :itemId")
-	void incrementView(@Param("itemId") Long itemId);
+	@Query("UPDATE Item i SET i.statistics.view = i.statistics.view + :viewCount   WHERE i.id = :itemId")
+	void incrementView(@Param("itemId") Long itemId, @Param("viewCount") Long view);
 
 	/**
 	 * 아이템 판매량을 1 증가시켜 업데이트합니다.
