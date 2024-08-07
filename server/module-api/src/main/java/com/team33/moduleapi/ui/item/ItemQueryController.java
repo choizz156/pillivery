@@ -49,7 +49,7 @@ public class ItemQueryController {
 
 	@GetMapping("/{itemId}")
 	public SingleResponseDto<ItemDetailResponseDto> getItem(
-		@NotNull @PathVariable Long itemId
+		@NotNull @PathVariable long itemId
 	) {
 		Item item = itemCommandService.getAndIncreaseView(itemId);
 

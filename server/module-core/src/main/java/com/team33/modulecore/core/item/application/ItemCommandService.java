@@ -21,7 +21,7 @@ public class ItemCommandService {
 	private final ItemCommandRepository itemCommandRepository;
 
 	public Item getAndIncreaseView(Long itemId) {
-		 itemCommandRepository.incrementView(itemId);
+		 // itemCommandRepository.incrementView(itemId);
 
 		 return itemCommandRepository.findById(itemId)
 			 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-// import com.team33.moduleadmin.dto.ItemInfoDto;
 import com.team33.moduleadmin.dto.ItemDto;
 import com.team33.modulecore.core.item.domain.Image;
 import com.team33.modulecore.core.item.domain.Information;

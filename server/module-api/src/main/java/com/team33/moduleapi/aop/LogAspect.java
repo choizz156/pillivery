@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class LogAspect {
 
 	private static final String TARGET = "TARGET";
-	private static final Logger logger = LoggerFactory.getLogger("fileLog");
+	private static final Logger log = LoggerFactory.getLogger("fileLog");
 
 	@Pointcut("execution(* com.team33.moduleapi.ui..*Controller.*(..))")
 	public void controllerPointcut() {
@@ -28,11 +28,11 @@ public class LogAspect {
 
 	@Before("controllerPointcut()")
 	public void before(JoinPoint joinPoint) {
-		MDC.put(TARGET, joinPoint.getSignature().getDeclaringType().getSimpleName());
+		MDC.put(TARGET, joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
 	}
 
 	@AfterReturning("exceptionControllerPointcut()")
 	public void exceptionLog(JoinPoint joinPoint) {
-		logger.error("exception :: {}", joinPoint.getSignature());
+		log.error("exception :: {}", joinPoint.getSignature());
 	}
 }
