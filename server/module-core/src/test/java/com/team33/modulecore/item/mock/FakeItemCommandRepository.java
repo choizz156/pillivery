@@ -32,18 +32,6 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 	public void saveAll(Iterable<Item> entities) {
 	}
 
-	@Override
-	public void incrementView(Long itemId, Long view) {
-
-		em.createQuery("update Item i set i.statistics.view = :view where i.id = :id")
-			.setParameter("view", view)
-			.setParameter("id", itemId)
-			.executeUpdate();
-
-		em.flush();
-		em.clear();
-	}
-
 
 	@Override
 	public int incrementSales(Long itemId) {

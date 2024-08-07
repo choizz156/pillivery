@@ -5,7 +5,9 @@ import static org.mockito.Mockito.*;
 
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +15,7 @@ import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.item.application.ItemCommandService;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.item.domain.repository.ItemViewBatchDao;
 import com.team33.modulecore.core.review.domain.entity.Review;
 
 class ItemCommandServiceTest {
@@ -32,7 +35,7 @@ class ItemCommandServiceTest {
 
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository, null);
+		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository, null, null);
 
 		//when
 		itemCommandService.addReviewId(1L, 1L, 5.0);
@@ -62,7 +65,7 @@ class ItemCommandServiceTest {
 		item.updateCountAndStars(4.0);
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository, null);
+		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository, null, null);
 
 		//when
 		itemCommandService.addReviewId(1L, 1L, 5.0);
@@ -98,7 +101,7 @@ class ItemCommandServiceTest {
 
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.of(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository,null);
+		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository, null, null);
 
 		//when
 		itemCommandService.deleteReviewId(1L, review);
@@ -137,7 +140,7 @@ class ItemCommandServiceTest {
 
 		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
 		when(itemCommandRepository.findById(anyLong())).thenReturn(Optional.of(item));
-		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository,null);
+		ItemCommandService itemCommandService = new ItemCommandService(itemCommandRepository, null, null);
 
 		//when
 		itemCommandService.deleteReviewId(1L, review);
@@ -148,6 +151,5 @@ class ItemCommandServiceTest {
 		assertThat(item.getStarAvg()).isEqualTo(4.0);
 		assertThat(item.getStatistics().getReviewCount()).isEqualTo(1);
 		assertThat(item.getReviewIds()).hasSize(1);
-
 	}
 }

@@ -48,28 +48,6 @@ class ItemCommandRepositoryTest {
 		em.clear();
 	}
 
-	@DisplayName("조회수를 늘릴 수 있다.")
-	@Test
-	void 조회수_증가() throws Exception {
-		//given
-		Item item = FixtureMonkeyFactory.get()
-			.giveMeBuilder(Item.class)
-			.set("id", null)
-			.set("itemCategory", null)
-			.set("statistics.view", 0L)
-			.set("information.price.discountPrice", 1)
-			.set("categories", null)
-			.sample();
-
-		em.persist(item);
-
-		//when
-		itemCommandRepository.incrementView(item.getId(),2L);
-
-		//then
-		Item result = em.find(Item.class, item.getId());
-		assertThat(result.getStatistics().getView()).isEqualTo(2L);
-	}
 
 	@DisplayName("아이템 판매량을 증가시킬 수 있다.")
 	@Test
