@@ -45,6 +45,10 @@ dependencies {
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14'
 
     implementation 'com.google.guava:guava:33.2.1-jre'
+
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 ext { // 전역 변수
