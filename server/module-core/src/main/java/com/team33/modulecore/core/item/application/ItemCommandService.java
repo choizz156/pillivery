@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.cache.CacheClient;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.item.domain.repository.ItemViewBatchDao;
 import com.team33.modulecore.core.review.domain.entity.Review;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +21,7 @@ public class ItemCommandService {
 
 	private final ItemCommandRepository itemCommandRepository;
 	private final CacheClient cacheClient;
+	private final ItemViewBatchDao itemViewBatchDao;
 
 	public void addSales(List<Long> orderedItemsId) {
 		orderedItemsId.forEach(itemCommandRepository::incrementSales);
@@ -51,8 +50,6 @@ public class ItemCommandService {
 	public void increaseView() {
 		Map<String, Long> viewCount = cacheClient.getViewCount();
 
-		viewCount.forEach((key, value) ->
-			itemCommandRepository.incrementView(Long.valueOf(key),value)
-		);
+		itemViewBatchDao.updateAll(viewCount);
 	}
 }

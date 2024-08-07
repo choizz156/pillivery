@@ -1,4 +1,4 @@
-package com.team33.moduleadmin;
+package com.team33.modulecore.config;
 
 import javax.sql.DataSource;
 

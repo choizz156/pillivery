@@ -36,6 +36,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 @Table(
+	name = "item",
 	indexes = {
 		@Index(name = "idx_product_name", columnList = "product_name"),
 		@Index(name = "idx_enterprise", columnList = "enterprise")
