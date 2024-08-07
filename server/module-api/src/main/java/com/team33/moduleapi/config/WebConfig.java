@@ -5,6 +5,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.team33.moduleapi.interceptor.ViewInterceptor;
+
 import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
@@ -17,6 +19,5 @@ public class WebConfig implements WebMvcConfigurer {
 
 		registry.addInterceptor(new ViewInterceptor(restTemplate))
 			.addPathPatterns("/items/{itemId}");
-
 	}
 }

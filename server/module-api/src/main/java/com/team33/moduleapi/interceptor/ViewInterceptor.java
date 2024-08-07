@@ -1,4 +1,4 @@
-package com.team33.moduleapi.config;
+package com.team33.moduleapi.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +30,5 @@ public class ViewInterceptor implements HandlerInterceptor {
 
 		HashOperations<String, String, Long> hashOps = restTemplate.opsForHash();
 		hashOps.increment("view_count", String.valueOf(key), 1L);
-		// ValueOperations<String, Long> ops = restTemplate.opsForValue();
-		// Long increment = ops.increment(String.valueOf(key), 1L);
 	}
 }
