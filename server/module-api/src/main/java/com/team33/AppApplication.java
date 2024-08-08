@@ -14,13 +14,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 	"com.team33.modulecore",
 	"com.team33.moduleadmin",
 	"com.team33.moduleexternalapi",
-	"com.team33.moduleevent",
-	"com.team33.modulelogging"
+	"com.team33.moduleevent"
 }
 )
-public class ModuleApiApplication {
+public class AppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ModuleApiApplication.class, args);
+		SpringApplication.run(AppApplication.class, args);
 	}
 }
