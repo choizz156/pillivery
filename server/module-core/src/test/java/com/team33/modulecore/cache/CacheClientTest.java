@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -43,8 +42,6 @@ class CacheClientTest {
 
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
-	@Autowired
-	private RestTemplateBuilder restTemplateBuilder;
 
 	@DisplayName("메인 상품이 캐시되지 않았을 경우 캐싱을 한다.")
 	@Test
@@ -128,7 +125,12 @@ class CacheClientTest {
 
 		//given
 		ItemQueryRepository itemQueryRepository = mock(ItemQueryRepository.class);
-		when(itemQueryRepository.findItemsByCategory(any(CategoryName.class), eq(""), any(PriceFilter.class), any(ItemPage.class)))
+		when(itemQueryRepository.findItemsByCategory(
+			any(CategoryName.class),
+			eq(""),
+			any(PriceFilter.class),
+			any(ItemPage.class))
+		)
 			.thenReturn(page);
 
 		CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
@@ -161,10 +163,13 @@ class CacheClientTest {
 			() -> 100
 		);
 
-		//given
 		ItemQueryRepository itemQueryRepository = mock(ItemQueryRepository.class);
-		when(itemQueryRepository.findItemsByCategory(any(CategoryName.class), eq(""), any(PriceFilter.class), any(ItemPage.class)))
+		when(itemQueryRepository.findItemsByCategory(any(CategoryName.class), eq(""), any(PriceFilter.class),
+			any(ItemPage.class)))
 			.thenReturn(page);
+
+		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+		ops.set("EYE", new CachedCategoryItems<>(page), 3, TimeUnit.DAYS);
 
 		CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
 
@@ -174,13 +179,13 @@ class CacheClientTest {
 
 		//then
 		List<ItemQueryDto> content = categoryItems.getContent();
-		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
 		Long expireTime = redisTemplate.getExpire("EYE", TimeUnit.DAYS); //남은 만료시간
 
 		assertThat(expireTime).isEqualTo(2L);
 		assertThat(ops.get("EYE")).isInstanceOf(CachedCategoryItems.class);
 		assertThat(content).hasSize(8).doesNotContainNull();
 
-		verify(itemQueryRepository, times(0)).findItemsByCategory(any(CategoryName.class), eq(""), any(PriceFilter.class), any(ItemPage.class));
+		verify(itemQueryRepository, times(0)).findItemsByCategory(any(CategoryName.class), eq(""),
+			any(PriceFilter.class), any(ItemPage.class));
 	}
 }

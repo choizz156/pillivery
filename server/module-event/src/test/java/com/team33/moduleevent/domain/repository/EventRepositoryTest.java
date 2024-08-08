@@ -38,7 +38,7 @@ class EventRepositoryTest {
 		IntStream.range(0, 10).forEach(
 			i -> eventRepository.save(
 				ApiEvent.builder()
-					.type(EventType.SUBS_CANCELED.name())
+					.type(EventType.SUBS_CANCELED)
 					.createdAt(LocalDateTime.of(2020, 1, 1, i, 0, 0))
 					.status(EventStatus.READY)
 					.build()
@@ -48,7 +48,7 @@ class EventRepositoryTest {
 		IntStream.range(1, 20).forEach(
 			i -> eventRepository.save(
 				ApiEvent.builder()
-					.type(EventType.KAKAO_REFUNDED.name())
+					.type(EventType.KAKAO_REFUNDED)
 					.createdAt(LocalDateTime.of(2020, 1, 1, i, 0, 0))
 					.status(EventStatus.COMPLETE)
 					.build()

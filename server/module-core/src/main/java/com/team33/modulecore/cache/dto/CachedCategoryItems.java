@@ -3,8 +3,6 @@ package com.team33.modulecore.cache.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -17,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class CachedCategoryItems<T> implements Serializable {
-
-	private static final Logger log = LoggerFactory.getLogger(CachedCategoryItems.class);
 
 	private List<T> content;
 	private long totalElements;

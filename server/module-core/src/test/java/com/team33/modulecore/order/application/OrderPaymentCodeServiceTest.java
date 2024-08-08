@@ -29,7 +29,7 @@ class OrderPaymentCodeServiceTest {
 		OrderPaymentCodeService orderPaymentCodeService = new OrderPaymentCodeService(orderFindHelper);
 
 		//when//then
-		assertDoesNotThrow(() -> orderPaymentCodeService.addSid(order.getId(), "sid"));
+		assertDoesNotThrow(() -> orderPaymentCodeService.addSid(1L, "sid"));
 	}
 
 	@DisplayName("tid를 넣을 수 있다.")

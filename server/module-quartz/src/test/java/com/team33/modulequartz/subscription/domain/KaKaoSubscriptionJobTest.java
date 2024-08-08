@@ -6,16 +6,16 @@ import org.junit.jupiter.api.Test;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 
-import com.team33.moduleexternalapi.infra.RestTemplateSender;
+import com.team33.moduleexternalapi.infra.WebClientSender;
 
 class KaKaoSubscriptionJobTest {
 
 	@Test
 	void job() throws Exception {
 		//given
-		RestTemplateSender restTemplateSender = mock(RestTemplateSender.class);
+		WebClientSender WebClientSender = mock(WebClientSender.class);
 		KaKaoSubscriptionJob kaKaoSubscriptionJob = new KaKaoSubscriptionJob(
-			restTemplateSender
+			WebClientSender
 		);
 
 		JobExecutionContext jobExecutionContext = mock(JobExecutionContext.class);
@@ -29,6 +29,6 @@ class KaKaoSubscriptionJobTest {
 
 		//then
 		verify(jobExecutionContext, times(1)).getMergedJobDataMap();
-		verify(restTemplateSender, times(1)).sendToPost(anyString(), anyString(), eq(null), eq(String.class));
+		verify(WebClientSender, times(1)).sendToPost(eq(null), anyString(), eq(null), eq(String.class));
 	}
 }

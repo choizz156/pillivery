@@ -26,7 +26,6 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
 
 @ExtendWith(OutputCaptureExtension.class)
@@ -77,6 +76,7 @@ class PaymentJobListenersTest {
 
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("retry", 0);
+		jobDataMap.put("orderItemId", 1L);
 		when(mockContext.getJobDetail()).thenReturn(mock(JobDetail.class));
 		when(mockContext.getJobDetail().getJobDataMap()).thenReturn(jobDataMap);
 
@@ -149,11 +149,10 @@ class PaymentJobListenersTest {
 	}
 
 	private JobDataMap getJobDataMap() {
-		OrderItem orderItem = mock(OrderItem.class);
 		JobDataMap jobDataMap = new JobDataMap();
 
 		jobDataMap.put("orderId", 1L);
-		jobDataMap.put("orderItem", orderItem);
+		jobDataMap.put("orderItemId", 1L);
 		jobDataMap.put("retry", 0);
 		return jobDataMap;
 	}

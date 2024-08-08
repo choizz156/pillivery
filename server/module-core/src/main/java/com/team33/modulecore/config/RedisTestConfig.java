@@ -20,7 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import redis.embedded.RedisServer;
 
-@Profile("test" )
+@Profile("test")
 @Configuration
 public class RedisTestConfig {
 
@@ -43,8 +43,8 @@ public class RedisTestConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<?,?> redisTemplate() {
+        RedisTemplate<?,?> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(lettuceConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());

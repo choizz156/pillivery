@@ -2,15 +2,23 @@ package com.team33.modulecore.item.application;
 
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import com.team33.modulecore.cache.CacheClient;
+import com.team33.modulecore.cache.dto.CachedCategoryItems;
+import com.team33.modulecore.cache.dto.CachedMainItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.application.ItemQueryService;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.item.dto.query.ItemPage;
+import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.core.item.dto.query.PriceFilter;
 
 class ItemQueryServiceTest {
@@ -30,7 +38,7 @@ class ItemQueryServiceTest {
 	@Test
 	void 아이템_조회() throws Exception {
 		//given
-		when(cacheClient.getMainDiscountItem()).thenReturn(null);
+		when(cacheClient.getMainDiscountItem()).thenReturn(CachedMainItems.of(List.of()));
 
 		//when
 		itemQueryService.findMainDiscountItems();
@@ -43,7 +51,7 @@ class ItemQueryServiceTest {
 	@Test
 	void 아이템_조회2() throws Exception {
 		//given
-		when(cacheClient.getMainSalesItem()).thenReturn(null);
+		when(cacheClient.getMainSalesItem()).thenReturn(CachedMainItems.of(List.of()));
 
 		//when
 		itemQueryService.findMainSaleItems();
@@ -97,23 +105,33 @@ class ItemQueryServiceTest {
 		verify(itemQueryRepository, times(1)).findByBrand(anyString(), any(ItemPage.class), any(PriceFilter.class));
 	}
 
-	@DisplayName("브랜드에 맞는 아이템을 조죄할 수 있다.")
+	@DisplayName("브랜드에 맞는 아이템을 조회할 수 있다.")
 	@Test
 	void 아이템_조회6() throws Exception {
 		//given
-		when(itemQueryRepository.findItemsByCategory(
-			any(CategoryName.class), anyString(), any(PriceFilter.class), any(ItemPage.class))
-		).thenReturn(null);
+		Page<ItemQueryDto> page = PageableExecutionUtils.getPage(
+			List.of(),
+			PageRequest.of(0, 8),
+			() -> 100
+		);
+
+		when(cacheClient.getCategoryItems(
+			any(CategoryName.class),
+			anyString(),
+			any(PriceFilter.class),
+			any(ItemPage.class))
+		)
+			.thenReturn(new CachedCategoryItems<ItemQueryDto>(page));
 
 		//when
 		itemQueryService.findByCategory(CategoryName.EYE, "test", new PriceFilter(), new ItemPage());
 
 		//then
-		verify(itemQueryRepository, times(1)).
-			findItemsByCategory(
-				any(CategoryName.class), anyString(),
-				any(PriceFilter.class),
-				any(ItemPage.class)
-			);
+		verify(cacheClient, times(1)).getCategoryItems(
+			any(CategoryName.class),
+			anyString(),
+			any(PriceFilter.class),
+			any(ItemPage.class)
+		);
 	}
 }

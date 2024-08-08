@@ -17,13 +17,13 @@ class JobDetailServiceTest {
 
 		//when
 		JobDetailService jobDetailService = new JobDetailService();
-		JobDetail jobDetail = jobDetailService.build(jobKey, 1L,1L);
+		JobDetail jobDetail = jobDetailService.build(jobKey, 1L, 1L);
 
 		//then
 		assertThat(jobDetail.getKey().getName()).isEqualTo("1-product");
 		assertThat(jobDetail.getKey().getGroup()).isEqualTo("1");
-		assertThat(jobDetail.getJobDataMap()).hasSize(2)
-			.extracting("orderId", "retry")
-			.contains(1L, 0);
+		assertThat(jobDetail.getJobDataMap()).hasSize(3)
+			.extracting("orderId", "orderItemId", "retry")
+			.contains(1L, 1L, 0);
 	}
 }

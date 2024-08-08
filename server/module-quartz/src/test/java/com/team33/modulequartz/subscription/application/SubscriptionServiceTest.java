@@ -77,9 +77,6 @@ class SubscriptionServiceTest {
 				triggerService,
 				jobDetailService,
 				null,
-				null,
-				null,
-				null,
 				orderFindHelper,
 				null
 			);
@@ -91,7 +88,7 @@ class SubscriptionServiceTest {
 		verify(orderFindHelper, times(1)).findOrder(anyLong());
 		verify(scheduler, times(1)).scheduleJob(any(), any());
 		verify(triggerService, times(1)).build(any(), any());
-		verify(jobDetailService, times(1)).build(any(JobKey.class), anyLong(),anyLong());
+		verify(jobDetailService, times(1)).build(any(JobKey.class), anyLong(), anyLong());
 	}
 
 	@DisplayName("스케쥴 주기를 변경할 수 있다.")
@@ -109,10 +106,7 @@ class SubscriptionServiceTest {
 			scheduler,
 			new TriggerService(),
 			null,
-			null,
-			null,
 			new OrderItemService(null, null, null, orderQueryRepository),
-			null,
 			null,
 			null
 		);
@@ -133,7 +127,7 @@ class SubscriptionServiceTest {
 
 	@DisplayName("스케쥴을 취소할 수 있다.")
 	@Test
-	void 스케쥴_취소() throws Exception{
+	void 스케쥴_취소() throws Exception {
 		//given
 		ZonedDateTime now = ZonedDateTime.now();
 		스케쥴_설정(now);
@@ -146,16 +140,13 @@ class SubscriptionServiceTest {
 			scheduler,
 			new TriggerService(),
 			null,
-			null,
-			null,
 			new OrderItemService(null, null, null, orderQueryRepository),
-			null,
 			null,
 			null
 		);
 
 		//when
-		subscriptionService.cancelScheduler(1L,1L);
+		subscriptionService.cancelScheduler(1L, 1L);
 
 		//then
 		boolean result = scheduler.checkExists(TriggerKey.triggerKey("1-mockItem", "1"));
