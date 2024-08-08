@@ -44,8 +44,12 @@ public class CacheClient {
 		return getMainItemFromCache(MAIN_SALES_ITEM, itemQueryRepository::findItemsWithSalesMain);
 	}
 
-	public CachedCategoryItems<ItemQueryDto> getCategoryItems(CategoryName categoryName, String keyword,
-		PriceFilter priceFilter, ItemPage pageDto) {
+	public CachedCategoryItems<ItemQueryDto> getCategoryItems(
+		CategoryName categoryName,
+		String keyword,
+		PriceFilter priceFilter,
+		ItemPage pageDto
+	) {
 		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
 
 		CachedCategoryItems<ItemQueryDto> cachedCategoryItems =
