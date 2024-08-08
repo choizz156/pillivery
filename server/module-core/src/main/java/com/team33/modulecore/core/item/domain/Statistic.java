@@ -62,20 +62,10 @@ public class Statistic {
 	}
 
 	private void calculateAvgToAdd(double star) {
-		lock.writeLock().lock();
-		try {
 			this.starAvg = (this.reviewCount * this.starAvg + star) / ++this.reviewCount;
-		} finally {
-			lock.writeLock().unlock();
-		}
 	}
 
 	private void calculateAvgToSubtract(double star) {
-		lock.writeLock().lock();
-		try {
 			this.starAvg = (this.reviewCount * this.starAvg - star) / --this.reviewCount;
-		} finally {
-			lock.writeLock().unlock();
-		}
 	}
 }

@@ -73,9 +73,11 @@ public class Item extends BaseEntity {
 
 	@Builder
 	private Item(
+		Long id,
 		Information information,
 		Statistic statistics
 	) {
+		this.id = id;
 		this.information = information;
 		this.statistics = statistics;
 	}
@@ -135,7 +137,7 @@ public class Item extends BaseEntity {
 		this.reviewIds.add(id);
 	}
 
-	public void updateCountAndStars(double star) {
+	public void addCountAndStars(double star) {
 		this.statistics.addStarAvg(star);
 	}
 

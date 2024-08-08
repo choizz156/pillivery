@@ -22,6 +22,7 @@ public class ItemCommandService {
 	private final ItemCommandRepository itemCommandRepository;
 	private final CacheClient cacheClient;
 	private final ItemViewBatchDao itemViewBatchDao;
+	private final ItemStarService itemStarService;
 
 	public void addSales(List<Long> orderedItemsId) {
 		orderedItemsId.forEach(itemCommandRepository::incrementSales);
@@ -31,8 +32,8 @@ public class ItemCommandService {
 		itemCommandRepository
 			.findById(itemId)
 			.ifPresent(item -> {
+				itemStarService.updateStarAvg(item, star);
 				item.addReviewId(reviewId);
-				item.updateCountAndStars(star);
 			});
 	}
 
@@ -40,8 +41,8 @@ public class ItemCommandService {
 		itemCommandRepository
 			.findById(itemId)
 			.ifPresent(item -> {
+					itemStarService.subtractStarAvg(item, review.getStar());
 					item.deleteReviewId(review.getId());
-					item.subtractCountAndStars(review.getStar());
 				}
 			);
 	}
