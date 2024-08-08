@@ -4,5 +4,5 @@ dependencies {
 
     testImplementation 'org.mock-server:mockserver-junit-jupiter-no-dependencies:5.15.0'
 
-    implementation('io.netty:netty-resolver-dns-native-macos:4.1.110.Final:osx-aarch_64')
+    implementation 'io.netty:netty-all:4.1.84.Final'
 }

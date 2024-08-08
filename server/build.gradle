@@ -93,6 +93,7 @@ project(':module-admin'){
 
     dependencies {
         implementation project(':module-core')
+        implementation project(':module-logging')
     }
 }
 
