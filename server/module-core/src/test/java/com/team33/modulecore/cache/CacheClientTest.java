@@ -5,18 +5,21 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RHyperLogLog;
+import org.redisson.api.RMapCache;
+import org.redisson.api.RSet;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,8 +43,11 @@ import com.team33.modulecore.core.item.dto.query.PriceFilter;
 @SpringBootTest
 class CacheClientTest {
 
+	// @Autowired
+	// private RedisTemplate<String, Object> redisTemplate;
+
 	@Autowired
-	private RedisTemplate<String, Object> redisTemplate;
+	private RedissonClient redissonClient;
 
 	@DisplayName("메인 상품이 캐시되지 않았을 경우 캐싱을 한다.")
 	@Test
@@ -55,7 +61,8 @@ class CacheClientTest {
 				.build())
 		);
 
-		CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
+		// CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
+		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
 		//when
 		CachedMainItems result = cacheClient.getMainDiscountItem();
@@ -63,17 +70,21 @@ class CacheClientTest {
 		//then
 		List<ItemQueryDto> mainItems = result.getCachedItems();
 
-		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		CachedMainItems cachedMainItems = (CachedMainItems)ops.get("mainDiscountItem");
+		// ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+		// CachedMainItems cachedMainItems = (CachedMainItems)ops.get("mainDiscountItem");
+		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache("cachedMainItems");
+		CachedMainItems cachedMainItem = cachedMainItems.get("mainDiscountItem");
 
-		Long expireTime = redisTemplate.getExpire("mainDiscountItem", TimeUnit.DAYS); //남은 만료시간
+		long expireTime = cachedMainItems.remainTimeToLive("mainDiscountItem");
+		long remainDay = TimeUnit.MILLISECONDS.toDays(expireTime);
+		// Long expireTime = redisTemplate.getExpire("mainDiscountItem", TimeUnit.DAYS); //남은 만료시간
 
-		assertThat(expireTime).isEqualTo(6L);
+		assertThat(remainDay).isEqualTo(6L);
 		assertThat(mainItems).hasSize(1)
 			.extracting("enterprise")
 			.contains("test");
 
-		assertThat(mainItems).usingRecursiveComparison().isEqualTo(cachedMainItems.getCachedItems());
+		assertThat(mainItems).usingRecursiveComparison().isEqualTo(cachedMainItem.getCachedItems());
 	}
 
 	@DisplayName("캐싱돼 있는 아이템이 있는 경우 db를 거치지 않는다.")
@@ -87,8 +98,10 @@ class CacheClientTest {
 				.build())
 		);
 
-		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		ops.set("mainDiscountItem",
+		// ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache("cachedMainItems");
+
+		cachedMainItems.put("mainDiscountItem",
 			CachedMainItems.of(
 				List.of(ItemQueryDto.builder()
 					.enterprise("test")
@@ -96,13 +109,13 @@ class CacheClientTest {
 				)
 			), 7, TimeUnit.DAYS);
 
-		CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
+		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
 		//when
-		CachedMainItems cachedMainItems = cacheClient.getMainDiscountItem();
+		CachedMainItems mainItems = cacheClient.getMainDiscountItem();
 
 		//then
-		assertThat(cachedMainItems.getCachedItems()).hasSize(1)
+		assertThat(mainItems.getCachedItems()).hasSize(1)
 			.extracting("enterprise")
 			.contains("test");
 
@@ -133,19 +146,26 @@ class CacheClientTest {
 		)
 			.thenReturn(page);
 
-		CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
+		// CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
+		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
 		//when
+		// CachedCategoryItems<ItemQueryDto> categoryItems =
+		// 	cacheClient.getCategoryItems(EYE, "", new PriceFilter(), new ItemPage());
 		CachedCategoryItems<ItemQueryDto> categoryItems =
 			cacheClient.getCategoryItems(EYE, "", new PriceFilter(), new ItemPage());
 
 		//then
 		List<ItemQueryDto> content = categoryItems.getContent();
-		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		Long expireTime = redisTemplate.getExpire("EYE", TimeUnit.DAYS); //남은 만료시간
+		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems = redissonClient.getMapCache(
+			"cachedCategoryItems");
+		long ttl = cachedCategoryItems.remainTimeToLive("EYE");
+		long remainingDay = TimeUnit.MILLISECONDS.toDays(ttl);
+		// ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+		// Long expireTime = redisTemplate.getExpire("EYE", TimeUnit.DAYS); //남은 만료시간
 
-		assertThat(expireTime).isEqualTo(2L);
-		assertThat(ops.get("EYE")).isInstanceOf(CachedCategoryItems.class);
+		assertThat(remainingDay).isEqualTo(2L);
+		assertThat(cachedCategoryItems.get("EYE")).isInstanceOf(CachedCategoryItems.class);
 		assertThat(content).hasSize(8).doesNotContainNull();
 	}
 
@@ -168,10 +188,14 @@ class CacheClientTest {
 			any(ItemPage.class)))
 			.thenReturn(page);
 
-		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		ops.set("EYE", new CachedCategoryItems<>(page), 3, TimeUnit.DAYS);
+		// ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+		// ops.set("EYE", new CachedCategoryItems<>(page), 3, TimeUnit.DAYS);
+		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems = redissonClient.getMapCache(
+			"cachedCategoryItems");
+		cachedCategoryItems.put("EYE", new CachedCategoryItems<>(page), 3, TimeUnit.DAYS);
 
-		CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
+		// CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
+		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
 		//when
 		CachedCategoryItems<ItemQueryDto> categoryItems =
@@ -179,13 +203,56 @@ class CacheClientTest {
 
 		//then
 		List<ItemQueryDto> content = categoryItems.getContent();
-		Long expireTime = redisTemplate.getExpire("EYE", TimeUnit.DAYS); //남은 만료시간
+		// Long expireTime = redisTemplate.getExpire("EYE", TimeUnit.DAYS); //남은 만료시간
 
-		assertThat(expireTime).isEqualTo(2L);
-		assertThat(ops.get("EYE")).isInstanceOf(CachedCategoryItems.class);
+		long ttl = cachedCategoryItems.remainTimeToLive("EYE");
+		long remainingDay = TimeUnit.MILLISECONDS.toDays(ttl);
+
+		assertThat(remainingDay).isEqualTo(2L);
+		assertThat(cachedCategoryItems.get("EYE")).isInstanceOf(CachedCategoryItems.class);
 		assertThat(content).hasSize(8).doesNotContainNull();
 
 		verify(itemQueryRepository, times(0)).findItemsByCategory(any(CategoryName.class), eq(""),
 			any(PriceFilter.class), any(ItemPage.class));
+	}
+
+	@DisplayName("특정 아이템들의 조회수를 반환할 수 있다.")
+	@Test
+	void 아이템_조회수() throws Exception {
+		//given
+		RSet<Integer> viewedItem = redissonClient.getSet("viewed_Items");
+		viewedItem.add(1);
+		viewedItem.add(2);
+		viewedItem.add(3);
+
+		RHyperLogLog<Long> item1Count = redissonClient.getHyperLogLog(String.valueOf(1));
+		RHyperLogLog<Long> item2Count = redissonClient.getHyperLogLog(String.valueOf(2));
+		RHyperLogLog<Long> item3Count = redissonClient.getHyperLogLog(String.valueOf(3));
+
+		for (long i = 0; i < 100; i++) {
+			item1Count.add(i);
+		}
+
+		for (long i = 0; i < 50; i++) {
+			item2Count.add(i);
+		}
+
+		for (long i = 0; i < 30; i++) {
+			item3Count.add(i);
+		}
+
+		CacheClient cacheClient = new CacheClient(redissonClient, null);
+
+		//when
+		Map<String, Long> viewCount = cacheClient.getViewCount();
+
+		//then
+		assertThat(viewCount.get("1")).isEqualTo(100L);
+		assertThat(viewCount.get("2")).isEqualTo(50L);
+		assertThat(viewCount.get("3")).isEqualTo(30L);
+
+		assertThat(item1Count.count()).isZero();
+		assertThat(item2Count.count()).isZero();
+		assertThat(item3Count.count()).isZero();
 	}
 }
