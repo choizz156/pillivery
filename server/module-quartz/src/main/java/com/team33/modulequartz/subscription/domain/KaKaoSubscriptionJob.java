@@ -29,7 +29,7 @@ public class KaKaoSubscriptionJob implements Job {
 
 		JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
 
-		long orderId = mergedJobDataMap.getLong("orderId");
+		Long orderId = mergedJobDataMap.getLong("orderId");
 
 		checkOrder(orderId);
 
@@ -49,8 +49,8 @@ public class KaKaoSubscriptionJob implements Job {
 		}
 	}
 
-	private void checkOrder(long orderId) {
-		if (orderId == 0) {
+	private void checkOrder(Long orderId) {
+		if (orderId == null) {
 			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
 		}
 	}
