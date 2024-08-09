@@ -10,7 +10,7 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     //redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.22.0'
     implementation 'com.github.codemonstur:embedded-redis:1.2.0'
 
     //jpa
