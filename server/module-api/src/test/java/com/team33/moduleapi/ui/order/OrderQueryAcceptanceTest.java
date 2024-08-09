@@ -263,7 +263,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.statistics(new Statistic())
 			.build();
 
-		item.addIncludedCategory(Set.of(categoryName));
+		item.addIncludedCategories(Set.of(categoryName));
 		item.getItemCategory().add(categoryName);
 
 		itemCommandRepository.save(item);

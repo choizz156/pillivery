@@ -355,7 +355,7 @@ class ReviewQueryAcceptanceTest extends ApiTest {
 			.statistics(new Statistic())
 			.build();
 
-		item.addIncludedCategory(Set.of(CategoryName.INTESTINE));
+		item.addIncludedCategories(Set.of(CategoryName.INTESTINE));
 		item.getItemCategory().add(CategoryName.INTESTINE);
 
 		itemCommandRepository.save(item);
