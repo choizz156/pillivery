@@ -7,7 +7,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.item.domain.entity.Item;
@@ -21,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class DistributedLockAop {
 
-	private final RedisTemplate<String, Object> redisTemplate;
 	private final RedissonClient redissonClient;
 
 	@Around("execution(* com.team33.modulecore.core.item.application.ItemStarService.*StarAvg(..))")

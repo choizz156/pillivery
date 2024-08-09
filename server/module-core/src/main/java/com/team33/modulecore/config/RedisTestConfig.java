@@ -7,16 +7,15 @@ import java.io.InputStreamReader;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.codec.SerializationCodec;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import redis.embedded.RedisServer;
 
@@ -32,30 +31,19 @@ public class RedisTestConfig {
 
     private RedisServer redisServer;
 
-    @Bean
-    public LettuceConnectionFactory lettuceConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-
-        config.setPort(redisPort);
-        config.setHostName(host);
-
-        return new LettuceConnectionFactory(config);
-    }
+    private static final String REDISSON_HOST_PREFIX = "redis://";
 
     @Bean
-    public RedisTemplate<?,?> redisTemplate() {
-        RedisTemplate<?,?> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(lettuceConnectionFactory());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        return redisTemplate;
-    }
+    public RedissonClient redissonClient() {
+        RedissonClient redissonClient = null;
 
-    @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer() {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(lettuceConnectionFactory());
-        return container;
+        Config config = new Config();
+        config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + host + ":" + redisPort);
+        config.setCodec(new SerializationCodec());
+        config.setCodec(new JsonJacksonCodec());
+
+        redissonClient = Redisson.create(config);
+        return redissonClient;
     }
 
     @PostConstruct

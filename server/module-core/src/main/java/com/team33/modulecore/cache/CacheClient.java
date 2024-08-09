@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import org.redisson.api.RMapCache;
+import org.redisson.api.RSet;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Page;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
@@ -31,9 +31,9 @@ public class CacheClient {
 	private static final String MAIN_SALES_ITEM = "mainSalesItem";
 	private static final int MAIN_ITEM_TIMEOUT = 7;
 	private static final int CATEGORY_ITEM_TIMEOUT = 3;
-	private static final String VIEW_COUNT = "view_count";
 
-	private final RedisTemplate<String, Object> redisTemplate;
+	private final RedissonClient redissonClient;
+
 	private final ItemQueryRepository itemQueryRepository;
 
 	public CachedMainItems getMainDiscountItem() {
@@ -50,59 +50,55 @@ public class CacheClient {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
-		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems = redissonClient.getMapCache(
+			"cachedCategoryItems");
+		CachedCategoryItems<ItemQueryDto> categoryItems = cachedCategoryItems.get(categoryName.name());
 
-		CachedCategoryItems<ItemQueryDto> cachedCategoryItems =
-			(CachedCategoryItems<ItemQueryDto>)ops.get(categoryName.name());
-
-		if (cachedCategoryItems == null) {
+		if (categoryItems == null) {
 			Page<ItemQueryDto> itemsByCategory =
 				itemQueryRepository.findItemsByCategory(categoryName, keyword, priceFilter, pageDto);
 
 			CachedCategoryItems<ItemQueryDto> value = new CachedCategoryItems<>(itemsByCategory);
-			ops.set(categoryName.name(), value, CATEGORY_ITEM_TIMEOUT, TimeUnit.DAYS);
+			cachedCategoryItems.put(categoryName.name(), value, CATEGORY_ITEM_TIMEOUT, TimeUnit.DAYS);
 
 			return value;
 		}
 
-		return cachedCategoryItems;
+		return categoryItems;
 	}
 
 	public Map<String, Long> getViewCount() {
 
-		HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
+		RSet<Integer> viewedItems = redissonClient.getSet("viewed_Items");
 
-		Map<String, Long> viewCount = extractViewCount(hash);
+		Map<String, Long> viewCountOfEachItem = extractViewCount(viewedItems);
+		resetViewCount(viewedItems);
 
-		resetViewCount(hash);
-
-		return viewCount;
+		return viewCountOfEachItem;
 	}
 
 	private CachedMainItems getMainItemFromCache(String key, Supplier<List<ItemQueryDto>> supplier) {
-		ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		CachedMainItems cachedMainItems = (CachedMainItems)ops.get(key);
+		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache("cachedMainItems");
+		CachedMainItems mainItems = cachedMainItems.get(key);
 
-		if (cachedMainItems == null) {
+		if (mainItems == null) {
 			List<ItemQueryDto> mainItem = supplier.get();
 			CachedMainItems value = CachedMainItems.of(mainItem);
 
-			ops.set(key, value, MAIN_ITEM_TIMEOUT, TimeUnit.DAYS);
+			cachedMainItems.put(key, value, MAIN_ITEM_TIMEOUT, TimeUnit.DAYS);
 			return value;
 		}
 
-		return cachedMainItems;
+		return mainItems;
 	}
 
-	private Map<String, Long> extractViewCount(HashOperations<String, String, Long> hash) {
-		return hash.entries(VIEW_COUNT).entrySet().stream()
-			.filter(e -> e.getValue() > 0)
-			.collect(toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+	private Map<String, Long> extractViewCount(RSet<Integer> viewCount) {
+		return viewCount.stream()
+			.collect(toUnmodifiableMap(String::valueOf, e -> redissonClient.getHyperLogLog(String.valueOf(e)).count()));
 	}
 
-	private void resetViewCount(HashOperations<String, String, Long> hash) {
-		hash.entries(VIEW_COUNT).entrySet().stream()
-			.filter(e -> e.getValue() > 0)
-			.forEach(e -> hash.put(VIEW_COUNT, e.getKey(), 0L));
+	private void resetViewCount(RSet<Integer> viewCount) {
+		viewCount
+			.forEach(e -> redissonClient.getHyperLogLog(String.valueOf(e)).delete());
 	}
 }
