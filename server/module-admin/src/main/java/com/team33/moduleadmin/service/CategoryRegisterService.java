@@ -14,7 +14,12 @@ public class CategoryRegisterService {
 
 	private final CategoryRepository categoryRepository;
 
-	public void save(CategoryName categoryName) {
-		categoryRepository.save(Category.of(categoryName));
+	public Long save(CategoryName categoryName) {
+		Category byCategoryName = categoryRepository.findByCategoryName(categoryName);
+		if (byCategoryName == null) {
+			Category category = categoryRepository.save(Category.of(categoryName));
+			return category.getId();
+		}
+		return byCategoryName.getId();
 	}
 }

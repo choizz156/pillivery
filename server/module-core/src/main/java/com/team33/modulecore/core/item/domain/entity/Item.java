@@ -22,10 +22,10 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.team33.modulecore.core.category.domain.Categories;
 import com.team33.modulecore.core.category.domain.CategoryName;
+import com.team33.modulecore.core.category.infra.CategoryNameConverter;
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.item.domain.Information;
 import com.team33.modulecore.core.item.domain.Statistic;
-import com.team33.modulecore.core.item.infra.CategoryNameConverter;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -58,7 +58,10 @@ public class Item extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@ElementCollection
-	@CollectionTable(name = "item_category", joinColumns = @JoinColumn(name = "item_id"))
+	@CollectionTable(
+		name = "item_category", joinColumns = @JoinColumn(name = "item_id"),
+		indexes = @Index(name = "idx_item_category", columnList = "category_name")
+	)
 	@Column(name = "category_name")
 	private Set<CategoryName> itemCategory = new HashSet<>();
 
@@ -129,7 +132,7 @@ public class Item extends BaseEntity {
 		return this.statistics.getStarAvg();
 	}
 
-	public void addIncludedCategory(Set<CategoryName> categoryNames) {
+	public void addIncludedCategories(Set<CategoryName> categoryNames) {
 		this.categories = new Categories(categoryNames);
 	}
 

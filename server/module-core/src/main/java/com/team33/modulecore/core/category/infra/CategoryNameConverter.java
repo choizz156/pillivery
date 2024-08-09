@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.item.infra;
+package com.team33.modulecore.core.category.infra;
 
 import java.util.Arrays;
 import java.util.Set;

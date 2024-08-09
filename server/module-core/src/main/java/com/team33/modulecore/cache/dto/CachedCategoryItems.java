@@ -34,7 +34,7 @@ public class CachedCategoryItems<T> implements Serializable {
 		return PageableExecutionUtils.getPage(
 			content,
 			PageRequest.of(number, size),
-			() -> (long)totalPages
+			() -> totalElements
 		);
 	}
 

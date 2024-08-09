@@ -78,8 +78,8 @@ public class ItemRegisterController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/test")
-	public void postItem1() {
-		// lists.add(bodyWrapper);
+	public void postItem1(@RequestBody BodyWrapper bodyWrapper) {
+		lists.add(bodyWrapper);
 
 		List<ItemWrapper> itemWrappers = lists.stream()
 			.map(b -> b.getBody().getItems())

@@ -63,7 +63,6 @@ public class ItemQueryService {
 
 		CachedCategoryItems<ItemQueryDto> categoryItems =
 			cacheClient.getCategoryItems(categoryName, keyword, priceFilter, pageDto);
-
 		return categoryItems.toPage();
 	}
 
