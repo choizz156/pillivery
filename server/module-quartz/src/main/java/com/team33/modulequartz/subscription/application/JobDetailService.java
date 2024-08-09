@@ -25,7 +25,7 @@ public class JobDetailService {
 		jobDataMap.put("retry", 0);
 
 		return newJob(KaKaoSubscriptionJob.class)
-			.withIdentity(jobKey.getName(), jobKey.getGroup())
+			.withIdentity(jobKey)
 			.storeDurably(true)
 			.usingJobData(jobDataMap)
 			.build();
