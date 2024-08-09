@@ -21,6 +21,7 @@ public class PaymentJobListeners implements JobListener {
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public static final Logger log = LoggerFactory.getLogger("fileLog");
+
 	private static final String PAYMENT_JOB = "payment Job";
 	private static final String RETRY = "retry";
 
@@ -31,28 +32,18 @@ public class PaymentJobListeners implements JobListener {
 
 	@Override
 	public void jobToBeExecuted(final JobExecutionContext context) {
+		JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
+		int retryCount = jobDataMap.getInt(RETRY);
+		log.info("jobToBeExecuted = {}, retryCount = {}", context.getJobDetail().getKey(), retryCount);
 	}
 
-	/**
-	 * job 중단 시
-	 *
-	 * @param context
-	 */
+
 	@Override
 	public void jobExecutionVetoed(final JobExecutionContext context) {
 		JobKey key = context.getJobDetail().getKey();
 		log.warn("중단된 job의 jobkey = {}", key);
 	}
 
-	/**
-	 * job 실행 후 예외가 발생할 경우,
-	 * - 첫 번째 예외 발생 시, 바로 job을 재실행한다.
-	 * - 두 번째 예외 발생 시, 한 시간 후에 다시 재시도.
-	 * 예외가 발생하지 않은 경우, 다음 job을 등록한다.
-	 *
-	 * @param context
-	 * @param jobException
-	 */
 	@Override
 	public void jobWasExecuted(
 		final JobExecutionContext context,
