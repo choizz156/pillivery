@@ -19,10 +19,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import lombok.RequiredArgsConstructor;
-
 @Profile("!test")
-@RequiredArgsConstructor
 @Configuration
 public class QuartzConfig {
 
@@ -40,7 +37,7 @@ public class QuartzConfig {
 	@Bean
 	@Qualifier("schedulerDataSource")
 	@QuartzDataSource
-	@ConfigurationProperties(prefix = "spring.datasource.quartz")
+	@ConfigurationProperties(prefix = "spring.quartz.properties.org.quartz.datasource.qrtz")
 	public DataSource schedulerDataSource() {
 		return DataSourceBuilder.create().build();
 	}
