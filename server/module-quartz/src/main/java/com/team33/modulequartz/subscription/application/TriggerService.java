@@ -1,8 +1,6 @@
 package com.team33.modulequartz.subscription.application;
 
 import static org.quartz.CalendarIntervalScheduleBuilder.*;
-import static org.quartz.DateBuilder.IntervalUnit.*;
-import static org.quartz.DateBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 
 import java.util.Date;
@@ -29,12 +27,6 @@ public class TriggerService {
 			)
 			.withIdentity(new TriggerKey(jobKey.getName(), jobKey.getGroup()))
 			.startAt(Date.from(orderItem.getNextPaymentDay().toInstant()))
-			.build();
-	}
-
-	public Trigger retryTrigger() {
-		return newTrigger()
-			.startAt(futureDate(1, HOUR))
 			.build();
 	}
 }
