@@ -6,6 +6,7 @@ import org.quartz.ListenerManager;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.TriggerKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,10 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
-import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.core.order.application.OrderItemService;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulequartz.subscription.infra.PaymentJobListeners;
 
 import lombok.RequiredArgsConstructor;
@@ -42,11 +43,9 @@ public class SubscriptionService {
 			.forEach(orderItem -> startSchedule(orderId, orderItem));
 	}
 
-	@Transactional
 	public OrderItem changePeriod(long orderId, int period, long itemOrderId) {
 
 		OrderItem orderItem = orderItemService.findOrderItem(itemOrderId);
-
 		orderItemService.changeItemPeriod(period, orderItem);
 
 		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getItem().getProductName());
@@ -66,7 +65,9 @@ public class SubscriptionService {
 
 	private void changeTrigger(Trigger newTrigger) {
 		try {
-			scheduler.rescheduleJob(newTrigger.getKey(), newTrigger);
+			TriggerKey oldKey = newTrigger.getKey();
+			scheduler.rescheduleJob(oldKey, newTrigger);
+			log.info("스케쥴 변경 => {}, 새로운 트리거 시작 시간 => {}", oldKey, newTrigger.getStartTime());
 		} catch (SchedulerException e) {
 			throw new BusinessLogicException(e.getMessage());
 		}
@@ -80,6 +81,7 @@ public class SubscriptionService {
 	private void deleteSchedule(JobKey jobkey) {
 		try {
 			scheduler.deleteJob(jobkey);
+			log.info("스케쥴 삭제 => {}", jobkey);
 		} catch (SchedulerException e) {
 			log.warn("스케쥴 삭제 실패 job => {}", e.getMessage());
 		}
