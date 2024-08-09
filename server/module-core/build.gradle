@@ -50,7 +50,16 @@ tasks.withType(JavaCompile).configureEach {
 
 // java source set 에 querydsl QClass 위치 추가
 sourceSets {
-    main.java.srcDirs += [ generated ]
+    main {
+        java {
+            srcDirs += [generated]
+        }
+    }
+    test {
+        java {
+            srcDirs -= [generated]  // generated 디렉토리를 테스트 소스 세트에서 제거
+        }
+    }
 }
 
 // gradle clean 시에 QClass 디렉토리 삭제
