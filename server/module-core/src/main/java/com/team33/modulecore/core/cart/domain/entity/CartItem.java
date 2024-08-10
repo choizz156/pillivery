@@ -90,4 +90,16 @@ public class CartItem extends BaseEntity {
 	public void addCart(Cart cart) {
 		this.cart = cart;
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "(" +
+			"id = " + id + ", " +
+			"totalQuantity = " + totalQuantity + ", " +
+			"subscriptionInfo = " + subscriptionInfo + ")";
+	}
+
+	public void remove(Cart cart) {
+		this.cart = null;
+	}
 }

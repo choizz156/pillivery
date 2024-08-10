@@ -12,7 +12,7 @@ import com.team33.modulecore.core.item.dto.query.PriceFilter;
 @Component
 public class ItemQueryServiceMapper {
 
-	private static final int DEFAULT_PAGE_SIZE = 16;
+	private static final int DEFAULT_PAGE_SIZE = 8;
 	private static final int MAX_SIZE = 2000;
 	private static final int MIN_SIZE = 1;
 	private static final ItemSortOption DEFAULT_ITEM_SORT_OPTION = SALES;

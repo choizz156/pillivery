@@ -22,19 +22,20 @@ public class CommonCartItemService {
 
 	private final CartRepository cartRepository;
 
-	public Cart findCart(Long cartId) {
+	public Cart findCart(long cartId) {
 		return cartRepository.findById(cartId)
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
 	}
 
-	public void removeCartItem(Long cartId, Long cartItemId) {
+	public void removeCartItem(long cartId, long cartItemId) {
 		Cart cart = findCart(cartId);
 
-		cart.removeCartItem(getCartItem(cartItemId, cart));
-		cartRepository.deleteById(cartId);
+		CartItem cartItem = getCartItem(cartItemId, cart);
+		cartItem.remove(cart);
+		cart.removeCartItem(cartItem);
 	}
 
-	public void changeQuantity(Long cartId, Long cartItemId, int quantity) {
+	public void changeQuantity(long cartId, long cartItemId, int quantity) {
 		Cart cart = findCart(cartId);
 
 		CartItem cartItem = getCartItem(cartItemId, cart);
@@ -42,7 +43,7 @@ public class CommonCartItemService {
 		changeQuantity(quantity, cartItem, cart);
 	}
 
-	public void refresh(Long cartId, List<Long> orderedItemsId) {
+	public void refresh(long cartId, List<Long> orderedItemsId) {
 		Cart cart = findCart(cartId);
 
 		if (cart.getCartItems().isEmpty()) {
@@ -52,7 +53,7 @@ public class CommonCartItemService {
 		removeOrderedItem(cart, orderedItemsId);
 	}
 
-	private CartItem getCartItem(Long cartItemId, Cart cart) {
+	private CartItem getCartItem(long cartItemId, Cart cart) {
 
 		return cart.getCartItems().stream()
 			.filter(

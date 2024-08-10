@@ -50,8 +50,9 @@ public class CacheClient {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
-		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems = redissonClient.getMapCache(
-			"cachedCategoryItems");
+		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems =
+			redissonClient.getMapCache("cachedCategoryItems");
+
 		CachedCategoryItems<ItemQueryDto> categoryItems = cachedCategoryItems.get(categoryName.name());
 
 		if (categoryItems == null) {
