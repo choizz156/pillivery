@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.cart;
+package com.team33.modulecore.core.cart.dto;
 
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;

@@ -1,17 +1,21 @@
 package com.team33.modulecore.core.cart.application;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.map.event.EntryExpiredListener;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.core.cart.SubscriptionContext;
+import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.cart.domain.entity.Cart;
 import com.team33.modulecore.core.cart.domain.entity.CartItem;
 import com.team33.modulecore.core.cart.domain.entity.NormalCart;
 import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
+import com.team33.modulecore.core.cart.event.CartSavedEvent;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
@@ -20,9 +24,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class MemoryCartService {
+public class MemoryCartClient {
 
 	private final RedissonClient redissonClient;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public Cart getCart(String key) {
 		RMapCache<String, Cart> mapCache = getMapCache();
@@ -30,7 +35,15 @@ public class MemoryCartService {
 	}
 
 	public void saveCart(String key, Cart cart) {
-		getMapCache().put(key, cart);
+		RMapCache<String, Cart> mapCache = getMapCache();
+		mapCache.put(key, cart,2L, TimeUnit.DAYS);
+		mapCache.addListener((EntryExpiredListener<String, Cart>)event -> {
+			String eventKey = event.getKey();
+			Cart expiredCart = event.getValue();
+
+			String id = String.valueOf(eventKey.charAt(eventKey.length() - 1));
+			applicationEventPublisher.publishEvent(new CartSavedEvent(Long.valueOf(id), expiredCart));
+		});
 	}
 
 	public void addNormalItem(String key, Item item, int quantity) {

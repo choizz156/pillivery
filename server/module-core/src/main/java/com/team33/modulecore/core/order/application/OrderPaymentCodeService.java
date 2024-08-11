@@ -1,22 +1,24 @@
 package com.team33.modulecore.core.order.application;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
-import com.team33.modulecore.exception.DataSaveException;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.exception.DataSaveException;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class OrderPaymentCodeService {
+
+	private final static Logger log = LoggerFactory.getLogger("fileLog");
 
 	private final OrderFindHelper orderFindHelper;
 

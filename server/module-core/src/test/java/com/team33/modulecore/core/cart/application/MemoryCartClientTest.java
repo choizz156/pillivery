@@ -20,7 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.config.RedisTestConfig;
-import com.team33.modulecore.core.cart.SubscriptionContext;
+import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.cart.domain.entity.Cart;
 import com.team33.modulecore.core.cart.domain.entity.CartItem;
@@ -33,12 +33,12 @@ import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartService.class})
+@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartClient.class})
 @SpringBootTest
-class MemoryCartServiceTest {
+class MemoryCartClientTest {
 
 	@Autowired
-	private MemoryCartService memoryCartService;
+	private MemoryCartClient memoryCartClient;
 
 	@Autowired
 	private RedissonClient redissonClient;
@@ -71,10 +71,10 @@ class MemoryCartServiceTest {
 			.sample();
 
 		//when
-		memoryCartService.saveCart("test", normalCart);
+		memoryCartClient.saveCart("test", normalCart);
 
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart.getId()).isEqualTo(normalCart.getId());
 		assertThat(cart.getCartItems()).hasSize(1)
@@ -94,10 +94,10 @@ class MemoryCartServiceTest {
 			.sample();
 
 		//when
-		memoryCartService.saveCart("test", subscriptionCart);
+		memoryCartClient.saveCart("test", subscriptionCart);
 
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart.getId()).isEqualTo(subscriptionCart.getId());
 		assertThat(cart.getCartItems()).hasSize(1)
@@ -116,13 +116,13 @@ class MemoryCartServiceTest {
 			.set("price", new CartPrice())
 			.sample();
 
-		memoryCartService.saveCart("test", normalCart);
+		memoryCartClient.saveCart("test", normalCart);
 
 		//when
-		memoryCartService.addNormalItem("test", item, 1);
+		memoryCartClient.addNormalItem("test", item, 1);
 
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart).isInstanceOf(NormalCart.class);
 		assertThat(cart.getCartItems()).hasSize(1)
@@ -141,10 +141,10 @@ class MemoryCartServiceTest {
 			.set("price", new CartPrice())
 			.sample();
 
-		memoryCartService.saveCart("test", subscriptionCart);
+		memoryCartClient.saveCart("test", subscriptionCart);
 
 		//when
-		memoryCartService.addSubscriptionItem(
+		memoryCartClient.addSubscriptionItem(
 			"test",
 			SubscriptionContext.builder()
 				.subscriptionInfo(SubscriptionInfo.of(true, 30))
@@ -154,7 +154,7 @@ class MemoryCartServiceTest {
 		);
 
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart).isInstanceOf(SubscriptionCart.class);
 		assertThat(cart.getCartItems()).hasSize(1)
@@ -175,11 +175,11 @@ class MemoryCartServiceTest {
 			.set("price", new CartPrice())
 			.sample();
 
-		memoryCartService.saveCart("test", normalCart);
+		memoryCartClient.saveCart("test", normalCart);
 		//when
-		memoryCartService.deleteCartItem("test", 1L);
+		memoryCartClient.deleteCartItem("test", 1L);
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart.getCartItems()).hasSize(0);
 		assertThat(cart.getPrice()).isEqualTo(new CartPrice());
@@ -195,9 +195,9 @@ class MemoryCartServiceTest {
 			.set("price", new CartPrice())
 			.sample();
 
-		memoryCartService.saveCart("test", subscriptionCart);
+		memoryCartClient.saveCart("test", subscriptionCart);
 
-		memoryCartService.addSubscriptionItem(
+		memoryCartClient.addSubscriptionItem(
 			"test",
 			SubscriptionContext.builder()
 				.subscriptionInfo(SubscriptionInfo.of(true, 30))
@@ -207,10 +207,10 @@ class MemoryCartServiceTest {
 		);
 
 		//when
-		memoryCartService.changeQuantity("test", 1L, 2);
+		memoryCartClient.changeQuantity("test", 1L, 2);
 
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart.getCartItems()).hasSize(1);
 		assertThat(cart.getPrice().getTotalPrice()).isEqualTo(18000);
@@ -227,13 +227,13 @@ class MemoryCartServiceTest {
 			.set("price", new CartPrice())
 			.sample();
 
-		memoryCartService.saveCart("test", normalCart);
+		memoryCartClient.saveCart("test", normalCart);
 
 		//when
-		memoryCartService.refresh("test");
+		memoryCartClient.refresh("test");
 
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart.getCartItems()).hasSize(0);
 		assertThat(cart.getPrice()).isEqualTo(new CartPrice());
@@ -249,13 +249,13 @@ class MemoryCartServiceTest {
 			.set("price", new CartPrice())
 			.sample();
 
-		memoryCartService.saveCart("test", normalCart);
+		memoryCartClient.saveCart("test", normalCart);
 
 		//when
-		memoryCartService.refreshOrderedItem("test", List.of(1L)  );
+		memoryCartClient.refreshOrderedItem("test", List.of(1L)  );
 
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart.getCartItems()).hasSize(0);
 		assertThat(cart.getPrice()).isEqualTo(new CartPrice());
@@ -271,13 +271,13 @@ class MemoryCartServiceTest {
 				List.of(CartItem.builder().subscriptionInfo(SubscriptionInfo.of(true, 30)).item(item).build()))
 			.sample();
 
-		memoryCartService.saveCart("test", subscriptionCart);
+		memoryCartClient.saveCart("test", subscriptionCart);
 
 		//when
-		memoryCartService.changePeriod("test", 1L, 60);
+		memoryCartClient.changePeriod("test", 1L, 60);
 
 		//then
-		Cart cart = memoryCartService.getCart("test");
+		Cart cart = memoryCartClient.getCart("test");
 		assertThat(cart).isNotNull();
 		assertThat(cart.getId()).isEqualTo(subscriptionCart.getId());
 		assertThat(cart.getCartItems()).hasSize(1)

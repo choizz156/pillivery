@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulecore.core.cart.application.CartRefreshEventHandler;
+import com.team33.modulecore.core.cart.event.CartRefreshEventHandler;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
 

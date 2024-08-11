@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.cart.mock.FakeCartRepository;
 import com.team33.modulecore.config.RedisTestConfig;
-import com.team33.modulecore.core.cart.application.MemoryCartService;
+import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.cart.application.NormalCartItemService;
 import com.team33.modulecore.core.cart.domain.entity.NormalCart;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
@@ -30,7 +30,7 @@ import com.team33.modulecore.core.item.domain.entity.Item;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartService.class})
+@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartClient.class})
 @SpringBootTest
 class NormalCartItemServiceTest {
 
@@ -42,7 +42,7 @@ class NormalCartItemServiceTest {
 	private NormalCartItemService normalCartItemService;
 
 	@Autowired
-	private MemoryCartService memoryCartService;
+	private MemoryCartClient memoryCartClient;
 
 	@Autowired
 	private RedissonClient redissonClient;
@@ -65,7 +65,7 @@ class NormalCartItemServiceTest {
 		cartRepository = new FakeCartRepository();
 		cartRepository.save(normalCart);
 
-		normalCartItemService = new NormalCartItemService(cartRepository, memoryCartService);
+		normalCartItemService = new NormalCartItemService(cartRepository, memoryCartClient);
 	}
 
 	@AfterEach
@@ -93,7 +93,7 @@ class NormalCartItemServiceTest {
 		CartRepository cartRepository = mock(CartRepository.class);
 		when(cartRepository.findNormalCartById(1L)).thenReturn(Optional.ofNullable(normalCart));
 
-		normalCartItemService = new NormalCartItemService(cartRepository, memoryCartService);
+		normalCartItemService = new NormalCartItemService(cartRepository, memoryCartClient);
 
 		// when
 		NormalCart result = normalCartItemService.findCart(1L);

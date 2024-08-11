@@ -28,7 +28,7 @@ import com.team33.modulecore.core.item.domain.entity.Item;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartService.class})
+@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartClient.class})
 @SpringBootTest
 class CommonCartItemServiceTest {
 
@@ -38,7 +38,7 @@ class CommonCartItemServiceTest {
 	private Item item;
 
 	@Autowired
-	private MemoryCartService memoryCartService;
+	private MemoryCartClient memoryCartClient;
 
 	@Autowired
 	private RedissonClient redissonClient;
@@ -60,7 +60,7 @@ class CommonCartItemServiceTest {
 			.set("information.price.discountPrice", 500)
 			.sample();
 
-		cartItemService = new CommonCartItemService(memoryCartService);
+		cartItemService = new CommonCartItemService(memoryCartClient);
 
 	}
 

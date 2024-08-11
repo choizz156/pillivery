@@ -16,7 +16,7 @@ import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.moduleapi.UserAccount;
 import com.team33.moduleapi.ui.cart.dto.SubscriptionCartItemPostDto;
-import com.team33.modulecore.core.cart.SubscriptionContext;
+import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
