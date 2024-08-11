@@ -1,5 +1,7 @@
 package com.team33.moduleapi.interceptor;
 
+import static com.team33.modulecore.cache.RedisCacheKey.*;
+
 import java.time.Duration;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +32,7 @@ public class ViewInterceptor implements HandlerInterceptor {
 
 		int itemId = Character.getNumericValue(pathInfo.charAt(pathInfo.length() - 1));
 
-		RSet<Integer> viewedItem = redissonClient.getSet("viewed_Items");
+		RSet<Integer> viewedItem = redissonClient.getSet(VIEW_COUNT.name());
 		viewedItem.add(itemId);
 
 		RHyperLogLog<String> viewCheck = redissonClient.getHyperLogLog(String.valueOf(itemId));

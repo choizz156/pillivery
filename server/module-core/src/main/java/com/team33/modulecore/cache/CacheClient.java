@@ -1,5 +1,6 @@
 package com.team33.modulecore.cache;
 
+import static com.team33.modulecore.cache.RedisCacheKey.*;
 import static java.util.stream.Collectors.*;
 
 import java.util.List;
@@ -27,8 +28,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class CacheClient {
 
-	private static final String MAIN_DISCOUNT_ITEM = "mainDiscountItem";
-	private static final String MAIN_SALES_ITEM = "mainSalesItem";
 	private static final int MAIN_ITEM_TIMEOUT = 7;
 	private static final int CATEGORY_ITEM_TIMEOUT = 3;
 
@@ -37,11 +36,11 @@ public class CacheClient {
 	private final ItemQueryRepository itemQueryRepository;
 
 	public CachedMainItems getMainDiscountItem() {
-		return getMainItemFromCache(MAIN_DISCOUNT_ITEM, itemQueryRepository::findItemsWithDiscountRateMain);
+		return getMainItemFromCache(MAIN_DISCOUNT_ITEM.name(), itemQueryRepository::findItemsWithDiscountRateMain);
 	}
 
 	public CachedMainItems getMainSalesItem() {
-		return getMainItemFromCache(MAIN_SALES_ITEM, itemQueryRepository::findItemsWithSalesMain);
+		return getMainItemFromCache(MAIN_SALES_ITEM.name(), itemQueryRepository::findItemsWithSalesMain);
 	}
 
 	public CachedCategoryItems<ItemQueryDto> getCategoryItems(
@@ -51,7 +50,7 @@ public class CacheClient {
 		ItemPage pageDto
 	) {
 		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems =
-			redissonClient.getMapCache("cachedCategoryItems");
+			redissonClient.getMapCache(CATEGORY_ITEM.name());
 
 		CachedCategoryItems<ItemQueryDto> categoryItems = cachedCategoryItems.get(categoryName.name());
 
@@ -70,7 +69,7 @@ public class CacheClient {
 
 	public Map<String, Long> getViewCount() {
 
-		RSet<Integer> viewedItems = redissonClient.getSet("viewed_Items");
+		RSet<Integer> viewedItems = redissonClient.getSet(VIEW_COUNT.name());
 
 		Map<String, Long> viewCountOfEachItem = extractViewCount(viewedItems);
 		resetViewCount(viewedItems);
@@ -79,7 +78,7 @@ public class CacheClient {
 	}
 
 	private CachedMainItems getMainItemFromCache(String key, Supplier<List<ItemQueryDto>> supplier) {
-		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache("cachedMainItems");
+		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache(CACHE_MAIN_ITEMS.name());
 		CachedMainItems mainItems = cachedMainItems.get(key);
 
 		if (mainItems == null) {
