@@ -43,4 +43,5 @@ public class CartRefreshEventHandler {
 	private void refreshCart(Long cartId, List<Long> orderedItemsId) {
 		cartItemService.refresh(cartId, orderedItemsId);
 	}
+
 }

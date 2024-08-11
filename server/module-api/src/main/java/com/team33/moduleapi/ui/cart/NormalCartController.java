@@ -77,6 +77,5 @@ public class NormalCartController {
 	) {
 		cartItemService.changeQuantity(cartId, cartItemId, quantity);
 	}
-
 }
 

@@ -57,9 +57,9 @@ public class MemoryCartService {
 		saveCart(key, subscriptionCart);
 	}
 
-	public void deleteCartItem(String key, long cartItemId) {
+	public void deleteCartItem(String key, long itemId) {
 		Cart cart = getMapCache().get(key);
-		CartItem targetItem = getCartItem(cartItemId, cart);
+		CartItem targetItem = getCartItem(itemId, cart);
 
 		targetItem.remove(cart);
 		cart.removeCartItem(targetItem);

@@ -1,5 +1,7 @@
 package com.team33.modulecore.core.cart.domain.entity;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.proxy.HibernateProxy;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.team33.modulecore.core.common.BaseEntity;
@@ -95,6 +99,10 @@ public class CartItem extends BaseEntity {
 		this.cart = cart;
 	}
 
+	public void remove(Cart cart) {
+		this.cart = null;
+	}
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "(" +
@@ -103,7 +111,26 @@ public class CartItem extends BaseEntity {
 			"subscriptionInfo = " + subscriptionInfo + ")";
 	}
 
-	public void remove(Cart cart) {
-		this.cart = null;
+	@Override
+	public final boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null)
+			return false;
+		Class<?> oEffectiveClass = o instanceof HibernateProxy ?
+			((HibernateProxy)o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+		Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+		if (thisEffectiveClass != oEffectiveClass)
+			return false;
+		CartItem cartItem = (CartItem)o;
+		return getId() != null && Objects.equals(getId(), cartItem.getId());
+	}
+
+	@Override
+	public final int hashCode() {
+		return this instanceof HibernateProxy ?
+			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
+			getClass().hashCode();
 	}
 }
