@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 @Profile("!test")
 @Configuration
 public class RedisConfig {
@@ -28,7 +31,11 @@ public class RedisConfig {
 		Config config = new Config();
 		config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + host + ":" + port);
 		config.setCodec(new SerializationCodec());
-		config.setCodec(new JsonJacksonCodec());
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+
+		config.setCodec(new JsonJacksonCodec(mapper));
 		redissonClient = Redisson.create(config);
 		return redissonClient;
 	}

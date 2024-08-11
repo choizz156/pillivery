@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
@@ -37,6 +38,7 @@ public class CartItem extends BaseEntity {
 	private SubscriptionInfo subscriptionInfo;
 
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "cart_id")
 	private Cart cart;
 
