@@ -27,6 +27,10 @@ public class SubscriptionCartItemService {
 
 	public SubscriptionCart findCart(Long cartId) {
 		String key = CartKeySupplier.from(cartId);
+		return getSubscriptionCart(cartId, key);
+	}
+
+	private SubscriptionCart getSubscriptionCart(Long cartId, String key) {
 		SubscriptionCart cachedSubscriptionCart = (SubscriptionCart)memoryCartClient.getCart(key);
 
 		if (cachedSubscriptionCart == null) {

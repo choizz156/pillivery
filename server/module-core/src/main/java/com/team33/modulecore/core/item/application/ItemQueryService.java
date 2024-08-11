@@ -24,7 +24,7 @@ public class ItemQueryService {
 	private final CacheClient cacheClient;
 	private final ItemQueryRepository itemQueryRepository;
 
-	public Item findByItemId(long itemId) {
+	public Item findItemById(long itemId) {
 		return itemQueryRepository.findById(itemId);
 	}
 

@@ -17,7 +17,6 @@ import com.team33.moduleapi.ui.item.dto.ItemDetailResponseDto;
 import com.team33.moduleapi.ui.item.dto.ItemMainResponseDto;
 import com.team33.moduleapi.ui.item.mapper.ItemQueryServiceMapper;
 import com.team33.modulecore.core.category.domain.CategoryName;
-import com.team33.modulecore.core.item.application.ItemCommandService;
 import com.team33.modulecore.core.item.application.ItemQueryService;
 import com.team33.modulecore.core.item.domain.ItemSortOption;
 import com.team33.modulecore.core.item.domain.entity.Item;
@@ -50,7 +49,7 @@ public class ItemQueryController {
 	public SingleResponseDto<ItemDetailResponseDto> getItem(
 		@NotNull @PathVariable long itemId
 	) {
-		Item item = itemQueryService.findByItemId(itemId);
+		Item item = itemQueryService.findItemById(itemId);
 
 		return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
 	}

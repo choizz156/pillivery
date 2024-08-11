@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CartSaveEventHandler {
 
-	private final static Logger log = LoggerFactory.getLogger("fileLog");
+	private static final Logger log = LoggerFactory.getLogger("fileLog");
 	private final CartRepository cartRepository;
 
 	@Async
@@ -26,7 +26,7 @@ public class CartSaveEventHandler {
 	public void onCartSavedEvent(CartSavedEvent event) {
 		try {
 			cartRepository.save(event.getCart());
-		} catch (DataAccessException e){
+		} catch (DataAccessException e) {
 			log.warn("장바구니 영속화 실패 cartId : {}, message : {} ", event.getId(), e.getMessage());
 			throw new DataSaveException(e.getMessage());
 		}
