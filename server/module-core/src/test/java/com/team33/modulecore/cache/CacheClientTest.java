@@ -1,5 +1,6 @@
 package com.team33.modulecore.cache;
 
+import static com.team33.modulecore.cache.RedisCacheKey.*;
 import static com.team33.modulecore.core.category.domain.CategoryName.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -61,7 +62,6 @@ class CacheClientTest {
 				.build())
 		);
 
-		// CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
 		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
 		//when
@@ -70,14 +70,11 @@ class CacheClientTest {
 		//then
 		List<ItemQueryDto> mainItems = result.getCachedItems();
 
-		// ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		// CachedMainItems cachedMainItems = (CachedMainItems)ops.get("mainDiscountItem");
-		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache("cachedMainItems");
-		CachedMainItems cachedMainItem = cachedMainItems.get("mainDiscountItem");
+		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache(CACHE_MAIN_ITEMS.name());
+		CachedMainItems cachedMainItem = cachedMainItems.get(MAIN_DISCOUNT_ITEM.name());
 
-		long expireTime = cachedMainItems.remainTimeToLive("mainDiscountItem");
+		long expireTime = cachedMainItems.remainTimeToLive(MAIN_DISCOUNT_ITEM.name());
 		long remainDay = TimeUnit.MILLISECONDS.toDays(expireTime);
-		// Long expireTime = redisTemplate.getExpire("mainDiscountItem", TimeUnit.DAYS); //남은 만료시간
 
 		assertThat(remainDay).isEqualTo(6L);
 		assertThat(mainItems).hasSize(1)
@@ -98,10 +95,9 @@ class CacheClientTest {
 				.build())
 		);
 
-		// ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache("cachedMainItems");
+		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache(CACHE_MAIN_ITEMS.name());
 
-		cachedMainItems.put("mainDiscountItem",
+		cachedMainItems.put(MAIN_DISCOUNT_ITEM.name(),
 			CachedMainItems.of(
 				List.of(ItemQueryDto.builder()
 					.enterprise("test")
@@ -146,23 +142,19 @@ class CacheClientTest {
 		)
 			.thenReturn(page);
 
-		// CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
 		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
 		//when
-		// CachedCategoryItems<ItemQueryDto> categoryItems =
-		// 	cacheClient.getCategoryItems(EYE, "", new PriceFilter(), new ItemPage());
 		CachedCategoryItems<ItemQueryDto> categoryItems =
 			cacheClient.getCategoryItems(EYE, "", new PriceFilter(), new ItemPage());
 
 		//then
 		List<ItemQueryDto> content = categoryItems.getContent();
-		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems = redissonClient.getMapCache(
-			"cachedCategoryItems");
+		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems =
+			redissonClient.getMapCache(CATEGORY_ITEM.name());
+
 		long ttl = cachedCategoryItems.remainTimeToLive("EYE");
 		long remainingDay = TimeUnit.MILLISECONDS.toDays(ttl);
-		// ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		// Long expireTime = redisTemplate.getExpire("EYE", TimeUnit.DAYS); //남은 만료시간
 
 		assertThat(remainingDay).isEqualTo(2L);
 		assertThat(cachedCategoryItems.get("EYE")).isInstanceOf(CachedCategoryItems.class);
@@ -188,13 +180,10 @@ class CacheClientTest {
 			any(ItemPage.class)))
 			.thenReturn(page);
 
-		// ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-		// ops.set("EYE", new CachedCategoryItems<>(page), 3, TimeUnit.DAYS);
 		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems = redissonClient.getMapCache(
-			"cachedCategoryItems");
+			CATEGORY_ITEM.name());
 		cachedCategoryItems.put("EYE", new CachedCategoryItems<>(page), 3, TimeUnit.DAYS);
 
-		// CacheClient cacheClient = new CacheClient(redisTemplate, itemQueryRepository);
 		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
 		//when
@@ -203,7 +192,6 @@ class CacheClientTest {
 
 		//then
 		List<ItemQueryDto> content = categoryItems.getContent();
-		// Long expireTime = redisTemplate.getExpire("EYE", TimeUnit.DAYS); //남은 만료시간
 
 		long ttl = cachedCategoryItems.remainTimeToLive("EYE");
 		long remainingDay = TimeUnit.MILLISECONDS.toDays(ttl);
@@ -220,7 +208,7 @@ class CacheClientTest {
 	@Test
 	void 아이템_조회수() throws Exception {
 		//given
-		RSet<Integer> viewedItem = redissonClient.getSet("viewed_Items");
+		RSet<Integer> viewedItem = redissonClient.getSet(VIEW_COUNT.name());
 		viewedItem.add(1);
 		viewedItem.add(2);
 		viewedItem.add(3);
