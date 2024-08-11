@@ -20,18 +20,21 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class DistributedLockAop {
 
+	private static final long TRY_LOCK_TIMEOUT = 3L;
+	private static final long LOCK_LEASE_TIME = 5L;
 	private final RedissonClient redissonClient;
 
 	@Around("execution(* com.team33.modulecore.core.item.application.ItemStarService.*StarAvg(..))")
 	public Object distributedLock(ProceedingJoinPoint joinPoint) {
+
+		checkItemType(joinPoint);
+
 		Item arg = (Item)joinPoint.getArgs()[0];
 		String key = "item Id lock :" + arg.getId();
-
 		RLock rLock = redissonClient.getLock(key);
 
 		try {
-			boolean hasLock = rLock.tryLock(3L, 5L, TimeUnit.SECONDS);
-
+			boolean hasLock = rLock.tryLock(TRY_LOCK_TIMEOUT, LOCK_LEASE_TIME, TimeUnit.SECONDS);
 			if (!hasLock) {
 				log.warn("락 획득 실패 : {}", key);
 				return false;
@@ -39,17 +42,24 @@ public class DistributedLockAop {
 
 			return joinPoint.proceed();
 		} catch (Throwable e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException("분산 락 관련 에러", e);
 		} finally {
 			unlock(rLock, key);
 		}
 	}
 
+	private static void checkItemType(ProceedingJoinPoint joinPoint) {
+		if (!(joinPoint.getArgs()[0] instanceof Item)) {
+			throw new IllegalArgumentException("Item 타입이 아닙니다.");
+		}
+	}
+
 	private void unlock(RLock rLock, String key) {
 		try {
-			rLock.unlock();
+			if (rLock.isHeldByCurrentThread())
+				rLock.unlock();
 		} catch (IllegalMonitorStateException e) {
-			log.warn("lock failed : {}, key : {}", e.getMessage(), key);
+			log.warn("락 해제 실패 메시지 : {}, key : {}", e.getMessage(), key);
 		}
 	}
 }
