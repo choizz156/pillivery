@@ -11,6 +11,8 @@ import com.team33.modulecore.cache.CacheClient;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.core.item.domain.repository.ItemViewBatchDao;
 import com.team33.modulecore.core.review.domain.entity.Review;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,20 +33,23 @@ public class ItemCommandService {
 	public void addReviewId(Long itemId, Long reviewId, double star) {
 		itemCommandRepository
 			.findById(itemId)
-			.ifPresent(item -> {
+			.ifPresentOrElse(item -> {
 				itemStarService.updateStarAvg(item, star);
 				item.addReviewId(reviewId);
+			}, () -> {
+				throw new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND);
 			});
 	}
 
 	public void deleteReviewId(Long itemId, Review review) {
 		itemCommandRepository
 			.findById(itemId)
-			.ifPresent(item -> {
-					itemStarService.subtractStarAvg(item, review.getStar());
-					item.deleteReviewId(review.getId());
-				}
-			);
+			.ifPresentOrElse(item -> {
+				itemStarService.subtractStarAvg(item, review.getStar());
+				item.deleteReviewId(review.getId());
+			}, () -> {
+				throw new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND);
+			});
 	}
 
 	@Scheduled(cron = "0 0 2 * * *")
