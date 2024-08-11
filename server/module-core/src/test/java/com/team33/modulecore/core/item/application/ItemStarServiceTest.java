@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.team33.modulecore.aop.DistributedLockAop;
-import com.team33.modulecore.config.redis.RedisTestConfig;
+import com.team33.modulecore.config.RedisTestConfig;
 import com.team33.modulecore.core.item.domain.Information;
 import com.team33.modulecore.core.item.domain.Statistic;
 import com.team33.modulecore.core.item.domain.entity.Item;
