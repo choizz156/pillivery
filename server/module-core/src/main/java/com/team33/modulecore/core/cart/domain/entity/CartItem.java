@@ -48,10 +48,12 @@ public class CartItem extends BaseEntity {
 
 	@Builder
 	public CartItem(
+		Long id,
 		int totalQuantity,
 		SubscriptionInfo subscriptionInfo,
 		Item item
 	) {
+		this.id = id;
 		this.totalQuantity = totalQuantity;
 		this.subscriptionInfo = subscriptionInfo;
 		this.item = item;

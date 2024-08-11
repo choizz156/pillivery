@@ -76,9 +76,12 @@ public class CommonCartItemService {
 			.filter(cartItem -> orderedItemId.contains(cartItem.getItem().getId()))
 			.collect(Collectors.toUnmodifiableList());
 
-		removedItems.forEach(cartItem -> {
-			cart.removeCartItem(cartItem);
-			cartRepository.deleteById(cart.getId());
-		});
+		removedItems
+			.forEach(cartItem -> cartItem.remove(cart));
+
+		cart.getCartItems()
+			.stream()
+			.filter(cartItem -> orderedItemId.contains(cartItem.getItem().getId()))
+			.forEach(cart::removeCartItem);
 	}
 }
