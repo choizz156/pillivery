@@ -2,6 +2,7 @@ package com.team33.moduleapi.interceptor;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
@@ -14,6 +15,11 @@ class ViewInterceptorTest extends ApiTest {
 
 	@Autowired
 	private RedissonClient redissonClient;
+
+	@BeforeEach
+	void setUpEach(){
+		redissonClient.getKeys().flushall();
+	}
 
 	@DisplayName("같은 ip가 중복조회 할 경우 조회수가 증가하지 않는다.")
 	@Test
