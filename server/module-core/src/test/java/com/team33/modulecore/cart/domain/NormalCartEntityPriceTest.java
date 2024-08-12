@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.core.cart.domain.CartPrice;
 
-class NormalCartPriceTest {
+class NormalCartEntityPriceTest {
 
 	private CartPrice cartPrice;
 

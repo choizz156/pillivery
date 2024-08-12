@@ -1,6 +1,6 @@
 package com.team33.modulecore.core.cart.event;
 
-import com.team33.modulecore.core.cart.domain.entity.Cart;
+import com.team33.modulecore.core.cart.domain.CartVO;
 
 import lombok.Getter;
 
@@ -8,12 +8,11 @@ import lombok.Getter;
 public class CartSavedEvent {
 
 	private final Long id;
-	private final Cart cart;
+	private final CartVO expiredCartVO;
 
-	public CartSavedEvent(Long id, Cart expiredCart) {
+	public CartSavedEvent(Long id, CartVO expiredCartVO) {
 		this.id = id;
-		this.cart = expiredCart;
+		this.expiredCartVO = expiredCartVO;
 	}
-
 }
 

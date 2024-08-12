@@ -11,7 +11,7 @@ import com.team33.modulecore.core.cart.event.CartRefreshEventHandler;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
 
-class NormalCartRefreshEventHandlerTest {
+class NormalCartEntityRefreshEventHandlerTest {
 
 	@DisplayName("구매한 상품의 장바구니를 제거할 수 있다.")
 	@Test

@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.core.cart.domain.entity.CartEntity;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
 import com.team33.modulecore.exception.DataSaveException;
 
@@ -18,14 +19,17 @@ import lombok.RequiredArgsConstructor;
 public class CartSaveEventHandler {
 
 	private static final Logger log = LoggerFactory.getLogger("fileLog");
+
 	private final CartRepository cartRepository;
+	private final CartEntityMapper cartEntityMapper;
 
 	@Async
 	@EventListener
 	@Transactional
 	public void onCartSavedEvent(CartSavedEvent event) {
 		try {
-			cartRepository.save(event.getCart());
+			CartEntity cartEntity = cartEntityMapper.to(event.getExpiredCartVO());
+			cartRepository.save(cartEntity);
 		} catch (DataAccessException e) {
 			log.warn("장바구니 영속화 실패 cartId : {}, message : {} ", event.getId(), e.getMessage());
 			throw new DataSaveException(e.getMessage());

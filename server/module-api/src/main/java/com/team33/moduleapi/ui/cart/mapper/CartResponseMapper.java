@@ -8,10 +8,8 @@ import org.springframework.stereotype.Component;
 import com.team33.moduleapi.ui.cart.dto.CartItemResponseDto;
 import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.item.dto.ItemSimpleResponseDto;
-import com.team33.modulecore.core.cart.domain.entity.NormalCart;
-import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
-import com.team33.modulecore.core.cart.domain.vo.NormalCartVO;
-
+import com.team33.modulecore.core.cart.domain.NormalCartVO;
+import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
 @Component
 public class CartResponseMapper {
 
@@ -27,7 +25,7 @@ public class CartResponseMapper {
 			.build();
 	}
 
-	public CartResponseDto toCartSubscriptionResponseDto(SubscriptionCart subscriptionCart) {
+	public CartResponseDto toCartSubscriptionResponseDto(SubscriptionCartVO subscriptionCart) {
 		return CartResponseDto.builder()
 			.cartId(subscriptionCart.getId())
 			.totalDiscountPrice(subscriptionCart.getTotalDiscountPrice())
@@ -50,7 +48,7 @@ public class CartResponseMapper {
 			.collect(Collectors.toList());
 	}
 
-	private List<CartItemResponseDto> toSubscriptionCartItemResponse(SubscriptionCart subscriptionCart) {
+	private List<CartItemResponseDto> toSubscriptionCartItemResponse(SubscriptionCartVO subscriptionCart) {
 		return subscriptionCart.getCartItems().stream()
 			.map(subscriptionCartItem ->
 				CartItemResponseDto.builder()
@@ -62,4 +60,5 @@ public class CartResponseMapper {
 			)
 			.collect(Collectors.toList());
 	}
+
 }

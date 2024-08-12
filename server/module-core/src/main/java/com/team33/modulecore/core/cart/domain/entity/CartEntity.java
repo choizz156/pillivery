@@ -14,45 +14,39 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.common.BaseEntity;
-import com.team33.modulecore.core.item.domain.entity.Item;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @Entity
+@Table(name = "cart")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
-public abstract class Cart extends BaseEntity {
+public abstract class CartEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_id")
 	private Long id;
 
+	public CartEntity(Long id, CartPrice price, List<CartItemEntity> cartItemEntities) {
+		this.id = id;
+		this.price = price;
+		this.cartItemEntities = cartItemEntities;
+	}
+
 	@Embedded
 	CartPrice price = new CartPrice(0, 0, 0);
 
-	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-	List<CartItem> cartItems = new ArrayList<>();
+	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+	List<CartItemEntity> cartItemEntities = new ArrayList<>();
 
-	public void removeCartItem(CartItem removedItem) {
-		this.cartItems.remove(removedItem);
-
-		Item item = removedItem.getItem();
-		int quantity = removedItem.getTotalQuantity();
-
-		this.price = this.price.subtractPriceInfo(item.getRealPrice(), item.getDiscountPrice(), quantity);
-	}
-
-	public void changeCartItemQuantity(CartItem cartItem, int quantity) {
-		Item item = cartItem.getItem();
-
-		this.price = CartPrice.of(item.getRealPrice(), item.getDiscountPrice(), quantity);
-		cartItem.changeQuantity(quantity);
-	}
 
 	public int getTotalDiscountPrice() {
 		return this.price.getTotalDiscountPrice();

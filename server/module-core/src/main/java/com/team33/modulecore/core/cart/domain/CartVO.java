@@ -1,15 +1,13 @@
-package com.team33.modulecore.core.cart.domain.vo;
+package com.team33.modulecore.core.cart.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.team33.modulecore.core.cart.domain.CartPrice;
-import com.team33.modulecore.core.cart.domain.entity.CartItem;
-import com.team33.modulecore.core.item.domain.entity.Item;
-
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode
 @NoArgsConstructor
 @Getter
 public abstract class CartVO{
@@ -29,17 +27,17 @@ public abstract class CartVO{
 	public void removeCartItem(CartItemVO removedItem) {
 		this.cartItems.remove(removedItem);
 
-		Item item = removedItem.getItem();
+		ItemVO item = removedItem.getItem();
 		int quantity = removedItem.getTotalQuantity();
 
 		this.price = this.price.subtractPriceInfo(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
-	public void changeCartItemQuantity(CartItem cartItem, int quantity) {
-		Item item = cartItem.getItem();
+	public void changeCartItemQuantity(CartItemVO cartItemVO, int quantity) {
+		ItemVO item = cartItemVO.getItem();
 
 		this.price = CartPrice.of(item.getRealPrice(), item.getDiscountPrice(), quantity);
-		cartItem.changeQuantity(quantity);
+		cartItemVO.changeQuantity(quantity);
 	}
 
 	public int getTotalDiscountPrice() {

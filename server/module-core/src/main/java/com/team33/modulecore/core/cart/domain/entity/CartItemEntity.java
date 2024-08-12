@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "cart_item")
 @Entity
-public class CartItem extends BaseEntity {
+public class CartItemEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,14 +44,15 @@ public class CartItem extends BaseEntity {
 	@ManyToOne
 	@JsonBackReference
 	@JoinColumn(name = "cart_id")
-	private Cart cart;
+	private CartEntity cartEntity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_id")
 	private Item item;
 
+
 	@Builder
-	public CartItem(
+	public CartItemEntity(
 		Long id,
 		int totalQuantity,
 		SubscriptionInfo subscriptionInfo,
@@ -63,16 +64,16 @@ public class CartItem extends BaseEntity {
 		this.item = item;
 	}
 
-	public static CartItem of(Item item, int totalQuantity, SubscriptionInfo subscriptionInfo) {
-		return CartItem.builder()
+	public static CartItemEntity of(Item item, int totalQuantity, SubscriptionInfo subscriptionInfo) {
+		return CartItemEntity.builder()
 			.totalQuantity(totalQuantity)
 			.item(item)
 			.subscriptionInfo(subscriptionInfo)
 			.build();
 	}
 
-	public static CartItem of(Item item, int totalQuantity) {
-		return CartItem.builder()
+	public static CartItemEntity of(Item item, int totalQuantity) {
+		return CartItemEntity.builder()
 			.totalQuantity(totalQuantity)
 			.item(item)
 			.subscriptionInfo(SubscriptionInfo.of(false, 0))
@@ -95,12 +96,12 @@ public class CartItem extends BaseEntity {
 		this.subscriptionInfo = SubscriptionInfo.of(true, period);
 	}
 
-	public void addCart(Cart cart) {
-		this.cart = cart;
+	public void addCart(CartEntity cartEntity) {
+		this.cartEntity = cartEntity;
 	}
 
-	public void remove(Cart cart) {
-		this.cart = null;
+	public void remove(CartEntity cartEntity) {
+		this.cartEntity = null;
 	}
 
 	@Override
@@ -123,8 +124,8 @@ public class CartItem extends BaseEntity {
 			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
 		if (thisEffectiveClass != oEffectiveClass)
 			return false;
-		CartItem cartItem = (CartItem)o;
-		return getId() != null && Objects.equals(getId(), cartItem.getId());
+		CartItemEntity cartItemEntity = (CartItemEntity)o;
+		return getId() != null && Objects.equals(getId(), cartItemEntity.getId());
 	}
 
 	@Override

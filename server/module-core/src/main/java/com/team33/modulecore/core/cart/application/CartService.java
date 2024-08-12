@@ -3,8 +3,8 @@ package com.team33.modulecore.core.cart.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.core.cart.domain.entity.NormalCart;
-import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
+import com.team33.modulecore.core.cart.domain.entity.NormalCartEntity;
+import com.team33.modulecore.core.cart.domain.entity.SubscriptionCartEntity;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,14 +17,14 @@ public class CartService {
 	private final CartRepository cartRepository;
 
 	public Long createNormalCart() {
-		NormalCart normalCart = NormalCart.create();
+		NormalCartEntity normalCart = NormalCartEntity.create();
 		cartRepository.save(normalCart);
 
 		return normalCart.getId();
 	}
 
 	public Long createSubsCart() {
-		SubscriptionCart subscriptionCart = SubscriptionCart.create();
+		SubscriptionCartEntity subscriptionCart = SubscriptionCartEntity.create();
 		cartRepository.save(subscriptionCart);
 
 		return subscriptionCart.getId();

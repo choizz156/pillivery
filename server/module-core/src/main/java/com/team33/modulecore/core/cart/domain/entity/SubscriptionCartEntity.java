@@ -1,5 +1,6 @@
 package com.team33.modulecore.core.cart.domain.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.DiscriminatorValue;
@@ -7,7 +8,7 @@ import javax.persistence.Entity;
 
 import org.hibernate.proxy.HibernateProxy;
 
-import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.cart.domain.CartPrice;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,22 +18,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("subscription")
 @Entity
-public class SubscriptionCart extends Cart {
+public class SubscriptionCartEntity extends CartEntity {
 
-	public static SubscriptionCart create() {
-		return new SubscriptionCart();
+	public static SubscriptionCartEntity create() {
+		return new SubscriptionCartEntity();
 	}
 
-	public void addSubscriptionItem(CartItem cartItem) {
-		cartItem.addCart(this);
-		super.cartItems.add(cartItem);
+	public static SubscriptionCartEntity of(Long id, CartPrice price, List<CartItemEntity> cartItemEntities) {
+		return new SubscriptionCartEntity(id, price, cartItemEntities);
+	}
 
-		Item item = cartItem.getItem();
-		super.price = super.price.addPriceInfo(
-			item.getRealPrice(),
-			item.getDiscountPrice(),
-			cartItem.getTotalQuantity()
-		);
+	private SubscriptionCartEntity(Long id, CartPrice price, List<CartItemEntity> cartItemEntities) {
+		super(id, price, cartItemEntities);
 	}
 
 	@Override
@@ -47,7 +44,7 @@ public class SubscriptionCart extends Cart {
 			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
 		if (thisEffectiveClass != oEffectiveClass)
 			return false;
-		SubscriptionCart that = (SubscriptionCart)o;
+		SubscriptionCartEntity that = (SubscriptionCartEntity)o;
 		return getId() != null && Objects.equals(getId(), that.getId());
 	}
 

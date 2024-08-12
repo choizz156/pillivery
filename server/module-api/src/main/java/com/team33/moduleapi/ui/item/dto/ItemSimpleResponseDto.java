@@ -1,5 +1,6 @@
 package com.team33.moduleapi.ui.item.dto;
 
+import com.team33.modulecore.core.cart.domain.ItemVO;
 import com.team33.modulecore.core.item.domain.entity.Item;
 
 import lombok.Builder;
@@ -44,6 +45,18 @@ public class ItemSimpleResponseDto {
         return ItemSimpleResponseDto.builder()
             .itemId(item.getId())
             .enterprise(item.getInformation().getEnterprise())
+            .thumbnail(item.getThumbnailUrl())
+            .product(item.getProductName())
+            .originPrice(item.getOriginPrice())
+            .discountRate(item.getDiscountRate())
+            .discountPrice(item.getDiscountPrice())
+            .build();
+    }
+
+    public static ItemSimpleResponseDto of(ItemVO item) {
+        return ItemSimpleResponseDto.builder()
+            .itemId(item.getId())
+            .enterprise(item.getEnterprise())
             .thumbnail(item.getThumbnailUrl())
             .product(item.getProductName())
             .originPrice(item.getOriginPrice())

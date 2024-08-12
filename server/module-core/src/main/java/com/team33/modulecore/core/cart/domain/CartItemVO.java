@@ -1,7 +1,6 @@
-package com.team33.modulecore.core.cart.domain.vo;
+package com.team33.modulecore.core.cart.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 
 import lombok.Builder;
@@ -20,14 +19,14 @@ public class CartItemVO {
 	@JsonBackReference
 	private CartVO cart;
 
-	private Item item;
+	private ItemVO item;
 
 	@Builder
 	public CartItemVO(
 		Long id,
 		int totalQuantity,
 		SubscriptionInfo subscriptionInfo,
-		Item item
+		ItemVO item
 	) {
 		this.id = id;
 		this.totalQuantity = totalQuantity;
@@ -35,7 +34,7 @@ public class CartItemVO {
 		this.item = item;
 	}
 
-	public static CartItemVO of(Item item, int totalQuantity, SubscriptionInfo subscriptionInfo) {
+	public static CartItemVO of(ItemVO item, int totalQuantity, SubscriptionInfo subscriptionInfo) {
 		return CartItemVO.builder()
 			.totalQuantity(totalQuantity)
 			.item(item)
@@ -43,7 +42,7 @@ public class CartItemVO {
 			.build();
 	}
 
-	public static CartItemVO of(Item item, int totalQuantity) {
+	public static CartItemVO of(ItemVO item, int totalQuantity) {
 		return CartItemVO.builder()
 			.totalQuantity(totalQuantity)
 			.item(item)
