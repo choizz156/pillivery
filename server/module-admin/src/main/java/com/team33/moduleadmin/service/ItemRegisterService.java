@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ItemRegisterService {
 
 	private final ItemCommandRepository itemCommandRepository;
-	private final CategoryRegisterService categoryRegisterService;
 
 	public void createItem(List<Information> itemInfo) {
 

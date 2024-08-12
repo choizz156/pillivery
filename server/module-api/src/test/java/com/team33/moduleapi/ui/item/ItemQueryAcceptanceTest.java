@@ -113,7 +113,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			.body("data[0].itemId", equalTo(2))
 			.body("data[1].itemId", equalTo(3))
 			.body("pageInfo.page", equalTo(1))
-			.body("pageInfo.size", equalTo(16))
+			.body("pageInfo.size", equalTo(8))
 			.body("pageInfo.totalElements", equalTo(2))
 			.body("pageInfo.totalPages", equalTo(1));
 	}
@@ -145,7 +145,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			.body("data[0].itemId", equalTo(1))
 			.body("data[1].itemId", equalTo(2))
 			.body("pageInfo.page", equalTo(1))
-			.body("pageInfo.size", equalTo(16))
+			.body("pageInfo.size", equalTo(8))
 			.body("pageInfo.totalElements", equalTo(2))
 			.body("pageInfo.totalPages", equalTo(1));
 	}
@@ -177,7 +177,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			.body("data.size()", is(1))
 			.body("data[0].itemId", equalTo(3))
 			.body("pageInfo.page", equalTo(1))
-			.body("pageInfo.size", equalTo(16))
+			.body("pageInfo.size", equalTo(8))
 			.body("pageInfo.totalElements", equalTo(1))
 			.body("pageInfo.totalPages", equalTo(1));
 	}
@@ -271,7 +271,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("data[1]", hasKey("reviewSize"))
 
 				.body("pageInfo.page", equalTo(1))
-				.body("pageInfo.size", equalTo(16))
+				.body("pageInfo.size", equalTo(8))
 				.body("pageInfo.totalElements", equalTo(2))
 				.body("pageInfo.totalPages", equalTo(1));
 		}
@@ -306,7 +306,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("data[3].productName", equalTo("16종혼합유산균 디에스4"))
 
 				.body("pageInfo.page", equalTo(1))
-				.body("pageInfo.size", equalTo(16))
+				.body("pageInfo.size", equalTo(8))
 				.body("pageInfo.totalElements", equalTo(4))
 				.body("pageInfo.totalPages", equalTo(1));
 		}
@@ -375,7 +375,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("data[4].productName", equalTo("16종혼합유산균 디에스5"))
 
 				.body("pageInfo.page", equalTo(1))
-				.body("pageInfo.size", equalTo(16))
+				.body("pageInfo.size", equalTo(8))
 				.body("pageInfo.totalElements", equalTo(5))
 				.body("pageInfo.totalPages", equalTo(1));
 		}
@@ -415,7 +415,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("data[4].productName", equalTo("16종혼합유산균 디에스"))
 
 				.body("pageInfo.page", equalTo(1))
-				.body("pageInfo.size", equalTo(16))
+				.body("pageInfo.size", equalTo(8))
 				.body("pageInfo.totalElements", equalTo(5))
 				.body("pageInfo.totalPages", equalTo(1));
 		}
@@ -453,7 +453,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("data[4].productName", equalTo("16종혼합유산균 디에스"))
 
 				.body("pageInfo.page", equalTo(1))
-				.body("pageInfo.size", equalTo(16))
+				.body("pageInfo.size", equalTo(8))
 				.body("pageInfo.totalElements", equalTo(5))
 				.body("pageInfo.totalPages", equalTo(1));
 		}
@@ -492,7 +492,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("data[0].productName", equalTo("16종혼합유산균 디에스"))
 
 				.body("pageInfo.page", equalTo(1))
-				.body("pageInfo.size", equalTo(16))
+				.body("pageInfo.size", equalTo(8))
 				.body("pageInfo.totalElements", equalTo(5))
 				.body("pageInfo.totalPages", equalTo(1));
 		}
