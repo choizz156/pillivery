@@ -77,7 +77,7 @@ class NormalCartItemServiceTest {
 	@Test
 	void 장바구니_조회1() throws Exception {
 		//given//when
-		NormalCart result = normalCartItemService.findCart(1L);
+		NormalCart result = normalCartItemService.findCart(KEY, 1L);
 
 		//then
 		assertThat(result).isEqualTo(normalCart);
@@ -96,26 +96,11 @@ class NormalCartItemServiceTest {
 		normalCartItemService = new NormalCartItemService(cartRepository, memoryCartClient);
 
 		// when
-		NormalCart result = normalCartItemService.findCart(1L);
+		NormalCart result = normalCartItemService.findCart(KEY, 1L);
 
 		//then
 		assertThat(result).isEqualTo(normalCart);
 		verify(cartRepository, times(0)).findNormalCartById(1L);
-	}
-
-	@DisplayName("일반 아이템을 장바구니에 넣을 수 있다.")
-	@Test
-	void 장바구니_추가() throws Exception {
-		//given
-		NormalCart result = (NormalCart)redissonClient.getMapCache(CART).put(KEY, normalCart);
-
-		//when
-		normalCartItemService.addItem(normalCart.getId(), item, 3);
-
-		//then
-		assertThat(result.getCartItems()).hasSize(1)
-			.extracting("item.id")
-			.containsOnly(1L);
 	}
 
 }

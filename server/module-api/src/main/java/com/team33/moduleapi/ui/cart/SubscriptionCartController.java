@@ -20,10 +20,11 @@ import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.cart.dto.SubscriptionCartItemPostDto;
 import com.team33.moduleapi.ui.cart.mapper.CartResponseMapper;
 import com.team33.moduleapi.ui.cart.mapper.CartServiceMapper;
-import com.team33.modulecore.core.cart.dto.SubscriptionContext;
-import com.team33.modulecore.core.cart.application.CommonCartItemService;
+import com.team33.modulecore.core.cart.application.CartKeySupplier;
+import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
 import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
+import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,15 +37,15 @@ import lombok.extern.slf4j.Slf4j;
 public class SubscriptionCartController {
 
 	private final SubscriptionCartItemService subscriptionCartService;
-	private final CommonCartItemService cartItemService;
 	private final CartServiceMapper cartServiceMapper;
 	private final CartResponseMapper cartResponseMapper;
+	private final MemoryCartClient memoryCartClient;
 
 	@GetMapping("/{cartId}")
 	public SingleResponseDto<CartResponseDto> getSubscriptionCart(
 		@PathVariable Long cartId
 	) {
-		SubscriptionCart subscriptionCart = subscriptionCartService.findCart(cartId);
+		SubscriptionCart subscriptionCart = subscriptionCartService.findCart(CartKeySupplier.from(cartId),cartId);
 		CartResponseDto cartResponseDto = cartResponseMapper.toCartSubscriptionResponseDto(subscriptionCart);
 
 		return new SingleResponseDto<>(cartResponseDto);
@@ -57,8 +58,7 @@ public class SubscriptionCartController {
 		@RequestBody SubscriptionCartItemPostDto postDto
 	) {
 		SubscriptionContext subscriptionContext = cartServiceMapper.toSubscriptionContext(postDto);
-
-		subscriptionCartService.addSubscriptionItem(cartId, subscriptionContext);
+		memoryCartClient.addSubscriptionItem(CartKeySupplier.from(cartId), subscriptionContext);
 
 		return new SingleResponseDto<>(postDto.getItemId());
 	}
@@ -67,9 +67,9 @@ public class SubscriptionCartController {
 	@DeleteMapping("/{cartId}")
 	public void patchSubscriptionCart(
 		@PathVariable Long cartId,
-		@RequestParam Long cartItemId
+		@RequestParam Long itemId
 	) {
-		cartItemService.removeCartItem(cartId, cartItemId);
+		memoryCartClient.deleteCartItem(CartKeySupplier.from(cartId), itemId);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -77,19 +77,19 @@ public class SubscriptionCartController {
 	public void patchItemQuantity(
 		@PathVariable Long cartId,
 		@Min(1) @RequestParam int quantity,
-		@RequestParam Long cartItemId
+		@RequestParam Long itemId
 	) {
-		cartItemService.changeQuantity(cartId, cartItemId, quantity);
+		memoryCartClient.changeQuantity(CartKeySupplier.from(cartId), itemId, quantity);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PatchMapping("/{cartId}/period")
 	public void patchPeriod(
 		@PathVariable Long cartId,
-		@RequestParam Long cartItemId,
+		@RequestParam Long itemId,
 		@Min(30) @RequestParam int period
 	) {
-		subscriptionCartService.changePeriod(cartId, cartItemId, period);
+		memoryCartClient.changePeriod(CartKeySupplier.from(cartId), itemId, period);
 	}
 
 }

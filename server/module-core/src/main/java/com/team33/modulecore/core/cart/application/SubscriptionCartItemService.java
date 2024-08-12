@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
-import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 
@@ -17,16 +16,7 @@ public class SubscriptionCartItemService {
 	private final CartRepository cartRepository;
 	private final MemoryCartClient memoryCartClient;
 
-	public void addSubscriptionItem(Long cartId, SubscriptionContext subscriptionContext) {
-		memoryCartClient.addSubscriptionItem(CartKeySupplier.from(cartId), subscriptionContext);
-	}
-
-	public void changePeriod(Long cartId, Long cartItemId, int period) {
-		memoryCartClient.changePeriod(CartKeySupplier.from(cartId), cartItemId, period);
-	}
-
-	public SubscriptionCart findCart(Long cartId) {
-		String key = CartKeySupplier.from(cartId);
+	public SubscriptionCart findCart(String key, Long cartId) {
 		return getSubscriptionCart(cartId, key);
 	}
 

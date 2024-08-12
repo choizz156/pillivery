@@ -1,120 +1,114 @@
 package com.team33.modulecore.cart.application;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.Optional;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.team33.modulecore.FixtureMonkeyFactory;
+import com.team33.modulecore.cart.mock.FakeCartRepository;
+import com.team33.modulecore.config.RedisTestConfig;
+import com.team33.modulecore.core.cart.application.MemoryCartClient;
+import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
+import com.team33.modulecore.core.cart.domain.entity.SubscriptionCart;
+import com.team33.modulecore.core.cart.domain.repository.CartRepository;
+import com.team33.modulecore.core.cart.dto.SubscriptionContext;
+import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@ActiveProfiles("test")
+@EnableAutoConfiguration
+@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartClient.class})
+@SpringBootTest
 class SubscriptionCartServiceTest {
 
-	// private FakeCartRepository cartRepository;
-	// private SubscriptionCart subscriptionCart;
-	// private SubscriptionContext context;
-	//
-	// @BeforeEach
-	// void setUp() {
-	//
-	// 	subscriptionCart = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionCart.class)
-	// 		.set("id", 1L)
-	// 		.set("price", null)
-	// 		.set("cartItems", new ArrayList<>())
-	// 		.sample();
-	//
-	// 	Item item = FixtureMonkeyFactory.get()
-	// 		.giveMeBuilder(Item.class)
-	// 		.set("id", 1L)
-	// 		.set("information.price.realPrice", 1000)
-	// 		.set("information.price.discountPrice", 500)
-	// 		.sample();
-	//
-	// 	cartRepository = new FakeCartRepository();
-	// 	cartRepository.save(subscriptionCart);
-	//
-	// 	context = SubscriptionContext.builder()
-	// 		.item(item)
-	// 		.quantity(3)
-	// 		.subscriptionInfo(SubscriptionInfo.of(true, 30))
-	// 		.build();
-	// }
-	//
-	// @AfterEach
-	// void tearDown() {
-	// 	cartRepository.deleteById(1L);
-	// }
-	//
-	// @DisplayName("구독 아이템을 장바구니에 넣을 수 있다.")
-	// @Test
-	// void 장바구니_추가() throws Exception {
-	// 	//given
-	// 	SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
-	//
-	// 	//when
-	// 	subscriptionCartService.addSubscriptionItem(1L, context);
-	//
-	// 	//then
-	// 	assertThat(subscriptionCart.getCartItems()).hasSize(1)
-	// 		.extracting("item.id")
-	// 		.containsOnly(1L);
-	// }
-	//
-	// @DisplayName("일반 아이템을 장바구니에서 뺄 수 있다.")
-	// @Test
-	// void 장바구니_제거() throws Exception {
-	// 	//given
-	// 	SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
-	// 	subscriptionCartService.addSubscriptionItem(subscriptionCart.getId(), context);
-	//
-	// 	CommonCartItemService commonCartItemService = new CommonCartItemService(cartRepository);
-	//
-	// 	//when
-	// 	commonCartItemService.removeCartItem(1L, 1L);
-	//
-	// 	//then
-	// 	assertThat(subscriptionCart.getCartItems()).hasSize(0);
-	// }
-	//
-	// @DisplayName("장바구니의 담겨져 있는 수량을 변경할 수 있다.")
-	// @Test
-	// void 수량_변경() throws Exception {
-	// 	//given
-	// 	SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
-	// 	subscriptionCartService.addSubscriptionItem(subscriptionCart.getId(), context);
-	//
-	// 	CommonCartItemService commonCartItemService = new CommonCartItemService(cartRepository);
-	//
-	// 	//when
-	// 	commonCartItemService.changeQuantity(1L, 1L, 5);
-	//
-	// 	//then
-	// 	assertThat(subscriptionCart.getCartItems()).hasSize(1)
-	// 		.extracting("totalQuantity")
-	// 		.containsOnly(5);
-	// }
-	//
-	// @DisplayName("정기 결제 기간을 조정할 수 있다.")
-	// @Test
-	// void 기한_변경() throws Exception {
-	// 	//given
-	// 	SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
-	// 	subscriptionCartService.addSubscriptionItem(subscriptionCart.getId(), context);
-	//
-	// 	//when
-	// 	subscriptionCartService.changePeriod(1L, 1L, 50);
-	//
-	// 	//then
-	// 	assertThat(subscriptionCart.getCartItems()).hasSize(1)
-	// 		.extracting("period")
-	// 		.containsOnly(50);
-	// }
-	//
-	// @DisplayName("구매한 장바구니 상품을 제거할 수 있다.")
-	// @Test
-	// void 구매_상품_제거() throws Exception {
-	// 	//given
-	// 	SubscriptionCartItemService subscriptionCartService = new SubscriptionCartItemService(cartRepository);
-	// 	subscriptionCartService.addSubscriptionItem(subscriptionCart.getId(), context);
-	//
-	// 	CommonCartItemService commonCartItemService = new CommonCartItemService(cartRepository);
-	//
-	// 	//when
-	// 	commonCartItemService.refresh(1L, List.of(1L));
-	//
-	// 	//then
-	// 	assertThat(subscriptionCart.getCartItems()).hasSize(0);
-	// }
+	@Autowired
+	private MemoryCartClient memoryCartClient;
+	@Autowired
+	private RedissonClient redissonClient;
+
+	private static final String KEY = "mem:cartId : 1";
+	private static final String CART = "cart";
+
+	private FakeCartRepository cartRepository;
+	private SubscriptionCart subscriptionCart;
+	private SubscriptionContext context;
+	private SubscriptionCartItemService subscriptionCartItemService;
+
+	@BeforeEach
+	void setUp() {
+
+		subscriptionCart = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionCart.class)
+			.set("id", 1L)
+			.set("price", null)
+			.set("cartItems", new ArrayList<>())
+			.sample();
+
+		Item item = FixtureMonkeyFactory.get()
+			.giveMeBuilder(Item.class)
+			.set("id", 1L)
+			.set("information.price.realPrice", 1000)
+			.set("information.price.discountPrice", 500)
+			.sample();
+
+		cartRepository = new FakeCartRepository();
+		cartRepository.save(subscriptionCart);
+
+		context = SubscriptionContext.builder()
+			.item(item)
+			.quantity(3)
+			.subscriptionInfo(SubscriptionInfo.of(true, 30))
+			.build();
+
+		subscriptionCartItemService = new SubscriptionCartItemService(cartRepository, memoryCartClient);
+	}
+
+	@AfterEach
+	void tearDown() {
+		cartRepository.deleteById(1L);
+	}
+
+	@DisplayName("캐시에 장바구니가 없으면 db에서 조회한 후 캐시에 저장한다.")
+	@Test
+	void 장바구니_조회1() throws Exception {
+		//given//when
+		SubscriptionCart cart = subscriptionCartItemService.findCart(KEY, 1L);
+
+		//then
+		assertThat(cart).isEqualTo(subscriptionCart);
+		assertThat(redissonClient.getMapCache(CART).get(KEY)).isNotNull();
+	}
+
+	@DisplayName("캐시에 장바구니가 있으면 조회한 캐시에서 조회한다.")
+	@Test
+	void 장바구니_조회2() throws Exception {
+		//given
+		redissonClient.getMapCache(CART).put(KEY, subscriptionCart);
+
+		CartRepository cartRepository = mock(CartRepository.class);
+		when(cartRepository.findSubscriptionCartById(1L)).thenReturn(Optional.ofNullable(subscriptionCart));
+
+		subscriptionCartItemService = new SubscriptionCartItemService(cartRepository, memoryCartClient);
+
+		// when
+		SubscriptionCart result = subscriptionCartItemService.findCart(KEY, 1L);
+
+		//then
+		assertThat(result).isEqualTo(subscriptionCart);
+		verify(cartRepository, times(0)).findNormalCartById(1L);
+	}
 }

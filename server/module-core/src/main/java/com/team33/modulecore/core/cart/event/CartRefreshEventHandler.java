@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.team33.modulecore.core.cart.application.CommonCartItemService;
+import com.team33.modulecore.core.cart.application.CartKeySupplier;
+import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.common.UserFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
@@ -20,10 +20,9 @@ import lombok.RequiredArgsConstructor;
 public class CartRefreshEventHandler {
 
 	private final UserFindHelper userFindHelper;
-	private final CommonCartItemService cartItemService;
+	private final MemoryCartClient memoryCartClient;
 
 	@Async
-	@Transactional
 	@TransactionalEventListener
 	public void onCartRefreshEvent(CartRefreshedEvent event) {
 		Order order = event.getOrder();
@@ -41,8 +40,8 @@ public class CartRefreshEventHandler {
 		return order.isOrderedAtCart() && order.isSubscription();
 	}
 
-	private void refreshCart(Long cartId, List<Long> orderedItemsId) {
-		cartItemService.refresh(cartId, orderedItemsId);
+	private void refreshCart(long cartId, List<Long> orderedItemsId) {
+		memoryCartClient.refreshOrderedItem(CartKeySupplier.from(cartId), orderedItemsId);
 	}
 
 }

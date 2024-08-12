@@ -26,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class MemoryCartClient {
 
+	private static final long CART_TIME = 2L;
+
 	private final RedissonClient redissonClient;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -36,7 +38,7 @@ public class MemoryCartClient {
 
 	public void saveCart(String key, Cart cart) {
 		RMapCache<String, Cart> mapCache = getMapCache();
-		mapCache.put(key, cart,2L, TimeUnit.DAYS);
+		mapCache.put(key, cart, CART_TIME, TimeUnit.DAYS);
 		mapCache.addListener((EntryExpiredListener<String, Cart>)event -> {
 			String eventKey = event.getKey();
 			Cart expiredCart = event.getValue();
