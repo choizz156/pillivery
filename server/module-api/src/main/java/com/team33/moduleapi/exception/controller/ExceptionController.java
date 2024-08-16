@@ -70,8 +70,7 @@ public class ExceptionController {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ErrorResponse runtimeExceptionHandler(RuntimeException e) {
 		log.error("runtime exception :: {}", e.getLocalizedMessage());
-		// log.error("stack trace :: {}, {}", e.getStackTrace()[0].getClassName(), e.getStackTrace()[0]);
-		log.error("stack trace :: {}", e);
+		log.error("stack trace :: {}, {}", e.getStackTrace()[0].getClassName(), e.getStackTrace()[0]);
 		return ErrorResponse.of("알 수 없는 오류가 발생했습니다.");
 	}
 }
