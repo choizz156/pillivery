@@ -232,7 +232,7 @@ class OrderServiceTest {
 
 		//then
 
-		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.Refund);
+		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.REFUND);
 		verify(refundService, times(1)).refund(order.getId(), refundContext);
 	}
 

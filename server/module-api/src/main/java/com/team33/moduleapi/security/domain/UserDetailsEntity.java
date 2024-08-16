@@ -1,21 +1,24 @@
 package com.team33.moduleapi.security.domain;
 
-import com.team33.modulecore.core.user.domain.entity.User;
-import com.team33.modulecore.core.user.domain.UserStatus;
 import java.util.Collection;
 import java.util.Map;
-import lombok.Builder;
-import lombok.Getter;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import com.team33.modulecore.core.user.domain.UserStatus;
+import com.team33.modulecore.core.user.domain.entity.User;
+
+import lombok.Builder;
+import lombok.Getter;
+
 @Getter
 public class UserDetailsEntity implements UserDetails, OAuth2User {
 
-    private User user;
-    private Map<String, Object> attributes;
+    private final User user;
+    private final Map<String, Object> attributes;
 
     @Builder
     public UserDetailsEntity(User user, Map<String, Object> attributes) {

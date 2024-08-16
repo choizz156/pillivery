@@ -44,7 +44,7 @@ public class DistributedLockAop {
 		} catch (Throwable e) {
 			throw new RuntimeException("분산 락 관련 에러", e);
 		} finally {
-			unlock(rLock, key);
+			unlock(rLock);
 		}
 	}
 
@@ -54,12 +54,8 @@ public class DistributedLockAop {
 		}
 	}
 
-	private void unlock(RLock rLock, String key) {
-		try {
-			if (rLock.isHeldByCurrentThread())
-				rLock.unlock();
-		} catch (IllegalMonitorStateException e) {
-			log.warn("락 해제 실패 메시지 : {}, key : {}", e.getMessage(), key);
-		}
+	private void unlock(RLock rLock) {
+		if (rLock.isHeldByCurrentThread())
+			rLock.unlock();
 	}
 }

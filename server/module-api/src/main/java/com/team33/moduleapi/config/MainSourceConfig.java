@@ -4,7 +4,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -19,6 +18,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Profile("!test")
 @EnableJpaRepositories(
 	entityManagerFactoryRef = "mainEntityManager",
@@ -28,8 +30,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class MainSourceConfig {
 
-	@Autowired
-	private Environment env;
+	private final Environment env;
 
 	@Primary
 	@Bean

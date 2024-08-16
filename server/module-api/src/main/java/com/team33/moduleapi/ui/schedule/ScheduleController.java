@@ -3,6 +3,7 @@ package com.team33.moduleapi.ui.schedule;
 import java.time.ZonedDateTime;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +37,7 @@ public class ScheduleController {
 	}
 
 	@PatchMapping
-	public SingleResponseDto<?> changePeriod(
+	public SingleResponseDto<OrderItemSimpleResponse> changePeriod(
 		@RequestParam(name = "orderId") long orderId,
 		@RequestParam(name = "period") int period,
 		@RequestParam(name = "itemOrderId") long itemOrderId
@@ -48,9 +49,7 @@ public class ScheduleController {
 		);
 	}
 
-
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PostMapping
+	@DeleteMapping
 	public ZonedDateTime delete(
 		@RequestParam(name = "orderId") Long orderId,
 		@RequestParam(name = "itemOrderId") Long itemOrderId

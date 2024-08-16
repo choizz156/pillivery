@@ -36,7 +36,7 @@ public class UserPostDto {
     private String realName;
 
     @Pattern(
-        regexp = "^01([0|1|6|7|8|9])-?(\\d{3,4})-?(\\d{4})$",
+        regexp = "^01([016789])-?(\\d{3,4})-?(\\d{4})$",
         message = "올바른 연락처 형식이 아닙니다."
     )
     private String phone;

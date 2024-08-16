@@ -21,7 +21,7 @@ public class SubscriptionCancelController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/{orderId}")
-	public SingleResponseDto<?> refundSubscription(
+	public SingleResponseDto<String> refundSubscription(
 		@PathVariable long orderId
 	) {
 		orderStatusService.processSubscriptionCancel(orderId);

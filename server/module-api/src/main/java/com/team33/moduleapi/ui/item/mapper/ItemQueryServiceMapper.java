@@ -16,7 +16,6 @@ public class ItemQueryServiceMapper {
 	private static final int MAX_SIZE = 2000;
 	private static final int MIN_SIZE = 1;
 	private static final ItemSortOption DEFAULT_ITEM_SORT_OPTION = SALES;
-	private static final Sort.Direction DEFAULT_SORT_TYPE = Sort.Direction.DESC;
 
 	public PriceFilter toPriceFilterDto(int low, int high) {
 		return new PriceFilter(low, high);

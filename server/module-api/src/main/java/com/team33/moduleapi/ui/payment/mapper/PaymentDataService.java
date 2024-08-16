@@ -9,7 +9,6 @@ import net.jodah.expiringmap.ExpiringMap;
 @Component
 public class PaymentDataService {
 
-	// private ThreadLocal<PaymentData> store = new ThreadLocal<>();
 	private final ExpiringMap<Long, PaymentData> store = ExpiringMap.builder()
 		.expiration(10, TimeUnit.MINUTES)
 		.build();

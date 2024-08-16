@@ -8,12 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.common.ItemFindHelper;
-import com.team33.modulecore.core.common.OrderFindHelper;
-import com.team33.modulecore.core.item.application.ItemCommandService;
 import com.team33.modulecore.core.item.domain.entity.Item;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
-import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
@@ -26,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class OrderItemService {
 
-	private final ItemCommandService itemCommandService;
-	private final OrderFindHelper orderFindHelper;
 	private final ItemFindHelper itemFindHelper;
 	private final OrderQueryRepository orderQueryRepository;
 
@@ -49,29 +44,13 @@ public class OrderItemService {
 		OrderItem orderItem = orderQueryRepository.findSubscriptionOrderItemBy(orderItemId);
 		orderItem.applyNextPaymentDate(paymentDay);
 	}
-	//
-	// public OrderItem itemOrderCopy(Long lastOrderId, Order newOrder, OrderItem itemOrder) {
-	// 	Order order = orderFindHelper.findOrder(lastOrderId);
-	//
-	// 	OrderItem orderItem = new OrderItem(getItemOrder(itemOrder, order));
-	// 	// orderItem.setOrder(newOrder);
-	// 	return orderItem;
-	// }
-	//
-	// public void cancelItemOrder(Long orderId, OrderItem orderItem) {
-	// 	Order order = orderFindHelper.findOrder(orderId);
-	// 	OrderItem orderInOrderItem = getItemOrder(orderItem, order);
-	// 	orderInOrderItem.cancelSubscription();
-	// }
 
+	public OrderItem findOrderItem(long itemOrderId) {
+		return orderQueryRepository.findSubscriptionOrderItemBy(itemOrderId);
+	}
 
 	private Item findItem(long id) {
 		return itemFindHelper.findItem(id);
-	}
-
-	private OrderItem getItemOrder(OrderItem io, Order order) {
-		int i = order.getOrderItems().indexOf(io);
-		return order.getOrderItems().get(i);
 	}
 
 	private OrderItem makeOrderItem(OrderItemServiceDto dto) {
@@ -82,9 +61,5 @@ public class OrderItemService {
 			SubscriptionInfo.of(dto.isSubscription(), dto.getPeriod()),
 			dto.getQuantity()
 		);
-	}
-
-	public OrderItem findOrderItem(long itemOrderId) {
-		return orderQueryRepository.findSubscriptionOrderItemBy(itemOrderId);
 	}
 }

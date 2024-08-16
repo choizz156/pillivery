@@ -9,7 +9,7 @@ public enum OrderStatus {
 
 	REQUEST("주문 요청"),
 	COMPLETE("주문 완료"),
-	Refund("주문 취소"),
+	REFUND("주문 취소"),
 	SUBSCRIBE("구독 중"),
 	SUBSCRIBE_CANCEL("구독 취소");
 

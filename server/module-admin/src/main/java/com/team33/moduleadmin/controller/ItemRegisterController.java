@@ -79,23 +79,6 @@ public class ItemRegisterController {
 		itemRegisterService.createItem(information);
 	}
 
-	// @ResponseStatus(HttpStatus.CREATED)
-	// @PostMapping("/test")
-	// public void postItem1(@RequestBody BodyWrapper bodyWrapper) {
-	// 	lists.add(bodyWrapper);
-	//
-	// 	List<ItemWrapper> itemWrappers = lists.stream()
-	// 		.map(b -> b.getBody().getItems())
-	// 		.flatMap(List::stream)
-	// 		.collect(Collectors.toList());
-	//
-	// 	List<ItemDto> collect = toBusinessDto(itemWrappers);
-	// 	List<Information> information = ItemAttributeMapper.toInformation(collect);
-	// 	itemRegisterService.createItem(information);
-	// }
-
-
-
     private List<ItemDto> toBusinessDto(List<ItemWrapper> items) {
 
 

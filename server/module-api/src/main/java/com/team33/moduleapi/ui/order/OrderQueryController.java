@@ -38,7 +38,7 @@ public class OrderQueryController {
 	private final OrderItemMapper orderItemMapper;
 
 	@GetMapping
-	public MultiResponseDto<?> getOrders(
+	public MultiResponseDto<OrderSimpleResponseDto> getOrders(
 		@RequestParam long userId,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "8") int size,
@@ -55,7 +55,7 @@ public class OrderQueryController {
 	}
 
 	@GetMapping("/subscriptions")
-	public MultiResponseDto<?> getSubscriptionsOrder(
+	public MultiResponseDto<OrderItemSimpleResponse> getSubscriptionsOrder(
 		@RequestParam Long userId,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "8") int size,

@@ -9,6 +9,12 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.15.RELEASE"
     }
+
+
+}
+
+plugins {
+    id "org.sonarqube" version "5.0.0.4638"
 }
 
 subprojects {

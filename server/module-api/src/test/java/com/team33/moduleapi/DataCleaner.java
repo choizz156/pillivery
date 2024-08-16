@@ -35,9 +35,10 @@ public class DataCleaner implements InitializingBean {
 		tableNames = entities.stream()
 			.filter(e -> isEntity(e) && hasTableAnnotation(e))
 			.map(e -> {
-				String tableNames = e.getJavaType().getAnnotation(Table.class).name();
-				return tableNames.isBlank() ? CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()) :
-					tableNames;
+				String name = e.getJavaType().getAnnotation(Table.class).name();
+				return name.isBlank()
+					? CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName())
+					: name;
 			})
 			.collect(Collectors.toList());
 

@@ -21,7 +21,7 @@ import com.team33.modulecore.core.user.domain.UserRoles;
 import com.team33.modulecore.core.user.domain.UserStatus;
 import com.team33.modulecore.core.user.domain.entity.User;
 
-@Disabled
+@Disabled("로컬에서만 진행되는 테스트")
 @Commit
 @ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

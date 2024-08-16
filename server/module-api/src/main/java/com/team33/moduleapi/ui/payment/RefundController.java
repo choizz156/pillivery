@@ -26,12 +26,12 @@ public class RefundController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/{orderId}")
-	public SingleResponseDto<?> refund(
+	public SingleResponseDto<String> refund(
 		@PathVariable Long orderId,
 		@RequestBody RefundDto refundDto
 	) {
 
-		RefundContext refundContext = paymentMapper.toRefundContext(refundDto, orderId);
+		RefundContext refundContext = paymentMapper.toRefundContext(refundDto);
 		orderStatusService.processCancel(orderId , refundContext);
 
 		return new SingleResponseDto<>("complete");

@@ -60,7 +60,7 @@ public class OrderStatusService {
 	public void processCancel(Long orderId, RefundContext refundContext) {
 		Order order = orderFindHelper.findOrder(orderId);
 
-		order.changeOrderStatus(OrderStatus.Refund);
+		order.changeOrderStatus(OrderStatus.REFUND);
 
 		refundService.refund(orderId, refundContext);
 	}

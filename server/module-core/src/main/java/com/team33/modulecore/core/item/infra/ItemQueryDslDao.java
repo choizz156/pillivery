@@ -168,10 +168,12 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	) {
 		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
-		BooleanExpression categoryNameEq = Expressions.enumPath(CategoryName.class, "itemCategory").eq(categoryName);
+		
+		String itemCategory = "itemCategory";
+		BooleanExpression categoryNameEq = Expressions.enumPath(CategoryName.class, itemCategory).eq(categoryName);
 
 		List<ItemQueryDto> fetch = selectItemQueryDto()
-			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, "itemCategory"))
+			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, itemCategory))
 			.where(
 				categoryNameEq,
 				productNameContainsKeyword,
@@ -189,7 +191,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		JPAQuery<Long> count = queryFactory
 			.select(item.count())
 			.from(item)
-			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, "itemCategory"))
+			.innerJoin(item.itemCategory, Expressions.enumPath(CategoryName.class, itemCategory))
 			.where(
 				categoryNameEq,
 				productNameContainsKeyword,

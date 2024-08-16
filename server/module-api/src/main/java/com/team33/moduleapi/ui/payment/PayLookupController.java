@@ -23,7 +23,7 @@ public class PayLookupController {
 
 
 	@GetMapping("/{orderId}")
-	public SingleResponseDto<?> findOrder(
+	public SingleResponseDto<KakaoLookupResponse> findOrder(
 		@PathVariable Long orderId
 	) {
 
