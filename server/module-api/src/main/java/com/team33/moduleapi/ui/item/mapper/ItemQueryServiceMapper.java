@@ -2,7 +2,6 @@ package com.team33.moduleapi.ui.item.mapper;
 
 import static com.team33.modulecore.core.item.domain.ItemSortOption.*;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.item.domain.ItemSortOption;
