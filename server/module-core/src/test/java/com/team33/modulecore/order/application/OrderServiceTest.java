@@ -71,7 +71,7 @@ class OrderServiceTest {
 		given(userFindHelper.findUser(anyLong())).willReturn(user);
 
 		var orderService =
-			new OrderCreateService(orderCommandRepository, userFindHelper);
+			new OrderCreateService(orderCommandRepository);
 
 		//when
 		Order order = orderService.callOrder(orderItems, orderContext);
@@ -286,7 +286,7 @@ class OrderServiceTest {
 	void 주문_복사() throws Exception {
 		//given
 		var orderService =
-			new OrderCreateService(orderCommandRepository, null);
+			new OrderCreateService(orderCommandRepository);
 		Order order = getMockOrderWithOrderItem();
 
 		//when

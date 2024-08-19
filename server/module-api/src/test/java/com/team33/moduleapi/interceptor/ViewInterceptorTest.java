@@ -2,7 +2,7 @@ package com.team33.moduleapi.interceptor;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
@@ -16,7 +16,7 @@ class ViewInterceptorTest extends ApiTest {
 	@Autowired
 	private RedissonClient redissonClient;
 
-	@BeforeEach
+	@AfterEach
 	void setUpEach(){
 		redissonClient.getKeys().flushall();
 	}

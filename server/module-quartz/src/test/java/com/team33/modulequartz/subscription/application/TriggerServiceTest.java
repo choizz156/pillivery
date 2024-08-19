@@ -2,6 +2,7 @@ package com.team33.modulequartz.subscription.application;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.junit.jupiter.api.DisplayName;
@@ -9,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
 
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 
 class TriggerServiceTest {
 
@@ -23,6 +24,8 @@ class TriggerServiceTest {
 		OrderItem orderItem = OrderItem.builder()
 			.subscriptionInfo(SubscriptionInfo.of(true, 30))
 			.build();
+
+		orderItem.addPaymentDay(ZonedDateTime.now());
 
 		//when
 		Trigger trigger = triggerService.build(new JobKey("1", "1"), orderItem);

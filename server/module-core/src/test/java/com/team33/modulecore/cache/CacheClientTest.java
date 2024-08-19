@@ -209,13 +209,13 @@ class CacheClientTest {
 	void 아이템_조회수() throws Exception {
 		//given
 		RSet<Integer> viewedItem = redissonClient.getSet(VIEW_COUNT.name());
-		viewedItem.add(1);
-		viewedItem.add(2);
-		viewedItem.add(3);
+		viewedItem.add(11);
+		viewedItem.add(22);
+		viewedItem.add(33);
 
-		RHyperLogLog<Long> item1Count = redissonClient.getHyperLogLog(String.valueOf(1));
-		RHyperLogLog<Long> item2Count = redissonClient.getHyperLogLog(String.valueOf(2));
-		RHyperLogLog<Long> item3Count = redissonClient.getHyperLogLog(String.valueOf(3));
+		RHyperLogLog<Long> item1Count = redissonClient.getHyperLogLog(String.valueOf(11));
+		RHyperLogLog<Long> item2Count = redissonClient.getHyperLogLog(String.valueOf(22));
+		RHyperLogLog<Long> item3Count = redissonClient.getHyperLogLog(String.valueOf(33));
 
 		for (long i = 0; i < 100; i++) {
 			item1Count.add(i);
@@ -235,9 +235,9 @@ class CacheClientTest {
 		Map<String, Long> viewCount = cacheClient.getViewCount();
 
 		//then
-		assertThat(viewCount.get("1")).isEqualTo(100L);
-		assertThat(viewCount.get("2")).isEqualTo(50L);
-		assertThat(viewCount.get("3")).isEqualTo(30L);
+		assertThat(viewCount.get("11")).isEqualTo(100L);
+		assertThat(viewCount.get("22")).isEqualTo(50L);
+		assertThat(viewCount.get("33")).isEqualTo(30L);
 
 		assertThat(item1Count.count()).isZero();
 		assertThat(item2Count.count()).isZero();

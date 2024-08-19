@@ -167,6 +167,7 @@ class SubscriptionServiceTest {
 			.set("item", getMockItem())
 			.set("quantity", 3)
 			.set("subscriptionInfo", SubscriptionInfo.of(true, 30))
+			.set("subscriptionInfo.paymentDay", ZonedDateTime.now())
 			.set("item.information.price.realPrice", 1000)
 			.set("item.information.price.discountPrice", 500)
 			.sample();
