@@ -26,10 +26,10 @@ public class UserPostDto {
     @NotBlank(message = "닉네임은 공백일 수 없습니다.")
     private String displayName;
 
-    @NotBlank
+    @NotBlank(message = "공백일 수 없습니다")
     private String city;
 
-    @NotBlank
+    @NotBlank(message = "공백일 수 없습니다")
     private String detailAddress;
 
     @NotSpace(message = "공백이 있어서는 안됩니다.")
