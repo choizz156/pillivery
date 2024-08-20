@@ -1,15 +1,16 @@
 // package com.team33.moduleapi.restdocs;
 //
-// import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-// import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+// import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+// import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 //
-// import io.restassured.module.mockmvc.RestAssuredMockMvc;
-// import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 // import org.junit.jupiter.api.BeforeEach;
 // import org.junit.jupiter.api.extension.ExtendWith;
 // import org.springframework.restdocs.RestDocumentationContextProvider;
 // import org.springframework.restdocs.RestDocumentationExtension;
 // import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+//
+// import io.restassured.module.mockmvc.RestAssuredMockMvc;
+// import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 //
 // @ExtendWith(RestDocumentationExtension.class)
 // public abstract class MockRestDocsSupport {
