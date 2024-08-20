@@ -1,10 +1,10 @@
-plugins {
-    id "org.asciidoctor.jvm.convert" version "3.3.2"
-}
-
-configurations {
-    asciidoctorExt
-}
+//plugins {
+//    id "org.asciidoctor.jvm.convert" version "3.3.2"
+//}
+//
+//configurations {
+//    asciidoctorExt
+//}
 
 dependencies {
     //lombok
@@ -15,7 +15,7 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 
     //restdocs
-    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+//    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 
@@ -50,32 +50,32 @@ dependencies {
     implementation 'org.redisson:redisson-spring-boot-starter:3.22.0'
 
 }
+//
+//ext { // 전역 변수
+//    snippetsDir = file('build/generated-snippets')
+//}
+//
+//test {
+//    outputs.dir snippetsDir
+//}
 
-ext { // 전역 변수
-    snippetsDir = file('build/generated-snippets')
-}
+//asciidoctor.doFirst {
+//    delete file('src/main/resources/static/docs')
+//}
+//
+//asciidoctor {
+//    inputs.dir snippetsDir
+//    configurations 'asciidoctorExt'
+//
+//    sources { // 특정 파일만 html로 만든다.
+//        include("**/index.adoc")
+//    }
+//    baseDirFollowsSourceFile() // 다른 adoc 파일을 include 할 때 경로를 baseDir로 맞춘다.
+//    dependsOn test //작업순서 test -> asciidoctor
+//}
 
-test {
-    outputs.dir snippetsDir
-}
-
-asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
-}
-
-asciidoctor {
-    inputs.dir snippetsDir
-    configurations 'asciidoctorExt'
-
-    sources { // 특정 파일만 html로 만든다.
-        include("**/index.adoc")
-    }
-    baseDirFollowsSourceFile() // 다른 adoc 파일을 include 할 때 경로를 baseDir로 맞춘다.
-    dependsOn test //작업순서 test -> asciidoctor
-}
-
-bootJar {
-    dependsOn asciidoctor
-    from("${asciidoctor.outputDir}")
-    into 'static/docs'
-}
+//bootJar {
+//    dependsOn asciidoctor
+//    from("${asciidoctor.outputDir}")
+//    into 'static/docs'
+//}

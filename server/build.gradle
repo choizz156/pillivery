@@ -24,7 +24,7 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
 
     group = 'server'
-    version = '0.0.1-SNAPSHOT'
+    version = '0.0.1'
     sourceCompatibility = '11'
     targetCompatibility = '11'
     compileJava.options.encoding = 'UTF-8'
@@ -71,8 +71,11 @@ project(':module-core') {
 }
 
 project(':module-api') {
-    bootJar { enabled = true }
-    jar { enabled = false }
+    bootJar {
+        enabled = true
+        archiveFileName = "${project.name}-boot.jar"
+    }
+    jar { enabled = false  }
 
     dependencies {
         implementation project(':module-core')
