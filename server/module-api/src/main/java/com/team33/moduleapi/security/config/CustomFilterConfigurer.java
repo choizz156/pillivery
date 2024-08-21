@@ -35,7 +35,7 @@ public class CustomFilterConfigurer extends
 			builder.getSharedObject(AuthenticationManager.class);
 
 		JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(authenticationManager, objectMapper);
-		jwtLoginFilter.setFilterProcessesUrl("/users/login");
+		jwtLoginFilter.setFilterProcessesUrl("/users/auth");
 		jwtLoginFilter.setAuthenticationFailureHandler(new UserAuthFailureHandler(errorResponser));
 		jwtLoginFilter.setAuthenticationSuccessHandler(new UserAuthSuccessHandler(responseTokenService));
 
