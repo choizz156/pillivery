@@ -42,7 +42,7 @@ class OrderItemServiceTest {
 
 		ItemFindHelper itemFindHelper = mock(ItemFindHelper.class);
 
-		OrderItemService orderItemService = new OrderItemService(null, null, itemFindHelper, null);
+		OrderItemService orderItemService = new OrderItemService(itemFindHelper, null);
 
 		//when
 		List<OrderItem> orderItems = orderItemService.toOrderItems(dtos);
@@ -71,7 +71,7 @@ class OrderItemServiceTest {
 		OrderQueryRepository orderQueryRepository = mock(OrderQueryRepository.class);
 		when(orderQueryRepository.findSubscriptionOrderItemBy(anyLong())).thenReturn(orderItem);
 
-		OrderItemService orderItemService = new OrderItemService(null, null, null, orderQueryRepository);
+		OrderItemService orderItemService = new OrderItemService( null, orderQueryRepository);
 
 
 		//when
