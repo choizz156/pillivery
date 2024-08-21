@@ -55,18 +55,6 @@ public class OrderItem extends BaseEntity {
         this.item = item;
     }
 
-    // public OrderItem(OrderItem origin) {
-    //     this.subscriptionInfo = new SubscriptionInfo(
-    //         origin.getSubscriptionInfo().getPeriod(),
-    //         origin.getSubscriptionInfo().isSubscription()
-    //     );
-    //     this.quantity = origin.getQuantity();
-    //     this.nextDelivery = origin.getNextDelivery();
-    //     this.paymentDay = origin.getPaymentDay();
-    //     this.item = origin.getItem();
-    //     this.order = origin.getOrder();
-    // }
-
     public static OrderItem create(
         Item item,
         SubscriptionInfo subscriptionInfo,
@@ -114,6 +102,10 @@ public class OrderItem extends BaseEntity {
 
     public void changePeriod(int period) {
         this.subscriptionInfo.changePeriod(period);
+    }
+
+    public void addPaymentDay(ZonedDateTime paymentDay) {
+        this.subscriptionInfo.addPaymentDay(paymentDay);
     }
 
     public ZonedDateTime getPaymentDay(){

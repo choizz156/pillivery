@@ -1,6 +1,5 @@
 package com.team33.modulecore.core.order.domain;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import javax.persistence.Access;
@@ -39,13 +38,9 @@ public class SubscriptionInfo {
 
 	public static SubscriptionInfo of(boolean isSubscription, int period) {
 
-		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-
 		return SubscriptionInfo.builder()
 			.subscription(isSubscription)
 			.period(period)
-			.paymentDay(now)
-			.nextPaymentDay(now.plusDays(period))
 			.build();
 	}
 
@@ -55,6 +50,7 @@ public class SubscriptionInfo {
 
 	public void addPaymentDay(ZonedDateTime paymentDay) {
 		this.paymentDay = paymentDay;
+		changeNextPaymentDay(this.period);
 	}
 
 	public void applyNextPayment() {

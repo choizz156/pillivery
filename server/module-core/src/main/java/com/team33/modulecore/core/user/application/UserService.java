@@ -108,9 +108,4 @@ public class UserService {
 	public void deleteReviewId(Long userId, Long reviewId) {
 		findUser(userId).deleteReviewId(reviewId);
 	}
-
-	//TODO: apitest 리팩토링예정
-	public User getLoginUser() {
-		return null;
-	}
 }

@@ -5,13 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.core.common.UserFindHelper;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class OrderCreateService {
 
 	private final OrderCommandRepository orderCommandRepository;
-	private final UserFindHelper userFindHelper;
 
 	public Order callOrder(List<OrderItem> orderItems, OrderContext orderContext) {
 		Order order = createOrder(orderItems, orderContext);
@@ -41,7 +39,6 @@ public class OrderCreateService {
 	}
 
 	private Order createOrder(List<OrderItem> orderItems, OrderContext orderContext) {
-
 		return Order.create(orderItems, orderContext);
 	}
 }

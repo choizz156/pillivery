@@ -1,5 +1,7 @@
 package com.team33.modulecore.core.order.application;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +51,8 @@ public class OrderStatusService {
 		Order order = orderFindHelper.findOrder(orderId);
 
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
+		order.getOrderItems()
+			.forEach(orderItem -> orderItem.addPaymentDay(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))));
 		List<Long> orderedItemsId = getOrderedIds(order);
 
 		orderPaymentCodeService.addSid(orderId, sid);
