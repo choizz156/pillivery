@@ -1,7 +1,6 @@
 package com.team33.modulecore.core.order.domain.entity;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -96,8 +95,8 @@ public class OrderItem extends BaseEntity {
         this.subscriptionInfo.applyNextPayment();
     }
 
-    public Date getNextPaymentDay() {
-        return Date.from(subscriptionInfo.getNextPaymentDay().toInstant());
+    public ZonedDateTime getNextPaymentDay() {
+        return subscriptionInfo.getNextPaymentDay();
     }
 
     public void changePeriod(int period) {
