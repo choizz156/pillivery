@@ -1,0 +1,3 @@
+[submodule "server/module-quartz/src/main/resources/module-quartz/src/main/resources/config"]
+	path = server/module-quartz/src/main/resources/module-quartz/src/main/resources/config
+	url = https://github.com/choizz156/pillivery-config.git
