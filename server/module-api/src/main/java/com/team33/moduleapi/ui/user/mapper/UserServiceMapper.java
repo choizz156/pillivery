@@ -14,7 +14,8 @@ import com.team33.modulecore.core.user.dto.UserServicePostDto;
 public class UserServiceMapper {
 	public UserServicePostDto toUserPost(UserPostDto userDto) {
 		Address address = new Address(userDto.getCity(), userDto.getDetailAddress());
-		return UserServicePostDto.builder().email(userDto.getEmail())
+		return UserServicePostDto.builder()
+			.email(userDto.getEmail())
 			.displayName(userDto.getDisplayName())
 			.address(address)
 			.password(userDto.getPassword())

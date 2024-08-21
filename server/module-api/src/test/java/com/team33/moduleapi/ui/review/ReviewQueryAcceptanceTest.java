@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.UserAccount;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.ui.order.dto.OrderPostDto;
 import com.team33.moduleapi.ui.order.dto.OrderPostListDto;
 import com.team33.moduleapi.ui.order.mapper.OrderItemMapper;

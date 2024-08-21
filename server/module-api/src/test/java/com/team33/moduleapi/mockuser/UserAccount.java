@@ -1,4 +1,4 @@
-package com.team33.moduleapi;
+package com.team33.moduleapi.mockuser;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

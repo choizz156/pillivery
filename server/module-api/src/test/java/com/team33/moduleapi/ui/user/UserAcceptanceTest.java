@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.UserAccount;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.security.dto.LoginDto;
 import com.team33.moduleapi.ui.user.dto.UserPatchDto;
 import com.team33.moduleapi.ui.user.dto.UserPostDto;
@@ -267,7 +267,7 @@ class UserAcceptanceTest extends ApiTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(dto)
 				.when()
-				.post("/users/login")
+				.post("/users/auth")
 				.then()
 				.statusCode(HttpStatus.OK.value())
 				.header("Authorization", notNullValue())
@@ -305,7 +305,7 @@ class UserAcceptanceTest extends ApiTest {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(dto)
 			.when()
-			.post("/users/login")
+			.post("/users/auth")
 			.then()
 			.statusCode(HttpStatus.UNAUTHORIZED.value())
 			.body("status", equalTo(401))
@@ -327,7 +327,7 @@ class UserAcceptanceTest extends ApiTest {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(dto)
 			.when()
-			.post("/users/login")
+			.post("/users/auth")
 			.then()
 			.statusCode(HttpStatus.UNAUTHORIZED.value())
 			.body("status", equalTo(401))

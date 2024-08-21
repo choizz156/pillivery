@@ -26,7 +26,6 @@ public class UserAuthFailureHandler implements AuthenticationFailureHandler {
         HttpServletResponse response,
         AuthenticationException exception
     ) throws IOException {
-        log.error("로그인 실패");
         errorResponser.errorToJson(response, exception, HttpStatus.UNAUTHORIZED);
     }
 }

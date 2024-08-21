@@ -62,6 +62,7 @@ class PaymentAcceptanceTest extends ApiTest {
 	@MockBean
 	private ScheduleRegisterHandler scheduleRegisterHandler;
 
+
 	private KakaoApproveFacade approveFacade;
 
 	@BeforeAll
@@ -181,7 +182,7 @@ class PaymentAcceptanceTest extends ApiTest {
 
 	@DisplayName("스케쥴 등록 이벤트가 발행되면, 이벤트 핸들로가 동작한다.")
 	@Test
-	void 스케쥴_등록_이벤트() throws Exception{
+	void 스케쥴_등록_이벤트() throws Exception {
 		//given
 		ScheduleRegisteredEvent scheduleRegisteredEvent = new ScheduleRegisteredEvent(1L);
 

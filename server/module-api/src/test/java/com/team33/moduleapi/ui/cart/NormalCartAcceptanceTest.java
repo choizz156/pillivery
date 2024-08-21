@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.UserAccount;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.ui.cart.mapper.CartServiceMapper;
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
 import com.team33.modulecore.core.cart.application.MemoryCartClient;

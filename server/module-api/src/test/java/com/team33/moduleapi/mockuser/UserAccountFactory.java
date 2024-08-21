@@ -1,4 +1,4 @@
-package com.team33.moduleapi;
+package com.team33.moduleapi.mockuser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,25 +8,30 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-import com.team33.modulecore.core.user.domain.Address;
-import com.team33.modulecore.core.user.domain.UserRoles;
-import com.team33.modulecore.core.user.domain.entity.User;
-import com.team33.modulecore.core.user.domain.repository.UserRepository;
+import com.team33.moduleapi.ui.user.mapper.UserServiceMapper;
+import com.team33.moduleapi.ui.user.dto.UserPostDto;
+import com.team33.modulecore.core.user.application.UserService;
+import com.team33.modulecore.core.user.dto.UserServicePostDto;
 
-public class OauthAccountFactory implements WithSecurityContextFactory<OAuthAccount> {
+public class UserAccountFactory implements WithSecurityContextFactory<UserAccount> {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Override
-    public SecurityContext createSecurityContext(OAuthAccount annotation) {
-        User user = oauthUser(annotation);
-        userRepository.save(user);
+    @Autowired
+    private UserServiceMapper userServiceMapper;
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+    @Override
+    public SecurityContext createSecurityContext(UserAccount annotation) {
+
+        UserPostDto dto = getUserDto(annotation);
+        UserServicePostDto userServicePostDto = userServiceMapper.toUserPost(dto);
+        userService.join(userServicePostDto);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(dto.getEmail());
         UsernamePasswordAuthenticationToken authToken =
             new UsernamePasswordAuthenticationToken(
                 userDetails.getUsername(),
@@ -39,25 +44,16 @@ public class OauthAccountFactory implements WithSecurityContextFactory<OAuthAcco
         return context;
     }
 
-    private User oauthUser(OAuthAccount annotation) {
+    private UserPostDto getUserDto(UserAccount annotation) {
         String displayName = annotation.value()[0];
-        String email = "test@test.com";
-        String password = "sdfsdf232!";
+        String email = displayName + "@test.com";
+        String password = "1234";
         String city = "서울";
         String detailAddress = "압구정동";
         String realName = "name";
         String phone = annotation.value()[1];
-        String oauthId = "sub";
+        return UserPostDto.builder().detailAddress(detailAddress).password(password).phone(phone)
+            .city(city).realName(realName).email(email).displayName(displayName).build();
 
-        return User.builder()
-            .displayName(displayName)
-            .email(email)
-            .password(password)
-            .address(new Address(city, detailAddress))
-            .realName(realName)
-            .phone(phone)
-            .oauthId(oauthId)
-            .roles(UserRoles.USER)
-            .build();
     }
 }
