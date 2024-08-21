@@ -51,7 +51,7 @@ public class SecurityConfig {
 
 			.formLogin().disable()
 			.httpBasic().disable()
-			.csrf(Customizer.withDefaults())
+			.csrf().disable()
 			.cors(Customizer.withDefaults())
 			.exceptionHandling()
 			.accessDeniedHandler(new UserAccessDeniedHandler(errorResponser))
