@@ -4,7 +4,6 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +46,10 @@ class RefundAcceptanceTest extends ApiTest {
 	@MockBean
 	private RefundEventHandler refundEventHandler;
 
-	@BeforeEach
-	void setUp() {
+
+	@DisplayName("결제를 취소할 수 있다.")
+	@Test
+	void 결제_취소() throws Exception {
 		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.setNull("id")
 			.setNull("orderItems")
@@ -56,11 +57,6 @@ class RefundAcceptanceTest extends ApiTest {
 			.sample();
 
 		orderCommandRepository.save(order);
-	}
-
-	@DisplayName("결제를 취소할 수 있다.")
-	@Test
-	void 결제_취소() throws Exception {
 
 		//given
 		MockMvcRequestSpecification given = RestAssuredMockMvc.given()

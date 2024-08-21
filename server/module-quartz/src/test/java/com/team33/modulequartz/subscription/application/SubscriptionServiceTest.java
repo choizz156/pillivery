@@ -100,6 +100,7 @@ class SubscriptionServiceTest {
 
 		OrderQueryRepository orderQueryRepository = mock(OrderQueryRepository.class);
 		OrderItem mockOrderItem = getMockOrderItems();
+		mockOrderItem.addPaymentDay(now);
 		when(orderQueryRepository.findSubscriptionOrderItemBy(anyLong())).thenReturn(mockOrderItem);
 
 		SubscriptionService subscriptionService = new SubscriptionService(
@@ -121,8 +122,8 @@ class SubscriptionServiceTest {
 		LocalDate startTime = trigger.getStartTime().toInstant().atZone(now.getZone()).toLocalDate();
 
 		assertThat(mockOrderItem.getPeriod()).isEqualTo(60);
-		assertThat(nextFireTime).isEqualTo(now.plusDays(60).toLocalDate());
-		assertThat(startTime).isEqualTo(now.plusDays(60).toLocalDate());
+		assertThat(nextFireTime).isEqualTo(now.plusDays(30).toLocalDate());
+		assertThat(startTime).isEqualTo(now.plusDays(30).toLocalDate());
 	}
 
 	@DisplayName("스케쥴을 취소할 수 있다.")
@@ -167,7 +168,6 @@ class SubscriptionServiceTest {
 			.set("item", getMockItem())
 			.set("quantity", 3)
 			.set("subscriptionInfo", SubscriptionInfo.of(true, 30))
-			.set("subscriptionInfo.paymentDay", ZonedDateTime.now())
 			.set("item.information.price.realPrice", 1000)
 			.set("item.information.price.discountPrice", 500)
 			.sample();

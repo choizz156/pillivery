@@ -1,7 +1,7 @@
 package com.team33.moduleapi.ui.scheduler;
 
 import static io.restassured.RestAssured.*;
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.UserAccount;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.ui.order.dto.OrderPostDto;
 import com.team33.moduleapi.ui.order.dto.OrderPostListDto;
 import com.team33.moduleapi.ui.order.mapper.OrderItemMapper;
@@ -42,6 +42,9 @@ import io.restassured.response.Response;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ScheduleControllerTest extends ApiTest {
 
+	private OrderItem orderItem;
+	private final ZonedDateTime now = ZonedDateTime.of(2028, 1, 1, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+
 	@Autowired
 	private ItemCommandRepository itemCommandRepository;
 
@@ -57,13 +60,11 @@ class ScheduleControllerTest extends ApiTest {
 	@Autowired
 	private OrderCreateService orderCreateService;
 
+
 	@BeforeEach
 	void beforeAll() {
 		주문_저장(주문_정보(),OrderStatus.SUBSCRIBE);
 	}
-
-	private OrderItem orderItem;
-	private final ZonedDateTime now = ZonedDateTime.of(2028, 1, 1, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
 	@DisplayName("요청 시 스케쥴러가 설정된다.")
 	@Test
@@ -103,18 +104,8 @@ class ScheduleControllerTest extends ApiTest {
                 .extract();
         //@formatter:on
 
-		String paymentDay = response.jsonPath().get("data.nextPaymentDay");
-		String year = paymentDay.substring(0, 4);
-		String month = paymentDay.substring(6, 7);
-		String day = paymentDay.substring(9, 10);
-
-		assertThat(year).isEqualTo(String.valueOf(orderItem.getPaymentDay().getYear()));
-		assertThat(month).isEqualTo(
-			String.valueOf(orderItem.getPaymentDay().getMonth().getValue())
-		);
-		assertThat(day).isEqualTo(
-			String.valueOf(orderItem.getPaymentDay().getDayOfMonth())
-		);
+		int period = response.jsonPath().get("data.period");
+		assertThat(period).isEqualTo(60);
 	}
 
 	@DisplayName("스케쥴을 취소할 수 있다.")

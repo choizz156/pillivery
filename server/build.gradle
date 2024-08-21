@@ -75,7 +75,7 @@ project(':module-api') {
         enabled = true
         archiveFileName = "${project.name}-boot.jar"
     }
-    jar { enabled = false  }
+    jar { enabled = false }
 
     dependencies {
         implementation project(':module-core')
@@ -98,7 +98,7 @@ project(':module-quartz') {
     }
 }
 
-project(':module-admin'){
+project(':module-admin') {
     bootJar { enabled = false }
     jar { enabled = true }
 
@@ -108,7 +108,7 @@ project(':module-admin'){
     }
 }
 
-project(':module-external-api'){
+project(':module-external-api') {
     bootJar { enabled = false }
     jar { enabled = true }
 
@@ -117,7 +117,7 @@ project(':module-external-api'){
     }
 }
 
-project(':module-event'){
+project(':module-event') {
     bootJar { enabled = false }
     jar { enabled = true }
 
@@ -129,7 +129,7 @@ project(':module-event'){
     }
 }
 
-project(':module-logging'){
+project(':module-logging') {
     bootJar { enabled = false }
     jar { enabled = true }
 

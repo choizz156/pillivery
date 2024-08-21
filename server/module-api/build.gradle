@@ -56,6 +56,7 @@ ext { // 전역 변수
 }
 
 test {
+    useJUnitPlatform()
     outputs.dir snippetsDir
 }
 
@@ -64,6 +65,7 @@ asciidoctor.doFirst {
 }
 
 asciidoctor {
+    dependsOn test
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
 
@@ -72,11 +74,12 @@ asciidoctor {
     }
 
     baseDirFollowsSourceFile() // 다른 adoc 파일을 include 할 때 경로를 baseDir로 맞춘다.
-    dependsOn test //작업순서 test -> asciidoctor
+
 }
 
 bootJar {
     dependsOn asciidoctor
-    from("${asciidoctor.outputDir}")
-    into 'static/docs'
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
 }

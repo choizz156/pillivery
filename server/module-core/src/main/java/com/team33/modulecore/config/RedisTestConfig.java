@@ -3,6 +3,7 @@ package com.team33.modulecore.config;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -56,7 +57,7 @@ public class RedisTestConfig {
 
     @PostConstruct
     public void redisServer() throws IOException {
-        int port = isRedisRunning() ? findAvailablePort() : redisPort;
+        int port = isRedisRunning(redisPort) ? findAvailablePort() : redisPort;
         redisServer = new RedisServer(port);
         redisServer.start();
     }
@@ -71,8 +72,12 @@ public class RedisTestConfig {
     /**
      * Embedded Redis가 현재 실행중인지 확인
      */
-    private boolean isRedisRunning() throws IOException {
-        return isRunning(executeGrepProcessCommand(redisPort));
+    private boolean isRedisRunning(int port) throws IOException {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            return false;
+        } catch (IOException e) {
+            return true;
+        }
     }
 
     /**
@@ -80,10 +85,8 @@ public class RedisTestConfig {
      */
     public int findAvailablePort() throws IOException {
 
-
         for (int port = 10000; port <= 65535; port++) {
-            Process process = executeGrepProcessCommand(port);
-            if (!isRunning(process)) {
+            if (!isRedisRunning(port)) {
                 return port;
             }
         }
@@ -94,7 +97,7 @@ public class RedisTestConfig {
      * 해당 port를 사용중인 프로세스 확인하는 sh 실행
      */
     private Process executeGrepProcessCommand(final int redisPort) throws IOException {
-        String command = String.format("netstat -nat | grep LISTEN|grep %d", redisPort);
+        String command = String.format("netstat -nat | grep LISTEN | grep %d", redisPort);
         String[] shell = {"/bin/sh", "-c", command};
         return Runtime.getRuntime().exec(shell);
     }

@@ -9,16 +9,18 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import com.team33.moduleapi.OAuthAccount;
-import com.team33.moduleapi.UserAccount;
+import com.team33.moduleapi.mockuser.OAuthAccount;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.ui.user.dto.UserPatchDto;
 import com.team33.moduleapi.ui.user.dto.UserPostDto;
 import com.team33.moduleapi.ui.user.dto.UserPostOauthDto;
 import com.team33.moduleapi.ui.user.mapper.UserServiceMapper;
+import com.team33.modulecore.core.user.application.UserService;
 import com.team33.modulecore.core.user.domain.Address;
 import com.team33.modulecore.core.user.domain.UserRoles;
 import com.team33.modulecore.core.user.domain.entity.User;
@@ -28,6 +30,8 @@ import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.response.ExtractableResponse;
 
 class UserApiDocs extends WebRestDocsSupport {
+	@Autowired
+	private UserService userService;
 
 	@DisplayName("회원 가입")
 	@Test
@@ -205,7 +209,6 @@ class UserApiDocs extends WebRestDocsSupport {
 			.then()
 			.statusCode(HttpStatus.CREATED.value())
 			.header("Authorization", notNullValue())
-			.body(Matchers.containsString("소셜 회원 추가 정보 기입 완료"))
 			.apply(document("user-more-info",
 					preprocessRequest(modifyUris()
 						.scheme("http")
@@ -221,8 +224,10 @@ class UserApiDocs extends WebRestDocsSupport {
 						fieldWithPath("displayName").type(JsonFieldType.STRING).description("닉네임")
 					),
 					responseFields(
-						fieldWithPath("data").type(JsonFieldType.STRING)
-							.description("소셜 회원 추가 정보 기입 완료")
+						fieldWithPath("data.userId").description("사용자 아이디"),
+						fieldWithPath("data.normalCartId").description("일반 카트 아이디"),
+						fieldWithPath("data.subscriptionCartId").description("구독 카트 아이디"),
+						fieldWithPath("createTime").description("카트 생성 시간")
 					)
 				)
 			);
@@ -238,7 +243,7 @@ class UserApiDocs extends WebRestDocsSupport {
 		super.webSpec
 			.header("Authorization", token)
 			.when()
-			.delete("/users")
+			.delete("/users/{userId}", 1L)
 			.then()
 			.statusCode(HttpStatus.OK.value())
 			.body(Matchers.containsString("USER_WITHDRAWAL"))
@@ -251,7 +256,8 @@ class UserApiDocs extends WebRestDocsSupport {
 					preprocessResponse(prettyPrint()),
 					responseFields(
 						fieldWithPath("data").type(JsonFieldType.STRING)
-							.description("회원 탈퇴")
+							.description("회원 탈퇴"),
+						fieldWithPath("createTime").description("카트 생성 시간")
 					)
 				)
 			);
@@ -271,7 +277,7 @@ class UserApiDocs extends WebRestDocsSupport {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(userPatchDto)
 			.when()
-			.patch("/users")
+			.patch("/users/{userId}", 1L)
 			.then()
 			.statusCode(HttpStatus.OK.value())
 			.body(containsString(userPatchDto.getEmail()))
@@ -307,7 +313,8 @@ class UserApiDocs extends WebRestDocsSupport {
 							.description("소셜 로그인(false)"),
 						fieldWithPath("data.updatedAt").type(JsonFieldType.STRING)
 							.description("최근 수정일"),
-						fieldWithPath("data.createAt").type(JsonFieldType.STRING).description("회원가입 일")
+						fieldWithPath("data.createAt").type(JsonFieldType.STRING).description("회원가입 일"),
+						fieldWithPath("createTime").description("카트 생성 시간")
 					)
 				)
 			);
@@ -329,7 +336,7 @@ class UserApiDocs extends WebRestDocsSupport {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(userPatchDto)
 			.when()
-			.patch("/users")
+			.patch("/users/{userId}", 1L)
 			.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body(containsString("이미 존재하는 닉네임입니다."))
