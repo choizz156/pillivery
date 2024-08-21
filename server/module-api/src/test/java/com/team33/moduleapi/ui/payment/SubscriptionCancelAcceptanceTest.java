@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
@@ -27,7 +28,6 @@ import com.team33.moduleevent.handler.SubsCanceledEventHandler;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
-@DisplayName("정기 결제 취소 api 인수 테스트")
 @ExtendWith(MockitoExtension.class)
 class SubscriptionCancelAcceptanceTest extends ApiTest {
 

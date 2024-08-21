@@ -27,8 +27,6 @@ import com.team33.moduleevent.handler.RefundEventHandler;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
-
-@DisplayName("결제 취소 api 인수 테스트")
 @ExtendWith(MockitoExtension.class)
 class RefundAcceptanceTest extends ApiTest {
 
