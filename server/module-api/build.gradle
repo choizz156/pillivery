@@ -48,7 +48,7 @@ dependencies {
 
     //redis
     implementation 'org.redisson:redisson-spring-boot-starter:3.22.0'
-
+    testImplementation 'com.github.codemonstur:embedded-redis:1.4.3'
 }
 
 ext { // 전역 변수

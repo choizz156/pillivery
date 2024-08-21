@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,6 +28,7 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
 @DisplayName("정기 결제 취소 api 인수 테스트")
+@ExtendWith(MockitoExtension.class)
 class SubscriptionCancelAcceptanceTest extends ApiTest {
 
 	private Order order;
