@@ -1,0 +1,30 @@
+on: # 워크플로우 실행 조건
+  push:
+    branches: [ "main" ]
+
+  workflow_dispatch: # workflow 수동 실행 가능
+
+env:
+  ECR_REPO_URL: ${{ secrets.ECR_REPO_URL }}
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  compose: # 변경 가능
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4 # $GITHUB_WORKSPACE 기준으로 체크 아웃
+
+      - name: AWS credentials 셋팅
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: ECR 로그인 # ECR 사용을 위한 토큰 획득
+        run: aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        run: | # 빌드 후, 이미지 푸시까지 진행
+          docker compose build --push
