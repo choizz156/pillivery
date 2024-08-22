@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.mockuser.UserAccount;
-import com.team33.moduleapi.security.dto.LoginDto;
+import com.team33.modulecore.security.dto.LoginDto;
 import com.team33.moduleapi.ui.user.dto.UserPatchDto;
 import com.team33.moduleapi.ui.user.dto.UserPostDto;
 import com.team33.moduleapi.ui.user.dto.UserPostOauthDto;

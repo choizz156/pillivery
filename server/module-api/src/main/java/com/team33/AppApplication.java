@@ -2,20 +2,17 @@ package com.team33;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration;
 
-
-@EnableJpaAuditing
-@EnableAsync
-@SpringBootApplication(scanBasePackages = {
-	"com.team33.moduleapi",
-	"com.team33.modulequartz",
-	"com.team33.modulecore",
-	"com.team33.moduleadmin",
-	"com.team33.moduleexternalapi",
-	"com.team33.moduleevent"
-}
+@SpringBootApplication(
+	scanBasePackages = {
+		"com.team33.moduleapi",
+		"com.team33.modulecore",
+		"com.team33.moduleadmin",
+		"com.team33.moduleexternalapi",
+		"com.team33.moduleevent"
+	},
+	exclude = QuartzAutoConfiguration.class
 )
 public class AppApplication {
 

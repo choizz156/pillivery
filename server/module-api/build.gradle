@@ -6,13 +6,29 @@ configurations {
     asciidoctorExt
 }
 
+
+ext { // 전역 변수
+    snippetsDir = file('build/generated-snippets')
+}
+
 dependencies {
-    //lombok
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
 
     //db
     runtimeOnly 'com.h2database:h2'
+
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    //expiringMap
+    implementation 'net.jodah:expiringmap:0.5.11'
+
+    implementation 'com.google.guava:guava:33.2.1-jre'
+
+    //redis
+    implementation 'org.redisson:redisson-spring-boot-starter:3.22.0'
+
+    //security test
+    testImplementation 'org.springframework.security:spring-security-test'
 
     //restdocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
@@ -23,38 +39,15 @@ dependencies {
     testImplementation 'io.rest-assured:spring-mock-mvc:4.5.1'
     testImplementation 'io.rest-assured:rest-assured-all'
 
-    //jpa
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    //expiringMap
-    implementation 'net.jodah:expiringmap:0.5.9'
-
-    //jwt
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
-    //security
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    testImplementation 'org.springframework.security:spring-security-test'
-
     //fixturemonkey
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14'
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14'
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14'
 
-    implementation 'com.google.guava:guava:33.2.1-jre'
-
-    //redis
-    implementation 'org.redisson:redisson-spring-boot-starter:3.22.0'
-    testImplementation 'com.github.codemonstur:embedded-redis:1.4.3'
+    //lombok
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
 }
-
-ext { // 전역 변수
-    snippetsDir = file('build/generated-snippets')
-}
-
 test {
     useJUnitPlatform()
     outputs.dir snippetsDir

@@ -107,7 +107,7 @@ class SubscriptionServiceTest {
 			scheduler,
 			new TriggerService(),
 			null,
-			new OrderItemService(null, null, null, orderQueryRepository),
+			new OrderItemService( null, orderQueryRepository),
 			null,
 			null
 		);
@@ -141,7 +141,7 @@ class SubscriptionServiceTest {
 			scheduler,
 			new TriggerService(),
 			null,
-			new OrderItemService(null, null, null, orderQueryRepository),
+			new OrderItemService( null, orderQueryRepository),
 			null,
 			null
 		);

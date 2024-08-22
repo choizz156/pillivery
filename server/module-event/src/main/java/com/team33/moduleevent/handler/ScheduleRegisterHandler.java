@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.payment.kakao.application.events.ScheduleRegisteredEvent;
@@ -22,7 +21,6 @@ public class ScheduleRegisterHandler {
 	private static final String REGISETER_URL = "http://localhost:8080/schedules";
 	private final EventRepository eventsRepository;
 
-	@Async
 	@EventListener
 	public void onEventSet(ScheduleRegisteredEvent apiEvent) {
 

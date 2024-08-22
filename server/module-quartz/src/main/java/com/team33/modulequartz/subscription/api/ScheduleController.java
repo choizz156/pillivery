@@ -42,6 +42,7 @@ public class ScheduleController {
 		@RequestParam(name = "period") int period,
 		@RequestParam(name = "itemOrderId") long itemOrderId
 	) {
+
 		OrderItem orderItem = subscriptionService.changePeriod(orderId, period, itemOrderId);
 
 		return new SingleResponseDto<>(

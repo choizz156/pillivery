@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.response.SingleResponseDto;
-import com.team33.moduleapi.security.application.LogoutService;
-import com.team33.moduleapi.security.application.ResponseTokenService;
-import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.modulecore.security.application.LogoutService;
+import com.team33.modulecore.security.application.ResponseTokenService;
+import com.team33.modulecore.security.infra.JwtTokenProvider;
 import com.team33.moduleapi.ui.user.dto.UserIdDto;
 import com.team33.moduleapi.ui.user.dto.UserPatchDto;
 import com.team33.moduleapi.ui.user.dto.UserPostDto;

@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.team33.moduleapi.DataCleaner;
-import com.team33.moduleapi.security.infra.JwtTokenProvider;
+import com.team33.modulecore.security.infra.JwtTokenProvider;
 import com.team33.modulecore.core.common.UserFindHelper;
 import com.team33.modulecore.core.user.domain.entity.User;
 import com.team33.modulecore.core.user.domain.repository.UserRepository;

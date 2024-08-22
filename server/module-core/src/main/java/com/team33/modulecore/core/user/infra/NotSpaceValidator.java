@@ -15,7 +15,6 @@ public class NotSpaceValidator implements ConstraintValidator<NotSpace, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-      log.warn("value = {}", value);
         return hasWhitespace(value);
     }
 

@@ -1,4 +1,4 @@
-package com.team33.moduleapi;
+package com.team33.modulequartz;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.team33.modulecore.core.common.UserFindHelper;
@@ -30,10 +29,10 @@ public abstract class ApiTest {
 	protected UserRepository userRepository;
 
 	@Autowired
-	protected JwtTokenProvider jwtTokenProvider;
+	private DataCleaner dataCleaner;
 
 	@Autowired
-	private DataCleaner dataCleaner;
+	protected JwtTokenProvider jwtTokenProvider;
 
 	@BeforeEach
 	void beforeEach() throws Exception {
@@ -47,12 +46,10 @@ public abstract class ApiTest {
 	@AfterEach
 	void tearDown() {
 		dataCleaner.execute();
-		SecurityContextHolder.clearContext();
 	}
 
 	protected String getToken() {
-	    User loginUser = userFindHelper.findUser(1L);
-	    return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
+		User loginUser = userFindHelper.findUser(1L);
+		return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
 	}
-
 }

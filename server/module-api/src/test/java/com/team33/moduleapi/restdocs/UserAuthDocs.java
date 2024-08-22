@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import com.team33.moduleapi.security.dto.LoginDto;
+import com.team33.modulecore.security.dto.LoginDto;
 import com.team33.moduleapi.ui.user.dto.UserPostDto;
 import com.team33.moduleapi.ui.user.mapper.UserServiceMapper;
 import com.team33.modulecore.core.user.application.UserService;

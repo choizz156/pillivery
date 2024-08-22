@@ -20,25 +20,41 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     implementation 'mysql:mysql-connector-java'
 
+    //mapstruct
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
     //password-seucirty
     implementation 'org.springframework.security:spring-security-crypto'
+
+    //expiringMap
+    implementation 'net.jodah:expiringmap:0.5.11'
+
+
 
     //fixuture-monkey
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14")
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14")
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14")
 
+    //jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    //security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
     //lombok
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    //mapstruct
-    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
     testImplementation 'org.awaitility:awaitility:4.2.0'
+
 }
 
 // Querydsl 설정부

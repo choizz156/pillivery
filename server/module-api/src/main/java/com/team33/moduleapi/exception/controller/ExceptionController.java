@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import com.team33.moduleapi.exception.dto.ErrorResponse;
+import com.team33.modulecore.security.dto.ErrorResponse;
 import com.team33.modulecore.exception.BusinessLogicException;
 
 @RestControllerAdvice
