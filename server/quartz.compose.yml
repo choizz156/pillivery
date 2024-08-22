@@ -1,0 +1,62 @@
+version: '3.1'
+
+services:
+  
+  app:
+    build:
+      context: .
+      dockerfile: quartz.dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DB: scheduler
+    networks:
+      - service
+    deploy:
+      replicas: 1 # 컨테이너 갯수
+      resources: # 사용 가능한 자원 제한
+        limits:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    networks:
+      - service
+    volumes:
+      - mysql-volume:/var/lib/mysql
+      - ./db-init-scripts:/docker-entrypoint-initdb.d # 도커 실행할 경우 실행될 sql
+    restart: always
+    ports:
+      - '3306:3306'
+    command:
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: scheduler #scheduler로 교체해야함.
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Seoul
+
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ] # 헬스체크
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql-volume:  # 네임드 볼륨 정의
+
+networks:
+  service:  # 네트워크 정의
+  
