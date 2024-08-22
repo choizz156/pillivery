@@ -84,7 +84,7 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 		//@formatter:off
 		given
 		.when()
-			.post("/payments/subscriptions/cancel/{orderId}", 1)
+			.post("/api/payments/subscriptions/cancel/{orderId}", 1)
 		.then()
 			.log().all()
 			.statusCode(HttpStatus.CREATED.value())
@@ -113,7 +113,7 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 		//@formatter:off
 		given
 		.when()
-			.post("/payments/subscriptions/cancel/{orderId}", 1)
+			.post("/api/payments/subscriptions/cancel/{orderId}", 1)
 		.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())

@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Params {
 	PARTNER("pillivery"),
-	ONE_TIME_APPROVAL_URL ( "http://localhost:8080/payments/approve"),
-	SUBSCRIPTION_APPROVAL_URI ( "http://localhost:8080/payments/approve/subscription"),
-	CANCEL_URI ( "http://localhost:8080/payments/cancel"),
-	FAIL_URI ( "http://localhost:8080/payments/fail"),
+	ONE_TIME_APPROVAL_URL ( "http://localhost:8080/api/payments/approve"),
+	SUBSCRIPTION_APPROVAL_URI ( "http://localhost:8080/api/payments/approve/subscription"),
+	CANCEL_URI ( "http://localhost:8080/api/payments/cancel"),
+	FAIL_URI ( "http://localhost:8080/api/payments/fail"),
 	ONE_TIME_CID("TC0ONETIME"),
 	SUBSCRIP_CID("TCSUBSCRIP"),
 	CID("cid"),

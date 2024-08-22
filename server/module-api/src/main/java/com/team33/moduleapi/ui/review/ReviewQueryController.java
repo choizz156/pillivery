@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/reviews")
+@RequestMapping( "/api/reviews")
 public class ReviewQueryController {
 
 	private final ReviewQueryRepository reviewQueryRepository;
@@ -38,7 +38,7 @@ public class ReviewQueryController {
 		return new SingleResponseDto<>(reviewQueryDto);
 	}
 
-	@GetMapping("/items/{itemId}")
+	@GetMapping("/api/items/{itemId}")
 	public MultiResponseDto<?> getReviewByItemId(
 		@PathVariable long itemId,
 		@RequestParam(defaultValue = "1") int page,
@@ -53,7 +53,7 @@ public class ReviewQueryController {
 		return new MultiResponseDto<>(reviewsPage.getContent(), reviewsPage);
 	}
 
-	@GetMapping("/users/{userId}")
+	@GetMapping("/api/users/{userId}")
 	public MultiResponseDto<ReviewQueryDto> getReviewByUserId(
 		@PathVariable long userId,
 		@RequestParam(defaultValue = "1") int page,

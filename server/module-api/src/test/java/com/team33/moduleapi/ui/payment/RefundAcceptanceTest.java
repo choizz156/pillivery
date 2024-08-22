@@ -82,7 +82,7 @@ class RefundAcceptanceTest extends ApiTest {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(refundDto)
 		.when()
-			.post("/payments/refund/{orderId}", 1L)
+			.post("/api/payments/refund/{orderId}", 1L)
 		.then()
 			.log().all()
 			.statusCode(HttpStatus.CREATED.value())

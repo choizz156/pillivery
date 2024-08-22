@@ -40,7 +40,7 @@ public class KaKaoSubscriptionJob implements Job {
 		try {
 			webClientSender.sendToPost(
 				null,
-				"http://localhost:8080/payments/approve/subscriptions/" + orderId,
+				"http://localhost:8080/api/payments/approve/subscriptions/" + orderId,
 				null,
 				String.class
 			);

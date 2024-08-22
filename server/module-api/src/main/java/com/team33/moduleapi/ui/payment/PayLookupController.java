@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/payments/lookup")
+@RequestMapping("/api/payments/lookup")
 public class PayLookupController {
 
 	private final RequestService<KakaoLookupResponse> kakaoPayLookupService;

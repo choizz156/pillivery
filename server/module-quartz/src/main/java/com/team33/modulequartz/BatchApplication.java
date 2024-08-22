@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 	"com.team33.modulequartz",
 	"com.team33.modulecore",
 	"com.team33.moduleexternalapi",
+	"com.team33.modulelogging"
 }
 )
 public class BatchApplication {

@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews")
 public class ReviewCommandController {
 
 	private final ReviewCommandService reviewCommandService;

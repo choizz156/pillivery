@@ -31,7 +31,7 @@ import com.navercorp.fixturemonkey.javax.validation.plugin.JavaxValidationPlugin
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/items")
+@RequestMapping(value = "/api/items")
 public class ItemRegisterController {
 
     private final ItemRegisterService itemRegisterService;

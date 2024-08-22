@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/items")
+@RequestMapping("/api/items")
 public class ItemQueryController {
 
 	private final ItemQueryServiceMapper itemQueryServiceMapper;

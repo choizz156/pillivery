@@ -22,7 +22,7 @@ class ScheduleRegisterEventTest {
 
 		ApiEvent apiEvent = ApiEvent.builder()
 			.parameters("1")
-			.url("http://localhost:8080/schedules")
+			.url("http://localhost:8080/api/schedules")
 			.build();
 
 		//when

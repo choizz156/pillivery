@@ -65,7 +65,7 @@ class OrderCommandAcceptanceTest extends ApiTest {
 			.header("Authorization", getToken())
 			.log().all()
 			.when()
-			.post("/orders")
+			.post("/api/orders")
 			.then()
 			.statusCode(HttpStatus.CREATED.value())
 			.body("data.orderId", equalTo(1))
@@ -112,7 +112,7 @@ class OrderCommandAcceptanceTest extends ApiTest {
 			.queryParam("quantity", 2)
 			.header("Authorization", getToken())
 			.when()
-			.patch("/orders/subscriptions/1")
+			.patch("/api/orders/subscriptions/1")
 			.then()
 			.statusCode(HttpStatus.NO_CONTENT.value());
 	}

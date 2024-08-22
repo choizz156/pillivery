@@ -50,7 +50,7 @@ class UserAuthDocs extends WebRestDocsSupport {
 				)
 			)
 			.when()
-			.post("/users/auth")
+			.post("/api/users/auth")
 			.then()
 			.statusCode(HttpStatus.OK.value())
 			.header("Authorization", notNullValue())
@@ -87,7 +87,7 @@ class UserAuthDocs extends WebRestDocsSupport {
 					)
 				)
 				.when()
-				.post("/users/auth")
+				.post("/api/users/auth")
 				.then()
 				.extract();
 
@@ -126,7 +126,7 @@ class UserAuthDocs extends WebRestDocsSupport {
 				)
 			)
 			.when()
-			.post("/users/auth")
+			.post("/api/users/auth")
 			.then()
 			.log().all().extract();
 

@@ -51,7 +51,7 @@
 //         ExtractableResponse<MockMvcResponse> response =
 //             super.givenSpec
 //             .when()
-//                     .post("/payments/{orderId}",1)
+//                     .post("/api/payments/{orderId}",1)
 //             .then()
 //                     .assertThat()
 //                     .apply(document("payments",
@@ -93,7 +93,7 @@
 //             super.givenSpec
 //                     .param("pg_token", "pgtoken")
 //             .when()
-//                     .get("/payments/approve/{orderId}", 1)
+//                     .get("/api/payments/approve/{orderId}", 1)
 //             .then()
 //                     .assertThat()
 //                     .apply(document("payments-approve",
@@ -133,7 +133,7 @@
 //             super.givenSpec
 //                 .queryParam("orderId", 1).
 //                 when()
-//                 .post("/payments/kakao/subscription")
+//                 .post("/api/payments/kakao/subscription")
 //                 .then()
 //                 .assertThat()
 //                 .apply(

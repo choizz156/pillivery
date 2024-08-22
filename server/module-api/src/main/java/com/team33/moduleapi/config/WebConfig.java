@@ -19,6 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 
 		registry.addInterceptor(new ViewInterceptor(redissonClient))
-			.addPathPatterns("/items/{itemId}");
+			.addPathPatterns("/api/items/{itemId}");
 	}
 }

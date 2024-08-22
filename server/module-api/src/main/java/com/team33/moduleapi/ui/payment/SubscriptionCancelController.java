@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/payments/subscriptions/cancel")
+@RequestMapping("/api/payments/subscriptions/cancel")
 public class SubscriptionCancelController {
 
 	private final OrderStatusService orderStatusService;

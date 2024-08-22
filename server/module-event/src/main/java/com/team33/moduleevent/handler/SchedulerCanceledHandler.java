@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class SchedulerCanceledHandler {
 
-	private static final String SCHEDULES_CANCEL_URL = "http://localhost:8080/schedules/cancel";
+	private static final String SCHEDULES_CANCEL_URL = "http://localhost:8080/api/schedules/cancel";
 	private final EventRepository eventsRepository;
 
 	@EventListener

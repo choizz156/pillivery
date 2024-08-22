@@ -16,7 +16,7 @@ class AuthorizationTest extends ApiTest {
         given()
                 .log().all()
         .when()
-                .get("/users")
+                .get("/api/users")
         .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .log().all();
@@ -28,7 +28,7 @@ class AuthorizationTest extends ApiTest {
         given()
                 .log().all()
         .when()
-                .get("/orders/**")
+                .get("/api/orders/**")
         .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .log().all();
@@ -52,7 +52,7 @@ class AuthorizationTest extends ApiTest {
         given()
                 .log().all()
         .when()
-                .post("/reviews/**")
+                .post("/api/reviews/**")
         .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .log().all();
@@ -88,7 +88,7 @@ class AuthorizationTest extends ApiTest {
         given()
                 .log().all()
         .when()
-                .post("/payments/1")
+                .post("/api/payments/1")
         .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .log().all();

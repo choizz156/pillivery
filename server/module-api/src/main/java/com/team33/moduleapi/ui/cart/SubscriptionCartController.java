@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/carts/subscription/")
+@RequestMapping("/api/carts/subscription")
 public class SubscriptionCartController {
 
 	private final SubscriptionCartItemService subscriptionCartService;

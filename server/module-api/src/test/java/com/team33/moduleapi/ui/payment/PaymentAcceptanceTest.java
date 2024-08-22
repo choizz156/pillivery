@@ -115,7 +115,7 @@ class PaymentAcceptanceTest extends ApiTest {
 		//@formatter:off
             given
             .when()
-                    .post("/payments/{orderId}",1)
+                    .post("/api/payments/{orderId}",1)
             .then()
                     .statusCode(HttpStatus.CREATED.value())
                     .expect(jsonPath("$.data.tid").value("tid"))
@@ -139,7 +139,7 @@ class PaymentAcceptanceTest extends ApiTest {
             given
                     .param("pg_token", "pgtoken")
             .when()
-                    .get("/payments/approve/{orderId}",1)
+                    .get("/api/payments/approve/{orderId}",1)
             .then()
                     .log().all()
 				.expect(jsonPath("$.data.item_name").exists())
@@ -166,7 +166,7 @@ class PaymentAcceptanceTest extends ApiTest {
 		//@formatter:off
             given
             .when()
-                    .post("/payments/approve/subscriptions/{orderId}", 1)
+                    .post("/api/payments/approve/subscriptions/{orderId}", 1)
             .then()
 					.log().all()
 				.statusCode(HttpStatus.OK.value())

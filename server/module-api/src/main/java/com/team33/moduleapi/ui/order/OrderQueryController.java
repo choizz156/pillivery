@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Validated
 @RestController
-@RequestMapping(value = "/orders")
+@RequestMapping("/api/orders")
 public class OrderQueryController {
 
 	private final OrderQueryService orderQueryService;

@@ -35,12 +35,12 @@ public class SecurityConfig {
 	private final ErrorResponser errorResponser;
 	private final ObjectMapper objectMapper;
 
-	private static final String USER_URL = "/users/**";
+	private static final String USER_URL = "/api/users/**";
 	private static final String CART_URL = "/carts/**";
-	private static final String ORDERS = "/orders/**";
-	private static final String REVIEWS = "/reviews/**";
+	private static final String ORDERS = "/api/orders/**";
+	private static final String REVIEWS = "/api/reviews/**";
 	private static final String SCHEDULE_URL = "/schedule";
-	private static final String PAYMENTS_URL = "/payments/{orderId}";
+	private static final String PAYMENTS_URL = "/api/payments/{orderId}";
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

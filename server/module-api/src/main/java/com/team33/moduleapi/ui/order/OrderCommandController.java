@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Validated
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/orders")
 public class OrderCommandController {
 
 	private final OrderCreateService orderCreateService;

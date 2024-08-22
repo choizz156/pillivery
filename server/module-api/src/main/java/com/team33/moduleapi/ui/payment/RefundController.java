@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/payments/refund")
+@RequestMapping("/api/payments/refund")
 public class RefundController {
 
 	private final PaymentMapper paymentMapper;

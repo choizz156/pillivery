@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("/carts/normal")
+@RequestMapping("/api/carts/normal")
 @RestController
 public class NormalCartController {
 

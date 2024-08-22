@@ -26,7 +26,7 @@ import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/payments")
+@RequestMapping("/api/payments")
 @RestController
 public class PayController {
 

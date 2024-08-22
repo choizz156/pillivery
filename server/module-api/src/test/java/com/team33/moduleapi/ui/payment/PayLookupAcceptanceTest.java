@@ -66,7 +66,7 @@ class PayLookupAcceptanceTest extends ApiTest {
 		//when
 		given
 		.when()
-			.get("/payments/lookup/{orderId}", 1)
+			.get("/api/payments/lookup/{orderId}", 1)
 		.then()
 			.log().all()
 		.statusCode(HttpStatus.OK.value())

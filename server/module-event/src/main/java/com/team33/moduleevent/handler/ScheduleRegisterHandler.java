@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ScheduleRegisterHandler {
 
-	private static final String REGISETER_URL = "http://localhost:8080/schedules";
+	private static final String REGISETER_URL = "http://localhost:8080/api/schedules";
 	private final EventRepository eventsRepository;
 
 	@EventListener
