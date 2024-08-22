@@ -31,8 +31,8 @@ public class PaymentDateUpdatedHandler {
 		try {
 			orderItemService.updateNextPaymentDate(apiEvent.getPaymentDay(), apiEvent.getOrderItemId());
 		} catch (DataAccessException e) {
-			log.error("다음 결제일 저장 에러 = {}, id = {}, 주기 = {}", e.getMessage(),
-				apiEvent.getOrderItemId()
+			log.error("다음 결제일 저장 에러 = {}, id = {}, 결제일 = {}", e.getMessage(),
+				apiEvent.getOrderItemId(), apiEvent.getPaymentDay()
 			);
 			throw new DataSaveException(e.getMessage());
 		}

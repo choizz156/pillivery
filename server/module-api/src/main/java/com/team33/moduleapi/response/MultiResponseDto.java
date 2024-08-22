@@ -1,4 +1,4 @@
-package com.team33.moduleapi.dto;
+package com.team33.moduleapi.response;
 
 import java.time.ZonedDateTime;
 import java.util.List;

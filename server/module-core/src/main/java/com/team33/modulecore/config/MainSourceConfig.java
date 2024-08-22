@@ -1,4 +1,4 @@
-package com.team33.moduleapi.config;
+package com.team33.modulecore.config;
 
 import java.util.Properties;
 
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @EnableJpaRepositories(
 	entityManagerFactoryRef = "mainEntityManager",
 	transactionManagerRef = "mainTransactionManager",
-	basePackages = {"com.team33.modulecore", "com.team33.moduleevent", "com.team33.moduleadmin"}
+	basePackages = {"com.team33.modulecore"}
 )
 @Configuration
 public class MainSourceConfig {
@@ -45,7 +45,7 @@ public class MainSourceConfig {
 	public LocalContainerEntityManagerFactoryBean mainEntityManager() {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(mainDataSource());
-		em.setPackagesToScan("com.team33.modulecore", "com.team33.moduleevent", "com.team33.moduleadmin");
+		em.setPackagesToScan("com.team33.modulecore", "com.team33.moduleevent");
 		em.setJpaProperties(getJpaProperties());
 
 		HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();

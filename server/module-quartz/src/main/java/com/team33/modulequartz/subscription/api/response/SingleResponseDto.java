@@ -1,7 +1,8 @@
-package com.team33.moduleapi.dto;
+package com.team33.modulequartz.subscription.api.response;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
 import lombok.Getter;
 
 @Getter

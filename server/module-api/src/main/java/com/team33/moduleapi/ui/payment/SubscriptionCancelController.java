@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 
 import lombok.RequiredArgsConstructor;

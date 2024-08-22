@@ -15,14 +15,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.team33.modulecore.aop.DistributedLockAop;
-import com.team33.modulecore.config.RedisTestConfig;
+import com.team33.modulecore.config.redis.EmbededRedisConfig;
 import com.team33.modulecore.core.item.domain.Information;
 import com.team33.modulecore.core.item.domain.Statistic;
 import com.team33.modulecore.core.item.domain.entity.Item;
 
 @ActiveProfiles("test")
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {RedisTestConfig.class, ItemStarService.class, Item.class, DistributedLockAop.class})
+@ContextConfiguration(classes = {EmbededRedisConfig.class, ItemStarService.class, Item.class, DistributedLockAop.class})
 @SpringBootTest
 public class ItemStarServiceTest {
 

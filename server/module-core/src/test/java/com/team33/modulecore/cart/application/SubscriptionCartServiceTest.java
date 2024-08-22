@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.config.RedisTestConfig;
+import com.team33.modulecore.config.redis.EmbededRedisConfig;
 import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
 import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
@@ -32,7 +32,7 @@ import com.team33.modulecore.core.cart.domain.repository.CartRepository;
 @ActiveProfiles("test")
 @Transactional
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartClient.class, CartRepository.class})
+@ContextConfiguration(classes = {EmbededRedisConfig.class, MemoryCartClient.class, CartRepository.class})
 @EnableJpaRepositories("com.team33.modulecore.core.cart")
 @EntityScan("com.team33.modulecore.core")
 @SpringBootTest

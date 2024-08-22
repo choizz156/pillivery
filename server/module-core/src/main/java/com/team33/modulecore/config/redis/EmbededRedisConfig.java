@@ -1,4 +1,4 @@
-package com.team33.modulecore.config;
+package com.team33.modulecore.config.redis;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,10 +23,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import redis.embedded.RedisServer;
 
-@Profile("test")
+@Profile("test || local")
 @Slf4j
 @Configuration
-public class RedisTestConfig {
+public class EmbededRedisConfig {
 
 	@Value("${spring.data.redis.port}")
 	private int defaultRedisPort;

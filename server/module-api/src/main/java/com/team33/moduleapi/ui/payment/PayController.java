@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.ui.payment.dto.KaKaoApproveResponseDto;
 import com.team33.moduleapi.ui.payment.dto.KaKaoPayNextUrlDto;
 import com.team33.moduleapi.ui.payment.mapper.PaymentData;

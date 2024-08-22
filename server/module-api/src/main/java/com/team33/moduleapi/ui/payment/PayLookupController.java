@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.payment.application.request.RequestService;

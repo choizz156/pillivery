@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
 import com.team33.modulecore.cache.dto.CachedMainItems;
-import com.team33.modulecore.config.RedisTestConfig;
+import com.team33.modulecore.config.redis.EmbededRedisConfig;
 import com.team33.modulecore.core.category.domain.Categories;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
@@ -40,7 +40,7 @@ import com.team33.modulecore.core.item.dto.query.PriceFilter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")
 @EnableAutoConfiguration
-@ContextConfiguration(classes = RedisTestConfig.class)
+@ContextConfiguration(classes = EmbededRedisConfig.class)
 @SpringBootTest
 class CacheClientTest {
 

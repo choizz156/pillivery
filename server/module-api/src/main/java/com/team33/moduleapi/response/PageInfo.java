@@ -1,4 +1,4 @@
-package com.team33.moduleapi.dto;
+package com.team33.moduleapi.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

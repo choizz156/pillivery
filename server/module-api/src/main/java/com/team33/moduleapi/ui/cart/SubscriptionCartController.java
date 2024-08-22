@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.ui.cart.dto.CartResponseDto;
 import com.team33.moduleapi.ui.cart.dto.SubscriptionCartItemPostDto;
 import com.team33.moduleapi.ui.cart.mapper.CartResponseMapper;

@@ -1,4 +1,4 @@
-package com.team33.modulecore.config;
+package com.team33.modulecore.config.redis;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-@Profile("!test")
+@Profile("real")
 @Configuration
 public class RedisConfig {
 

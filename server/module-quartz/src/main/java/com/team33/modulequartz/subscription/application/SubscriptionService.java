@@ -43,6 +43,7 @@ public class SubscriptionService {
 			.forEach(orderItem -> startSchedule(orderId, orderItem));
 	}
 
+	@Transactional
 	public OrderItem changePeriod(long orderId, int period, long itemOrderId) {
 
 		OrderItem orderItem = orderItemService.findOrderItem(itemOrderId);

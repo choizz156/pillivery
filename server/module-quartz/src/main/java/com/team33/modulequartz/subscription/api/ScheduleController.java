@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.schedule;
+package com.team33.modulequartz.subscription.api;
 
 import java.time.ZonedDateTime;
 
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.dto.SingleResponseDto;
-import com.team33.moduleapi.ui.order.dto.OrderItemSimpleResponse;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulequartz.subscription.api.dto.OrderItemSimpleResponse;
+import com.team33.modulequartz.subscription.api.response.SingleResponseDto;
 import com.team33.modulequartz.subscription.application.SubscriptionService;
 
 import lombok.RequiredArgsConstructor;

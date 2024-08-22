@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.dto.MultiResponseDto;
-import com.team33.moduleapi.dto.SingleResponseDto;
+import com.team33.moduleapi.response.MultiResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.ui.review.mapper.ReviewPageMapper;
 import com.team33.modulecore.core.review.domain.repository.ReviewQueryRepository;
 import com.team33.modulecore.core.review.dto.query.ReviewPage;

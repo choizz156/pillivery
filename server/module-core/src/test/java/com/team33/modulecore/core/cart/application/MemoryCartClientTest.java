@@ -18,7 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.config.RedisTestConfig;
+import com.team33.modulecore.config.redis.EmbededRedisConfig;
 import com.team33.modulecore.core.cart.domain.CartItemVO;
 import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.cart.domain.CartVO;
@@ -32,7 +32,7 @@ import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {RedisTestConfig.class, MemoryCartClient.class})
+@ContextConfiguration(classes = {EmbededRedisConfig.class, MemoryCartClient.class})
 @SpringBootTest
 class MemoryCartClientTest {
 
