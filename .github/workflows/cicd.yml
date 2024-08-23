@@ -6,13 +6,13 @@ on:
 
 env:
   ECR_REPO_URL: ${{ secrets.ECR_REPO_URL }}
-  IMAGE_TAG: ${{ github.sha }}.
+  IMAGE_TAG: ${{ github.sha }}
   MYSQL_USER: ${{ secrets.MYSQL_USER }}
   MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
   MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
 
 jobs:
-  compose: # 변경 가능
+  compose:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,8 +39,19 @@ jobs:
 
       - name: Set correct permissions for db-init-scripts
         run: |
-          sudo chown -R $USER:$USER ./server/db-init-scripts
-          chmod -R 755 ./server/db-init-scripts
+          sudo chmod -R 755 ./server/module-quartz/db-init-scripts
+          sudo chmod 777 ./server/module-quartz/db-init-scripts/init.sql
+
+      - name: Change ownership of target directory on remote server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PEM_KEY }}
+          script: |
+            sudo mkdir -p $HOME/${{ github.repository_id }}
+            sudo chown -R ${{ secrets.USERNAME }}:${{ secrets.USERNAME }} $HOME/${{ github.repository_id }}
+
 
       - name: 배포 파일 서버로 복사
         uses: appleboy/scp-action@v0.1.7
@@ -48,7 +59,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PEM_KEY }}
-          source: "./server/quartz.compose.yml, ./server/db-init-scripts/*"
+          source: "./server/quartz.compose.yml, ./server/module-quartz/db-init-scripts/init.sql"
           target: "$HOME/${{ github.repository_id }}"
 
       - name: 도커 컴포즈 배포
@@ -61,5 +72,5 @@ jobs:
           script: |
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
             cd $HOME/${{ github.repository_id }}/server
-            docker compose -f quartz.compose.yml up 
-          
+            docker-compose down -v
+            docker compose -f quartz.compose.yml up
