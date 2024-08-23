@@ -1,0 +1,30 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      repositories:
+        enabled: false
+
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        jdbc:
+          batch_size: 100
+    hibernate:
+      ddl-auto: create
+
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler-name: QRTZ_
+          threadPool:
+            threadCount: 5
