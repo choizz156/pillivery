@@ -33,7 +33,7 @@ public class RestTemplateSender {
 
 		checkSuccess(exchange);
 
-		return exchange.getBody();
+		return exchange.getBody() != null ? exchange.getBody() : (T)exchange.getStatusCode();
 	}
 
 	public <T> void sendToPost(String params, String url, HttpHeaders headers, Class<T> responseClass) {

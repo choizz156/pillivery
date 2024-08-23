@@ -29,6 +29,7 @@ public class EventApiForwarder {
 		EventSender kakaoApiEventSender,
 		EventSender scheduleRegisterEventSender,
 		EventSender scheduleCancelEventSender,
+		EventSender schedulerPeriodChangedEventSender,
 		EventDispatcher eventDispatcher
 	) {
 		this.eventsRepository = eventsRepository;
@@ -40,7 +41,7 @@ public class EventApiForwarder {
 		eventTypeEventSenderMap.put(EventType.SCHEDULE_REGISTERED, scheduleRegisterEventSender);
 		eventTypeEventSenderMap.put(EventType.SCHEDULE_CANCELED, scheduleCancelEventSender);
 		eventTypeEventSenderMap.put(EventType.SUBS_CANCELED,kakaoApiEventSender);
-
+		eventTypeEventSenderMap.put(EventType.SCHEDULE_CHANGED, schedulerPeriodChangedEventSender);
 	}
 
 	@Transactional

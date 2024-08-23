@@ -42,7 +42,7 @@ class OrderItemServiceTest {
 
 		ItemFindHelper itemFindHelper = mock(ItemFindHelper.class);
 
-		OrderItemService orderItemService = new OrderItemService(itemFindHelper, null);
+		OrderItemService orderItemService = new OrderItemService(itemFindHelper, null, null);
 
 		//when
 		List<OrderItem> orderItems = orderItemService.toOrderItems(dtos);
@@ -71,8 +71,7 @@ class OrderItemServiceTest {
 		OrderQueryRepository orderQueryRepository = mock(OrderQueryRepository.class);
 		when(orderQueryRepository.findSubscriptionOrderItemBy(anyLong())).thenReturn(orderItem);
 
-		OrderItemService orderItemService = new OrderItemService( null, orderQueryRepository);
-
+		OrderItemService orderItemService = new OrderItemService(null, orderQueryRepository, null);
 
 		//when
 		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));

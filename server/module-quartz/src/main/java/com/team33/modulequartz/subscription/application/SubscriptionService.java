@@ -43,18 +43,15 @@ public class SubscriptionService {
 			.forEach(orderItem -> startSchedule(orderId, orderItem));
 	}
 
-	@Transactional
-	public OrderItem changePeriod(long orderId, int period, long itemOrderId) {
+	public Trigger changeTrigger(long orderId, long itemOrderId) {
 
 		OrderItem orderItem = orderItemService.findOrderItem(itemOrderId);
-		orderItemService.changeItemPeriod(period, orderItem);
 
 		JobKey jobKey = JobKeyGenerator.build(orderId, orderItem.getItem().getProductName());
 		Trigger newTrigger = triggerService.build(jobKey, orderItem);
 
 		changeTrigger(newTrigger);
-
-		return orderItem;
+		return newTrigger;
 	}
 
 	@Transactional
