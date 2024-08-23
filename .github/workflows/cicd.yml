@@ -7,6 +7,9 @@ on:
 env:
   ECR_REPO_URL: ${{ secrets.ECR_REPO_URL }}
   IMAGE_TAG: ${{ github.sha }}
+  MYSQL_USER: ${{ secrets.MYSQL_USER }}
+  MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+  MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
 
 jobs:
   compose: # 변경 가능
@@ -49,8 +52,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PEM_KEY }}
-          envs: ECR_REPO_URL,IMAGE_TAG
+          envs: ECR_REPO_URL,IMAGE_TAG,MYSQL_USER,MYSQL_PASSWORD,MYSQL_ROOT_PASSWORD
           script: |
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
             cd $HOME/${{ github.repository_id }}/server
             docker compose -f quartz.compose.yml up -d
+          
