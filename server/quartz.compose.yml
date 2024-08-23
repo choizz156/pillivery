@@ -35,7 +35,7 @@ services:
       - service
     volumes:
       - mysql-volume:/var/lib/mysql
-      - ./db-init-scripts:/docker-entrypoint-initdb.d # 도커 실행할 경우 실행될 sql
+      - ./quartz-module/db-init-scripts:/docker-entrypoint-initdb.d # 도커 실행할 경우 실행될 sql
     restart: always
     ports:
       - '3306:3306'
