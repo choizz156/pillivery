@@ -39,7 +39,7 @@ jobs:
 
       - name: Set correct permissions for db-init-scripts
         run: |
-          chmod 755 ./server/db-init-scripts/init.sql
+          sudo chown -R $USER:$USER ./server/db-init-scripts
           chmod -R 755 ./server/db-init-scripts
 
       - name: 배포 파일 서버로 복사
