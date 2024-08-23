@@ -72,5 +72,4 @@ jobs:
           script: |
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
             cd $HOME/${{ github.repository_id }}/server
-            docker compose down -v
-            docker compose -f quartz.compose.yml up
+            docker compose -f quartz.compose.yml up -d
