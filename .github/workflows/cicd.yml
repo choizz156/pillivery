@@ -28,4 +28,4 @@ jobs:
       - name: Build, tag, and push docker image to Amazon ECR
         run: | # 빌드 후, 이미지 푸시까지 진행
           cd ./server
-          docker compose -f quartz.compose.yml --build --push
+          docker compose -f quartz.compose.yml build --push
