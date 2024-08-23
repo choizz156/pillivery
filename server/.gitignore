@@ -371,10 +371,7 @@ gradle-app.setting
 application-auth.yml
 application-local.yml
 application-quartz.yml
-application-test.yml
-application-prod1.yml
-application-prod.yml
-application-quartztest.yml
+
 
 *.jqwik-database
 settings.gradle
