@@ -6,7 +6,7 @@ on:
 
 env:
   ECR_REPO_URL: ${{ secrets.ECR_REPO_URL }}
-  IMAGE_TAG: ${{ github.sha }}
+  IMAGE_TAG: ${{ github.sha }}.
   MYSQL_USER: ${{ secrets.MYSQL_USER }}
   MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
   MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
@@ -43,7 +43,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PEM_KEY }}
-          source: "./server/quartz.compose.yml"
+          source: "./server/quartz.compose.yml, ./server/db-init-scripts"
           target: "$HOME/${{ github.repository_id }}"
 
       - name: 도커 컴포즈 배포
