@@ -1,8 +1,8 @@
-on: # 워크플로우 실행 조건
+on:
   push:
     branches: [ "main" ]
 
-  workflow_dispatch: # workflow 수동 실행 가능
+  workflow_dispatch: 
 
 env:
   ECR_REPO_URL: ${{ secrets.ECR_REPO_URL }}
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4 # $GITHUB_WORKSPACE 기준으로 체크 아웃
+      - uses: actions/checkout@v4 
         with:
           submodules: recursive
           token: ${{ secrets.SECRET_TOKEN }}
@@ -26,10 +26,31 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: ECR 로그인 # ECR 사용을 위한 토큰 획득
+      - name: ECR 로그인 
         run: aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
 
       - name: Build, tag, and push docker image to Amazon ECR
-        run: | # 빌드 후, 이미지 푸시까지 진행
+        run: | 
           cd ./server
           docker compose -f quartz.compose.yml build --push
+
+      - name: 배포 파일 서버로 복사
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PEM_KEY }}
+          source: "./server/quartz.compose.yml"
+          target: "$HOME/${{ github.repository_id }}"
+
+      - name: 도커 컴포즈 배포
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PEM_KEY }}
+          envs: ECR_REPO_URL,IMAGE_TAG
+          script: |
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
+            cd $HOME/${{ github.repository_id }}
+            docker compose -f quartz.compose.yml up -d

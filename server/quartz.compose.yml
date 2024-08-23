@@ -3,6 +3,7 @@ version: '3.1'
 services:
   
   app:
+    image: ${ECR_REPO_URL}:${IMAGE_TAG}
     build:
       context: .
       dockerfile: quartz.dockerfile
