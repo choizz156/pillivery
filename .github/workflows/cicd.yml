@@ -37,13 +37,18 @@ jobs:
           cd ./server
           docker compose -f quartz.compose.yml build --push
 
+      - name: Set correct permissions for db-init-scripts
+        run: |
+          chmod 755 ./server/db-init-scripts/init.sql
+          chmod -R 755 ./server/db-init-scripts
+
       - name: 배포 파일 서버로 복사
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PEM_KEY }}
-          source: "./server/quartz.compose.yml, ./server/db-init-scripts"
+          source: "./server/quartz.compose.yml, ./server/db-init-scripts/*"
           target: "$HOME/${{ github.repository_id }}"
 
       - name: 도커 컴포즈 배포
