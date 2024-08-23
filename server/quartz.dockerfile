@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y net-tools
 
 COPY --chown=gradle:gradle . .
 
-RUN ./gradlew clean :module-quartz:build --info
+RUN ./gradlew clean :module-quartz:build
 
 
 FROM openjdk:11-jre-slim
