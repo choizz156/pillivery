@@ -52,5 +52,5 @@ jobs:
           envs: ECR_REPO_URL,IMAGE_TAG
           script: |
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
-            cd $HOME/${{ github.repository_id }}
+            cd $HOME/${{ github.repository_id }}/server
             docker compose -f quartz.compose.yml up -d
