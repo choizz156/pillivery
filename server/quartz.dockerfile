@@ -19,4 +19,4 @@ WORKDIR /app
 
 COPY --from=build /app/module-quartz/build/libs/*.jar app.jar
 
-#ENTRYPOINT ["java", "-Dspring.profiles.active=real", "-jar", "app.jar", "1>logs.txt","2>&1"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=real", "-jar", "app.jar", "1>logs.txt","2>&1"]
