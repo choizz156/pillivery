@@ -16,10 +16,10 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.team33.moduleapi.mockuser.OAuthAccount;
 import com.team33.moduleapi.mockuser.UserAccount;
-import com.team33.moduleapi.ui.user.dto.UserPatchDto;
-import com.team33.moduleapi.ui.user.dto.UserPostDto;
-import com.team33.moduleapi.ui.user.dto.UserPostOauthDto;
-import com.team33.moduleapi.ui.user.mapper.UserServiceMapper;
+import com.team33.moduleapi.api.user.dto.UserPatchDto;
+import com.team33.moduleapi.api.user.dto.UserPostDto;
+import com.team33.moduleapi.api.user.dto.UserPostOauthDto;
+import com.team33.moduleapi.api.user.mapper.UserServiceMapper;
 import com.team33.modulecore.core.user.application.UserService;
 import com.team33.modulecore.core.user.domain.Address;
 import com.team33.modulecore.core.user.domain.UserRoles;

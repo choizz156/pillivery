@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
+import com.team33.moduleapi.api.payment.PayLookupController;
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;

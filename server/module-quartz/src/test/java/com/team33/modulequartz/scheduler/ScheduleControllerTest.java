@@ -81,7 +81,7 @@ class ScheduleControllerTest extends ApiTest {
 	}
 
 	@UserAccount({"test", "010-0000-0000"})
-	@DisplayName("스케쥴을 수정할 수 있다.(30 -> 60)")
+	@DisplayName("스케쥴을 주기를 수정할 수 있다.")
 	@Test
 	void test2() throws Exception {
 
@@ -92,19 +92,16 @@ class ScheduleControllerTest extends ApiTest {
             given()
                 .log().all()
                 .header("Authorization", token)
-                .param("period", 60)
                 .param("orderId", 1L)
                 .param("itemOrderId", 1L)
                 .when()
-                .patch("/api/schedules")
+                .post("/api/schedules/update")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
         //@formatter:on
 
-		int period = response.jsonPath().get("data.period");
-		assertThat(period).isEqualTo(60);
 	}
 
 

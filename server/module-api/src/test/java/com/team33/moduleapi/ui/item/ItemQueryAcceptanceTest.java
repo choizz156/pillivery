@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.ui.item.dto.ItemPageRequestDto;
+import com.team33.moduleapi.api.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.core.category.domain.Categories;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.Image;

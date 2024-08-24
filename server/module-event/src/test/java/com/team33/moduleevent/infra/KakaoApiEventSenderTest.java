@@ -11,7 +11,7 @@ import com.team33.moduleexternalapi.infra.kakao.KakaoCancelClient;
 
 class KakaoApiEventSenderTest {
 
-	@DisplayName("취소 요청을 위임할 수 있다.")
+	@DisplayName("결제 취소 요청을 위임할 수 있다.")
 	@Test
 	void send() {
 		//given

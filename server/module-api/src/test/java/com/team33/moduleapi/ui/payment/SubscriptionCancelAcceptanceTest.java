@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
+import com.team33.moduleapi.api.payment.SubscriptionCancelController;
 import com.team33.moduleapi.exception.controller.ExceptionController;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.order.domain.OrderStatus;

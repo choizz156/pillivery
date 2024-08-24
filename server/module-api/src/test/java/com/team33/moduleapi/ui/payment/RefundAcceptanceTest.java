@@ -16,8 +16,9 @@ import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.ui.payment.dto.RefundDto;
-import com.team33.moduleapi.ui.payment.mapper.PaymentMapper;
+import com.team33.moduleapi.api.payment.RefundController;
+import com.team33.moduleapi.api.payment.dto.RefundDto;
+import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;

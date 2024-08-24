@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.ui.user.dto.UserPostDto;
+import com.team33.moduleapi.api.user.dto.UserPostDto;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

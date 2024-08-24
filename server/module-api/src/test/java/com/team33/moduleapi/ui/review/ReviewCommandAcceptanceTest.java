@@ -14,12 +14,12 @@ import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.mockuser.UserAccount;
-import com.team33.moduleapi.ui.order.dto.OrderPostDto;
-import com.team33.moduleapi.ui.order.dto.OrderPostListDto;
-import com.team33.moduleapi.ui.order.mapper.OrderItemMapper;
-import com.team33.moduleapi.ui.review.dto.ReviewDeleteDto;
-import com.team33.moduleapi.ui.review.dto.ReviewPatchDto;
-import com.team33.moduleapi.ui.review.dto.ReviewPostDto;
+import com.team33.moduleapi.api.order.dto.OrderPostDto;
+import com.team33.moduleapi.api.order.dto.OrderPostListDto;
+import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
+import com.team33.moduleapi.api.review.dto.ReviewDeleteDto;
+import com.team33.moduleapi.api.review.dto.ReviewPatchDto;
+import com.team33.moduleapi.api.review.dto.ReviewPostDto;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.Image;
 import com.team33.modulecore.core.item.domain.Information;

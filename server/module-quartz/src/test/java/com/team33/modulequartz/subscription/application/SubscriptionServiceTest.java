@@ -107,13 +107,13 @@ class SubscriptionServiceTest {
 			scheduler,
 			new TriggerService(),
 			null,
-			new OrderItemService( null, orderQueryRepository),
+			new OrderItemService(null, orderQueryRepository, null),
 			null,
 			null
 		);
 
 		//when
-		subscriptionService.changePeriod(1L, 60, 1L);
+		subscriptionService.changeTrigger(1L, 1L);
 
 		//then
 		Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey("1-mockItem", "1"));
@@ -121,7 +121,7 @@ class SubscriptionServiceTest {
 		LocalDate nextFireTime = trigger.getNextFireTime().toInstant().atZone(now.getZone()).toLocalDate();
 		LocalDate startTime = trigger.getStartTime().toInstant().atZone(now.getZone()).toLocalDate();
 
-		assertThat(mockOrderItem.getPeriod()).isEqualTo(60);
+		
 		assertThat(nextFireTime).isEqualTo(now.plusDays(30).toLocalDate());
 		assertThat(startTime).isEqualTo(now.plusDays(30).toLocalDate());
 	}
@@ -141,7 +141,7 @@ class SubscriptionServiceTest {
 			scheduler,
 			new TriggerService(),
 			null,
-			new OrderItemService( null, orderQueryRepository),
+			new OrderItemService(null, orderQueryRepository,null),
 			null,
 			null
 		);
