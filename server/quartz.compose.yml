@@ -1,7 +1,6 @@
-version: '3.1'
 
 services:
-  
+
   app:
     image: ${ECR_REPO_URL}:${IMAGE_TAG}
     build:
@@ -60,4 +59,4 @@ volumes:
 
 networks:
   service:  # 네트워크 정의
-  
+    driver: bridge
