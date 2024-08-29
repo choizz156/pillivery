@@ -14,7 +14,8 @@ RUN chmod +x ./scripts/profile_check.sh \
     && ./gradlew --no-daemon dependencies \
     && apt-get clean && apt-get update && apt-get install -y --no-install-recommends net-tools
 
-RUN ./gradlew clean :module-quartz:build
+
+RUN ./gradlew clean :module-api:build
 
 
 FROM openjdk:11-jre-slim
@@ -29,8 +30,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN ls -al && cat /app/profile_env.txt  
+RUN ls -al && cat /app/profile_env.txt
 
 ENTRYPOINT sh -c 'export PROFILE=$(cat /app/profile_env.txt) && java -jar -Dspring.profiles.active=$PROFILE app.jar'
-
-
