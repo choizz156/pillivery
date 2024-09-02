@@ -1,11 +1,10 @@
-
 services:
   app1:
     image: ${ECR_REPO_URL}:${IMAGE_TAG}
     container_name: app1_8081
     build:
       context: .
-      dockerfile: quartz.dockerfile
+      dockerfile: api.dockerfile
     networks:
       service:
         aliases:
@@ -22,13 +21,13 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 10
-
+  
   app2:
     image: ${ECR_REPO_URL}:${IMAGE_TAG}
     container_name: app2_8082
     build:
       context: .
-      dockerfile: quartz.dockerfile
+      dockerfile: api.dockerfile
     networks:
       service:
         aliases:
