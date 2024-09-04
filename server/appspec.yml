@@ -1,5 +1,7 @@
 version: 0.0
+
 os: linux
+
 files:
   - source: /
     destination: /home/ec2-user/instance/
@@ -13,16 +15,16 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: scripts/stop.sh
+    - location: /home/scripts/stop.sh
       timeout: 60
       runas: root
 
   ApplicationStart:
-    - location: scripts/start.sh
+    - location: /home/scripts/start.sh
       timeout: 60
       runas: root
 
   ValidateService:
-    - location: scripts/health.sh
+    - location: /home/scripts/health.sh
       timeout: 60
       runas: root
