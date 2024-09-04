@@ -50,7 +50,8 @@ jobs:
           envs: ECR_REPO_URL,IMAGE_TAG
           script: |
               aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
-              cd $HOME/instance
+            
+              
       - name: Deploy to EC2 with CodeDeploy
         run: aws deploy create-deployment
           --application-name codedeploy
