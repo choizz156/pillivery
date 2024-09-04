@@ -2,10 +2,10 @@ FROM gradle:jdk11 as build
 
 WORKDIR /app
 
-COPY --chown=gradle:gradle ../build.gradle settings.gradle gradlew ./
-COPY --chown=gradle:gradle ../gradle ./gradle/
-COPY --chown=gradle:gradle ../scripts ./scripts/
-COPY --chown=gradle:gradle .. .
+COPY --chown=gradle:gradle ./build.gradle settings.gradle gradlew ./
+COPY --chown=gradle:gradle ./gradle ./gradle/
+COPY --chown=gradle:gradle ./scripts ./scripts/
+COPY --chown=gradle:gradle . .
 
 RUN chmod +x ./scripts/profile_check.sh \
     && ./scripts/profile_check.sh | tee ./profile_env.txt \
