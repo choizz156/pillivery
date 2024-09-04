@@ -38,7 +38,7 @@ jobs:
 
       - name: ECR 이미지 푸시
         run: | 
-          cd ./server
+          cd ./server/module-quartz
           docker compose -f quartz.compose.yml build --push
       
       - name: 도커 이미지 pull
