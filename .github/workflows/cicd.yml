@@ -13,11 +13,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      
       - uses: actions/checkout@v4
         with:
           submodules: true
           fetch-depth: 0
           token: ${{ secrets.SECRET_TOKEN }}  
+     
+      - name: Update submodules manually
+        run: |
+            git submodule update --init --recursive
 
     
       - name: AWS credentials 셋팅
