@@ -1,27 +1,27 @@
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feat/quartz" ]
 
   workflow_dispatch: 
 
 env:
   ECR_REPO_URL: ${{ secrets.ECR_REPO_URL }}
   IMAGE_TAG: ${{ github.sha }}
-  MYSQL_USER: ${{ secrets.MYSQL_USER }}
-  MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-  MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
 
 jobs:
   compose:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4 
+      - uses: actions/checkout@v4
         with:
-          submodules: recursive
-          token: ${{ secrets.SECRET_TOKEN }}
-          fetch-depth: 0
+          submodules: false       # 기본 checkout에서 서브모듈을 가져오지 않음
+          fetch-depth: 0          # 전체 커밋 이력을 가져옴
 
+      - name: Init & Fetch submodules
+        run: |
+          git submodule init
+          git submodule update --recursive --remote
       - name: AWS credentials 셋팅
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -32,44 +32,23 @@ jobs:
       - name: ECR 로그인 
         run: aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
 
-      - name: Build, tag, and push docker image to Amazon ECR
+      - name: ECR 이미지 푸시
         run: | 
           cd ./server
           docker compose -f quartz.compose.yml build --push
-
-      - name: Set correct permissions for db-init-scripts
-        run: |
-          sudo chmod -R 755 ./server/module-quartz/db-init-scripts
-          sudo chmod 777 ./server/module-quartz/db-init-scripts/init.sql
-
-      - name: Change ownership of target directory on remote server
+      
+      - name: 도커 이미지 pull
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PEM_KEY }}
+          envs: ECR_REPO_URL,IMAGE_TAG
           script: |
-            sudo mkdir -p $HOME/${{ github.repository_id }}
-            sudo chown -R ${{ secrets.USERNAME }}:${{ secrets.USERNAME }} $HOME/${{ github.repository_id }}
-
-
-      - name: 배포 파일 서버로 복사
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PEM_KEY }}
-          source: "./server/quartz.compose.yml, ./server/module-quartz/db-init-scripts/init.sql"
-          target: "$HOME/${{ github.repository_id }}"
-
-      - name: 도커 컴포즈 배포
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PEM_KEY }}
-          envs: ECR_REPO_URL,IMAGE_TAG,MYSQL_USER,MYSQL_PASSWORD,MYSQL_ROOT_PASSWORD
-          script: |
-            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
-            cd $HOME/${{ github.repository_id }}/server
-            docker compose -f quartz.compose.yml up -d
+              aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
+              cd $HOME/instance
+      - name: Deploy to EC2 with CodeDeploy
+        run: aws deploy create-deployment
+          --application-name codedeploy
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name production
