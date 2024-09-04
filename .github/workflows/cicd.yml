@@ -15,8 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true       # 기본 checkout에서 서브모듈을 가져오지 않음
-          fetch-depth: 0          # 전체 커밋 이력을 가져옴
+          submodules: true
+          fetch-depth: 0
+          token: ${{ secrets.SECRET_TOKEN }}  
+
 
     
       - name: AWS credentials 셋팅
