@@ -22,7 +22,8 @@ jobs:
      
       - name: Update submodules manually
         run: |
-            git submodule update --init --recursive
+          git submodule sync
+          git submodule update --init --force --remote --recursive
 
     
       - name: AWS credentials 셋팅
