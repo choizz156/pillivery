@@ -7,3 +7,9 @@
 [submodule "server/module-api/src/main/resources/config"]
 	path = server/module-api/src/main/resources/config
 	url = https://github.com/choizz156/pillivery-config.git
+[submodule "server/server/module-quartz/src/main/resources/config"]
+	path = server/server/module-quartz/src/main/resources/config
+	url = https://github.com/choizz156/pillivery-config.git
+[submodule "server/server/module-api/src/main/resources/config"]
+	path = server/server/module-api/src/main/resources/config
+	url = https://github.com/choizz156/pillivery-config.git
