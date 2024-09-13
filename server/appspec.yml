@@ -15,16 +15,16 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: /home/scripts/stop.sh
+    - location: /home/ec2-user/scripts/stop.sh
       timeout: 60
       runas: root
 
   ApplicationStart:
-    - location: /home/scripts/start.sh
+    - location: /home/ec2-user/scripts/start.sh
       timeout: 60
       runas: root
 
   ValidateService:
-    - location: /home/scripts/health.sh
+    - location: /home/ec2-user/scripts/health.sh
       timeout: 60
       runas: root
