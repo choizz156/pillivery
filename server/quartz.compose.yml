@@ -4,8 +4,8 @@ services:
     image: ${ECR_REPO_URL}:${IMAGE_TAG}
     container_name: app1_8081
     build:
-      context: ..
-      dockerfile: ../module-quartz/quartz.dockerfile
+      context: .
+      dockerfile: quartz.dockerfile
     networks:
       service:
         aliases:
@@ -27,8 +27,8 @@ services:
     image: ${ECR_REPO_URL}:${IMAGE_TAG}
     container_name: app2_8082
     build:
-      context: ..
-      dockerfile: ../module-quartz/quartz.dockerfile
+      context: .
+      dockerfile: quartz.dockerfile
     networks:
       service:
         aliases:
