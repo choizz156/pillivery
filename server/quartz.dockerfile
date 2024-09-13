@@ -6,8 +6,8 @@ COPY --chown=gradle:gradle build.gradle settings.gradle gradlew ./
 COPY --chown=gradle:gradle gradle ./gradle/
 
 
-RUN chmod +x ./server/scripts/profile_check.sh \
-    && ./server/scripts/profile_check.sh | tee ./profile_env.txt \
+RUN chmod +x ./scripts/profile_check.sh \
+    && ./scripts/profile_check.sh | tee ./profile_env.txt \
     && ls -al \
     && cat ./profile_env.txt \
     && ./gradlew --no-daemon dependencies \
