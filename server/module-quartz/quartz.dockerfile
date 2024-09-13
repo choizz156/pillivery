@@ -2,8 +2,8 @@ FROM gradle:jdk11 as build
 
 WORKDIR /app
 
-COPY --chown=gradle:gradle ../build.gradle ../settings.gradle ../gradlew ./
-COPY --chown=gradle:gradle ../gradle/ ./gradle/
+COPY --chown=gradle:gradle ../build.gradle settings.gradle gradlew ./
+COPY --chown=gradle:gradle ../gradle ./gradle/
 
 
 RUN chmod +x ./scripts/profile_check.sh \
@@ -14,7 +14,7 @@ RUN chmod +x ./scripts/profile_check.sh \
     && apt-get clean && apt-get update && apt-get install -y --no-install-recommends net-tools
 
 
-COPY --chown=gradle:gradle .. .
+COPY --chown=gradle:gradle ../.. .
 
 RUN ./gradlew clean :module-quartz:build
 
