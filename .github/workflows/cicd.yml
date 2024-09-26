@@ -18,7 +18,7 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-          token: ${{ secrets.SECRET_TOKEN }}  
+          token: ${{ secrets.SECRET_TOKEN }} 
      
       - name: Update submodules manually
         run: |
