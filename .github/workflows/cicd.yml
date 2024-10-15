@@ -52,7 +52,7 @@ jobs:
               aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
             
               
-      - name: Deploy to EC2 with CodeDeploy
+      - name: 배포
         run: aws deploy create-deployment
           --application-name codedeploy
           --deployment-config-name CodeDeployDefault.AllAtOnce
