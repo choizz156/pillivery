@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import com.team33.modulecore.security.dto.ErrorResponse;
+import com.team33.moduleapi.response.ApiErrorResponse;
 import com.team33.modulecore.exception.BusinessLogicException;
 
 @RestControllerAdvice
@@ -22,56 +22,56 @@ public class ExceptionController {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorResponse methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-		log.warn("MethodArgumentNotValidException => {}", e.getBindingResult());
-		return ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getBindingResult());
+	public ApiErrorResponse methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+		log.debug("MethodArgumentNotValidException => {}", e.getBindingResult());
+		return ApiErrorResponse.of(HttpStatus.BAD_REQUEST, e.getBindingResult());
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorResponse constraintViolationExceptionHandler(ConstraintViolationException e) {
-		log.warn("ConstraintViolationException => {}", e.getMessage());
-		return ErrorResponse.of(e);
+	public ApiErrorResponse constraintViolationExceptionHandler(ConstraintViolationException e) {
+		log.debug("ConstraintViolationException => {}", e.getMessage());
+		return ApiErrorResponse.of(e);
 	}
 
 	@ExceptionHandler(BusinessLogicException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorResponse businessLogicExceptionHandler(BusinessLogicException e) {
-		log.warn("BusinessLogicException => {}", e.getMessage());
-		return ErrorResponse.of(e.getMessage());
+	public ApiErrorResponse businessLogicExceptionHandler(BusinessLogicException e) {
+		log.info("BusinessLogicException => {}", e.getMessage());
+		return ApiErrorResponse.of(e.getMessage());
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorResponse methodArgumentTypeMismatchExceptionHandler(
+	public ApiErrorResponse methodArgumentTypeMismatchExceptionHandler(
 		MethodArgumentTypeMismatchException e
 	) {
-		log.warn("methodArgumentTypeMismatchExceptionHandler => {}", e.getMessage());
-		return ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage());
+		log.debug("methodArgumentTypeMismatchExceptionHandler => {}", e.getMessage());
+		return ApiErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage());
 	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorResponse missingServletRequestParameterExceptionHandler(
+	public ApiErrorResponse missingServletRequestParameterExceptionHandler(
 		MissingServletRequestParameterException e
 	) {
-		log.warn("MissingServletRequestParameterException => {}", e.getMessage());
-		return ErrorResponse.of(e.getMessage());
+		log.debug("MissingServletRequestParameterException => {}", e.getMessage());
+		return ApiErrorResponse.of(e.getMessage());
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
-		log.warn("illegalArgumentExceptionHandler => {}", e.getMessage());
-		return ErrorResponse.of(e.getMessage());
+	public ApiErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
+		log.debug("illegalArgumentExceptionHandler => {}", e.getMessage());
+		return ApiErrorResponse.of(e.getMessage());
 	}
 
 	@ExceptionHandler(RuntimeException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorResponse runtimeExceptionHandler(RuntimeException e) {
+	public ApiErrorResponse runtimeExceptionHandler(RuntimeException e) {
 		log.error("runtime exception :: {}", e.getLocalizedMessage());
 		log.error("stack trace :: {}, {}", e.getStackTrace()[0].getClassName(), e.getStackTrace()[0]);
-		return ErrorResponse.of("알 수 없는 오류가 발생했습니다.");
+		return ApiErrorResponse.of("알 수 없는 오류가 발생했습니다.");
 	}
 }
 

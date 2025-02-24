@@ -8,12 +8,15 @@
   <include resource="logs/error-appender.xml"/>
   <include resource="logs/json-appender.xml"/>
   <include resource="logs/warn-appender.xml"/>
+  <include resource="logs/debug-appender.xml"/>
 
   <springProfile name="local">
     <logger name="fileLog">
-      <level value="INFO"/>
+      <level value="INFO, DEBUG"/>
       <appender-ref ref="infoLog"/>
       <appender-ref ref="errorLog"/>
+      <appender-ref ref="debugLog"/>
+
     </logger>
 
     <logger name="jsonLog" level="INFO">
@@ -24,10 +27,11 @@
 
   <springProfile name="prod">
     <logger name="fileLog">
-      <level value="INFO"/>
+      <level value="INFO,DEGUG"/>
       <appender-ref ref="infoLog"/>
       <appender-ref ref="errorLog"/>
       <appender-ref ref="warnLog"/>
+      <appender-ref ref="debugLog"/>
     </logger>
 
     <!--    <logger name="jsonLog" level="INFO">-->
