@@ -66,9 +66,9 @@ public class ApiErrorResponse {
     @Getter
     public static class CustomFieldError {
 
-        private String field;
-        private Object rejectedValue;
-        private String reason;
+        private final String field;
+        private final Object rejectedValue;
+        private final String reason;
 
         private CustomFieldError(String field, Object rejectedValue, String reason) {
             this.field = field;

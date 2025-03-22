@@ -3,41 +3,40 @@
 
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
-<!--  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>-->
-  <include resource="logs/info-appender.xml"/>
-  <include resource="logs/error-appender.xml"/>
-  <include resource="logs/json-appender.xml"/>
-  <include resource="logs/warn-appender.xml"/>
-  <include resource="logs/debug-appender.xml"/>
+    <!--  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>-->
+    <include resource="logs/info-appender.xml"/>
+    <include resource="logs/error-appender.xml"/>
+    <include resource="logs/json-appender.xml"/>
+    <include resource="logs/warn-appender.xml"/>
+    <include resource="logs/debug-appender.xml"/>
 
-  <springProfile name="local">
-    <logger name="fileLog">
-      <level value="INFO, DEBUG"/>
-      <appender-ref ref="infoLog"/>
-      <appender-ref ref="errorLog"/>
-      <appender-ref ref="debugLog"/>
+    <springProfile name="local">
+        <logger name="fileLog">
+            <level value="INFO, DEBUG"/>
+            <appender-ref ref="infoLog"/>
+            <appender-ref ref="errorLog"/>
+            <appender-ref ref="debugLog"/>
+        </logger>
 
-    </logger>
-
-    <logger name="jsonLog" level="INFO">
-      <appender-ref ref="jsonLog"/>
-    </logger>
-  </springProfile>
+        <logger name="jsonLog" level="INFO">
+            <appender-ref ref="jsonLog"/>
+        </logger>
+    </springProfile>
 
 
-  <springProfile name="prod">
-    <logger name="fileLog">
-      <level value="INFO,DEGUG"/>
-      <appender-ref ref="infoLog"/>
-      <appender-ref ref="errorLog"/>
-      <appender-ref ref="warnLog"/>
-      <appender-ref ref="debugLog"/>
-    </logger>
+    <springProfile name="prod">
+        <logger name="fileLog">
+            <level value="INFO, DEBUG"/>
+            <appender-ref ref="infoLog"/>
+            <appender-ref ref="errorLog"/>
+            <appender-ref ref="warnLog"/>
+            <appender-ref ref="debugLog"/>
+        </logger>
 
-    <!--    <logger name="jsonLog" level="INFO">-->
-    <!--      <appender-ref ref="jsonLog"/>-->
-    <!--    </logger>-->
-  </springProfile>
+        <logger name="jsonLog" level="INFO">
+            <appender-ref ref="jsonLog"/>
+        </logger>
+    </springProfile>
 
 </configuration>
 

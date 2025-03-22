@@ -4,7 +4,6 @@
 <!--  <property name="home" value="/home/ubuntu/api-module/logs/"/>-->
   <property name="home" value="/users/choi/pillivery/server/module-logging/logs/"/>
 
-
   <appender name="jsonLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
     <file>${home}json.log</file>

@@ -15,7 +15,7 @@
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <fileNamePattern>${home}was/infoLog.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
-      <maxHistory>1</maxHistory>
+      <maxHistory>20</maxHistory>
       <maxFileSize>15MB</maxFileSize>
     </rollingPolicy>
 
