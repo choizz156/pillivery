@@ -73,15 +73,11 @@ public class SubscriptionService {
 
 	private void deleteSchedule(long orderId, String productName) {
 		JobKey jobkey = JobKeyGenerator.build(orderId, productName);
-		deleteSchedule(jobkey);
-	}
-
-	private void deleteSchedule(JobKey jobkey) {
 		try {
 			scheduler.deleteJob(jobkey);
 			log.info("스케쥴 삭제 => {}", jobkey);
 		} catch (SchedulerException e) {
-			log.warn("스케쥴 삭제 실패 job => {}", e.getMessage());
+			log.info("스케쥴 삭제 실패 job => {}", e.getMessage());
 		}
 	}
 
@@ -97,17 +93,14 @@ public class SubscriptionService {
 
 	private void toSchedule(JobDetail jobDetail, Trigger lastTrigger) {
 		try {
-			applyJobListener();
+			ListenerManager listenerManager = scheduler.getListenerManager();
+			listenerManager.addJobListener(
+				new PaymentJobListeners(applicationEventPublisher)
+			);
 			scheduler.scheduleJob(jobDetail, lastTrigger);
 		} catch (SchedulerException e) {
 			log.warn("스케쥴 등록 실패 job => {},{}", jobDetail.getKey().getName(), e.getMessage());
 		}
 	}
 
-	private void applyJobListener() throws SchedulerException {
-		ListenerManager listenerManager = scheduler.getListenerManager();
-		listenerManager.addJobListener(
-			new PaymentJobListeners(applicationEventPublisher)
-		);
-	}
 }
