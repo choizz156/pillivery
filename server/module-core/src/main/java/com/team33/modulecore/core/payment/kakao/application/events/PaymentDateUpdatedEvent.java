@@ -1,4 +1,4 @@
-package com.team33.modulequartz.subscription.domain;
+package com.team33.modulecore.core.payment.kakao.application.events;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

@@ -1,4 +1,4 @@
-package me.modulebatch.scheduler.job;
+package com.team33.modulebatch.scheduler.job;
 
 import org.springframework.boot.CommandLineRunner;
 

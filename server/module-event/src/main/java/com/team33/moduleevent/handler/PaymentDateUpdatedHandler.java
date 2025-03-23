@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.order.application.OrderItemService;
 import com.team33.modulecore.exception.DataSaveException;
-import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class PaymentDateUpdatedHandler {
 
-	private final static Logger log = LoggerFactory.getLogger("fileLog");
+	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private final OrderItemService orderItemService;
 
@@ -31,7 +31,7 @@ public class PaymentDateUpdatedHandler {
 		try {
 			orderItemService.updateNextPaymentDate(apiEvent.getPaymentDay(), apiEvent.getOrderItemId());
 		} catch (DataAccessException e) {
-			log.error("다음 결제일 저장 에러 = {}, id = {}, 결제일 = {}", e.getMessage(),
+			LOGGER.error("다음 결제일 저장 에러 = {}, id = {}, 결제일 = {}", e.getMessage(),
 				apiEvent.getOrderItemId(), apiEvent.getPaymentDay()
 			);
 			throw new DataSaveException(e.getMessage());

@@ -1,4 +1,4 @@
-package me.modulebatch.scheduler.application;
+package com.team33.modulebatch.scheduler.application;
 
 import static org.quartz.CalendarIntervalScheduleBuilder.*;
 import static org.quartz.TriggerBuilder.*;

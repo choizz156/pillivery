@@ -21,10 +21,10 @@ import org.hibernate.proxy.HibernateProxy;
 
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.PaymentId;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.PaymentCode;
 import com.team33.modulecore.core.order.domain.Receiver;
 import com.team33.modulecore.core.order.dto.OrderContext;
 
@@ -57,7 +57,7 @@ public class Order extends BaseEntity {
 	private int totalQuantity;
 
 	@Embedded
-	private PaymentCode paymentCode;
+	private PaymentId paymentId;
 
 	@Embedded
 	private OrderPrice orderPrice;
@@ -78,7 +78,7 @@ public class Order extends BaseEntity {
 		this.isOrderedAtCart = origin.isOrderedAtCart();
 		this.totalItemsCount = origin.getTotalItemsCount();
 		this.totalQuantity = origin.getTotalQuantity();
-		this.paymentCode = origin.getPaymentCode();
+		this.paymentId = origin.getPaymentId();
 		this.orderPrice = origin.getOrderPrice();
 		this.receiver = origin.getReceiver();
 		this.orderStatus = origin.getOrderStatus();
@@ -93,7 +93,7 @@ public class Order extends BaseEntity {
 		boolean isOrderedAtCart,
 		int totalItemsCount,
 		String mainItemName,
-		PaymentCode paymentCode,
+		PaymentId paymentId,
 		OrderPrice orderPrice,
 		Receiver receiver,
 		OrderStatus orderStatus,
@@ -105,7 +105,7 @@ public class Order extends BaseEntity {
 		this.isOrderedAtCart = isOrderedAtCart;
 		this.totalItemsCount = totalItemsCount;
 		this.mainItemName = mainItemName;
-		this.paymentCode = paymentCode;
+		this.paymentId = paymentId;
 		this.orderPrice = orderPrice;
 		this.receiver = receiver;
 		this.orderStatus = orderStatus;
@@ -133,17 +133,17 @@ public class Order extends BaseEntity {
 	}
 
 	public void addSid(String sid) {
-		String tid = paymentCode.getTid();
+		String tid = paymentId.getTid();
 
 		if (tid == null) {
 			throw new BusinessLogicException("tid는 null일 수 없습니다.");
 		}
 
-		this.paymentCode = PaymentCode.addSid(tid, sid);
+		this.paymentId = PaymentId.addSid(tid, sid);
 	}
 
 	public void addTid(String tid) {
-		this.paymentCode = PaymentCode.addTid(tid);
+		this.paymentId = PaymentId.addTid(tid);
 	}
 
 	public Item getFirstItem() {
@@ -168,11 +168,11 @@ public class Order extends BaseEntity {
 	}
 
 	public String getSid() {
-		return this.paymentCode.getSid();
+		return this.paymentId.getSid();
 	}
 
 	public String getTid() {
-		return this.paymentCode.getTid();
+		return this.paymentId.getTid();
 	}
 
 	private void countTotalQuantity() {

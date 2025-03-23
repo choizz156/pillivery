@@ -1,5 +1,7 @@
-package me.modulebatch.scheduler.job;
+package com.team33.modulebatch.scheduler.job;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.quartz.JobExecutionContext;
@@ -26,8 +28,10 @@ public class PaymentScheduleJob extends QuartzJobBean {
 	@Override
 	protected void executeInternal(JobExecutionContext context) {
 
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+
 		JobParameters jobParameters = new JobParametersBuilder()
-			.addLong("id", new Date().getTime())
+			.addDate("requestDate", Date.from(now.toInstant()))
 			.toJobParameters();
 
 		try {

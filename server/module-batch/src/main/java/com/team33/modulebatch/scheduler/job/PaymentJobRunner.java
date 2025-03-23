@@ -1,4 +1,4 @@
-package me.modulebatch.scheduler.job;
+package com.team33.modulebatch.scheduler.job;
 
 import java.util.HashMap;
 
@@ -8,8 +8,8 @@ import org.quartz.SchedulerException;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import me.modulebatch.scheduler.application.JobDetailService;
-import me.modulebatch.scheduler.application.TriggerService;
+import com.team33.modulebatch.scheduler.application.JobDetailService;
+import com.team33.modulebatch.scheduler.application.TriggerService;
 
 @RequiredArgsConstructor
 @Component

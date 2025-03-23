@@ -10,22 +10,22 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Embeddable
-public class PaymentCode {
+public class PaymentId {
 
 	private String sid;
 
 	private String tid;
 
-	public PaymentCode(String sid, String tid) {
+	public PaymentId(String sid, String tid) {
 		this.sid = sid;
 		this.tid = tid;
 	}
 
-	public static PaymentCode addTid(String tid){
-		return new PaymentCode(null, tid);
+	public static PaymentId addTid(String tid){
+		return new PaymentId(null, tid);
 	}
 
-	public static PaymentCode addSid(String tid, String sid){
-		return new PaymentCode(sid, tid);
+	public static PaymentId addSid(String tid, String sid){
+		return new PaymentId(sid, tid);
 	}
 }

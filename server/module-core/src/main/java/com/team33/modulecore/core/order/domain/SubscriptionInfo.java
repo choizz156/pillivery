@@ -50,7 +50,7 @@ public class SubscriptionInfo {
 
 	public void addPaymentDay(ZonedDateTime paymentDay) {
 		this.paymentDay = paymentDay;
-		changeNextPaymentDay(this.period);
+		this.nextPaymentDay = paymentDay.plusDays(this.period);
 	}
 
 	public void applyNextPayment() {
@@ -59,9 +59,5 @@ public class SubscriptionInfo {
 
 	public void changePeriod(int period) {
 		this.period = period;
-	}
-
-	private void changeNextPaymentDay(int newPeriod) {
-		this.nextPaymentDay = paymentDay.plusDays(newPeriod);
 	}
 }

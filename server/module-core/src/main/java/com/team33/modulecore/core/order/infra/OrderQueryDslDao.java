@@ -134,7 +134,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 	@Override
 	public String findTid(long orderId) {
-		return queryFactory.select(order.paymentCode.tid).from(order).where(order.id.eq(orderId)).fetchOne();
+		return queryFactory.select(order.paymentId.tid).from(order).where(order.id.eq(orderId)).fetchOne();
 	}
 
 	private BooleanExpression orderUserAndOrderItemUserEq() {
