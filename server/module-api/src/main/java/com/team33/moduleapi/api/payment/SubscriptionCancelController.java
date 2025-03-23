@@ -22,7 +22,7 @@ public class SubscriptionCancelController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/{orderId}")
 	public SingleResponseDto<String> refundSubscription(
-		@PathVariable long orderId
+		@PathVariable Long orderId
 	) {
 		orderStatusService.processSubscriptionCancel(orderId);
 		return new SingleResponseDto<>("complete");

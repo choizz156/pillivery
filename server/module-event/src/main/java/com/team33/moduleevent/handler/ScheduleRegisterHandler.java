@@ -18,21 +18,22 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ScheduleRegisterHandler {
 
-	private static final String REGISETER_URL = "http://localhost:8080/api/schedules";
+	private static final String REGISTER_URL = "http://localhost:8080/api/schedules";
 	private final EventRepository eventsRepository;
 
 	@EventListener
 	public void onEventSet(ScheduleRegisteredEvent apiEvent) {
 
-		ApiEvent refund = ApiEvent.builder()
+
+		ApiEvent register = ApiEvent.builder()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.parameters(String.valueOf(apiEvent.getParams()))
-			.url(REGISETER_URL)
+			.url(REGISTER_URL)
 			.type(EventType.SCHEDULE_REGISTERED)
 			.status(EventStatus.READY)
 			.createdAt(LocalDateTime.now())
 			.build();
 
-		eventsRepository.save(refund);
+		eventsRepository.save(register);
 	}
 }

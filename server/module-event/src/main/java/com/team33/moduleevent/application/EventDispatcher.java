@@ -15,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class EventDispatcher {
 
 	private static final Logger log = LoggerFactory.getLogger("fileLog");
-
-	private static final int LIMIT_COUNT = 2;
+	private static final int MAX_RETRIES = 2;
 
 	private final FailEventService failEventService;
 
@@ -32,7 +31,8 @@ public class EventDispatcher {
 			} catch (RuntimeException e) {
 				retry++;
 				log.warn("retry : {}, parameters : {}", retry, e.getMessage());
-				saveFailEvent(apiEvent, retry);
+				handleFailure
+					(apiEvent, retry);
 			}
 		}
 	}
@@ -42,8 +42,8 @@ public class EventDispatcher {
 		apiEvent.changeStatusToComplete();
 	}
 
-	private void saveFailEvent(ApiEvent apiEvent, int retry) {
-		if (retry == LIMIT_COUNT) {
+	private void handleFailure(ApiEvent apiEvent, int retry) {
+		if (retry == MAX_RETRIES) {
 			apiEvent.changeStatusToFail();
 
 			String reason = RestTemplateErrorHandler.ThreadLocalErrorMessage.get();
@@ -54,6 +54,6 @@ public class EventDispatcher {
 	}
 
 	private boolean check(int retry, boolean isSuccess) {
-		return retry < LIMIT_COUNT && !isSuccess;
+		return retry < MAX_RETRIES && !isSuccess;
 	}
 }

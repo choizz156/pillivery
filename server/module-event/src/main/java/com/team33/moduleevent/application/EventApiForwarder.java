@@ -35,29 +35,23 @@ public class EventApiForwarder {
 		this.eventsRepository = eventsRepository;
 		this.kakaoApiEventSender = kakaoApiEventSender;
 		this.eventDispatcher = eventDispatcher;
-
-		eventTypeEventSenderMap = new EnumMap<>(EventType.class);
-		eventTypeEventSenderMap.put(EventType.KAKAO_REFUNDED, kakaoApiEventSender);
-		eventTypeEventSenderMap.put(EventType.SCHEDULE_REGISTERED, scheduleRegisterEventSender);
-		eventTypeEventSenderMap.put(EventType.SCHEDULE_CANCELED, scheduleCancelEventSender);
-		eventTypeEventSenderMap.put(EventType.SUBS_CANCELED,kakaoApiEventSender);
-		eventTypeEventSenderMap.put(EventType.SCHEDULE_CHANGED, schedulerPeriodChangedEventSender);
+		this.eventTypeEventSenderMap = initializeEventSenders(
+			kakaoApiEventSender,
+			scheduleRegisterEventSender,
+			scheduleCancelEventSender,
+			schedulerPeriodChangedEventSender
+		);
 	}
 
 	@Transactional
 	@Scheduled(cron = "0 0 * * * *")
-	public void getAndSend() {
+	public void fetchAndForwardEvents() {
+
 		List<ApiEvent> apiEvents = eventsRepository
 			.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
 
 		if (!apiEvents.isEmpty()) {
-			sendEvents(apiEvents);
-		}
-	}
-
-	private void sendEvents(List<ApiEvent> apiEvents) {
-		for (ApiEvent apiEvent : apiEvents) {
-			registerEventWithDispatcher(apiEvent);
+			apiEvents.forEach(this::registerEventWithDispatcher);
 		}
 	}
 
@@ -65,5 +59,22 @@ public class EventApiForwarder {
 		EventType type = apiEvent.getType();
 		EventSender eventSender = eventTypeEventSenderMap.getOrDefault(type, kakaoApiEventSender);
 		eventDispatcher.register(apiEvent, eventSender);
+	}
+
+	private Map<EventType, EventSender> initializeEventSenders(
+		EventSender kakaoApiEventSender,
+		EventSender scheduleRegisterEventSender,
+		EventSender scheduleCancelEventSender,
+		EventSender schedulerPeriodChangedEventSender
+	) {
+		final Map<EventType, EventSender> eventTypeEventSenderMap = new EnumMap<>(EventType.class);
+
+		eventTypeEventSenderMap.put(EventType.KAKAO_REFUNDED, kakaoApiEventSender);
+		eventTypeEventSenderMap.put(EventType.SCHEDULE_REGISTERED, scheduleRegisterEventSender);
+		eventTypeEventSenderMap.put(EventType.SCHEDULE_CANCELED, scheduleCancelEventSender);
+		eventTypeEventSenderMap.put(EventType.SUBS_CANCELED, kakaoApiEventSender);
+		eventTypeEventSenderMap.put(EventType.SCHEDULE_CHANGED, schedulerPeriodChangedEventSender);
+
+		return eventTypeEventSenderMap;
 	}
 }
