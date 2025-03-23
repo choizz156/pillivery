@@ -83,10 +83,22 @@ project(':module-api') {
         implementation project(':module-external-api')
         implementation project(':module-event')
         implementation project(':module-logging')
+        implementation project(':module-batch')
     }
 }
 
 project(':module-quartz') {
+    bootJar { enabled = true }
+    jar { enabled = true }
+
+    dependencies {
+        implementation project(':module-core')
+        implementation project(':module-external-api')
+        implementation project(':module-logging')
+    }
+}
+
+project(':module-batch') {
     bootJar { enabled = true }
     jar { enabled = true }
 

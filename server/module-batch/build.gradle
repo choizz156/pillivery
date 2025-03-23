@@ -1,0 +1,29 @@
+
+dependencies {
+    //quartz
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
+    //jdbc
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    testImplementation 'io.rest-assured:spring-mock-mvc:4.5.1'
+    testImplementation 'io.rest-assured:rest-assured-all'
+
+    //fixturemonkey
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14'
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14'
+    testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14'
+
+    //jpa-test
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    //guava
+    implementation 'com.google.guava:guava:33.2.1-jre'
+
+    //security
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test{
+    useJUnitPlatform()
+}
+
