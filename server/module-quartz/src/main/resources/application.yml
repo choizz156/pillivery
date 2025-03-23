@@ -1,12 +1,9 @@
 spring:
   profiles:
     group:
-      real1:
+      real:
         - auth
         - prod1
         - quartz
-      real2:
-        - auth
-        - prod2
-        - quartz
+
 

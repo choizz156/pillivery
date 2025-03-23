@@ -1,0 +1,87 @@
+spring:
+  config:
+    activate:
+      on-profile: batch
+
+  batch:
+    job:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/testdb1
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler-name: QRTZ_
+          threadPool:
+            threadCount: 5
+
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: false
+            misfireThreshold: 1000
+            useProperties: true
+            dataSource: qrtz
+
+          dataSource:
+            qrtz:
+              driver: com.mysql.cj.jdbc.Driver
+              jdbc-url: jdbc:mysql://db.clwna61sgtpo.ap-northeast-2.rds.amazonaws.com:3306/scheduler
+              username: choizz
+              password: 123qweasd
+
+    job-store-type: jdbc
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  batch:
+    job:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/testdb1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler-name: QRTZ_
+          threadPool:
+            threadCount: 5
+
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: false
+            misfireThreshold: 1000
+            useProperties: true
+
+    job-store-type: memory
+
