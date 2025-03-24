@@ -28,7 +28,7 @@ import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderItemService;
 import com.team33.modulecore.core.order.domain.OrderPrice;
 import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.PaymentCode;
+import com.team33.modulecore.core.order.domain.PaymentId;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
@@ -154,7 +154,7 @@ class ScheduleControllerTest extends ApiTest {
 			.set("orderPrice", new OrderPrice(List.of(orderItem)))
 			.set("totalItemsCount", 1)
 			.set("totalQuantity", 1)
-			.set("paymentCode", new PaymentCode())
+			.set("paymentCode", new PaymentId())
 			.set("receiver", null)
 			.sample();
 

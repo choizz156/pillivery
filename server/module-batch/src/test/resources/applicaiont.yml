@@ -1,0 +1,61 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+
+  batch:
+    job:
+      enabled: false
+
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/testdb1:MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  sql:
+    init:
+      mode: always
+
+
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler-name: QRTZ_
+          threadPool:
+            threadCount: 5
+
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: false
+            misfireThreshold: 1000
+            useProperties: true
+
+    job-store-type: memory
+
+  logging:
+    level:
+      root: INFO
+      org.springframework.jdbc.core.JdbcTemplate: DEBUG  # 실행되는 SQL 쿼리
+      org.springframework.jdbc.core.StatementCreatorUtils: TRACE  # 파라미터 바인딩 값
+      org.h2: DEBUG  # H2 데이터베이스 로그
+      org.hibernate.SQL: DEBUG  # Hibernate 사용 시 SQL 출력
+

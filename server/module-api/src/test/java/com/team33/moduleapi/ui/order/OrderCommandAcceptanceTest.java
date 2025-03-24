@@ -38,9 +38,6 @@ class OrderCommandAcceptanceTest extends ApiTest {
 	private ItemCommandRepository itemCommandRepository;
 
 	@Autowired
-	private OrderCommandRepository orderCommandRepository;
-
-	@Autowired
 	private OrderItemService orderItemService;
 
 	@Autowired

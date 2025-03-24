@@ -36,8 +36,7 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 	}
 
 	@Override
-	public int incrementSales(Long itemId) {
-		return 0;
+	public void incrementSales(Long itemId) {
 	}
 
 }

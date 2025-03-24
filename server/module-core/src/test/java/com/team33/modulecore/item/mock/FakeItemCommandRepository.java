@@ -34,7 +34,7 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 
 
 	@Override
-	public int incrementSales(Long itemId) {
+	public void incrementSales(Long itemId) {
 		em.createQuery("update Item i set i.statistics.sales = i.statistics.sales + 1 where i.id = :id")
 			.setParameter("id", itemId)
 			.executeUpdate();
@@ -42,6 +42,5 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 		em.flush();
 		em.clear();
 
-		return 1;
 	}
 }

@@ -256,7 +256,7 @@ class OrderServiceTest {
 		orderService.addTid(order.getId(), "tid");
 
 		//then
-		assertThat(order.getPaymentCode().getTid()).isNotNull();
+		assertThat(order.getPaymentId().getTid()).isNotNull();
 	}
 
 	@DisplayName("정기 결제 중인 아이템의 수량을 조정할 수 있다.")
@@ -290,12 +290,19 @@ class OrderServiceTest {
 		Order order = getMockOrderWithOrderItem();
 
 		//when
-		Order copyOrder = orderService.deepCopy(order);
+		Order copyOrder = deepCopy(order);
 
 		//then
 		assertThat(copyOrder).usingRecursiveComparison()
 			.ignoringFields("id", "createdAt", "updatedAt")
 			.isEqualTo(order);
+	}
+
+	private Order deepCopy(Order order) {
+		Order newOrder = new Order(order);
+		orderCommandRepository.save(newOrder);
+
+		return newOrder;
 	}
 
 	private Item getMockItem() {

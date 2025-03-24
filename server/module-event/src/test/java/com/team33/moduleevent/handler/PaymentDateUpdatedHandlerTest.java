@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.core.order.application.OrderItemService;
-import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 
 class PaymentDateUpdatedHandlerTest {
 

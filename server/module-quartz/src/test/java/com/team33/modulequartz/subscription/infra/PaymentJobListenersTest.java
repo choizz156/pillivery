@@ -26,7 +26,7 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulequartz.subscription.domain.PaymentDateUpdatedEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 
 @ExtendWith(OutputCaptureExtension.class)
 class PaymentJobListenersTest {
