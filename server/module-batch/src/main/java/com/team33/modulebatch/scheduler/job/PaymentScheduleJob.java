@@ -1,8 +1,8 @@
 package com.team33.modulebatch.scheduler.job;
 
+import java.sql.Date;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 import org.quartz.JobExecutionContext;
 import org.springframework.batch.core.Job;
@@ -31,7 +31,7 @@ public class PaymentScheduleJob extends QuartzJobBean {
 		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
 		JobParameters jobParameters = new JobParametersBuilder()
-			.addDate("requestDate", Date.from(now.toInstant()))
+			.addDate("paymentDate", Date.valueOf(now.toLocalDate()))
 			.toJobParameters();
 
 		try {

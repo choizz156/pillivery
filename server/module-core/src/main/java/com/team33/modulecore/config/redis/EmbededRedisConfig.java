@@ -28,11 +28,9 @@ import redis.embedded.RedisServer;
 @Configuration
 public class EmbededRedisConfig {
 
-	@Value("${spring.data.redis.port}")
-	private int defaultRedisPort;
+	private final int defaultRedisPort = 6379;
 
-	@Value("${spring.data.redis.host}")
-	private String host;
+	private final String host = "localhost";
 
 	private RedisServer redisServer;
 
