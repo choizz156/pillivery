@@ -141,7 +141,7 @@ class ScheduleControllerTest extends ApiTest {
 			.set("quantity", 1)
 			.sample();
 
-		orderItem.addPaymentDay(now);
+		orderItem.updateSubscriptionPaymentDay(now);
 
 		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.setNull("id")

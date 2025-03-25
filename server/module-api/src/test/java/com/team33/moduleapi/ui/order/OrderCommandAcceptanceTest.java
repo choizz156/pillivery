@@ -28,7 +28,6 @@ import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderItemService;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
@@ -120,7 +119,7 @@ class OrderCommandAcceptanceTest extends ApiTest {
 		List<OrderItemServiceDto> orderItemPostDto = orderItemMapper.toOrderItemPostDto(
 			postListDto.getOrderPostDtoList());
 		OrderContext orderContext = orderItemMapper.toOrderContext(postListDto);
-		List<OrderItem> orderItems = orderItemService.toOrderItems(orderItemPostDto);
+		List<OrderItem> orderItems = orderItemService.convertToOrderItems(orderItemPostDto);
 
 		Order order = orderCreateService.callOrder(orderItems, orderContext);
 	}

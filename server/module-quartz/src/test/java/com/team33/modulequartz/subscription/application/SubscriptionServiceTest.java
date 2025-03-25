@@ -100,7 +100,7 @@ class SubscriptionServiceTest {
 
 		OrderQueryRepository orderQueryRepository = mock(OrderQueryRepository.class);
 		OrderItem mockOrderItem = getMockOrderItems();
-		mockOrderItem.addPaymentDay(now);
+		mockOrderItem.updateSubscriptionPaymentDay(now);
 		when(orderQueryRepository.findSubscriptionOrderItemBy(anyLong())).thenReturn(mockOrderItem);
 
 		SubscriptionService subscriptionService = new SubscriptionService(

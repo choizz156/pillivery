@@ -25,7 +25,7 @@ class TriggerServiceTest {
 			.subscriptionInfo(SubscriptionInfo.of(true, 30))
 			.build();
 
-		orderItem.addPaymentDay(ZonedDateTime.now());
+		orderItem.updateSubscriptionPaymentDay(ZonedDateTime.now());
 
 		//when
 		Trigger trigger = triggerService.build(new JobKey("1", "1"), orderItem);
