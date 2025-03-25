@@ -16,7 +16,7 @@ import com.team33.modulecore.exception.DataSaveException;
 import com.team33.modulecore.core.order.domain.entity.Order;
 
 @ExtendWith(OutputCaptureExtension.class)
-class OrderPaymentCodeServiceTest {
+class OrderPaymentIdServiceTest {
 
 	@DisplayName("sid를 저장할 수 있다.")
 	@Test

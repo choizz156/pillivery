@@ -1,6 +1,6 @@
 CREATE TABLE orders (
     id BIGINT PRIMARY KEY,
-    is_subscription BOOLEAN
+   subscription BOOLEAN
 );
 
 CREATE TABLE order_item (
