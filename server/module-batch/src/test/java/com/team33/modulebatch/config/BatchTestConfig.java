@@ -22,11 +22,15 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.OrderVO;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
+import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.writer.PaymentWriter;
+import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 @Import(PaymentApiDispatcher.class)
 @EnableAutoConfiguration
@@ -35,6 +39,9 @@ import com.team33.modulebatch.writer.PaymentWriter;
 public class BatchTestConfig {
 
 	private static final int CHUNK_SIZE = 20;
+	private static final int SKIP_LIMIT = 10;
+	private static final int RETRY_LIMIT = 3;
+
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
@@ -47,10 +54,21 @@ public class BatchTestConfig {
 
 	@Bean
 	public Step paymentJobStep() throws Exception {
+		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
+		backOffPolicy.setBackOffPeriod(5000L);
+
 		return stepBuilderFactory.get("paymentJobStep")
 			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
 			.reader(itemReader(null))
 			.writer(itemWriter(paymentApiDispatcher))
+			.listener(new ItemSkipListener())
+			.faultTolerant()
+			.skipLimit(SKIP_LIMIT)
+			.skip(PaymentApiException.class)
+			.skip(DataAccessException.class)
+			.retryLimit(RETRY_LIMIT)
+			.retry(PaymentApiException.class)
+			.backOffPolicy(backOffPolicy)
 			.build();
 	}
 

@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.LongStream;
 
 import javax.sql.DataSource;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.StepExecution;
@@ -62,9 +60,6 @@ class PaymentStepConfigTest {
 	@Autowired
 	private ItemWriter<OrderVO> itemWriter;
 
-	@Autowired
-	private PaymentApiDispatcher mockPaymentApiDispatcher;
-
 	@MockBean
 	private RestTemplateSender restTemplateSender;
 
@@ -86,7 +81,8 @@ class PaymentStepConfigTest {
 
 	@AfterEach
 	void tearDown() {
-		dataCleaner.execute();
+		jdbcTemplate.execute("TRUNCATE TABLE orders");
+		jdbcTemplate.execute("TRUNCATE TABLE order_item");
 	}
 
 	private void insertTestData(int count) {
@@ -158,6 +154,6 @@ class PaymentStepConfigTest {
 		itemWriter.write(list);
 
 		// then
-		verify(restTemplateSender, times(40)).sendToPost(anyString(),eq(null),eq(null), eq(String.class));
+		verify(restTemplateSender, times(40)).sendToPost(anyString(), eq(null), eq(null), eq(String.class));
 	}
 }
