@@ -1,8 +1,11 @@
 package com.team33.modulebatch.config;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.LongStream;
 
 import javax.sql.DataSource;
@@ -11,24 +14,29 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.scope.context.StepSynchronizationManager;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.test.MetaDataInstanceFactory;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.team33.modulebatch.DataCleaner;
 import com.team33.modulebatch.FixtureMonkeyFactory;
 import com.team33.modulebatch.OrderVO;
+import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulecore.config.redis.EmbededRedisConfig;
+import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 
@@ -37,7 +45,9 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 	BatchTestConfig.class,
 	PaymentJobConfig.class,
 	EmbededRedisConfig.class,
-	DataCleaner.class})
+	DataCleaner.class,
+	PaymentApiDispatcher.class
+})
 @EnableAutoConfiguration
 @EnableBatchProcessing
 @ActiveProfiles("test")
@@ -50,8 +60,18 @@ class PaymentStepConfigTest {
 	private ItemReader<OrderVO> itemReader;
 
 	@Autowired
+	private ItemWriter<OrderVO> itemWriter;
+
+	@Autowired
+	private PaymentApiDispatcher mockPaymentApiDispatcher;
+
+	@MockBean
+	private RestTemplateSender restTemplateSender;
+
+	@Autowired
 	private DataSource dataSource;
 
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
@@ -116,4 +136,28 @@ class PaymentStepConfigTest {
 
 	}
 
+	@DisplayName("item writer가 작동하여 서버에 요청을 보낸다.(40개)")
+	@Test
+	void testItemWriterWritesCorrectly() throws Exception {
+		// given
+		java.sql.Date date = java.sql.Date.valueOf(REQUEST_DATE.toLocalDate());
+		JobParameters jobParameters = new JobParametersBuilder()
+			.addDate("paymentDate", date)
+			.toJobParameters();
+
+		StepExecution stepExecution = MetaDataInstanceFactory.createStepExecution(jobParameters);
+		StepSynchronizationManager.register(stepExecution);
+
+		OrderVO order;
+		var list = new ArrayList<OrderVO>();
+		while ((order = itemReader.read()) != null) {
+			list.add(order);
+		}
+
+		//when
+		itemWriter.write(list);
+
+		// then
+		verify(restTemplateSender, times(40)).sendToPost(anyString(),eq(null),eq(null), eq(String.class));
+	}
 }

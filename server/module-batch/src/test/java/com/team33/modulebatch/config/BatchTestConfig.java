@@ -20,11 +20,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import com.team33.modulebatch.OrderVO;
+import com.team33.modulebatch.infra.PaymentApiDispatcher;
+import com.team33.modulebatch.writer.PaymentWriter;
 
+@Import(PaymentApiDispatcher.class)
 @EnableAutoConfiguration
 @EnableBatchProcessing
 @TestConfiguration
@@ -36,6 +40,9 @@ public class BatchTestConfig {
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
+	private PaymentApiDispatcher paymentApiDispatcher;
+
+	@Autowired
 	private DataSource dataSource;
 
 	@Bean
@@ -43,15 +50,13 @@ public class BatchTestConfig {
 		return stepBuilderFactory.get("paymentJobStep")
 			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
 			.reader(itemReader(null))
-			// .processor(itemProcessor())
-			.writer(itemWriter())
+			.writer(itemWriter(paymentApiDispatcher))
 			.build();
 	}
 
 	@Bean
-	public ItemWriter<OrderVO> itemWriter() {
-		return items -> items.forEach(System.out::println);
-
+	public ItemWriter<OrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher) {
+		return new PaymentWriter(paymentApiDispatcher);
 	}
 
 	@Profile("local || test")
