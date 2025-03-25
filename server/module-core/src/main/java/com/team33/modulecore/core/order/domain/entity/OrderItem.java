@@ -90,21 +90,16 @@ public class OrderItem extends BaseEntity {
         return item.getId().equals(id);
     }
 
-    public void applyNextPaymentDate(ZonedDateTime paymentDay) {
-        this.subscriptionInfo.addPaymentDay(paymentDay);
-        this.subscriptionInfo.applyNextPayment();
+    public void updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
+        this.subscriptionInfo.updatePaymentDay(paymentDay);
     }
 
     public ZonedDateTime getNextPaymentDay() {
         return subscriptionInfo.getNextPaymentDay();
     }
 
-    public void changePeriod(int period) {
-        this.subscriptionInfo.changePeriod(period);
-    }
-
-    public void addPaymentDay(ZonedDateTime paymentDay) {
-        this.subscriptionInfo.addPaymentDay(paymentDay);
+    public void changePeriod(int newPeriod) {
+        this.subscriptionInfo.changePeriod(newPeriod);
     }
 
     public ZonedDateTime getPaymentDay(){

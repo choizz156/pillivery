@@ -65,9 +65,9 @@ public class PaymentStepConfig {
 		reader.setRowMapper(new BeanPropertyRowMapper<>(OrderVO.class));
 
 		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
-		queryProvider.setSelectClause("order_id as orderId, subscription as subscription, payment_date as paymentDate");
+		queryProvider.setSelectClause("order_id as orderId, subscription as subscription, next_payment_day as nextPaymentDay");
 		queryProvider.setFromClause("from order_item oi inner join orders o on o.id = oi.order_id");
-		queryProvider.setWhereClause("where o.subscription = true and oi.payment_date = :paymentDate");
+		queryProvider.setWhereClause("where o.subscription = true and oi.next_payment_day = :paymentDate");
 
 		queryProvider.setSortKeys(Map.of("order_id", Order.ASCENDING));
 

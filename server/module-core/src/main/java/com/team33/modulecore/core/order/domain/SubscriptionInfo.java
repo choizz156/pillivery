@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.Embeddable;import javax.validation.constraints.Positive;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -41,23 +41,27 @@ public class SubscriptionInfo {
 		return SubscriptionInfo.builder()
 			.subscription(isSubscription)
 			.period(period)
+			.nextPaymentDay(ZonedDateTime.now())
+			.paymentDay(ZonedDateTime.now())
 			.build();
 	}
 
 	public void cancelSubscription() {
 		this.subscription = false;
+		this.nextPaymentDay = null;
 	}
 
-	public void addPaymentDay(ZonedDateTime paymentDay) {
+	public void updatePaymentDay(ZonedDateTime paymentDay) {
 		this.paymentDay = paymentDay;
+		updateNextPaymentDay();
+	}
+
+	public void changePeriod(@Positive int newPeriod) {
+		this.period = newPeriod;
+		updateNextPaymentDay();
+	}
+
+	private void updateNextPaymentDay() {
 		this.nextPaymentDay = paymentDay.plusDays(this.period);
-	}
-
-	public void applyNextPayment() {
-		this.nextPaymentDay = paymentDay.plusDays(period);
-	}
-
-	public void changePeriod(int period) {
-		this.period = period;
 	}
 }

@@ -52,7 +52,7 @@ public class OrderCommandController {
 		OrderContext orderContext = orderItemMapper.toOrderContext(orderPostDtoList);
 
 		List<OrderItem> orderItems =
-			orderItemService.toOrderItems(orderItemServiceDto);
+			orderItemService.convertToOrderItems(orderItemServiceDto);
 
 		Order order = orderCreateService.callOrder(orderItems, orderContext);
 

@@ -52,7 +52,7 @@ public class OrderStatusService {
 
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
 		order.getOrderItems()
-			.forEach(orderItem -> orderItem.addPaymentDay(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))));
+			.forEach(orderItem -> orderItem.updateSubscriptionPaymentDay(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))));
 		List<Long> orderedItemsId = getOrderedIds(order);
 
 		orderPaymentCodeService.addSid(orderId, sid);
