@@ -23,6 +23,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.retry.backoff.BackOffPolicy;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.OrderVO;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
@@ -46,6 +48,10 @@ public class PaymentStepConfig {
 
 	@Bean
 	public Step paymentJobStep() throws Exception {
+
+		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
+		backOffPolicy.setBackOffPeriod(5000L);
+
 		return stepBuilderFactory.get("paymentJobStep")
 			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
 			.reader(itemReader(null))
@@ -57,7 +63,7 @@ public class PaymentStepConfig {
 			.skip(DataAccessException.class)
 			.retryLimit(RETRY_LIMIT)
 			.retry(PaymentApiException.class)
-			.retry(DataAccessException.class)
+			.backOffPolicy(backOffPolicy)
 			.build();
 	}
 
