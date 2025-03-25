@@ -9,18 +9,15 @@ import javax.sql.DataSource;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.scope.context.StepSynchronizationManager;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.MetaDataInstanceFactory;
-import org.springframework.batch.test.StepScopeTestExecutionListener;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -35,19 +32,15 @@ import com.team33.modulecore.config.redis.EmbededRedisConfig;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 
-/**
- * The type Payment step config test.
- */
-// @EnableJpaRepositories(
-// 	basePackages = {"com.team33.modulecore"}
-// )
-// @EntityScan(basePackages = {"com.team33.modulecore"})
 @SpringBatchTest
-@SpringBootTest(classes = {PaymentStepConfig.class, PaymentJobConfig.class, EmbededRedisConfig.class, DataCleaner.class})
+@SpringBootTest(classes = {
+	BatchTestConfig.class,
+	PaymentJobConfig.class,
+	EmbededRedisConfig.class,
+	DataCleaner.class})
 @EnableAutoConfiguration
 @EnableBatchProcessing
 @ActiveProfiles("test")
-	// @Sql("classpath:data.sql")
 class PaymentStepConfigTest {
 
 	private static final ZonedDateTime REQUEST_DATE = ZonedDateTime.now();
@@ -57,9 +50,6 @@ class PaymentStepConfigTest {
 	private ItemReader<OrderVO> itemReader;
 
 	@Autowired
-	private JobLauncherTestUtils jobLauncherTestUtils;
-
-	@Autowired
 	private DataSource dataSource;
 
 	private JdbcTemplate jdbcTemplate;
@@ -67,19 +57,16 @@ class PaymentStepConfigTest {
 	@Autowired
 	private DataCleaner dataCleaner;
 
-	/**
-	 * Tear down.
-	 */
-	@AfterEach
-	void tearDown() {
-		dataCleaner.execute();
-	}
-
 	@BeforeEach
 	void setUpEach() throws Exception {
 		dataCleaner.afterPropertiesSet();
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		insertTestData(100);
+	}
+
+	@AfterEach
+	void tearDown() {
+		dataCleaner.execute();
 	}
 
 	private void insertTestData(int count) {
@@ -109,9 +96,9 @@ class PaymentStepConfigTest {
 		});
 	}
 
-
+	@DisplayName("item reader가 작동한다. (총 개수 100개, 읽어올 아이템 40개)")
 	@Test
-	void testSubscriptionOrderReader() throws Exception {
+	void test1() throws Exception {
 		java.sql.Date date = java.sql.Date.valueOf(REQUEST_DATE.toLocalDate());
 		JobParameters jobParameters = new JobParametersBuilder()
 			.addDate("paymentDate", date)
@@ -121,7 +108,7 @@ class PaymentStepConfigTest {
 		StepSynchronizationManager.register(stepExecution);
 
 		int count = 0;
-		while(itemReader.read() != null) {
+		while (itemReader.read() != null) {
 			count++;
 		}
 
