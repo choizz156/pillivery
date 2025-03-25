@@ -12,13 +12,13 @@ public class OrderVO {
 
 	private Long orderId;
 	private boolean subscription;
-	private Date paymentDate;
+	private Date nextPaymentDate;
 
 	@Builder
 	public OrderVO(Long orderId, boolean subscription, Date paymentDate) {
 		this.orderId = orderId;
 		this.subscription = subscription;
-		this.paymentDate = paymentDate;
+		this.nextPaymentDate = paymentDate;
 	}
 
 }

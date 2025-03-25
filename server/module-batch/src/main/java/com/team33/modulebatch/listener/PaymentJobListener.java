@@ -19,9 +19,10 @@ public class PaymentJobListener implements JobExecutionListener {
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
-		LOGGER.info("finish Job ::: JobId = {}, date = {}",
+		LOGGER.info("finish Job ::: JobId = {}, date = {}, status = {}",
 			jobExecution.getJobId(),
-			jobExecution.getJobParameters().getDate("paymentDate")
+			jobExecution.getJobParameters().getDate("paymentDate"),
+			jobExecution.getStatus()
 		);
 	}
 }

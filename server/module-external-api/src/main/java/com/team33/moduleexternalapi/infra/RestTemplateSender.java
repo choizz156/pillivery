@@ -2,6 +2,8 @@ package com.team33.moduleexternalapi.infra;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class RestTemplateSender {
 
+	private static final Logger logger = LoggerFactory.getLogger("fileLog");
+
 	private final ObjectMapper objectMapper;
 	private final RestTemplate restTemplate;
 
@@ -31,7 +35,7 @@ public class RestTemplateSender {
 		ResponseEntity<T> exchange =
 			restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
 
-		checkSuccess(exchange);
+		checkSuccess(exchange, url);
 
 		return exchange.getBody() != null ? exchange.getBody() : (T)exchange.getStatusCode();
 	}
@@ -42,11 +46,12 @@ public class RestTemplateSender {
 
 		ResponseEntity<T> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
 
-		checkSuccess(exchange);
+		checkSuccess(exchange, url);
 	}
 
-	private void checkSuccess(ResponseEntity<?> exchange) {
+	private void checkSuccess(ResponseEntity<?> exchange, String url) {
 		if (!exchange.getStatusCode().is2xxSuccessful()) {
+			logger.warn("url = {}", url);
 			throw new PaymentApiException("api 오류가 발생했습니다.");
 		}
 	}
