@@ -31,19 +31,20 @@ class PaymentWriterTest {
 		verify(mockDispatcher, times(1)).dispatch(orders);
 	}
 
+	@DisplayName("리스트가 비어 있을 경우 write 메서드가 작동하지 않는다.")
 	@Test
-	void testWrite_withEmptyOrders() throws Exception {
-		// Arrange
+	void test2() throws Exception {
+		// given 
 		PaymentApiDispatcher mockDispatcher = mock(PaymentApiDispatcher.class);
 		PaymentWriter paymentWriter = new PaymentWriter(mockDispatcher);
 
 		List<OrderVO> emptyList = List.of();
 
-		// Act
+		// when
 		paymentWriter.write(emptyList);
 
-		// Assert
-		verify(mockDispatcher, times(0)).dispatch(emptyList);
+		// then
+		verifyNoInteractions(mockDispatcher);
 	}
 
 }
