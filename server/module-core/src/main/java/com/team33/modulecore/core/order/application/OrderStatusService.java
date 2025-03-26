@@ -14,8 +14,8 @@ import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
 import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
-import com.team33.modulecore.core.payment.application.cancel.CancelSubscriptionService;
-import com.team33.modulecore.core.payment.application.refund.RefundService;
+import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
+import com.team33.modulecore.core.payment.domain.refund.RefundService;
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 
 import lombok.RequiredArgsConstructor;

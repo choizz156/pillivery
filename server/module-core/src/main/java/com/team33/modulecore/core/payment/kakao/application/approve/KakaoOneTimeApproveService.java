@@ -2,9 +2,9 @@ package com.team33.modulecore.core.payment.kakao.application.approve;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.core.payment.application.approve.OneTimeApprove;
-import com.team33.modulecore.core.payment.application.approve.OneTimeApproveService;
-import com.team33.modulecore.core.payment.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.domain.approve.OneTimeApprove;
+import com.team33.modulecore.core.payment.domain.approve.OneTimeApproveService;
+import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoResponseMapper;

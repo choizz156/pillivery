@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulecore.core.common.OrderFindHelper;
-import com.team33.modulecore.core.payment.application.refund.RefundService;
+import com.team33.modulecore.core.payment.domain.refund.RefundService;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleexternalapi.exception.PaymentApiException;

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
-import com.team33.modulecore.core.payment.application.cancel.CancelSubscriptionService;
+import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 

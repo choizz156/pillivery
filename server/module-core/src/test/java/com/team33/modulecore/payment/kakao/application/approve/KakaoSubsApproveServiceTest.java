@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.order.domain.OrderPrice;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoFirstSubsApprove;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoSubsApprove;

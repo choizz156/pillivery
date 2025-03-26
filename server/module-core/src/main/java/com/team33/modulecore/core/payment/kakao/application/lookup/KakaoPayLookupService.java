@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.application.request.RequestService;
+import com.team33.modulecore.core.payment.domain.request.RequestService;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoLookupResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoResponseMapper;

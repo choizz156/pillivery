@@ -3,7 +3,7 @@ package com.team33.modulecore.core.payment.kakao.application.approve;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.application.approve.SubscriptionApprove;
+import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.application.PaymentClient;

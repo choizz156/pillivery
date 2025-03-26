@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
-import com.team33.modulecore.core.payment.application.approve.OneTimeApproveService;
-import com.team33.modulecore.core.payment.application.approve.SubscriptionApproveService;
-import com.team33.modulecore.core.payment.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.domain.approve.OneTimeApproveService;
+import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
+import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoApproveFacade;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;

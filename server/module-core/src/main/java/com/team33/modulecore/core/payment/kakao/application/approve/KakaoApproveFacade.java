@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.application.approve.ApproveFacade;
-import com.team33.modulecore.core.payment.application.approve.OneTimeApproveService;
-import com.team33.modulecore.core.payment.application.approve.SubscriptionApproveService;
+import com.team33.modulecore.core.payment.domain.approve.ApproveFacade;
+import com.team33.modulecore.core.payment.domain.approve.OneTimeApproveService;
+import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 

@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.payment.application.request;
+package com.team33.modulecore.core.payment.domain.request;
 
 import com.team33.modulecore.core.order.domain.entity.Order;
 

@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.payment.application.refund;
+package com.team33.modulecore.core.payment.domain.refund;
 
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 
