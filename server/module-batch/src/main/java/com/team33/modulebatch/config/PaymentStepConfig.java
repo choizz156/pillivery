@@ -1,6 +1,5 @@
 package com.team33.modulebatch.config;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -10,20 +9,17 @@ import javax.sql.DataSource;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.core.step.builder.FaultTolerantStepBuilder;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
-import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.OrderVO;
@@ -38,6 +34,7 @@ public class PaymentStepConfig {
 	private static final int CHUNK_SIZE = 20;
 	private static final int SKIP_LIMIT = 10;
 	private static final int RETRY_LIMIT = 3;
+	private static final long BACK_OFF_PERIOD = 3000L;
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
@@ -50,7 +47,7 @@ public class PaymentStepConfig {
 	public Step paymentJobStep() throws Exception {
 
 		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-		backOffPolicy.setBackOffPeriod(5000L);
+		backOffPolicy.setBackOffPeriod(BACK_OFF_PERIOD);
 
 		return stepBuilderFactory.get("paymentJobStep")
 			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
@@ -66,7 +63,6 @@ public class PaymentStepConfig {
 			.backOffPolicy(backOffPolicy)
 			.build();
 	}
-
 
 	@Bean
 	public ItemWriter<OrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher) {
@@ -86,9 +82,9 @@ public class PaymentStepConfig {
 
 		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
 		queryProvider.setSelectClause(
-			"order_id as orderId, subscription as subscription, next_payment_day as nextPaymentDay");
+			"order_id as orderId, subscription as subscription, next_payment_date as nextPaymentDay");
 		queryProvider.setFromClause("from order_item oi inner join orders o on o.id = oi.order_id");
-		queryProvider.setWhereClause("where o.subscription = true and oi.next_payment_day = :paymentDate");
+		queryProvider.setWhereClause("where o.subscription = true and oi.next_payment_date = :paymentDate");
 
 		queryProvider.setSortKeys(Map.of("order_id", Order.ASCENDING));
 
