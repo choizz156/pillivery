@@ -13,10 +13,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.scope.context.JobSynchronizationManager;
 import org.springframework.batch.core.scope.context.StepSynchronizationManager;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.test.MetaDataInstanceFactory;
@@ -38,6 +41,9 @@ class PaymentStepConfigTest extends BatchApiTest {
 
 	@Autowired
 	private ItemWriter<OrderVO> itemWriter;
+
+	@Autowired
+	private ItemProcessor<OrderVO, OrderVO> itemProcessor;
 
 	@Autowired
 	private DataSource dataSource;
@@ -106,7 +112,7 @@ class PaymentStepConfigTest extends BatchApiTest {
 
 	@DisplayName("item writer가 작동하여 서버에 요청을 보낸다.(40개)")
 	@Test
-	void testItemWriterWritesCorrectly() throws Exception {
+	void test2() throws Exception {
 		// given
 		java.sql.Date date = java.sql.Date.valueOf(REQUEST_DATE.toLocalDate());
 		JobParameters jobParameters = new JobParametersBuilder()
@@ -127,5 +133,33 @@ class PaymentStepConfigTest extends BatchApiTest {
 
 		// then
 		verify(restTemplateSender, times(40)).sendToPost(anyString(), eq(null), eq(null), eq(String.class));
+	}
+
+	@DisplayName("item processor가 작동하여 멱등 키를 추가한다.")
+	@Test
+	void test3() throws Exception {
+		// given
+		java.sql.Date date = java.sql.Date.valueOf(REQUEST_DATE.toLocalDate());
+		JobParameters jobParameters = new JobParametersBuilder()
+			.addLong("jobId", System.currentTimeMillis())
+			.addDate("paymentDate", date)
+			.toJobParameters();
+
+		StepExecution stepExecution = MetaDataInstanceFactory.createStepExecution(jobParameters);
+		StepSynchronizationManager.register(stepExecution);
+
+		OrderVO order;
+		var list = new ArrayList<OrderVO>();
+		//when
+		while ((order = itemReader.read()) != null) {
+			System.out.println(order.getNextPaymentDate());
+			list.add(itemProcessor.process(order));
+		}
+
+		// then
+		assertThat(list).hasSize(40)
+			.extracting("idempotencyKey")
+			.isNotNull()
+			.doesNotHaveDuplicates();
 	}
 }

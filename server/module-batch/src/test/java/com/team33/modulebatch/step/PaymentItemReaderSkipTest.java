@@ -57,7 +57,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 		when(testItemReader.read())
 			.thenThrow(new DataAccessException("Simulated DB error") {
 			})
-			.thenReturn(new OrderVO(2L, true, NOW))
+			.thenReturn(new OrderVO())
 			.thenReturn(null);
 
 		//when
@@ -82,7 +82,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 		when(testItemReader.read())
 			.thenThrow(new DataAccessException("Simulated DB error1") {
 			})
-			.thenReturn(new OrderVO(2L, true, NOW))
+			.thenReturn(new OrderVO())
 			.thenThrow(new DataAccessException("Simulated DB error2") {
 			})
 			.thenReturn(null);

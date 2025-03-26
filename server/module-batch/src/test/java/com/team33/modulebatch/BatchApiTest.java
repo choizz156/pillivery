@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.team33.modulebatch.config.BatchTestConfig;
 import com.team33.modulebatch.config.PaymentJobConfig;
+import com.team33.modulebatch.config.PaymentStepConfig;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulecore.config.redis.EmbededRedisConfig;
 import com.team33.moduleexternalapi.infra.RestTemplateSender;
@@ -21,7 +22,7 @@ import com.team33.moduleexternalapi.infra.RestTemplateSender;
 import io.restassured.RestAssured;
 
 @SpringBootTest(classes = {
-	BatchTestConfig.class,
+	PaymentStepConfig.class,
 	PaymentJobConfig.class,
 	PaymentApiDispatcher.class,
 	EmbededRedisConfig.class
