@@ -13,7 +13,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class PaymentApiDispatcher {
 
-	private static final String URL = "http://localhost:8080/api/payments/approve/subscriptions/";
+	private static final String HOST = "http://localhost:8080";
+	private static final String URL = HOST + "/api/payments/approve/subscriptions/";
 	private final RestTemplateSender restTemplateSender;
 
 	public void dispatch(List<? extends OrderVO> list) {

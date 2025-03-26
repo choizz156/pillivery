@@ -1,4 +1,4 @@
-package com.team33.modulebatch.config;
+package com.team33.modulebatch;
 
 import java.util.Collections;
 import java.util.Date;
@@ -26,7 +26,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
-import com.team33.modulebatch.OrderVO;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.writer.PaymentWriter;
@@ -41,7 +40,6 @@ public class BatchTestConfig {
 	private static final int CHUNK_SIZE = 20;
 	private static final int SKIP_LIMIT = 10;
 	private static final int RETRY_LIMIT = 3;
-
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
@@ -90,12 +88,12 @@ public class BatchTestConfig {
 		reader.setRowMapper(new BeanPropertyRowMapper<>(OrderVO.class));
 
 		H2PagingQueryProvider queryProvider = new H2PagingQueryProvider();
-		queryProvider.setSelectClause("order_id as orderId, subscription as subscription, payment_date as paymentDate");
+		queryProvider.setSelectClause(
+			"order_id as orderId, subscription as subscription, next_payment_date as nextPaymentDay");
 		queryProvider.setFromClause("from order_item oi inner join orders o on o.id = oi.order_id");
-		queryProvider.setWhereClause("where o.subscription = true and oi.payment_date = :paymentDate");
+		queryProvider.setWhereClause("where o.subscription = true and oi.next_payment_date = :paymentDate");
 
 		queryProvider.setSortKeys(Map.of("order_id", Order.ASCENDING));
-
 
 		reader.setParameterValues(Collections.singletonMap("paymentDate", paymentDate));
 		reader.setQueryProvider(queryProvider);

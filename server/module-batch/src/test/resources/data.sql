@@ -5,5 +5,5 @@ CREATE TABLE orders (
 
 CREATE TABLE order_item (
     order_id BIGINT,
-    payment_date DATE
+    next_payment_date DATE
 );

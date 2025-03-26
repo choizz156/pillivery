@@ -16,40 +16,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.scope.context.StepSynchronizationManager;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.test.MetaDataInstanceFactory;
-import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
 
-import com.team33.modulebatch.DataCleaner;
+import com.team33.modulebatch.BatchApiTest;
 import com.team33.modulebatch.FixtureMonkeyFactory;
 import com.team33.modulebatch.OrderVO;
-import com.team33.modulebatch.infra.PaymentApiDispatcher;
-import com.team33.modulecore.config.redis.EmbededRedisConfig;
-import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 
-@SpringBatchTest
-@SpringBootTest(classes = {
-	BatchTestConfig.class,
-	PaymentJobConfig.class,
-	EmbededRedisConfig.class,
-	DataCleaner.class,
-	PaymentApiDispatcher.class
-})
-@EnableAutoConfiguration
-@EnableBatchProcessing
-@ActiveProfiles("test")
-class PaymentStepConfigTest {
+class PaymentStepConfigTest extends BatchApiTest {
 
 	private static final ZonedDateTime REQUEST_DATE = ZonedDateTime.now();
 	private static final FixtureMonkey FIXTURE_MONKEY = FixtureMonkeyFactory.get();
@@ -60,21 +40,14 @@ class PaymentStepConfigTest {
 	@Autowired
 	private ItemWriter<OrderVO> itemWriter;
 
-	@MockBean
-	private RestTemplateSender restTemplateSender;
-
 	@Autowired
 	private DataSource dataSource;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	private DataCleaner dataCleaner;
-
 	@BeforeEach
 	void setUpEach() throws Exception {
-		dataCleaner.afterPropertiesSet();
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		insertTestData(100);
 	}
@@ -95,7 +68,7 @@ class PaymentStepConfigTest {
 				.sample();
 
 			jdbcTemplate.update(
-				"INSERT INTO orders (id,subscription) VALUES (?, ?)",
+				"INSERT INTO orders (id, subscription) VALUES (?, ?)",
 				order.getOrderId(),
 				order.isSubscription()
 			);
@@ -105,7 +78,7 @@ class PaymentStepConfigTest {
 				REQUEST_DATE;
 
 			jdbcTemplate.update(
-				"INSERT INTO order_item (order_id, payment_date) VALUES (?, ?)",
+				"INSERT INTO order_item (order_id, next_payment_date) VALUES (?, ?)",
 				order.getOrderId(),
 				java.sql.Date.valueOf(paymentDate.toLocalDate())
 			);
