@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
-import com.team33.modulebatch.OrderVO;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
-import com.team33.modulebatch.reader.PaymentItemReader;
-import com.team33.modulebatch.writer.PaymentWriter;
+import com.team33.modulebatch.step.OrderVO;
+import com.team33.modulebatch.step.PaymentItemProcessor;
+import com.team33.modulebatch.step.PaymentItemReader;
+import com.team33.modulebatch.step.PaymentWriter;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 @Configuration
@@ -49,6 +51,7 @@ public class PaymentStepConfig {
 		return stepBuilderFactory.get("paymentJobStep")
 			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
 			.reader(itemReader(null))
+			.processor(itemProcessor(null))
 			.writer(itemWriter(paymentApiDispatcher))
 			.listener(new ItemSkipListener())
 			.faultTolerant()
@@ -62,14 +65,21 @@ public class PaymentStepConfig {
 	}
 
 	@Bean
+	@StepScope
+	public ItemProcessor<OrderVO, OrderVO> itemProcessor(
+		@Value("#{jobExecutionContext['jobId']}") Long jobId
+	) {
+		return new PaymentItemProcessor(jobId);
+	}
+
+	@Bean
 	public ItemWriter<OrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher) {
 		return new PaymentWriter(paymentApiDispatcher);
 	}
 
 	@Bean
 	@StepScope
-	public ItemReader<OrderVO> itemReader(@Value("#{jobParameters['paymentDate']}") Date paymentDate) throws
-		Exception {
+	public ItemReader<OrderVO> itemReader(@Value("#{jobParameters['paymentDate']}") Date paymentDate) {
 		return new PaymentItemReader(paymentDate, dataSource);
 	}
 

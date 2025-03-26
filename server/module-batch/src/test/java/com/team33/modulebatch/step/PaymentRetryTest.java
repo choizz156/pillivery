@@ -17,7 +17,6 @@ import org.springframework.retry.ExhaustedRetryException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.BatchApiTest;
-import com.team33.modulebatch.OrderVO;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 

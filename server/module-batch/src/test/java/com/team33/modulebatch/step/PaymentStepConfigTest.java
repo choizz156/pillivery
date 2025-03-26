@@ -25,7 +25,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.team33.modulebatch.BatchApiTest;
 import com.team33.modulebatch.FixtureMonkeyFactory;
-import com.team33.modulebatch.OrderVO;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 

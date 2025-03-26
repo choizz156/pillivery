@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.SkipListener;
 
-import com.team33.modulebatch.OrderVO;
+import com.team33.modulebatch.step.OrderVO;
 
 public class ItemSkipListener implements SkipListener<OrderVO, OrderVO> {
 

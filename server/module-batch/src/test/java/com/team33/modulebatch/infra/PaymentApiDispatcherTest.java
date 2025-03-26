@@ -1,7 +1,6 @@
 package com.team33.modulebatch.infra;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Collections;
@@ -11,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import com.team33.modulebatch.OrderVO;
+import com.team33.modulebatch.step.OrderVO;
 import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 class PaymentApiDispatcherTest {

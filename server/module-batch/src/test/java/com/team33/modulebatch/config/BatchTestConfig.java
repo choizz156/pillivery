@@ -20,11 +20,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
-import com.team33.modulebatch.OrderVO;
+import com.team33.modulebatch.step.OrderVO;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
-import com.team33.modulebatch.reader.PaymentItemReader;
-import com.team33.modulebatch.writer.PaymentWriter;
+import com.team33.modulebatch.step.PaymentItemReader;
+import com.team33.modulebatch.step.PaymentWriter;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 @Import(PaymentApiDispatcher.class)

@@ -22,7 +22,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
 
 import com.team33.modulebatch.BatchApiTest;
-import com.team33.modulebatch.OrderVO;
 import com.team33.modulebatch.listener.ItemSkipListener;
 
 class PaymentItemReaderSkipTest extends BatchApiTest {
@@ -58,7 +57,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 		when(testItemReader.read())
 			.thenThrow(new DataAccessException("Simulated DB error") {
 			})
-			.thenReturn(new OrderVO(2L, true, Date.valueOf(NOW)))
+			.thenReturn(new OrderVO(2L, true, NOW))
 			.thenReturn(null);
 
 		//when
@@ -83,7 +82,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 		when(testItemReader.read())
 			.thenThrow(new DataAccessException("Simulated DB error1") {
 			})
-			.thenReturn(new OrderVO(2L, true, Date.valueOf(NOW)))
+			.thenReturn(new OrderVO(2L, true, NOW))
 			.thenThrow(new DataAccessException("Simulated DB error2") {
 			})
 			.thenReturn(null);

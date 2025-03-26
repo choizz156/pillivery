@@ -1,6 +1,5 @@
 package com.team33.modulebatch.writer;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -8,8 +7,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulebatch.OrderVO;
+import com.team33.modulebatch.step.OrderVO;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
+import com.team33.modulebatch.step.PaymentWriter;
 
 class PaymentWriterTest {
 

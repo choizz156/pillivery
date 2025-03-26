@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.team33.modulebatch.OrderVO;
+import com.team33.modulebatch.step.OrderVO;
 import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 import lombok.RequiredArgsConstructor;

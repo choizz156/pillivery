@@ -1,4 +1,4 @@
-package com.team33.modulebatch.reader;
+package com.team33.modulebatch.step;
 
 import java.util.Collections;
 import java.util.Date;
@@ -11,8 +11,6 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
-import com.team33.modulebatch.OrderVO;
 
 public class PaymentItemReader implements ItemReader<OrderVO> {
 

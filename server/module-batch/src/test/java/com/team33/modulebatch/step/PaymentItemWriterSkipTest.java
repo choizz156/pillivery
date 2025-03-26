@@ -26,7 +26,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
 
 import com.team33.modulebatch.BatchApiTest;
-import com.team33.modulebatch.OrderVO;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
@@ -51,9 +50,9 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 	@BeforeEach
 	void setUpEach() {
 		orders = List.of(
-			new OrderVO(1L, true, Date.valueOf(NOW)),
-			new OrderVO(2L, true, Date.valueOf(NOW)),
-			new OrderVO(3L, true, Date.valueOf(NOW))
+			new OrderVO(1L, true, NOW),
+			new OrderVO(2L, true, NOW),
+			new OrderVO(3L, true, NOW)
 		);
 	}
 
