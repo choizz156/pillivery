@@ -8,10 +8,10 @@ import lombok.Getter;
 @Getter
 public class PaymentDateUpdatedEvent {
 
-	private final long orderItemId;
+	private final long orderId;
 	private final ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-	public PaymentDateUpdatedEvent(long orderItemId) {
-		this.orderItemId = orderItemId;
+	public PaymentDateUpdatedEvent(long orderId) {
+		this.orderId = orderId;
 	}
 }

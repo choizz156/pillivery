@@ -34,6 +34,6 @@ public class KakaoApproveFacade implements ApproveFacade<KakaoApproveResponse, K
 	@Override
 	public KakaoApproveResponse approveSubscription(Long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);
-		return kakaoSubsApproveService.approveSubscribe(order);
+		 return kakaoSubsApproveService.approveSubscribe(order);
 	}
 }

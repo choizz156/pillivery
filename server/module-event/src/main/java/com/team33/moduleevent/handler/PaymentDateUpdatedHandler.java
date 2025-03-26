@@ -29,10 +29,10 @@ public class PaymentDateUpdatedHandler {
 
 	private void updatePaymentDate(PaymentDateUpdatedEvent apiEvent) {
 		try {
-			orderItemService.updateNextPaymentDate(apiEvent.getPaymentDay(), apiEvent.getOrderItemId());
+			orderItemService.updateNextPaymentDate(apiEvent.getPaymentDay(), apiEvent.getOrderId());
 		} catch (DataAccessException e) {
 			LOGGER.error("다음 결제일 저장 에러 = {}, id = {}, 결제일 = {}", e.getMessage(),
-				apiEvent.getOrderItemId(), apiEvent.getPaymentDay()
+				apiEvent.getOrderId(), apiEvent.getPaymentDay()
 			);
 			throw new DataSaveException(e.getMessage());
 		}

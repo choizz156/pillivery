@@ -38,11 +38,11 @@ public class OrderItemService {
 	}
 
 	public void updateNextPaymentDate(
-		ZonedDateTime firstPaymentDay,
-		long orderItemId
+		ZonedDateTime paymentDay,
+		long orderId
 	) {
-		OrderItem orderItem = orderQueryRepository.findSubscriptionOrderItemBy(orderItemId);
-		orderItem.updateSubscriptionPaymentDay(firstPaymentDay);
+		OrderItem orderItem = orderQueryRepository.findSubscriptionOrderItemBy(orderId);
+		orderItem.updateSubscriptionPaymentDay(paymentDay);
 	}
 
 	public void cancelSubscription(long itemOrderId) {

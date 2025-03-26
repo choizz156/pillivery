@@ -30,7 +30,6 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 
 		KakaoApiApproveResponse response = kakaoFirstSubsApprove.approveFirstSubscription(request);
 
-		//여기서부터 다시.
 		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(request.getOrderId()));
 
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
@@ -39,6 +38,9 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 	@Override
 	public KakaoApproveResponse approveSubscribe(Order order) {
 		KakaoApiApproveResponse response = subscriptionApprove.approveSubscription(order);
+
+		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(order.getId()));
+
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
 	}
 }
