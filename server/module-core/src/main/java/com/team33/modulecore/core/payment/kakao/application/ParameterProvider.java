@@ -1,5 +1,7 @@
 package com.team33.modulecore.core.payment.kakao.application;
 
+import static com.team33.modulecore.core.payment.kakao.application.request.Params.*;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,7 +17,7 @@ public class ParameterProvider {
 
 	public Map<String, Object> getOneTimeReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(Params.CID.getValue(), Params.ONE_TIME_CID.getValue());
+		commonReqsParams.put(Params.CID.getValue(), ONE_TIME_CID.getValue());
 		commonReqsParams.put(Params.APPROVAL_URL.getValue(), Params.ONE_TIME_APPROVAL_URL.getValue() + "/" + order.getId());
 
 		return commonReqsParams;
@@ -23,8 +25,8 @@ public class ParameterProvider {
 
 	public Map<String, Object> getSubscriptionReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(Params.CID.getValue(), Params.SUBSCRIP_CID.getValue());
-		commonReqsParams.put(Params.APPROVAL_URL.getValue(), Params.SUBSCRIPTION_APPROVAL_URI.getValue() + "/" + order.getId());
+		commonReqsParams.put(Params.CID.getValue(), SUBSCRIPTION_CID.getValue());
+		commonReqsParams.put(Params.APPROVAL_URL.getValue(), Params.SUBSCRIPTION_APPROVAL_URL.getValue() + "/" + order.getId());
 		return commonReqsParams;
 	}
 
@@ -35,7 +37,7 @@ public class ParameterProvider {
 	) {
 		var commonApproveParams =
 			getCommonApproveParams(tid, pgToken, orderId);
-		commonApproveParams.put(Params.CID.getValue(), Params.ONE_TIME_CID.getValue());
+		commonApproveParams.put(Params.CID.getValue(), ONE_TIME_CID.getValue());
 		return commonApproveParams;
 	}
 
@@ -45,7 +47,7 @@ public class ParameterProvider {
 		Long orderId
 	) {
 		var commonSubsParams = getCommonApproveParams(tid, pgToken, orderId);
-		commonSubsParams.put(Params.CID.getValue(), Params.SUBSCRIP_CID.getValue());
+		commonSubsParams.put(Params.CID.getValue(), SUBSCRIPTION_CID.getValue());
 
 		return commonSubsParams;
 	}
@@ -53,7 +55,7 @@ public class ParameterProvider {
 	public Map<String, Object> getSubscriptionApproveParams(Order order) {
 		var subsApproveParams = getRequestParams(order);
 		subsApproveParams.put(Params.SID.getValue(), order.getSid());
-		subsApproveParams.put(Params.CID.getValue(), Params.SUBSCRIP_CID.getValue());
+		subsApproveParams.put(Params.CID.getValue(), SUBSCRIPTION_CID.getValue());
 
 		return subsApproveParams;
 	}
@@ -64,7 +66,7 @@ public class ParameterProvider {
 		refundParam.put(Params.CANCEL_AMOUNT.getValue(), refundContext.getCancelAmount());
 		refundParam.put(Params.CANCEL_TAX_FREE_AMOUNT.getValue(), refundContext.getCancelTaxFreeAmount());
 		refundParam.put(Params.TID.getValue(), tid);
-		refundParam.put(Params.CID.getValue(), Params.ONE_TIME_CID.getValue());
+		refundParam.put(Params.CID.getValue(), ONE_TIME_CID.getValue());
 
 		return refundParam;
 	}
@@ -72,7 +74,7 @@ public class ParameterProvider {
 	public Map<String, Object> getSubsCancelParams(String sid) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put(Params.CID.getValue(), Params.SUBSCRIP_CID.getValue());
+		parameters.put(Params.CID.getValue(), SUBSCRIPTION_CID.getValue());
 		parameters.put(Params.SID.getValue(), sid);
 
 		return parameters;
@@ -81,7 +83,7 @@ public class ParameterProvider {
 	public Map<String, Object> getLookupParams(String tid) {
 		Map<String, Object> lookupParams = new ConcurrentHashMap<>();
 		lookupParams.put(Params.TID.getValue(), tid);
-		lookupParams.put(Params.CID.getValue(), Params.ONE_TIME_CID.getValue());
+		lookupParams.put(Params.CID.getValue(), ONE_TIME_CID.getValue());
 
 		return lookupParams;
 	}
@@ -115,8 +117,8 @@ public class ParameterProvider {
 		parameters.put(Params.QUANTITY.getValue(), String.valueOf(paymentParams.getQuantity()));
 		parameters.put(Params.TOTAL_AMOUNT.getValue(), String.valueOf(paymentParams.getTotalAmount()));
 		parameters.put(Params.TAX_FREE_AMOUNT.getValue(), "0");
-		parameters.put(Params.CANCEL_URL.getValue(), Params.CANCEL_URI.getValue());
-		parameters.put(Params.FAIL_URL.getValue(), Params.FAIL_URI.getValue());
+		parameters.put(Params.CANCEL_URL.getValue(), CANCEL_URL.getValue());
+		parameters.put(Params.FAIL_URL.getValue(), FAIL_URL.getValue());
 
 		return parameters;
 	}

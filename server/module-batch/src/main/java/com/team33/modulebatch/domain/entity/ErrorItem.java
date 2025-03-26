@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
-public class FailSubscription {
+public class ErrorItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,27 +28,32 @@ public class FailSubscription {
 
 	private LocalDate lastPaymentDate;
 
+	private String status;
+
 	@Builder
-	private FailSubscription(
+	private ErrorItem(
 		Long id,
 		String orderId,
 		String idempotentKey,
 		LocalDate nextPaymentDate,
-		LocalDate lastPaymentDate
+		LocalDate lastPaymentDate,
+		String status
 	) {
 		this.id = id;
 		this.orderId = orderId;
 		this.idempotentKey = idempotentKey;
 		this.nextPaymentDate = nextPaymentDate;
 		this.lastPaymentDate = lastPaymentDate;
+		this.status = status;
 	}
 
-	public static FailSubscription of(OrderVO orderVO) {
-		return FailSubscription.builder()
+	public static ErrorItem of(OrderVO orderVO) {
+		return ErrorItem.builder()
 			.orderId(orderVO.getOrderId().toString())
 			.idempotentKey(orderVO.getIdempotencyKey())
 			.nextPaymentDate(orderVO.getNextPaymentDate())
 			.lastPaymentDate(orderVO.getLastPaymentDate())
+			.status("ERROR")
 			.build();
 	}
 

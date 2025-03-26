@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
-import com.team33.modulebatch.domain.FailSubscriptionRepository;
+import com.team33.modulebatch.domain.ErrorItemRepository;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.listener.PaymentStepExecutionListener;
@@ -45,7 +45,7 @@ public class PaymentStepConfig {
 	private DataSource dataSource;
 
 	@Autowired
-	private FailSubscriptionRepository failSubscriptionRepository;
+	private ErrorItemRepository errorItemRepository;
 
 	@Bean
 	public Step paymentJobStep() throws Exception {
@@ -65,7 +65,7 @@ public class PaymentStepConfig {
 			.retryLimit(RETRY_LIMIT)
 			.retry(PaymentApiException.class)
 			.backOffPolicy(backOffPolicy)
-			.listener(new ItemSkipListener(failSubscriptionRepository))
+			.listener(new ItemSkipListener(errorItemRepository))
 			.listener(new PaymentStepExecutionListener())
 			.build();
 	}

@@ -6,13 +6,17 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Params {
+
+	BASE_URL("http://localhost:8080/api/payments/"),
+
+	ONE_TIME_APPROVAL_URL(BASE_URL.value + "approve"),
+	SUBSCRIPTION_APPROVAL_URL(BASE_URL.value + "approve/subscription"),
+	CANCEL_URL(BASE_URL.value + "cancel"),
+	FAIL_URL(BASE_URL.value + "fail"),
+
 	PARTNER("pillivery"),
-	ONE_TIME_APPROVAL_URL ( "http://localhost:8080/api/payments/approve"),
-	SUBSCRIPTION_APPROVAL_URI ( "http://localhost:8080/api/payments/approve/subscription"),
-	CANCEL_URI ( "http://localhost:8080/api/payments/cancel"),
-	FAIL_URI ( "http://localhost:8080/api/payments/fail"),
 	ONE_TIME_CID("TC0ONETIME"),
-	SUBSCRIP_CID("TCSUBSCRIP"),
+	SUBSCRIPTION_CID("TCSUBSCRIP"),
 	CID("cid"),
 	APPROVAL_URL("approval_url"),
 	SID("sid"),
@@ -24,8 +28,7 @@ public enum Params {
 	QUANTITY("quantity"),
 	TOTAL_AMOUNT("total_amount"),
 	TAX_FREE_AMOUNT("tax_free_amount"),
-	CANCEL_URL("cancel_url"),
-	FAIL_URL("fail_url"),
+
 	CANCEL_AMOUNT("cancel_amount"),
 	CANCEL_TAX_FREE_AMOUNT("cancel_tax_free_amount");
 

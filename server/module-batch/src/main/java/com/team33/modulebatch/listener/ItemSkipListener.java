@@ -3,9 +3,10 @@ package com.team33.modulebatch.listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.SkipListener;
+import org.springframework.dao.DataAccessException;
 
-import com.team33.modulebatch.domain.FailSubscriptionRepository;
-import com.team33.modulebatch.domain.entity.FailSubscription;
+import com.team33.modulebatch.domain.ErrorItemRepository;
+import com.team33.modulebatch.domain.entity.ErrorItem;
 import com.team33.modulebatch.step.OrderVO;
 
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,11 @@ public class ItemSkipListener implements SkipListener<OrderVO, OrderVO> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
-	private final FailSubscriptionRepository failSubscriptionRepository;
+	private final ErrorItemRepository errorItemRepository;
 
 	@Override
 	public void onSkipInRead(Throwable t) {
-		LOGGER.warn("item reader skip ::: exception = {}", t.getMessage());
+		LOGGER.error("item reader skip ::: exception = {}", t.getMessage());
 	}
 
 	@Override
@@ -29,8 +30,8 @@ public class ItemSkipListener implements SkipListener<OrderVO, OrderVO> {
 			throwable.getMessage()
 		);
 
-		FailSubscription entity = FailSubscription.of(orderVO);
-		failSubscriptionRepository.save(entity);
+		ErrorItem entity = ErrorItem.of(orderVO);
+		errorItemRepository.save(entity);
 	}
 
 	@Override
