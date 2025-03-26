@@ -67,8 +67,9 @@ public class PaymentStepConfig {
 	@Bean
 	@StepScope
 	public ItemProcessor<OrderVO, OrderVO> itemProcessor(
-		@Value("#{jobExecutionContext['jobId']}") Long jobId
+		@Value("#{jobParameters['jobId']}") Long jobId
 	) {
+
 		return new PaymentItemProcessor(jobId);
 	}
 

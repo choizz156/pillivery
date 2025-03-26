@@ -26,6 +26,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
 
+    implementation("com.github.ben-manes.caffeine:guava:3.2.0")
+
 }
 
 test{

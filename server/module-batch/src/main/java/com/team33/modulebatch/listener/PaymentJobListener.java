@@ -12,7 +12,7 @@ public class PaymentJobListener implements JobExecutionListener {
 	@Override
 	public void beforeJob(JobExecution jobExecution) {
 		Long jobId = jobExecution.getJobInstance().getId();
-		jobExecution.getExecutionContext().put("jobId", jobId);
+		jobExecution.getExecutionContext().putLong("jobId", jobId);
 		LOGGER.info("start Job ::: JobId = {}, date = {}",
 			jobId,
 			jobExecution.getJobParameters().getDate("paymentDate")

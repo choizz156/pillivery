@@ -103,7 +103,7 @@ public class OrderItem extends BaseEntity {
     }
 
     public ZonedDateTime getPaymentDay(){
-        return subscriptionInfo.getPaymentDay();
+        return subscriptionInfo.getLastPaymentDay();
     }
 
     public String getProductName(){

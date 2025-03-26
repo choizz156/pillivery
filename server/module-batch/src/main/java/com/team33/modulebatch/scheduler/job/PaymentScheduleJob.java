@@ -31,6 +31,7 @@ public class PaymentScheduleJob extends QuartzJobBean {
 		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
 		JobParameters jobParameters = new JobParametersBuilder()
+			.addLong("jobId", now.toEpochSecond())
 			.addDate("paymentDate", Date.valueOf(now.toLocalDate()))
 			.toJobParameters();
 

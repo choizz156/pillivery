@@ -1,9 +1,6 @@
 package com.team33.modulebatch.step;
 
 import java.time.LocalDate;
-import java.util.Date;
-
-import javax.annotation.Nullable;
 
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +13,7 @@ public class OrderVO {
 	private Long orderId;
 	private boolean subscription;
 	private LocalDate nextPaymentDate;
+	private LocalDate lastPaymentDate;
 	private String idempotencyKey;
 
 	@Builder

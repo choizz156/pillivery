@@ -16,10 +16,11 @@ public class PaymentWriter implements ItemWriter<OrderVO> {
 	@Override
 	public void write(List<? extends OrderVO> list) {
 
-
-		if(list.isEmpty()) {
+		if (list.isEmpty()) {
 			return;
 		}
+
+
 
 		paymentApiDispatcher.dispatch(list);
 	}

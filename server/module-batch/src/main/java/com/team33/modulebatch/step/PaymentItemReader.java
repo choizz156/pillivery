@@ -12,13 +12,16 @@ import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class PaymentItemReader implements ItemReader<OrderVO> {
 
 	private static final int CHUNK_SIZE = 20;
 
-	private final Date paymentDate;
-	private final DataSource dataSource;
-	private final JdbcPagingItemReader<OrderVO> reader;
+	private Date paymentDate;
+	private DataSource dataSource;
+	private JdbcPagingItemReader<OrderVO> reader;
 
 	public PaymentItemReader(Date paymentDate, DataSource dataSource) {
 		this.paymentDate = paymentDate;
@@ -35,7 +38,7 @@ public class PaymentItemReader implements ItemReader<OrderVO> {
 
 		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
 		queryProvider.setSelectClause(
-			"order_id as orderId, subscription as subscription, next_payment_date as nextPaymentDay"
+			"order_id as orderId, subscription as subscription, next_payment_date as nextPaymentDate"
 		);
 		queryProvider.setFromClause("from order_item oi inner join orders o on o.id = oi.order_id");
 		queryProvider.setWhereClause("where o.subscription = true and oi.next_payment_date = :paymentDate");
