@@ -1,4 +1,4 @@
-package com.team33.modulebatch;
+package com.team33.modulebatch.config;
 
 import java.util.Collections;
 import java.util.Date;
@@ -26,6 +26,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
+import com.team33.modulebatch.OrderVO;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.writer.PaymentWriter;

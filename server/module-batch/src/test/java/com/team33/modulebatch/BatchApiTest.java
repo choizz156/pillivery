@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.team33.modulebatch.config.BatchTestConfig;
 import com.team33.modulebatch.config.PaymentJobConfig;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulecore.config.redis.EmbededRedisConfig;

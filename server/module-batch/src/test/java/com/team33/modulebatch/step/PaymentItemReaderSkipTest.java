@@ -1,4 +1,4 @@
-package com.team33.modulebatch.config;
+package com.team33.modulebatch.step;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
