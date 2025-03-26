@@ -29,7 +29,7 @@ import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoApproveFacade;
 import com.team33.modulecore.core.payment.kakao.application.events.ScheduleRegisteredEvent;
 import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestFacade;
-import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 import com.team33.moduleevent.handler.ScheduleRegisterHandler;
@@ -131,7 +131,7 @@ class PaymentAcceptanceTest extends ApiTest {
 		//given
 		KakaoApproveResponse kakaoApproveResponse = FixtureMonkeyFactory.get().giveMeOne(KakaoApproveResponse.class);
 
-		given(approveFacade.approveFirst(any(KakaoApproveOneTimeRequest.class))).willReturn(kakaoApproveResponse);
+		given(approveFacade.approveFirst(any(KakaoApproveRequest.class))).willReturn(kakaoApproveResponse);
 
 		paymentDataService.addData(1L, "tid");
 

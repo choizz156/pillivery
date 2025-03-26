@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoOneTimeApprove;
-import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
 class KakaoOneTimeApproveTest {
@@ -24,7 +24,7 @@ class KakaoOneTimeApproveTest {
 				parameterProvider
 			);
 
-		ApproveRequest request = KakaoApproveOneTimeRequest.builder()
+		ApproveRequest request = KakaoApproveRequest.builder()
 			.orderId(1L)
 			.pgtoken("pgToken")
 			.tid("tid")

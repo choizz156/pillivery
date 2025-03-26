@@ -8,7 +8,7 @@ import com.team33.modulecore.core.payment.application.approve.SubscriptionApprov
 import com.team33.modulecore.core.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
-import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoResponseMapper;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
@@ -24,9 +24,9 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 	private final SubscriptionApprove<KakaoApiApproveResponse> subscriptionApprove;
 
 	@Override
-	public KakaoApproveResponse approveFirstTime(ApproveRequest approveRequest) {
+	public KakaoApproveResponse approveInitial(ApproveRequest approveRequest) {
 
-		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest)approveRequest;
+		KakaoApproveRequest request = (KakaoApproveRequest)approveRequest;
 
 		KakaoApiApproveResponse response = kakaoFirstSubsApprove.approveFirstSubscription(request);
 

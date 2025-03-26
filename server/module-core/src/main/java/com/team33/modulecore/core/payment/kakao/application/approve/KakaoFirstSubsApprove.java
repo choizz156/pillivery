@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
-import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.application.PaymentClient;
 
 @Component
 public class KakaoFirstSubsApprove extends KaKaoApproveTemplate {
+
 	private final ParameterProvider parameterProvider;
 
 	public KakaoFirstSubsApprove(
@@ -22,13 +23,13 @@ public class KakaoFirstSubsApprove extends KaKaoApproveTemplate {
 		this.parameterProvider = parameterProvider;
 	}
 
-	public KakaoApiApproveResponse approveFirstSubscription(KakaoApproveOneTimeRequest approveRequest) {
+	public KakaoApiApproveResponse approveFirstSubscription(KakaoApproveRequest approveRequest) {
 		return super.approve(approveRequest);
 	}
 
 	@Override
 	public Map<String, Object> getApproveParams(ApproveRequest approveRequest) {
-		KakaoApproveOneTimeRequest request = (KakaoApproveOneTimeRequest) approveRequest;
+		KakaoApproveRequest request = (KakaoApproveRequest) approveRequest;
 		return parameterProvider.getSubscriptionFirstApproveParams(
 			request.getTid(),
 			request.getPgtoken(),

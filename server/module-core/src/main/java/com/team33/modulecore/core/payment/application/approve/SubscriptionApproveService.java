@@ -5,6 +5,6 @@ import com.team33.modulecore.core.payment.dto.ApproveRequest;
 
 public interface SubscriptionApproveService<T> {
 
-	T approveFirstTime(ApproveRequest approveRequest);
+	T approveInitial(ApproveRequest approveRequest);
 	T approveSubscribe(Order order);
 }

@@ -19,7 +19,7 @@ import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.payment.application.approve.ApproveFacade;
 import com.team33.modulecore.core.payment.application.request.RequestFacade;
-import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 
@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class PayController {
 
-	private final ApproveFacade<KakaoApproveResponse, KakaoApproveOneTimeRequest> approveFacade;
+	private final ApproveFacade<KakaoApproveResponse, KakaoApproveRequest> approveFacade;
 	private final RequestFacade<KakaoRequestResponse> kakaoRequestFacade;
 	private final PaymentMapper paymentMapper;
 	private final PaymentDataService paymentDataService;
@@ -55,7 +55,7 @@ public class PayController {
 		@PathVariable long orderId
 	) {
 		PaymentData data = paymentDataService.getData(orderId);
-		KakaoApproveOneTimeRequest approveOneTimeRequest =
+		KakaoApproveRequest approveOneTimeRequest =
 			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
 
 		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
@@ -71,7 +71,7 @@ public class PayController {
 	) {
 
 		PaymentData data = paymentDataService.getData(orderId);
-		KakaoApproveOneTimeRequest approveOneTimeRequest =
+		KakaoApproveRequest approveOneTimeRequest =
 			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
 
 		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);

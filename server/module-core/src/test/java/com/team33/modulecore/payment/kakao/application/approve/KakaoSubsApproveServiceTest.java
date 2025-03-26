@@ -19,7 +19,7 @@ import com.team33.modulecore.core.payment.kakao.application.approve.KakaoFirstSu
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoSubsApprove;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoSubsApproveService;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
-import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
@@ -33,14 +33,14 @@ class KakaoSubsApproveServiceTest {
 			applicationEventPublisher -> {
 			});
 
-		ApproveRequest request = KakaoApproveOneTimeRequest.builder()
+		ApproveRequest request = KakaoApproveRequest.builder()
 			.orderId(1L)
 			.pgtoken("pgToken")
 			.tid("tid")
 			.build();
 
 		//when
-		KakaoApproveResponse kaKaoApiApproveResponse = kakaoSubsApproveService.approveFirstTime(request);
+		KakaoApproveResponse kaKaoApiApproveResponse = kakaoSubsApproveService.approveInitial(request);
 
 		//then
 		assertThat(kaKaoApiApproveResponse).isNotNull();
@@ -83,14 +83,14 @@ class KakaoSubsApproveServiceTest {
 
 		KakaoSubsApproveService kakaoSubsApproveService = getKakaoSubsApproveService(applicationContext);
 
-		ApproveRequest request = KakaoApproveOneTimeRequest.builder()
+		ApproveRequest request = KakaoApproveRequest.builder()
 			.orderId(1L)
 			.pgtoken("pgToken")
 			.tid("tid")
 			.build();
 
 		//when
-		kakaoSubsApproveService.approveFirstTime(request);
+		kakaoSubsApproveService.approveInitial(request);
 
 		//then
 		verify(applicationContext, times(1)).publishEvent(any(PaymentDateUpdatedEvent.class));

@@ -11,7 +11,7 @@ import com.team33.modulecore.core.payment.application.approve.OneTimeApproveServ
 import com.team33.modulecore.core.payment.application.approve.SubscriptionApproveService;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoApproveFacade;
-import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 
 class KakaoApproveFacadeTest {
@@ -25,12 +25,12 @@ class KakaoApproveFacadeTest {
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
 
 		when(orderFindHelper.checkSubscription(anyLong())).thenReturn(true);
-		when(subscriptionApproveService.approveFirstTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		when(subscriptionApproveService.approveInitial(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		when(oneTimeApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		KakaoApproveFacade kakaoApproveFacade =
 			new KakaoApproveFacade(subscriptionApproveService, oneTimeApproveService, orderFindHelper);
 
-		KakaoApproveOneTimeRequest request = KakaoApproveOneTimeRequest.builder()
+		KakaoApproveRequest request = KakaoApproveRequest.builder()
 			.orderId(1L)
 			.pgtoken("pgToken")
 			.tid("tid")
@@ -40,7 +40,7 @@ class KakaoApproveFacadeTest {
 		KakaoApproveResponse kakaoApiApproveResponse = kakaoApproveFacade.approveFirst(request);
 
 		//then
-		verify(subscriptionApproveService, times(1)).approveFirstTime(any(ApproveRequest.class));
+		verify(subscriptionApproveService, times(1)).approveInitial(any(ApproveRequest.class));
 		verify(oneTimeApproveService, times(0)).approveOneTime(any(ApproveRequest.class));
 		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
 
@@ -55,12 +55,12 @@ class KakaoApproveFacadeTest {
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
 
 		when(orderFindHelper.checkSubscription(anyLong())).thenReturn(false);
-		when(subscriptionApproveService.approveFirstTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		when(subscriptionApproveService.approveInitial(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		when(oneTimeApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		KakaoApproveFacade kakaoApproveFacade =
 			new KakaoApproveFacade(subscriptionApproveService, oneTimeApproveService, orderFindHelper);
 
-		KakaoApproveOneTimeRequest request = KakaoApproveOneTimeRequest.builder()
+		KakaoApproveRequest request = KakaoApproveRequest.builder()
 			.orderId(1L)
 			.pgtoken("pgToken")
 			.tid("tid")
@@ -70,7 +70,7 @@ class KakaoApproveFacadeTest {
 		KakaoApproveResponse kakaoApiApproveResponse = kakaoApproveFacade.approveFirst(request);
 
 		//then
-		verify(subscriptionApproveService, times(0)).approveFirstTime(any(ApproveRequest.class));
+		verify(subscriptionApproveService, times(0)).approveInitial(any(ApproveRequest.class));
 		verify(oneTimeApproveService, times(1)).approveOneTime(any(ApproveRequest.class));
 		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
 

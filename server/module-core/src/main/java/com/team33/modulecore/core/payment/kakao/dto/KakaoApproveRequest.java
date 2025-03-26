@@ -6,21 +6,21 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class KakaoApproveOneTimeRequest implements ApproveRequest {
+public class KakaoApproveRequest implements ApproveRequest {
 
 	private final String tid;
 	private final String pgtoken;
 	private final long orderId;
 
 	@Builder
-	private KakaoApproveOneTimeRequest(String tid, String pgtoken, long orderId) {
+	private KakaoApproveRequest(String tid, String pgtoken, long orderId) {
 		this.tid = tid;
 		this.pgtoken = pgtoken;
 		this.orderId = orderId;
 	}
 
-	public static KakaoApproveOneTimeRequest of(String tid, String pgtoken, long orderId) {
-		return KakaoApproveOneTimeRequest.builder()
+	public static KakaoApproveRequest of(String tid, String pgtoken, long orderId) {
+		return KakaoApproveRequest.builder()
 			.tid(tid)
 			.pgtoken(pgtoken)
 			.orderId(orderId)
