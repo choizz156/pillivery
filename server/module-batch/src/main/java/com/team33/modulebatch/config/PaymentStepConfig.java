@@ -19,6 +19,7 @@ import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
+import com.team33.modulebatch.listener.PaymentStepExecutionListener;
 import com.team33.modulebatch.step.OrderVO;
 import com.team33.modulebatch.step.PaymentItemProcessor;
 import com.team33.modulebatch.step.PaymentItemReader;
@@ -53,7 +54,6 @@ public class PaymentStepConfig {
 			.reader(itemReader(null))
 			.processor(itemProcessor(null))
 			.writer(itemWriter(paymentApiDispatcher))
-			.listener(new ItemSkipListener())
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
 			.skip(PaymentApiException.class)
@@ -61,6 +61,8 @@ public class PaymentStepConfig {
 			.retryLimit(RETRY_LIMIT)
 			.retry(PaymentApiException.class)
 			.backOffPolicy(backOffPolicy)
+			.listener(new ItemSkipListener())
+			.listener(new PaymentStepExecutionListener())
 			.build();
 	}
 
