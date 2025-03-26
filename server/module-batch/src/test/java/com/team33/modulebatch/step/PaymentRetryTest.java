@@ -3,9 +3,6 @@ package com.team33.modulebatch.step;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.BatchStatus;
@@ -16,7 +13,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataAccessException;
 import org.springframework.retry.ExhaustedRetryException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
@@ -50,11 +46,8 @@ class PaymentRetryTest extends BatchApiTest {
 			.reader(testItemReader)
 			.writer(testItemWriter)
 			.faultTolerant()
-			.skipLimit(3)
-			.skip(DataAccessException.class)
 			.retryLimit(RETRY_LIMIT)
 			.retry(PaymentApiException.class)
-			.retry(DataAccessException.class)
 			.backOffPolicy(backOffPolicy)
 			.listener(itemSkipListener)
 			.build();
@@ -70,8 +63,7 @@ class PaymentRetryTest extends BatchApiTest {
 
 		doThrow(new PaymentApiException("test exception 1"))
 			.doThrow(new PaymentApiException("test exception 2"))
-			.doThrow(new PaymentApiException("test exception 3"))
-			.doNothing()
+			.doNothing() //이것도 try한거임.
 			.when(testItemWriter).write(anyList());
 
 		JobExecution jobExecution = jobRepository.createJobExecution("testJob", new JobParameters());
@@ -83,7 +75,7 @@ class PaymentRetryTest extends BatchApiTest {
 
 		// then
 		assertThat(stepExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-		verify(testItemWriter, times(4)).write(anyList());
+		verify(testItemWriter, times(RETRY_LIMIT)).write(anyList());
 	}
 
 	@DisplayName("item writer에서 에러가 retry limit이상으로 발생하면 예외를 던진다.")
