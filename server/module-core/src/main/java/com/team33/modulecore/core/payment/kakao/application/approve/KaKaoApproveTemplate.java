@@ -2,7 +2,7 @@ package com.team33.modulecore.core.payment.kakao.application.approve;
 
 import java.util.Map;
 
-import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 

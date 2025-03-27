@@ -21,8 +21,8 @@ import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.order.application.OrderSubscriptionService;
+import com.team33.modulecore.core.order.domain.Price;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
-import com.team33.modulecore.core.order.domain.OrderPrice;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.Receiver;
 import com.team33.modulecore.core.order.domain.entity.Order;
@@ -77,7 +77,7 @@ class OrderServiceTest {
 		Order order = orderService.callOrder(orderItems, orderContext);
 
 		//then
-		assertThat(order.getOrderPrice()).isEqualTo(new OrderPrice(orderItems));
+		assertThat(order.getPrice()).isEqualTo(new Price(orderItems));
 		assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.REQUEST);
 		assertThat(order.getOrderItems()).hasSize(3);
 		assertThat(order.getTotalItemsCount()).isEqualTo(3);
@@ -278,8 +278,8 @@ class OrderServiceTest {
 		//then
 		assertThat(order.getOrderItems().get(0).getQuantity()).isEqualTo(2);
 		assertThat(order.getTotalQuantity()).isEqualTo(8);
-		assertThat(order.getOrderPrice().getTotalPrice()).isEqualTo(8000);
-		assertThat(order.getOrderPrice().getTotalDiscountPrice()).isEqualTo(4000);
+		assertThat(order.getPrice().getTotalPrice()).isEqualTo(8000);
+		assertThat(order.getPrice().getTotalDiscountPrice()).isEqualTo(4000);
 	}
 
 	@Test
@@ -343,7 +343,7 @@ class OrderServiceTest {
 			.set("id", 1L)
 			.set("orderItems", getMockOrderItems())
 			.set("totalQuantity", 9)
-			.set("orderPrice", new OrderPrice(getMockOrderItems()))
+			.set("orderPrice", new Price(getMockOrderItems()))
 			.set("user", user)
 			.set("paymentCode.sid", "sid")
 			.sample();

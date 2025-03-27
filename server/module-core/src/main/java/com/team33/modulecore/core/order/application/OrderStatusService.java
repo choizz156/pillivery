@@ -51,8 +51,8 @@ public class OrderStatusService {
 		Order order = orderFindHelper.findOrder(orderId);
 
 		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
-		order.getOrderItems()
-			.forEach(orderItem -> orderItem.updateSubscriptionPaymentDay(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))));
+		// order.getOrderItems()
+			// .forEach(orderItem -> orderItem.updateSubscriptionPaymentDay(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))));
 		List<Long> orderedItemsId = getOrderedIds(order);
 
 		orderPaymentCodeService.addSid(orderId, sid);

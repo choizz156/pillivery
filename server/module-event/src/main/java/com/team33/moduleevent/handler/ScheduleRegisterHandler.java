@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.payment.kakao.application.events.ScheduleRegisteredEvent;
@@ -15,7 +16,7 @@ import com.team33.moduleevent.domain.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class ScheduleRegisterHandler {
 
 	private static final String REGISTER_URL = "http://localhost:8080/api/schedules";

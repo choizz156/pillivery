@@ -1,6 +1,6 @@
 package com.team33.modulecore.core.payment.kakao.dto;
 
-import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.dto.ApproveRequest;
 
 import lombok.Builder;
 import lombok.Getter;

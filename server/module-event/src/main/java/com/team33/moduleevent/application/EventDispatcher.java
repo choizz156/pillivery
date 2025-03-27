@@ -31,8 +31,7 @@ public class EventDispatcher {
 			} catch (RuntimeException e) {
 				retry++;
 				log.warn("retry : {}, parameters : {}", retry, e.getMessage());
-				handleFailure
-					(apiEvent, retry);
+				handleFailure(apiEvent, retry);
 			}
 		}
 	}

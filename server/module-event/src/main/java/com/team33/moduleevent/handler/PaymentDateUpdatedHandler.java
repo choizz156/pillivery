@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.order.application.OrderItemService;
@@ -14,7 +15,7 @@ import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUp
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class PaymentDateUpdatedHandler {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");

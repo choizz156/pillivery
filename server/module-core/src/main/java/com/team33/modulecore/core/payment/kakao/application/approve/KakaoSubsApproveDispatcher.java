@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoSubsApprove
+public class KakaoSubsApproveDispatcher
 	implements SubscriptionApprove<KakaoApiApproveResponse> {
 
 	private final PaymentClient<KakaoApiApproveResponse> kakaoApproveClient;

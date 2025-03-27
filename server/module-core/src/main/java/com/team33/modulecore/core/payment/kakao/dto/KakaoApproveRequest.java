@@ -1,6 +1,6 @@
 package com.team33.modulecore.core.payment.kakao.dto;
 
-import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.dto.ApproveRequest;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,20 +10,34 @@ public class KakaoApproveRequest implements ApproveRequest {
 
 	private final String tid;
 	private final String pgtoken;
-	private final long orderId;
+	private final Long orderId;
+	private final Long subscriptionOrderId;
 
 	@Builder
-	private KakaoApproveRequest(String tid, String pgtoken, long orderId) {
+	private KakaoApproveRequest(String tid, String pgtoken, long orderId, Long subscriptionOrderId) {
 		this.tid = tid;
 		this.pgtoken = pgtoken;
 		this.orderId = orderId;
+		this.subscriptionOrderId = subscriptionOrderId;
 	}
 
-	public static KakaoApproveRequest of(String tid, String pgtoken, long orderId) {
+	public static KakaoApproveRequest of(String tid, String pgtoken, Long orderId) {
 		return KakaoApproveRequest.builder()
 			.tid(tid)
 			.pgtoken(pgtoken)
 			.orderId(orderId)
+			.build();
+	}
+
+	public static KakaoApproveRequest toSubscriptionRequest(KakaoApproveRequest approveRequest, Long subscriptionOrderId) {
+
+		Long previousOrderId = approveRequest.getOrderId();
+
+		return KakaoApproveRequest.builder()
+			.tid(approveRequest.getTid())
+			.pgtoken(approveRequest.getPgtoken())
+			.orderId(previousOrderId)
+			.subscriptionOrderId(subscriptionOrderId)
 			.build();
 	}
 }

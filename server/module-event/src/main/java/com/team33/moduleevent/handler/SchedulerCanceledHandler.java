@@ -1,6 +1,7 @@
 package com.team33.moduleevent.handler;
 
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.payment.kakao.application.refund.SchedulerCanceledEvent;
@@ -12,7 +13,7 @@ import com.team33.moduleevent.domain.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class SchedulerCanceledHandler {
 
 	private static final String SCHEDULES_CANCEL_URL = "http://localhost:8080/api/schedules/cancel";

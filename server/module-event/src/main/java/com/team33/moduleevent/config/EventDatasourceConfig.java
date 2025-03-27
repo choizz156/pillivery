@@ -2,6 +2,8 @@ package com.team33.moduleevent.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -23,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class EventDatasourceConfig {
 
-	private final DataSource mainDataSource;
 
 	@Bean(name = "eventTransactionManager")
 	public PlatformTransactionManager eventTransactionManager() {
@@ -35,7 +36,7 @@ public class EventDatasourceConfig {
 	@Bean(name = "eventEntityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean eventEntityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setDataSource(mainDataSource);
+		em.setDataSource(eventDataSource());
 		em.setPackagesToScan("com.team33.moduleevent");
 
 		HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
@@ -43,5 +44,11 @@ public class EventDatasourceConfig {
 		em.setJpaVendorAdapter(jpaVendorAdapter);
 
 		return em;
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "spring.datasource.main")
+	public DataSource eventDataSource() {
+		return DataSourceBuilder.create().build();
 	}
 }

@@ -61,9 +61,9 @@ public class OrderDetailResponse {
             .receiver(order.getReceiver())
             .orderId(order.getId())
             .totalItems(order.getTotalItemsCount())
-            .totalPrice(order.getOrderPrice().getTotalPrice())
-            .totalDiscountPrice(order.getOrderPrice().getTotalDiscountPrice())
-            .expectPrice(order.getOrderPrice().getTotalPrice())
+            .totalPrice(order.getPrice().getTotalPrice())
+            .totalDiscountPrice(order.getPrice().getTotalDiscountPrice())
+            .expectPrice(order.getPrice().getTotalPrice())
             .subscription(order.isSubscription())
             .itemOrders(
                     order.getOrderItems()

@@ -2,26 +2,24 @@ package com.team33.modulecore.core.order.domain;
 
 import java.time.ZonedDateTime;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;import javax.validation.constraints.Positive;
+import javax.persistence.Embeddable;
+import javax.validation.constraints.Positive;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
+@Getter
+@ToString
 @EqualsAndHashCode
 @Embeddable
-@Getter
-@Access(AccessType.FIELD)
 public class SubscriptionInfo {
 
 	private int period;
 
-	@Column(name = "subscription")
 	private boolean subscription;
 
 	private ZonedDateTime nextPaymentDay;
@@ -29,7 +27,8 @@ public class SubscriptionInfo {
 	private ZonedDateTime lastPaymentDay;
 
 	@Builder
-	public SubscriptionInfo(int period, boolean subscription, ZonedDateTime nextPaymentDay, ZonedDateTime lastPaymentDay) {
+	public SubscriptionInfo(int period, boolean subscription, ZonedDateTime nextPaymentDay,
+		ZonedDateTime lastPaymentDay) {
 		this.period = period;
 		this.subscription = subscription;
 		this.nextPaymentDay = nextPaymentDay;
@@ -64,4 +63,5 @@ public class SubscriptionInfo {
 	private void updateNextPaymentDay() {
 		this.nextPaymentDay = lastPaymentDay.plusDays(this.period);
 	}
+
 }

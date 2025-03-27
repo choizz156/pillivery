@@ -21,20 +21,24 @@ public class KakaoApproveFacade implements ApproveFacade<KakaoApproveResponse, K
 	private final OrderFindHelper orderFindHelper;
 
 	@Override
-	public KakaoApproveResponse approveFirst(KakaoApproveRequest approveRequest) {
+	public KakaoApproveResponse approveInitially(KakaoApproveRequest approveRequest) {
 		Long orderId = approveRequest.getOrderId();
 
-		boolean isSubscription = orderFindHelper.checkSubscription(orderId);
+		Order order = orderFindHelper.findOrder(orderId);
 
-		return isSubscription
-			? kakaoSubsApproveService.approveInitial(approveRequest)
+		return isSubscription(order)
+			? kakaoSubsApproveService.approveInitially(approveRequest)
 			: kakaoOneTimeApproveService.approveOneTime(approveRequest);
+	}
+
+	private  boolean isSubscription(Order order) {
+		return order.getSubscriptionInfo().isSubscription();
 	}
 
 	@Override
 	public KakaoApproveResponse approveSubscription(Long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);
-		 return kakaoSubsApproveService.approveSubscribe(order);
+		return kakaoSubsApproveService.approveSubscribe(order);
 	}
 }
 

@@ -4,21 +4,18 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.core.payment.domain.approve.OneTimeApprove;
-import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
+import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
-import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
+import com.team33.moduleexternalapi.application.PaymentClient;
 
 @Component
-public class KakaoOneTimeApprove
-	extends KaKaoApproveTemplate
-	implements OneTimeApprove<KakaoApiApproveResponse, KakaoApproveRequest>
-{
+public class KakaoFirstSubsApproveDispatcher extends KaKaoApproveTemplate {
+
 	private final ParameterProvider parameterProvider;
 
-	public KakaoOneTimeApprove(
+	public KakaoFirstSubsApproveDispatcher(
 		PaymentClient<KakaoApiApproveResponse> kakaoApproveClient,
 		ParameterProvider parameterProvider
 	) {
@@ -26,17 +23,15 @@ public class KakaoOneTimeApprove
 		this.parameterProvider = parameterProvider;
 	}
 
-	@Override
-	public KakaoApiApproveResponse approveOneTime(KakaoApproveRequest approveRequest) {
+	public KakaoApiApproveResponse approveFirstSubscription(KakaoApproveRequest approveRequest) {
 		return super.approve(approveRequest);
 	}
 
 	@Override
 	public Map<String, Object> getApproveParams(ApproveRequest approveRequest) {
 		KakaoApproveRequest request = (KakaoApproveRequest) approveRequest;
-
-		return parameterProvider.getOneTimeApproveParams(
-			request.getTid() ,
+		return parameterProvider.getSubscriptionFirstApproveParams(
+			request.getTid(),
 			request.getPgtoken(),
 			request.getOrderId()
 		);

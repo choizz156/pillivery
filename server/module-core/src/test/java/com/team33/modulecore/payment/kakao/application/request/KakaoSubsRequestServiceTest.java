@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.Price;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubsRequestService;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
@@ -26,7 +26,7 @@ class KakaoSubsRequestServiceTest {
 			.set("mainItemName", "test")
 			.set("totalItemsCount", 3)
 			.set("totalQuantity", 3)
-			.set("orderPrice", new OrderPrice(3000, 200))
+			.set("orderPrice", new Price(3000, 200))
 			.set("orderItems", List.of())
 			.set("receiver", null)
 			.set("paymentCode.sid", "sid")

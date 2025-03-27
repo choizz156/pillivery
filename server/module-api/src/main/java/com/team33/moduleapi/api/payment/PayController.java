@@ -49,20 +49,20 @@ public class PayController {
 		return new SingleResponseDto<>(KaKaoPayNextUrlDto.from(requestResponse));
 	}
 
-	@GetMapping("/approve/subscription/{orderId}")
-	public SingleResponseDto<KaKaoApproveResponseDto> approveSubscription(
-		@RequestParam("pg_token") String pgToken,
-		@PathVariable long orderId
-	) {
-		PaymentData data = paymentDataService.getData(orderId);
-		KakaoApproveRequest approveOneTimeRequest =
-			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
-
-		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
-		orderStatusService.processSubscriptionStatus(orderId, approve.getSid());
-
-		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
-	}
+	// @GetMapping("/approve/subscription/{orderId}")
+	// public SingleResponseDto<KaKaoApproveResponseDto> approveSubscription(
+	// 	@RequestParam("pg_token") String pgToken,
+	// 	@PathVariable long orderId
+	// ) {
+	// 	PaymentData data = paymentDataService.getData(orderId);
+	// 	KakaoApproveRequest approveOneTimeRequest =
+	// 		paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
+	//
+	// 	KakaoApproveResponse approve = approveFacade.approveInitially(approveOneTimeRequest);
+	// 	orderStatusService.processSubscriptionStatus(orderId, approve.getSid());
+	//
+	// 	return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
+	// }
 
 	@GetMapping("/approve/{orderId}")
 	public SingleResponseDto<KaKaoApproveResponseDto> approveOneTime(
@@ -74,7 +74,7 @@ public class PayController {
 		KakaoApproveRequest approveOneTimeRequest =
 			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getOrderId());
 
-		KakaoApproveResponse approve = approveFacade.approveFirst(approveOneTimeRequest);
+		KakaoApproveResponse approve = approveFacade.approveInitially(approveOneTimeRequest);
 		orderStatusService.processOneTimeStatus(orderId);
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));

@@ -128,7 +128,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	@Override
 	public boolean findIsSubscriptionById(long orderId) {
 		return Boolean.TRUE.equals(
-			queryFactory.select(order.isSubscription).from(order).where(order.id.eq(orderId)).fetchOne()
+			queryFactory.select(order.subscriptionInfo.subscription).from(order).where(order.id.eq(orderId)).fetchOne()
 		);
 	}
 

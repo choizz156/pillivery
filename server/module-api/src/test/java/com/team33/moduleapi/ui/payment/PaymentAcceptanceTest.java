@@ -131,7 +131,7 @@ class PaymentAcceptanceTest extends ApiTest {
 		//given
 		KakaoApproveResponse kakaoApproveResponse = FixtureMonkeyFactory.get().giveMeOne(KakaoApproveResponse.class);
 
-		given(approveFacade.approveFirst(any(KakaoApproveRequest.class))).willReturn(kakaoApproveResponse);
+		given(approveFacade.approveInitially(any(KakaoApproveRequest.class))).willReturn(kakaoApproveResponse);
 
 		paymentDataService.addData(1L, "tid");
 

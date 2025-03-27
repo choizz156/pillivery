@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
-import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
@@ -20,15 +20,15 @@ import lombok.RequiredArgsConstructor;
 public class KakaoSubsApproveService implements SubscriptionApproveService<KakaoApproveResponse> {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
-	private final KakaoFirstSubsApprove kakaoFirstSubsApprove;
+	private final KakaoFirstSubsApproveDispatcher kakaoFirstSubsApproveDispatcher;
 	private final SubscriptionApprove<KakaoApiApproveResponse> subscriptionApprove;
 
 	@Override
-	public KakaoApproveResponse approveInitial(ApproveRequest approveRequest) {
+	public KakaoApproveResponse approveInitially(ApproveRequest approveRequest) {
 
 		KakaoApproveRequest request = (KakaoApproveRequest)approveRequest;
 
-		KakaoApiApproveResponse response = kakaoFirstSubsApprove.approveFirstSubscription(request);
+		KakaoApiApproveResponse response = kakaoFirstSubsApproveDispatcher.approveFirstSubscription(request);
 
 		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(request.getOrderId()));
 

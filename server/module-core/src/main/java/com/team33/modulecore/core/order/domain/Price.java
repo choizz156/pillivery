@@ -14,19 +14,19 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Embeddable
-public class OrderPrice {
+public class Price {
 
     private int totalPrice;
 
     private int totalDiscountPrice;
 
     @Builder
-    public OrderPrice(int totalPrice, int totalDiscountPrice) {
+    public Price(int totalPrice, int totalDiscountPrice) {
         this.totalPrice = totalPrice;
         this.totalDiscountPrice = totalDiscountPrice;
     }
 
-    public OrderPrice(List<OrderItem> orderItems) {
+    public Price(List<OrderItem> orderItems) {
         int totalPrice = countTotalPrice(orderItems);
         int totalDiscountPrice = countTotalDiscountPrice(orderItems);
         this.totalPrice = totalPrice;
@@ -35,7 +35,7 @@ public class OrderPrice {
 
     private int countTotalPrice(List<OrderItem> orderItems) {
 
-        if (orderItems == null) {
+        if (orderItems.isEmpty()) {
             return 0;
         }
 
@@ -48,7 +48,7 @@ public class OrderPrice {
 
     private int countTotalDiscountPrice(List<OrderItem> orderItems) {
 
-        if (orderItems == null) {
+        if (orderItems.isEmpty()) {
             return 0;
         }
 

@@ -6,11 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.core.payment.kakao.application.approve.KakaoFirstSubsApprove;
+import com.team33.modulecore.core.payment.kakao.application.approve.KakaoFirstSubsApproveDispatcher;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
-class KakaoFirstSubsApproveTest {
+class KakaoFirstSubsApproveDispatcherTest {
 
 	@DisplayName("첫 정기 결제 승인 요청을 할 수 있다.")
 	@Test
@@ -18,7 +18,7 @@ class KakaoFirstSubsApproveTest {
 
 		//given
 		ParameterProvider parameterProvider = new ParameterProvider();
-		KakaoFirstSubsApprove kakaoFirstSubsApprove = new KakaoFirstSubsApprove(
+		KakaoFirstSubsApproveDispatcher kakaoFirstSubsApproveDispatcher = new KakaoFirstSubsApproveDispatcher(
 			(params, url) -> new KakaoApiApproveResponse(),
 			parameterProvider
 		);
@@ -29,7 +29,7 @@ class KakaoFirstSubsApproveTest {
 			.pgtoken("pgToken")
 			.tid("tid")
 			.build();
-		KakaoApiApproveResponse kaKaoApiApproveResponse = kakaoFirstSubsApprove.approveFirstSubscription(request);
+		KakaoApiApproveResponse kaKaoApiApproveResponse = kakaoFirstSubsApproveDispatcher.approveFirstSubscription(request);
 
 		//then
 		assertThat(kaKaoApiApproveResponse).isNotNull();

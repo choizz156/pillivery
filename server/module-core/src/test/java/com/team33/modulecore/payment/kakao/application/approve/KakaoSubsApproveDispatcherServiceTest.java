@@ -11,19 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.Price;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.core.payment.kakao.application.approve.KakaoFirstSubsApprove;
-import com.team33.modulecore.core.payment.kakao.application.approve.KakaoSubsApprove;
+import com.team33.modulecore.core.payment.kakao.application.approve.KakaoFirstSubsApproveDispatcher;
+import com.team33.modulecore.core.payment.kakao.application.approve.KakaoSubsApproveDispatcher;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoSubsApproveService;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
-class KakaoSubsApproveServiceTest {
+class KakaoSubsApproveDispatcherServiceTest {
 
 	@DisplayName("첫 정기 결제 승인을 위임할 수 있다.")
 	@Test
@@ -40,7 +40,7 @@ class KakaoSubsApproveServiceTest {
 			.build();
 
 		//when
-		KakaoApproveResponse kaKaoApiApproveResponse = kakaoSubsApproveService.approveInitial(request);
+		KakaoApproveResponse kaKaoApiApproveResponse = kakaoSubsApproveService.approveInitially(request);
 
 		//then
 		assertThat(kaKaoApiApproveResponse).isNotNull();
@@ -60,7 +60,7 @@ class KakaoSubsApproveServiceTest {
 			.set("mainItemName", "test")
 			.set("totalItemsCount", 3)
 			.set("totalQuantity", 3)
-			.set("orderPrice", new OrderPrice(3000, 200))
+			.set("orderPrice", new Price(3000, 200))
 			.set("orderItems", List.of())
 			.set("receiver", null)
 			.set("paymentId.sid", "sid")
@@ -90,7 +90,7 @@ class KakaoSubsApproveServiceTest {
 			.build();
 
 		//when
-		kakaoSubsApproveService.approveInitial(request);
+		kakaoSubsApproveService.approveInitially(request);
 
 		//then
 		verify(applicationContext, times(1)).publishEvent(any(PaymentDateUpdatedEvent.class));
@@ -111,7 +111,7 @@ class KakaoSubsApproveServiceTest {
 			.set("mainItemName", "test")
 			.set("totalItemsCount", 3)
 			.set("totalQuantity", 3)
-			.set("orderPrice", new OrderPrice(3000, 200))
+			.set("orderPrice", new Price(3000, 200))
 			.set("orderItems", List.of())
 			.set("receiver", null)
 			.set("paymentId.sid", "sid")
@@ -131,8 +131,8 @@ class KakaoSubsApproveServiceTest {
 
 		KakaoSubsApproveService kakaoSubsApproveService = new KakaoSubsApproveService(
 			applicationContext,
-			new KakaoFirstSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider),
-			new KakaoSubsApprove((params, url) -> new KakaoApiApproveResponse(), parameterProvider)
+			new KakaoFirstSubsApproveDispatcher((params, url) -> new KakaoApiApproveResponse(), parameterProvider),
+			new KakaoSubsApproveDispatcher((params, url) -> new KakaoApiApproveResponse(), parameterProvider)
 		);
 		return kakaoSubsApproveService;
 	}

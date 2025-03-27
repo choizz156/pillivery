@@ -21,11 +21,4 @@ public class PaymentId {
 		this.tid = tid;
 	}
 
-	public static PaymentId addTid(String tid){
-		return new PaymentId(null, tid);
-	}
-
-	public static PaymentId addSid(String tid, String sid){
-		return new PaymentId(sid, tid);
-	}
 }

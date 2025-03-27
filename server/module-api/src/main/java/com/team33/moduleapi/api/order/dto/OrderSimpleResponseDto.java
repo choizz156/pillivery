@@ -55,7 +55,7 @@ public class OrderSimpleResponseDto { // 주문 목록 조회
             .orderId(order.getId())
             .orderStatus(order.getOrderStatus())
             .totalItems(order.getTotalItemsCount())
-            .expectPrice(order.getOrderPrice().getTotalPrice())
+            .expectPrice(order.getPrice().getTotalPrice())
             .subscription(order.isSubscription())
             .item(ItemSimpleResponseDto.of(order.getFirstItem()))
             .createdAt(order.getCreatedAt())

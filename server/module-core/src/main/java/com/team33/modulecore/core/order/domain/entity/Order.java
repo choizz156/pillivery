@@ -20,8 +20,9 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.proxy.HibernateProxy;
 
 import com.team33.modulecore.core.common.BaseEntity;
-import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.Price;
 import com.team33.modulecore.core.order.domain.PaymentId;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.OrderStatus;
@@ -45,8 +46,6 @@ public class Order extends BaseEntity {
 	@Column(name = "order_id")
 	private Long id;
 
-	private boolean isSubscription;
-
 	@Column(name = "cart_request")
 	private boolean isOrderedAtCart;
 
@@ -57,10 +56,13 @@ public class Order extends BaseEntity {
 	private int totalQuantity;
 
 	@Embedded
+	private SubscriptionInfo subscriptionInfo;
+
+	@Embedded
 	private PaymentId paymentId;
 
 	@Embedded
-	private OrderPrice orderPrice;
+	private Price price;
 
 	@Embedded
 	private Receiver receiver;
@@ -73,51 +75,38 @@ public class Order extends BaseEntity {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> orderItems = new ArrayList<>();
 
-	public Order(Order origin) {
-		this.isSubscription = origin.isSubscription();
-		this.isOrderedAtCart = origin.isOrderedAtCart();
-		this.totalItemsCount = origin.getTotalItemsCount();
-		this.totalQuantity = origin.getTotalQuantity();
-		this.paymentId = origin.getPaymentId();
-		this.orderPrice = origin.getOrderPrice();
-		this.receiver = origin.getReceiver();
-		this.orderStatus = origin.getOrderStatus();
-		this.orderItems = origin.getOrderItems();
-		this.mainItemName = origin.getMainItemName();
-		this.userId = origin.getUserId();
-	}
 
 	@Builder
 	public Order(
-		boolean isSubscription,
 		boolean isOrderedAtCart,
 		int totalItemsCount,
 		String mainItemName,
 		PaymentId paymentId,
-		OrderPrice orderPrice,
+		Price price,
 		Receiver receiver,
 		OrderStatus orderStatus,
 		int totalQuantity,
 		Long userId,
+		SubscriptionInfo subscriptionInfo,
 		List<OrderItem> orderItems
 	) {
-		this.isSubscription = isSubscription;
 		this.isOrderedAtCart = isOrderedAtCart;
 		this.totalItemsCount = totalItemsCount;
 		this.mainItemName = mainItemName;
 		this.paymentId = paymentId;
-		this.orderPrice = orderPrice;
+		this.price = price;
 		this.receiver = receiver;
 		this.orderStatus = orderStatus;
 		this.totalQuantity = totalQuantity;
 		this.userId = userId;
 		this.orderItems = orderItems;
+		this.subscriptionInfo = subscriptionInfo;
 	}
 
-	public static Order create(List<OrderItem> orderItems, OrderContext orderContext) {
+	public static Order create(List<OrderItem> orderItems, SubscriptionInfo subscriptionInfo, OrderContext orderContext) {
 		Order order = Order.builder()
+			.subscriptionInfo(subscriptionInfo)
 			.receiver(orderContext.getReceiver())
-			.isSubscription(orderContext.isSubscription())
 			.isOrderedAtCart(orderContext.isOrderedCart())
 			.userId(orderContext.getUserId())
 			.orderStatus(OrderStatus.REQUEST)
@@ -139,11 +128,11 @@ public class Order extends BaseEntity {
 			throw new BusinessLogicException("tid는 null일 수 없습니다.");
 		}
 
-		this.paymentId = PaymentId.addSid(tid, sid);
+		this.paymentId = new PaymentId(sid, tid);
 	}
 
 	public void addTid(String tid) {
-		this.paymentId = PaymentId.addTid(tid);
+		this.paymentId = new PaymentId(null, tid);
 	}
 
 	public Item getFirstItem() {
@@ -155,16 +144,16 @@ public class Order extends BaseEntity {
 	}
 
 	public void addPrice(List<OrderItem> orderItems) {
-		this.orderPrice = new OrderPrice(orderItems);
+		this.price = new Price(orderItems);
 	}
 
 	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
-		this.orderPrice = new OrderPrice(orderItems);
+		this.price = new Price(orderItems);
 		countTotalQuantity();
 	}
 
 	public int getTotalPrice() {
-		return this.orderPrice.getTotalPrice();
+		return this.price.getTotalPrice();
 	}
 
 	public String getSid() {
@@ -173,6 +162,10 @@ public class Order extends BaseEntity {
 
 	public String getTid() {
 		return this.paymentId.getTid();
+	}
+
+	public OrderItem getSingleOrderItem(){
+		return this.orderItems.get(0);
 	}
 
 	private void countTotalQuantity() {

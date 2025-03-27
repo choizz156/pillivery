@@ -20,13 +20,12 @@ import org.springframework.http.HttpStatus;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.Image;
 import com.team33.modulecore.core.item.domain.Information;
-import com.team33.modulecore.core.item.domain.Price;
 import com.team33.modulecore.core.item.domain.Statistic;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderItemService;
-import com.team33.modulecore.core.order.domain.OrderPrice;
+import com.team33.modulecore.core.order.domain.Price;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.PaymentId;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
@@ -151,7 +150,7 @@ class ScheduleControllerTest extends ApiTest {
 			.set("isOrderedAtCart", false)
 			.set("mainItemName", item.getProductName())
 			.set("isSubscription", true)
-			.set("orderPrice", new OrderPrice(List.of(orderItem)))
+			.set("orderPrice", new Price(List.of(orderItem)))
 			.set("totalItemsCount", 1)
 			.set("totalQuantity", 1)
 			.set("paymentCode", new PaymentId())
@@ -185,7 +184,7 @@ class ScheduleControllerTest extends ApiTest {
 				"4. 납(mg/kg) : 1.0 이하\n" +
 				"5. 카드뮴(mg/kg) : 0.3 이하")
 			.image(new Image("thumbnailUrl", "descriptionImage"))
-			.price(new Price(10000, 0))
+			.price(new com.team33.modulecore.core.item.domain.Price(10000, 0))
 			.build();
 
 		Item item = Item.builder()

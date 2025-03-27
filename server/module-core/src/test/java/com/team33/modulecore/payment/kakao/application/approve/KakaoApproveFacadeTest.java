@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.payment.domain.approve.OneTimeApproveService;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
-import com.team33.modulecore.core.payment.domain.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoApproveFacade;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
@@ -25,7 +25,7 @@ class KakaoApproveFacadeTest {
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
 
 		when(orderFindHelper.checkSubscription(anyLong())).thenReturn(true);
-		when(subscriptionApproveService.approveInitial(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		when(subscriptionApproveService.approveInitially(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		when(oneTimeApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		KakaoApproveFacade kakaoApproveFacade =
 			new KakaoApproveFacade(subscriptionApproveService, oneTimeApproveService, orderFindHelper);
@@ -37,10 +37,10 @@ class KakaoApproveFacadeTest {
 			.build();
 
 		//when
-		KakaoApproveResponse kakaoApiApproveResponse = kakaoApproveFacade.approveFirst(request);
+		KakaoApproveResponse kakaoApiApproveResponse = kakaoApproveFacade.approveInitially(request);
 
 		//then
-		verify(subscriptionApproveService, times(1)).approveInitial(any(ApproveRequest.class));
+		verify(subscriptionApproveService, times(1)).approveInitially(any(ApproveRequest.class));
 		verify(oneTimeApproveService, times(0)).approveOneTime(any(ApproveRequest.class));
 		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
 
@@ -55,7 +55,7 @@ class KakaoApproveFacadeTest {
 		OrderFindHelper orderFindHelper = mock(OrderFindHelper.class);
 
 		when(orderFindHelper.checkSubscription(anyLong())).thenReturn(false);
-		when(subscriptionApproveService.approveInitial(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
+		when(subscriptionApproveService.approveInitially(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		when(oneTimeApproveService.approveOneTime(any(ApproveRequest.class))).thenReturn(new KakaoApproveResponse());
 		KakaoApproveFacade kakaoApproveFacade =
 			new KakaoApproveFacade(subscriptionApproveService, oneTimeApproveService, orderFindHelper);
@@ -67,10 +67,10 @@ class KakaoApproveFacadeTest {
 			.build();
 
 		//when
-		KakaoApproveResponse kakaoApiApproveResponse = kakaoApproveFacade.approveFirst(request);
+		KakaoApproveResponse kakaoApiApproveResponse = kakaoApproveFacade.approveInitially(request);
 
 		//then
-		verify(subscriptionApproveService, times(0)).approveInitial(any(ApproveRequest.class));
+		verify(subscriptionApproveService, times(0)).approveInitially(any(ApproveRequest.class));
 		verify(oneTimeApproveService, times(1)).approveOneTime(any(ApproveRequest.class));
 		verify(orderFindHelper, times(1)).checkSubscription(anyLong());
 
