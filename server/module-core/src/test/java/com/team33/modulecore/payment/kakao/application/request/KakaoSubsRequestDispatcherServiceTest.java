@@ -14,7 +14,7 @@ import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubsReq
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
-class KakaoSubsRequestServiceTest {
+class KakaoSubsRequestDispatcherServiceTest {
 
 
 	@DisplayName("정기 결제 요청을 위임할 수 있다.")

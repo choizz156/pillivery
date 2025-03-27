@@ -18,7 +18,7 @@ import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequest
 import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubsRequestService;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 
-class KakaoOneTimeRequestFacadeTest {
+class KakaoOneTimeRequestDispatcherFacadeTest {
 
 	@DisplayName("정기 결제 요청일 경우 정기 결제 요청 서비스로 위임한다.")
 	@Test

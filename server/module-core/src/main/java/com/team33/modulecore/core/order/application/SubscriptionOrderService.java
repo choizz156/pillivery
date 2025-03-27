@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.payment.application;
+package com.team33.modulecore.core.order.application;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
-import com.team33.modulecore.core.payment.domain.SubscriptionOrderRepository;
-import com.team33.modulecore.core.payment.domain.entity.SubscriptionOrder;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
+import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 
@@ -33,26 +33,25 @@ public class SubscriptionOrderService {
 	}
 
 	public void changeItemPeriod(int newPeriod, long itemOrderId) {
-		findSubscriptionOrder(itemOrderId).changePeriod(newPeriod);
+		findById(itemOrderId).changePeriod(newPeriod);
+	}
+
+	public SubscriptionOrder findById(long subscriptionOrderId) {
+		return subscriptionOrderRepository.findById(subscriptionOrderId)
+			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
 	}
 
 	public void updateNextPaymentDate(
 		ZonedDateTime paymentDay,
 		long subscriptionOrderId
 	) {
-		SubscriptionOrder subscriptionOrder = findSubscriptionOrder(subscriptionOrderId);
+		SubscriptionOrder subscriptionOrder = findById(subscriptionOrderId);
 		subscriptionOrder.updateSubscriptionPaymentDay(paymentDay);
 	}
 
 	public void cancelSubscription(long itemOrderId) {
-		findSubscriptionOrder(itemOrderId).cancelSubscription();
+		findById(itemOrderId).cancelSubscription();
 	}
-
-	public SubscriptionOrder findSubscriptionOrder(long subscriptionOrderId) {
-		return subscriptionOrderRepository.findById(subscriptionOrderId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
-	}
-
 
 	private SubscriptionOrder getSubscriptionOrderToPriceZero(Order order, OrderItem orderItem) {
 		SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order, orderItem);

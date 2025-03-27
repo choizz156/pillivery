@@ -1,15 +1,12 @@
-package com.team33.modulecore.core.payment.domain.entity;
+package com.team33.modulecore.core.order.domain.entity;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,13 +15,6 @@ import javax.persistence.OneToOne;
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.PaymentId;
-import com.team33.modulecore.core.order.domain.Price;
-import com.team33.modulecore.core.order.domain.Receiver;
-import com.team33.modulecore.core.order.domain.SubscriptionInfo;
-import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
-import com.team33.modulecore.exception.BusinessLogicException;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -66,7 +56,7 @@ public class SubscriptionOrder extends BaseEntity {
 			.build();
 
 		subscriptionOrder.addPrice(List.of(orderItem));
-		subscriptionOrder.getOrderItem().addSubscriptionOrder(subscriptionOrder);
+		orderItem.addSubscriptionOrder(subscriptionOrder);
 		return subscriptionOrder;
 	}
 
@@ -118,4 +108,19 @@ public class SubscriptionOrder extends BaseEntity {
 		this.orderCommonInfo = this.orderCommonInfo.addTid(tid);
 	}
 
+	public int getTotalQuantity() {
+		return this.orderCommonInfo.getTotalQuantity();
+	}
+
+	public int getTotalPrice() {
+		return this.orderCommonInfo.getTotalPrice();
+	}
+
+	public String getMainItemName() {
+		return this.orderCommonInfo.getMainItemName();
+	}
+
+	public String getSid() {
+		return this.orderCommonInfo.getSid();
+	}
 }

@@ -2,6 +2,7 @@ package com.team33.modulecore.core.payment.kakao.application.request;
 
 import org.springframework.stereotype.Service;
 
+import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.payment.domain.request.Request;
 import com.team33.modulecore.core.payment.domain.request.RequestService;
@@ -13,12 +14,17 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoRequestService implements RequestService<KakaoRequestResponse> {
+public class KakaoRequestService implements RequestService<KakaoRequestResponse, Long> {
 
-	private final Request<KakaoApiRequestResponse> kakaoOneTimeRequest;
+	private final Request<KakaoApiRequestResponse, Order> kakaoOneTimeRequest;
+	private final OrderFindHelper orderFindHelper;
 
-	public KakaoRequestResponse request(Order order) {
+	@Override
+	public KakaoRequestResponse request(Long orderId) {
+		Order order = orderFindHelper.findOrder(orderId);
 		KakaoApiRequestResponse response = kakaoOneTimeRequest.request(order);
+		
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreRequestResponse(response);
 	}
+
 }

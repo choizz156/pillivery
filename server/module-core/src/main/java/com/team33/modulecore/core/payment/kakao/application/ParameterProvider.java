@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 import com.team33.modulecore.core.payment.kakao.application.request.Params;
 import com.team33.modulecore.core.payment.kakao.dto.PaymentParams;
@@ -15,102 +16,109 @@ import com.team33.modulecore.core.payment.kakao.dto.PaymentParams;
 @Component
 public class ParameterProvider {
 
-	public Map<String, Object> getOneTimeReqsParams(Order order) {
-		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(CID.getValue(), ONE_TIME_CID.getValue());
-		commonReqsParams.put(APPROVAL_URL.getValue(), ONE_TIME_APPROVAL_URL.getValue() + "/" + order.getId());
+	public Map<String, Object> getOneTimePaymentRequestParams(Order order) {
 
-		return commonReqsParams;
+		return addPaymentSpecificParams(
+			getRequestParams(order),
+			ONE_TIME_CID.getValue(),
+			ONE_TIME_APPROVAL_URL.getValue() + "/" + order.getId());
 	}
 
-	public Map<String, Object> getSubscriptionReqsParams(Order order) {
-		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(CID.getValue(), SUBSCRIPTION_CID.getValue());
-		commonReqsParams.put(APPROVAL_URL.getValue(), SUBSCRIPTION_APPROVAL_URL.getValue() + "/" + order.getId());
-		return commonReqsParams;
+	public Map<String, Object> getSubscriptionPaymentRequestParams(SubscriptionOrder subscriptionOrder) {
+
+		return addPaymentSpecificParams(
+			getRequestParams(subscriptionOrder),
+			SUBSCRIPTION_CID.getValue(),
+			SUBSCRIPTION_APPROVAL_URL.getValue() + "/" + subscriptionOrder.getId());
 	}
 
-	public Map<String, Object> getOneTimeApproveParams(
-		String tid,
-		String pgToken,
-		Long orderId
-	) {
-		var commonApproveParams =
-			getCommonApproveParams(tid, pgToken, orderId);
-		commonApproveParams.put(CID.getValue(), ONE_TIME_CID.getValue());
-		return commonApproveParams;
+	public Map<String, Object> getOneTimePaymentApprovalParams(String tid, String pgToken, Long orderId) {
+
+		return addCidParam(getCommonApproveParams(tid, pgToken, orderId), ONE_TIME_CID.getValue());
 	}
 
-	public Map<String, Object> getSubscriptionFirstApproveParams(
-		String tid,
-		String pgToken,
-		Long orderId
-	) {
-		var commonSubsParams = getCommonApproveParams(tid, pgToken, orderId);
-		commonSubsParams.put(CID.getValue(), SUBSCRIPTION_CID.getValue());
+	public Map<String, Object> getSubscriptionFirstPaymentApprovalParams(String tid, String pgToken, Long orderId) {
 
-		return commonSubsParams;
+		return addCidParam(getCommonApproveParams(tid, pgToken, orderId), SUBSCRIPTION_CID.getValue());
 	}
 
-	public Map<String, Object> getSubscriptionApproveParams(Order order) {
-		var subsApproveParams = getRequestParams(order);
-		subsApproveParams.put(Params.SID.getValue(), order.getSid());
-		subsApproveParams.put(CID.getValue(), SUBSCRIPTION_CID.getValue());
+	public Map<String, Object> getSubscriptionPaymentApprovalParams(SubscriptionOrder subscriptionOrder) {
 
-		return subsApproveParams;
+		Map<String, Object> params = getRequestParams(subscriptionOrder);
+		params.put(Params.SID.getValue(), subscriptionOrder.getSid());
+		return addCidParam(params, SUBSCRIPTION_CID.getValue());
 	}
 
-	public Map<String, Object> getRefundParams(RefundContext refundContext, String tid) {
-		Map<String, Object> refundParam = new ConcurrentHashMap<>();
 
-		refundParam.put(CANCEL_AMOUNT.getValue(), refundContext.getCancelAmount());
-		refundParam.put(CANCEL_TAX_FREE_AMOUNT.getValue(), refundContext.getCancelTaxFreeAmount());
-		refundParam.put(TID.getValue(), tid);
-		refundParam.put(CID.getValue(), ONE_TIME_CID.getValue());
+	public Map<String, Object> getPaymentRefundParams(RefundContext refundContext, String tid) {
 
-		return refundParam;
+		Map<String, Object> params = new ConcurrentHashMap<>();
+		params.put(CANCEL_AMOUNT.getValue(), refundContext.getCancelAmount());
+		params.put(CANCEL_TAX_FREE_AMOUNT.getValue(), refundContext.getCancelTaxFreeAmount());
+		params.put(TID.getValue(), tid);
+		return addCidParam(params, ONE_TIME_CID.getValue());
 	}
 
 	public Map<String, Object> getSubsCancelParams(String sid) {
-		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put(CID.getValue(), SUBSCRIPTION_CID.getValue());
-		parameters.put(Params.SID.getValue(), sid);
-
-		return parameters;
+		Map<String, Object> params = new ConcurrentHashMap<>();
+		params.put(Params.SID.getValue(), sid);
+		return addCidParam(params, SUBSCRIPTION_CID.getValue());
 	}
 
-	public Map<String, Object> getLookupParams(String tid) {
-		Map<String, Object> lookupParams = new ConcurrentHashMap<>();
-		lookupParams.put(TID.getValue(), tid);
-		lookupParams.put(CID.getValue(), ONE_TIME_CID.getValue());
+	public Map<String, Object> getPaymentLookupParams(String tid) {
 
-		return lookupParams;
+		Map<String, Object> params = new ConcurrentHashMap<>();
+		params.put(TID.getValue(), tid);
+		return addCidParam(params, ONE_TIME_CID.getValue());
+	}
+
+	private Map<String, Object> addPaymentSpecificParams(Map<String, Object> params, String cid, String approvalUrl) {
+
+		params.put(CID.getValue(), cid);
+		params.put(APPROVAL_URL.getValue(), approvalUrl);
+		return params;
+	}
+
+	private Map<String, Object> addCidParam(Map<String, Object> params, String cid) {
+
+		params.put(CID.getValue(), cid);
+		return params;
 	}
 
 	private Map<String, Object> getRequestParams(Order order) {
-		PaymentParams requestParamsInfo = getRequestParamsInfo(order);
-		return getCommonReqsParams(requestParamsInfo);
+
+		return getCommonReqsParams(getRequestParamsInfo(order));
 	}
 
-	private Map<String, Object> getCommonApproveParams(
-		String tid,
-		String pgToken,
-		Long orderId
-	) {
-		Map<String, Object> parameters = new ConcurrentHashMap<>();
+	private Map<String, Object> getRequestParams(SubscriptionOrder subscriptionOrder) {
 
-		parameters.put(TID.getValue(), tid);
-		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(orderId));
-		parameters.put(PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
-		parameters.put(PG_TOKEN.getValue(), pgToken);
+		return getCommonReqsParams(getRequestParamsInfo(subscriptionOrder));
+	}
 
-		return parameters;
+	private PaymentParams getRequestParamsInfo(Order order) {
+
+		return PaymentParams.builder()
+			.totalAmount(order.getTotalPrice())
+			.quantity(order.getTotalAmount())
+			.itemName(getItemName(order))
+			.orderId(order.getId())
+			.build();
+	}
+
+	private PaymentParams getRequestParamsInfo(SubscriptionOrder subscriptionOrder) {
+
+		return PaymentParams.builder()
+			.totalAmount(subscriptionOrder.getTotalPrice())
+			.quantity(subscriptionOrder.getTotalQuantity())
+			.itemName(getItemName(subscriptionOrder))
+			.orderId(subscriptionOrder.getId())
+			.build();
 	}
 
 	private Map<String, Object> getCommonReqsParams(PaymentParams paymentParams) {
-		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(paymentParams.getOrderId()));
 		parameters.put(PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
 		parameters.put(ITEM_NAME.getValue(), paymentParams.getItemName());
@@ -119,29 +127,28 @@ public class ParameterProvider {
 		parameters.put(TAX_FREE_AMOUNT.getValue(), "0");
 		parameters.put(CANCEL_URL.getValue(), CANCEL_URL.getValue());
 		parameters.put(FAIL_URL.getValue(), FAIL_URL.getValue());
-
 		return parameters;
 	}
 
-	private PaymentParams getRequestParamsInfo(Order order) {
-		String itemName = getItemName(order);
+	private Map<String, Object> getCommonApproveParams(String tid, String pgToken, Long orderId) {
 
-		return PaymentParams.builder()
-			.totalAmount(order.getTotalPrice())
-			.quantity(order.getTotalQuantity())
-			.itemName(itemName)
-			.orderId(order.getId())
-			.build();
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
+		parameters.put(TID.getValue(), tid);
+		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(orderId));
+		parameters.put(PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
+		parameters.put(PG_TOKEN.getValue(), pgToken);
+		return parameters;
 	}
 
 	private String getItemName(Order order) {
+
 		int itemQuantity = order.getTotalItemsCount();
 		String itemName = order.getMainItemName();
+		return itemQuantity == 1 ? itemName : itemName + " 그 외 " + (itemQuantity - 1) + "개";
+	}
 
-		if (itemQuantity == 1) {
-			return itemName;
-		}
+	private String getItemName(SubscriptionOrder subscriptionOrder) {
 
-		return itemName + " 그 외 " + (itemQuantity - 1) + "개";
+		return subscriptionOrder.getMainItemName();
 	}
 }

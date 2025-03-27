@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.item.domain.entity.Item;
-import com.team33.modulecore.core.payment.domain.entity.SubscriptionOrder;
 
 import lombok.AccessLevel;
 import lombok.Builder;

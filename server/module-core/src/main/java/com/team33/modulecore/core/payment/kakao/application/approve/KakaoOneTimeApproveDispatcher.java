@@ -35,7 +35,7 @@ public class KakaoOneTimeApproveDispatcher
 	public Map<String, Object> getApproveParams(ApproveRequest approveRequest) {
 		KakaoApproveRequest request = (KakaoApproveRequest) approveRequest;
 
-		return parameterProvider.getOneTimeApproveParams(
+		return parameterProvider.getOneTimePaymentApprovalParams(
 			request.getTid() ,
 			request.getPgtoken(),
 			request.getOrderId()

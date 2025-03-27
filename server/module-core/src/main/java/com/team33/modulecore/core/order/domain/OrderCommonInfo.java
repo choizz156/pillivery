@@ -26,7 +26,7 @@ public class OrderCommonInfo {
 
 	private String mainItemName;
 
-	private int totalAmount;
+	private int totalQuantity;
 
 	@Embedded
 	private SubscriptionInfo subscriptionInfo;
@@ -48,7 +48,7 @@ public class OrderCommonInfo {
 	@Builder(toBuilder = true)
 	public OrderCommonInfo(
 		String mainItemName,
-		int totalAmount,
+		int totalQuantity,
 		SubscriptionInfo subscriptionInfo,
 		PaymentId paymentId,
 		Price price,
@@ -56,8 +56,9 @@ public class OrderCommonInfo {
 		OrderStatus orderStatus,
 		Long userId
 	) {
+
 		this.mainItemName = mainItemName;
-		this.totalAmount = totalAmount;
+		this.totalQuantity = totalQuantity;
 		this.subscriptionInfo = subscriptionInfo;
 		this.paymentId = paymentId;
 		this.price = price;
@@ -67,6 +68,7 @@ public class OrderCommonInfo {
 	}
 
 	public OrderCommonInfo addSid(String sid) {
+
 		String tid = paymentId.getTid();
 
 		if (tid == null) {
@@ -79,29 +81,46 @@ public class OrderCommonInfo {
 	}
 
 	public OrderCommonInfo addTid(String tid) {
+
 		return this.toBuilder()
 			.paymentId(new PaymentId(null, tid))
 			.build();
 	}
 
 	public OrderCommonInfo changeOrderStatus(OrderStatus orderStatus) {
+
 		return this.toBuilder()
 			.orderStatus(orderStatus)
 			.build();
 	}
 
 	public OrderCommonInfo addPrice(List<OrderItem> orderItems) {
+
 		return this.toBuilder()
 			.price(new Price(orderItems))
 			.build();
 	}
 
 	public OrderCommonInfo adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
+
 		countTotalAmount(orderItems);
 		return this.toBuilder()
 			.price(new Price(orderItems))
-			.totalAmount(totalAmount)
+			.totalAmount(totalQuantity)
 			.build();
+	}
+
+	private void countTotalAmount(List<OrderItem> orderItems) {
+
+		if (orderItems.isEmpty()) {
+			this.totalQuantity = 0;
+			return;
+		}
+
+		this.totalQuantity = orderItems.stream()
+			.map(OrderItem::getQuantity)
+			.mapToInt(Integer::intValue)
+			.sum();
 	}
 
 	public int getTotalPrice() {
@@ -109,38 +128,30 @@ public class OrderCommonInfo {
 	}
 
 	public String getSid() {
+
 		return this.paymentId.getSid();
 	}
 
 	public String getTid() {
+
 		return this.paymentId.getTid();
 	}
 
 	public OrderCommonInfo cancelSubscription() {
+
 		return this.toBuilder()
 			.subscriptionInfo(SubscriptionInfo.of(false, 0))
 			.orderStatus(OrderStatus.SUBSCRIBE_CANCEL)
 			.build();
 	}
 
-	private void countTotalAmount(List<OrderItem> orderItems) {
-
-		if (orderItems.isEmpty()) {
-			this.totalAmount = 0;
-			return;
-		}
-
-		this.totalAmount = orderItems.stream()
-			.map(OrderItem::getQuantity)
-			.mapToInt(Integer::intValue)
-			.sum();
-	}
-
 	public int getPeriod() {
+
 		return this.subscriptionInfo.getPeriod();
 	}
 
 	public boolean isSubscription() {
+
 		return this.subscriptionInfo.isSubscription();
 	}
 
@@ -155,10 +166,12 @@ public class OrderCommonInfo {
 	}
 
 	public ZonedDateTime getNextPaymentDay() {
+
 		return this.subscriptionInfo.getNextPaymentDay();
 	}
 
 	public OrderCommonInfo changePeriod(int newPeriod) {
+
 		SubscriptionInfo newSubscriptionInfo = subscriptionInfo.toBuilder().build();
 		newSubscriptionInfo.changePeriod(newPeriod);
 
@@ -168,6 +181,7 @@ public class OrderCommonInfo {
 	}
 
 	public OrderCommonInfo setPriceToZero() {
+
 		return this.toBuilder()
 			.price(new Price(List.of()))
 			.build();

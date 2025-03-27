@@ -2,7 +2,6 @@ package com.team33.modulecore.core.order.domain.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,17 +14,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.proxy.HibernateProxy;
 
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.OrderCommonInfo;
-import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.PaymentId;
-import com.team33.modulecore.core.order.domain.Price;
-import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.core.order.dto.OrderContext;
-import com.team33.modulecore.exception.BusinessLogicException;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -97,5 +90,24 @@ public class Order extends BaseEntity {
 		return orderItems.get(0).getItem();
 	}
 
+	public void addTid(String tid) {
+		this.orderCommonInfo = this.orderCommonInfo.addTid(tid);
+	}
 
+	public int getTotalPrice() {
+		return this.orderCommonInfo.getTotalPrice();
+	}
+
+	public int getTotalAmount() {
+		return this.orderCommonInfo.getTotalQuantity();
+	}
+
+	public String getMainItemName() {
+		return this.orderCommonInfo.getMainItemName();
+	}
+
+	public Object getSid() {
+
+		return null;
+	}
 }

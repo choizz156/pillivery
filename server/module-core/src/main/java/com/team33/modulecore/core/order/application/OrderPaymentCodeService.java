@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.domain.SubscriptionOrderRepository;
+import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
 import com.team33.modulecore.exception.DataSaveException;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ public class OrderPaymentCodeService {
 
 	@Async
 	public void addTid(Long orderId, String tid) {
+
 		Order order = orderFindHelper.findOrder(orderId);
 
 		try {
@@ -38,6 +39,7 @@ public class OrderPaymentCodeService {
 
 	@Async
 	public void addSid(long subscriptionOrderId, String sid) {
+
 		subscriptionOrderRepository.findById(subscriptionOrderId).ifPresent(subscriptionOrder -> {
 			try {
 				subscriptionOrder.addSid(sid);

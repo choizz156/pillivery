@@ -11,9 +11,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
+import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.application.SubscriptionOrderService;
-import com.team33.modulecore.core.payment.domain.entity.SubscriptionOrder;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.kakao.application.events.SubscriptionRegisteredEvent;
 import com.team33.modulecore.exception.DataSaveException;
 import com.team33.moduleevent.domain.EventStatus;
@@ -27,8 +27,8 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class SubscriptionRegisterHandler {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
-	public static final String URL = "https://localhost:8080/api/payments/subscriptions/";
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
+	private static final String URL = "https://localhost:8080/api/payments/subscriptions/";
 
 	private final SubscriptionOrderService subscriptionOrderService;
 	private final EventRepository eventRepository;
@@ -37,6 +37,7 @@ public class SubscriptionRegisterHandler {
 	@Async
 	@EventListener
 	public void onEventSet(SubscriptionRegisteredEvent event) {
+
 		Order order = orderFindHelper.findOrder(event.getOrderId());
 		List<SubscriptionOrder> subscriptionOrders = subscriptionOrderService.create(order);
 
@@ -48,6 +49,7 @@ public class SubscriptionRegisterHandler {
 	}
 
 	private ApiEvent toEvent(Long subscriptionOrderId) {
+
 		return ApiEvent.builder()
 			.contentType("String")
 			.parameters(String.valueOf(subscriptionOrderId))
@@ -59,6 +61,7 @@ public class SubscriptionRegisterHandler {
 	}
 
 	private void saveEvent(Long event, ApiEvent apiEvent) {
+
 		try {
 			eventRepository.save(apiEvent);
 		} catch (DataAccessException e) {

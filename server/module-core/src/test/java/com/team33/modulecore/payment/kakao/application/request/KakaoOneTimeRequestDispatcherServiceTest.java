@@ -10,16 +10,15 @@ import org.junit.jupiter.api.Test;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.order.domain.Price;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.core.payment.kakao.application.request.KakaoOneTimeRequest;
+import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestService;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
+class KakaoOneTimeRequestDispatcherServiceTest {
 
-class KakaoOneTimeRequestTest {
-
-	@DisplayName("단건 결제 요청을 보낼 수 있다.")
+	@DisplayName("단건 결제 요청을 위임 할 수 있다.")
 	@Test
-	void 단건_결제_요청() throws Exception {
+	void 단건_결제_요청_위임() throws Exception{
 		//given
 		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.set("id", 1L)
@@ -29,20 +28,13 @@ class KakaoOneTimeRequestTest {
 			.set("orderPrice", new Price(3000, 200))
 			.set("orderItems", List.of())
 			.set("receiver", null)
-			.set("sid", "sid")
+			.set("paymentCode.sid", "sid")
 			.sample();
 
-		ParameterProvider parameterProvider = new ParameterProvider();
-
-		KakaoOneTimeRequest kakaoNormalRequest =
-			new KakaoOneTimeRequest(
-				(params, url) -> new KakaoApiRequestResponse(),
-				parameterProvider
-			);
-
+		KakaoRequestService kakaoNormalRequestService =
+				new KakaoRequestService(o -> new KakaoApiRequestResponse());
 		//when
-		KakaoApiRequestResponse kakaoApiRequestResponse = kakaoNormalRequest.request(order);
-
+		KakaoRequestResponse kakaoApiRequestResponse = kakaoNormalRequestService.request(order);
 		//then
 		assertThat(kakaoApiRequestResponse).isNotNull();
 	}

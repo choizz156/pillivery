@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
+import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
-import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.application.PaymentClient;
+import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
 @Component
 public class KakaoFirstSubsApproveDispatcher extends KaKaoApproveTemplate {
@@ -30,7 +30,7 @@ public class KakaoFirstSubsApproveDispatcher extends KaKaoApproveTemplate {
 	@Override
 	public Map<String, Object> getApproveParams(ApproveRequest approveRequest) {
 		KakaoApproveRequest request = (KakaoApproveRequest) approveRequest;
-		return parameterProvider.getSubscriptionFirstApproveParams(
+		return parameterProvider.getSubscriptionFirstPaymentApprovalParams(
 			request.getTid(),
 			request.getPgtoken(),
 			request.getOrderId()
