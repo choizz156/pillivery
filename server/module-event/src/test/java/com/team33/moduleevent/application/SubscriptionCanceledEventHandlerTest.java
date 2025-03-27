@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
-import com.team33.moduleevent.handler.SubsCanceledEventHandler;
+import com.team33.moduleevent.handler.SubscriptionCanceledEventHandler;
 
-class SubsCanceledEventHandlerTest {
+class SubscriptionCanceledEventHandlerTest {
 
 	@DisplayName("정기 구독을 취소 이벤트를 저장할 수 있다.")
 	@Test
@@ -20,10 +20,10 @@ class SubsCanceledEventHandlerTest {
 		EventRepository eventRepository = mock(EventRepository.class);
 		doNothing().when(eventRepository).save(any(ApiEvent.class));
 
-		SubsCanceledEventHandler subsCanceledEventHandler = new SubsCanceledEventHandler(eventRepository);
+		SubscriptionCanceledEventHandler subscriptionCanceledEventHandler = new SubscriptionCanceledEventHandler(eventRepository);
 
 		// when
-		subsCanceledEventHandler.onEventSet(new KakaoSubsCanceledEvent("params", "refundUrl"));
+		subscriptionCanceledEventHandler.onEventSet(new KakaoSubsCanceledEvent("params", "refundUrl"));
 
 		// then
 		verify(eventRepository, times(1)).save(any(ApiEvent.class));

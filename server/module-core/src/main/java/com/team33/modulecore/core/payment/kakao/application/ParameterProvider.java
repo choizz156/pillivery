@@ -17,16 +17,16 @@ public class ParameterProvider {
 
 	public Map<String, Object> getOneTimeReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(Params.CID.getValue(), ONE_TIME_CID.getValue());
-		commonReqsParams.put(Params.APPROVAL_URL.getValue(), Params.ONE_TIME_APPROVAL_URL.getValue() + "/" + order.getId());
+		commonReqsParams.put(CID.getValue(), ONE_TIME_CID.getValue());
+		commonReqsParams.put(APPROVAL_URL.getValue(), ONE_TIME_APPROVAL_URL.getValue() + "/" + order.getId());
 
 		return commonReqsParams;
 	}
 
 	public Map<String, Object> getSubscriptionReqsParams(Order order) {
 		var commonReqsParams = getRequestParams(order);
-		commonReqsParams.put(Params.CID.getValue(), SUBSCRIPTION_CID.getValue());
-		commonReqsParams.put(Params.APPROVAL_URL.getValue(), Params.SUBSCRIPTION_APPROVAL_URL.getValue() + "/" + order.getId());
+		commonReqsParams.put(CID.getValue(), SUBSCRIPTION_CID.getValue());
+		commonReqsParams.put(APPROVAL_URL.getValue(), SUBSCRIPTION_APPROVAL_URL.getValue() + "/" + order.getId());
 		return commonReqsParams;
 	}
 
@@ -37,7 +37,7 @@ public class ParameterProvider {
 	) {
 		var commonApproveParams =
 			getCommonApproveParams(tid, pgToken, orderId);
-		commonApproveParams.put(Params.CID.getValue(), ONE_TIME_CID.getValue());
+		commonApproveParams.put(CID.getValue(), ONE_TIME_CID.getValue());
 		return commonApproveParams;
 	}
 
@@ -47,7 +47,7 @@ public class ParameterProvider {
 		Long orderId
 	) {
 		var commonSubsParams = getCommonApproveParams(tid, pgToken, orderId);
-		commonSubsParams.put(Params.CID.getValue(), SUBSCRIPTION_CID.getValue());
+		commonSubsParams.put(CID.getValue(), SUBSCRIPTION_CID.getValue());
 
 		return commonSubsParams;
 	}
@@ -55,7 +55,7 @@ public class ParameterProvider {
 	public Map<String, Object> getSubscriptionApproveParams(Order order) {
 		var subsApproveParams = getRequestParams(order);
 		subsApproveParams.put(Params.SID.getValue(), order.getSid());
-		subsApproveParams.put(Params.CID.getValue(), SUBSCRIPTION_CID.getValue());
+		subsApproveParams.put(CID.getValue(), SUBSCRIPTION_CID.getValue());
 
 		return subsApproveParams;
 	}
@@ -63,10 +63,10 @@ public class ParameterProvider {
 	public Map<String, Object> getRefundParams(RefundContext refundContext, String tid) {
 		Map<String, Object> refundParam = new ConcurrentHashMap<>();
 
-		refundParam.put(Params.CANCEL_AMOUNT.getValue(), refundContext.getCancelAmount());
-		refundParam.put(Params.CANCEL_TAX_FREE_AMOUNT.getValue(), refundContext.getCancelTaxFreeAmount());
-		refundParam.put(Params.TID.getValue(), tid);
-		refundParam.put(Params.CID.getValue(), ONE_TIME_CID.getValue());
+		refundParam.put(CANCEL_AMOUNT.getValue(), refundContext.getCancelAmount());
+		refundParam.put(CANCEL_TAX_FREE_AMOUNT.getValue(), refundContext.getCancelTaxFreeAmount());
+		refundParam.put(TID.getValue(), tid);
+		refundParam.put(CID.getValue(), ONE_TIME_CID.getValue());
 
 		return refundParam;
 	}
@@ -74,7 +74,7 @@ public class ParameterProvider {
 	public Map<String, Object> getSubsCancelParams(String sid) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put(Params.CID.getValue(), SUBSCRIPTION_CID.getValue());
+		parameters.put(CID.getValue(), SUBSCRIPTION_CID.getValue());
 		parameters.put(Params.SID.getValue(), sid);
 
 		return parameters;
@@ -82,8 +82,8 @@ public class ParameterProvider {
 
 	public Map<String, Object> getLookupParams(String tid) {
 		Map<String, Object> lookupParams = new ConcurrentHashMap<>();
-		lookupParams.put(Params.TID.getValue(), tid);
-		lookupParams.put(Params.CID.getValue(), ONE_TIME_CID.getValue());
+		lookupParams.put(TID.getValue(), tid);
+		lookupParams.put(CID.getValue(), ONE_TIME_CID.getValue());
 
 		return lookupParams;
 	}
@@ -100,10 +100,10 @@ public class ParameterProvider {
 	) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put(Params.TID.getValue(), tid);
-		parameters.put(Params.PARTNER_ORDER_ID.getValue(), String.valueOf(orderId));
-		parameters.put(Params.PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
-		parameters.put(Params.PG_TOKEN.getValue(), pgToken);
+		parameters.put(TID.getValue(), tid);
+		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(orderId));
+		parameters.put(PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
+		parameters.put(PG_TOKEN.getValue(), pgToken);
 
 		return parameters;
 	}
@@ -111,14 +111,14 @@ public class ParameterProvider {
 	private Map<String, Object> getCommonReqsParams(PaymentParams paymentParams) {
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put(Params.PARTNER_ORDER_ID.getValue(), String.valueOf(paymentParams.getOrderId()));
-		parameters.put(Params.PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
-		parameters.put(Params.ITEM_NAME.getValue(), paymentParams.getItemName());
-		parameters.put(Params.QUANTITY.getValue(), String.valueOf(paymentParams.getQuantity()));
-		parameters.put(Params.TOTAL_AMOUNT.getValue(), String.valueOf(paymentParams.getTotalAmount()));
-		parameters.put(Params.TAX_FREE_AMOUNT.getValue(), "0");
-		parameters.put(Params.CANCEL_URL.getValue(), CANCEL_URL.getValue());
-		parameters.put(Params.FAIL_URL.getValue(), FAIL_URL.getValue());
+		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(paymentParams.getOrderId()));
+		parameters.put(PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
+		parameters.put(ITEM_NAME.getValue(), paymentParams.getItemName());
+		parameters.put(QUANTITY.getValue(), String.valueOf(paymentParams.getQuantity()));
+		parameters.put(TOTAL_AMOUNT.getValue(), String.valueOf(paymentParams.getTotalAmount()));
+		parameters.put(TAX_FREE_AMOUNT.getValue(), "0");
+		parameters.put(CANCEL_URL.getValue(), CANCEL_URL.getValue());
+		parameters.put(FAIL_URL.getValue(), FAIL_URL.getValue());
 
 		return parameters;
 	}

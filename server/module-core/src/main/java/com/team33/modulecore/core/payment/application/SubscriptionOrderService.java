@@ -23,29 +23,13 @@ public class SubscriptionOrderService {
 
 	private final SubscriptionOrderRepository subscriptionOrderRepository;
 
-	public SubscriptionOrder create(Order order) {
-		SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order);
-		return subscriptionOrderRepository.save(subscriptionOrder);
-	}
-
-	public List<SubscriptionOrder> createMulti(Order order) {
+	public List<SubscriptionOrder> create(Order order) {
 
 		List<SubscriptionOrder> subscriptionOrders = order.getOrderItems().stream()
 			.map(orderItem -> getSubscriptionOrderToPriceZero(order, orderItem))
 			.collect(Collectors.toUnmodifiableList());
 
 		return subscriptionOrderRepository.saveAll(subscriptionOrders);
-	}
-
-	private SubscriptionOrder getSubscriptionOrderToPriceZero(Order order, OrderItem orderItem) {
-		SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order, orderItem);
-		subscriptionOrder.setPriceToZero();
-		subscriptionOrder.addTid(order.getTid());
-		return subscriptionOrder;
-	}
-
-	private boolean isMoreThan2(List<SubscriptionOrder> subscriptionOrders) {
-		return subscriptionOrders.size() >= 2;
 	}
 
 	public void changeItemPeriod(int newPeriod, long itemOrderId) {
@@ -69,8 +53,10 @@ public class SubscriptionOrderService {
 			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
 	}
 
-	public SubscriptionOrder createSingle(Order order) {
-		SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order, order.getSingleOrderItem());
-		return subscriptionOrderRepository.save(subscriptionOrder);
+
+	private SubscriptionOrder getSubscriptionOrderToPriceZero(Order order, OrderItem orderItem) {
+		SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order, orderItem);
+		subscriptionOrder.setPriceToZero();
+		return subscriptionOrder;
 	}
 }

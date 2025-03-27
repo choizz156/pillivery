@@ -10,7 +10,7 @@ public enum Params {
 	BASE_URL("http://localhost:8080/api/payments/"),
 
 	ONE_TIME_APPROVAL_URL(BASE_URL.value + "approve"),
-	SUBSCRIPTION_APPROVAL_URL(BASE_URL.value + "approve/subscription"),
+	SUBSCRIPTION_APPROVAL_URL(BASE_URL.value + "approve/subscriptions"),
 	CANCEL_URL(BASE_URL.value + "cancel"),
 	FAIL_URL(BASE_URL.value + "fail"),
 

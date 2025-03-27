@@ -45,21 +45,6 @@ public class OrderStatusService {
 		applicationContext.publishEvent(new CartRefreshedEvent(order, orderedItemsId));
 	}
 
-	@Transactional
-	public void processSubscriptionStatus(Long orderId, String sid) {
-
-		Order order = orderFindHelper.findOrder(orderId);
-
-		order.changeOrderStatus(OrderStatus.SUBSCRIBE);
-		// order.getOrderItems()
-			// .forEach(orderItem -> orderItem.updateSubscriptionPaymentDay(ZonedDateTime.now(ZoneId.of("Asia/Seoul"))));
-		List<Long> orderedItemsId = getOrderedIds(order);
-
-		orderPaymentCodeService.addSid(orderId, sid);
-
-		applicationContext.publishEvent(new ItemSaleCountedEvent(orderedItemsId));
-		applicationContext.publishEvent(new CartRefreshedEvent(order, orderedItemsId));
-	}
 
 	public void processCancel(Long orderId, RefundContext refundContext) {
 		Order order = orderFindHelper.findOrder(orderId);

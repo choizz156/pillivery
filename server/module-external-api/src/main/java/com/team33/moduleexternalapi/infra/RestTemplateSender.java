@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleexternalapi.infra.kakao.KakaoHeader;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,4 +56,5 @@ public class RestTemplateSender {
 			throw new PaymentApiException("api 오류가 발생했습니다.");
 		}
 	}
+
 }

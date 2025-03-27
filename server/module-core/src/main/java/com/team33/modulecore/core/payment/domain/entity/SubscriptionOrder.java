@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.team33.modulecore.core.common.BaseEntity;
+import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.PaymentId;
 import com.team33.modulecore.core.order.domain.Price;
@@ -31,33 +34,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class SubscriptionOrder {
+public class SubscriptionOrder extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "subscription_order_id")
 	private Long id;
 
-	private String mainItemName;
-
-	private int totalAmount;
-
 	@Embedded
-	private SubscriptionInfo subscriptionInfo;
-
-	@Embedded
-	private PaymentId paymentId;
-
-	@Embedded
-	private Receiver receiver;
-
-	@Embedded
-	private Price price;
-
-	@Enumerated(EnumType.STRING)
-	private OrderStatus orderStatus = OrderStatus.REQUEST;
-
-	private Long userId;
+	private OrderCommonInfo orderCommonInfo;
 
 	@OneToOne(mappedBy = "subscriptionOrder", cascade = CascadeType.ALL, orphanRemoval = true)
 	private OrderItem orderItem;
@@ -65,36 +50,19 @@ public class SubscriptionOrder {
 	@Builder
 	public SubscriptionOrder(
 		Long id,
-		String mainItemName,
-		int totalAmount,
-		PaymentId paymentId,
-		Receiver receiver,
-		OrderStatus orderStatus,
-		Long userId,
 		OrderItem orderItem,
-		SubscriptionInfo subscriptionInfo
+		OrderCommonInfo orderCommonInfo
 	) {
 		this.id = id;
-		this.mainItemName = mainItemName;
-		this.totalAmount = totalAmount;
-		this.paymentId = paymentId;
-		this.receiver = receiver;
-		this.orderStatus = orderStatus;
-		this.userId = userId;
 		this.orderItem = orderItem;
-		this.subscriptionInfo = subscriptionInfo;
+		this.orderCommonInfo = orderCommonInfo;
 	}
 
 	public static SubscriptionOrder create(Order order, OrderItem orderItem) {
 
 		SubscriptionOrder subscriptionOrder = SubscriptionOrder.builder()
-			.receiver(order.getReceiver())
-			.userId(order.getUserId())
-			.orderStatus(OrderStatus.SUBSCRIBE)
 			.orderItem(orderItem)
-			.totalAmount(orderItem.getQuantity())
-			.mainItemName(orderItem.getItem().getProductName())
-			.subscriptionInfo(order.getSubscriptionInfo())
+			.orderCommonInfo(order.getOrderCommonInfo())
 			.build();
 
 		subscriptionOrder.addPrice(List.of(orderItem));
@@ -103,68 +71,51 @@ public class SubscriptionOrder {
 	}
 
 	public void addPrice(List<OrderItem> orderItems) {
-		this.price = new Price(orderItems);
+		this.orderCommonInfo = this.orderCommonInfo.addPrice(orderItems);
 	}
 
 	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
-		this.price = new Price(orderItems);
-		countTotalAmount();
+		this.orderCommonInfo = this.orderCommonInfo.adjustPriceAndTotalQuantity(orderItems);
 	}
 
 	public void cancelSubscription() {
-		this.subscriptionInfo.cancelSubscription();
-		this.orderStatus = OrderStatus.SUBSCRIBE_CANCEL;
+		this.orderCommonInfo = this.orderCommonInfo.cancelSubscription();
 	}
 
 	public int getPeriod() {
-		return subscriptionInfo.getPeriod();
+		return this.orderCommonInfo.getPeriod();
 	}
 
 	public boolean isSubscription() {
-		return subscriptionInfo.isSubscription();
+		return this.orderCommonInfo.isSubscription();
 	}
 
 	public void updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
-		this.subscriptionInfo.updatePaymentDay(paymentDay);
+		this.orderCommonInfo = this.orderCommonInfo.updateSubscriptionPaymentDay(paymentDay);
 	}
 
 	public ZonedDateTime getNextPaymentDay() {
-		return subscriptionInfo.getNextPaymentDay();
+		return this.orderCommonInfo.getSubscriptionInfo().getNextPaymentDay();
 	}
 
 	public void changePeriod(int newPeriod) {
-		this.subscriptionInfo.changePeriod(newPeriod);
+		this.orderCommonInfo = this.orderCommonInfo.changePeriod(newPeriod);
 	}
 
 	public void setPriceToZero() {
-		this.price = new Price(List.of());
+		this.orderCommonInfo = this.orderCommonInfo.setPriceToZero();
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {
-		this.orderStatus = orderStatus;
+		this.orderCommonInfo = this.orderCommonInfo.changeOrderStatus(orderStatus);
 	}
 
 	public void addSid(String sid) {
-		String tid = paymentId.getTid();
-
-		if (tid == null) {
-			throw new BusinessLogicException("tid는 null일 수 없습니다.");
-		}
-
-		this.paymentId = new PaymentId(sid, tid);
+		this.orderCommonInfo = this.orderCommonInfo.addSid(sid);
 	}
 
 	public void addTid(String tid) {
-		this.paymentId = new PaymentId(null, tid);
+		this.orderCommonInfo = this.orderCommonInfo.addTid(tid);
 	}
 
-	private void countTotalAmount() {
-
-		if (this.orderItem == null) {
-			this.totalAmount = 0;
-			return;
-		}
-
-		this.totalAmount = orderItem.getQuantity();
-	}
 }

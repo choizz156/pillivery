@@ -8,8 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,14 +18,14 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.proxy.HibernateProxy;
 
 import com.team33.modulecore.core.common.BaseEntity;
-import com.team33.modulecore.core.order.domain.Price;
-import com.team33.modulecore.core.order.domain.PaymentId;
-import com.team33.modulecore.core.order.domain.SubscriptionInfo;
-import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.Receiver;
+import com.team33.modulecore.core.order.domain.PaymentId;
+import com.team33.modulecore.core.order.domain.Price;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.core.order.dto.OrderContext;
+import com.team33.modulecore.exception.BusinessLogicException;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -51,69 +49,35 @@ public class Order extends BaseEntity {
 
 	private int totalItemsCount;
 
-	private String mainItemName;
-
-	private int totalQuantity;
-
 	@Embedded
-	private SubscriptionInfo subscriptionInfo;
-
-	@Embedded
-	private PaymentId paymentId;
-
-	@Embedded
-	private Price price;
-
-	@Embedded
-	private Receiver receiver;
-
-	@Enumerated(EnumType.STRING)
-	private OrderStatus orderStatus = OrderStatus.REQUEST;
-
-	private Long userId;
+	private OrderCommonInfo orderCommonInfo;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> orderItems = new ArrayList<>();
 
-
 	@Builder
 	public Order(
 		boolean isOrderedAtCart,
+		OrderCommonInfo orderCommonInfo,
 		int totalItemsCount,
-		String mainItemName,
-		PaymentId paymentId,
-		Price price,
-		Receiver receiver,
-		OrderStatus orderStatus,
-		int totalQuantity,
-		Long userId,
-		SubscriptionInfo subscriptionInfo,
 		List<OrderItem> orderItems
 	) {
 		this.isOrderedAtCart = isOrderedAtCart;
-		this.totalItemsCount = totalItemsCount;
-		this.mainItemName = mainItemName;
-		this.paymentId = paymentId;
-		this.price = price;
-		this.receiver = receiver;
-		this.orderStatus = orderStatus;
-		this.totalQuantity = totalQuantity;
-		this.userId = userId;
+		this.orderCommonInfo = orderCommonInfo;
 		this.orderItems = orderItems;
-		this.subscriptionInfo = subscriptionInfo;
+		this.totalItemsCount = totalItemsCount;
 	}
 
-	public static Order create(List<OrderItem> orderItems, SubscriptionInfo subscriptionInfo, OrderContext orderContext) {
+	public static Order create(
+		List<OrderItem> orderItems,
+		OrderCommonInfo orderCommonInfo,
+		OrderContext orderContext
+	) {
 		Order order = Order.builder()
-			.subscriptionInfo(subscriptionInfo)
-			.receiver(orderContext.getReceiver())
+			.orderCommonInfo(orderCommonInfo)
 			.isOrderedAtCart(orderContext.isOrderedCart())
-			.userId(orderContext.getUserId())
-			.orderStatus(OrderStatus.REQUEST)
 			.orderItems(orderItems)
 			.totalItemsCount(orderItems.size())
-			.totalQuantity(orderItems.stream().mapToInt(OrderItem::getQuantity).sum())
-			.mainItemName(orderItems.get(0).getItem().getProductName())
 			.build();
 
 		order.addPrice(order.getOrderItems());
@@ -121,87 +85,17 @@ public class Order extends BaseEntity {
 		return order;
 	}
 
-	public void addSid(String sid) {
-		String tid = paymentId.getTid();
-
-		if (tid == null) {
-			throw new BusinessLogicException("tid는 null일 수 없습니다.");
-		}
-
-		this.paymentId = new PaymentId(sid, tid);
+	public void addPrice(List<OrderItem> orderItems) {
+		this.orderCommonInfo = this.orderCommonInfo.addPrice(orderItems);
 	}
 
-	public void addTid(String tid) {
-		this.paymentId = new PaymentId(null, tid);
+	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
+		this.orderCommonInfo = this.orderCommonInfo.adjustPriceAndTotalQuantity(orderItems);
 	}
 
 	public Item getFirstItem() {
 		return orderItems.get(0).getItem();
 	}
 
-	public void changeOrderStatus(OrderStatus orderStatus) {
-		this.orderStatus = orderStatus;
-	}
 
-	public void addPrice(List<OrderItem> orderItems) {
-		this.price = new Price(orderItems);
-	}
-
-	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
-		this.price = new Price(orderItems);
-		countTotalQuantity();
-	}
-
-	public int getTotalPrice() {
-		return this.price.getTotalPrice();
-	}
-
-	public String getSid() {
-		return this.paymentId.getSid();
-	}
-
-	public String getTid() {
-		return this.paymentId.getTid();
-	}
-
-	public OrderItem getSingleOrderItem(){
-		return this.orderItems.get(0);
-	}
-
-	private void countTotalQuantity() {
-
-		if (this.orderItems.isEmpty()) {
-			this.totalQuantity = 0;
-			return;
-		}
-
-		this.totalQuantity =
-			this.orderItems.stream()
-				.map(OrderItem::getQuantity)
-				.reduce(0, Integer::sum);
-	}
-
-	@Override
-	public final boolean equals(Object object) {
-		if (this == object)
-			return true;
-		if (object == null)
-			return false;
-		Class<?> oEffectiveClass = object instanceof HibernateProxy ?
-			((HibernateProxy)object).getHibernateLazyInitializer().getPersistentClass() :
-			object.getClass();
-		Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
-			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-		if (thisEffectiveClass != oEffectiveClass)
-			return false;
-		Order order = (Order)object;
-		return getId() != null && Objects.equals(getId(), order.getId());
-	}
-
-	@Override
-	public final int hashCode() {
-		return this instanceof HibernateProxy ?
-			((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
-			getClass().hashCode();
-	}
 }

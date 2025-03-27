@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoApiEventSender implements EventSender {
+public class KakaoCancelEventSender implements EventSender {
 
 	private final CancelClient kakaoCancelClient;
 

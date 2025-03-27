@@ -10,13 +10,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class ScheduleCancelEventSender implements EventSender {
+public class SubscribeEventSender implements EventSender {
 
 	private final RestTemplateSender restTemplateSender;
 
 	@Override
 	public void send(ApiEvent event) {
-		String url = event.getUrl() + "/" + event.getParameters();
-		restTemplateSender.sendToPost("scheduler cancel event", url, null, String.class);
+		restTemplateSender.sendToPost("", event.getUrl() + event.getParameters(), null, String.class);
 	}
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleexternalapi.infra.kakao.KakaoCancelClient;
 
-class KakaoApiEventSenderTest {
+class KakaoCancelEventSenderTest {
 
 	@DisplayName("결제 취소 요청을 위임할 수 있다.")
 	@Test
@@ -18,7 +18,7 @@ class KakaoApiEventSenderTest {
 		KakaoCancelClient kakaoCancelClient = mock(KakaoCancelClient.class);
 		doNothing().when(kakaoCancelClient).send(anyString(), anyString());
 
-		KakaoApiEventSender kakaoApiEventSender = new KakaoApiEventSender(kakaoCancelClient);
+		KakaoCancelEventSender kakaoCancelEventSender = new KakaoCancelEventSender(kakaoCancelClient);
 
 		ApiEvent apiEvent = ApiEvent.builder()
 			.parameters("parameters")
@@ -26,7 +26,7 @@ class KakaoApiEventSenderTest {
 			.build();
 
 		//when
-		kakaoApiEventSender.send(apiEvent);
+		kakaoCancelEventSender.send(apiEvent);
 
 		//then
 		verify(kakaoCancelClient, times(1)).send(anyString(), anyString());

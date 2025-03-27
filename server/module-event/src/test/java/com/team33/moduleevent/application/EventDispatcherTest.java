@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.entity.ApiEvent;
-import com.team33.moduleevent.infra.KakaoApiEventSender;
+import com.team33.moduleevent.infra.KakaoCancelEventSender;
 import com.team33.moduleevent.infra.ScheduleRegisterEventSender;
 import com.team33.moduleexternalapi.config.RestTemplateErrorHandler;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
@@ -22,9 +22,9 @@ class EventDispatcherTest {
 	void 카카오_api_이벤트_전송() throws Exception {
 		//given
 		FailEventService failEventService = mock(FailEventService.class);
-		KakaoApiEventSender kakaoApiEventSender = mock(KakaoApiEventSender.class);
+		KakaoCancelEventSender kakaoCancelEventSender = mock(KakaoCancelEventSender.class);
 
-		doNothing().when(kakaoApiEventSender).send(any(ApiEvent.class));
+		doNothing().when(kakaoCancelEventSender).send(any(ApiEvent.class));
 		ApiEvent apiEvent = ApiEvent.builder()
 			.status(EventStatus.READY)
 			.build();
@@ -32,10 +32,10 @@ class EventDispatcherTest {
 		EventDispatcher eventDispatcher = new EventDispatcher(failEventService);
 
 		//when
-		eventDispatcher.register(apiEvent, kakaoApiEventSender);
+		eventDispatcher.register(apiEvent, kakaoCancelEventSender);
 
 		//then
-		verify(kakaoApiEventSender, times(1)).send(apiEvent);
+		verify(kakaoCancelEventSender, times(1)).send(apiEvent);
 		verify(failEventService, times(0)).saveFailEvent(any(ApiEvent.class), anyString());
 		assertThat(apiEvent.getStatus()).isEqualByComparingTo(EventStatus.COMPLETE);
 	}
@@ -69,9 +69,9 @@ class EventDispatcherTest {
 	void 이벤트_전송_실패1() throws Exception {
 		//given
 		FailEventService failEventService = mock(FailEventService.class);
-		KakaoApiEventSender kakaoApiEventSender = mock(KakaoApiEventSender.class);
+		KakaoCancelEventSender kakaoCancelEventSender = mock(KakaoCancelEventSender.class);
 
-		doThrow(new PaymentApiException("api error")).when(kakaoApiEventSender).send(any(ApiEvent.class));
+		doThrow(new PaymentApiException("api error")).when(kakaoCancelEventSender).send(any(ApiEvent.class));
 
 		ApiEvent apiEvent = ApiEvent.builder()
 			.status(EventStatus.READY)
@@ -82,10 +82,10 @@ class EventDispatcherTest {
 		EventDispatcher eventDispatcher = new EventDispatcher(failEventService);
 
 		//when
-		eventDispatcher.register(apiEvent, kakaoApiEventSender);
+		eventDispatcher.register(apiEvent, kakaoCancelEventSender);
 
 		//then
-		verify(kakaoApiEventSender, times(2)).send(apiEvent);
+		verify(kakaoCancelEventSender, times(2)).send(apiEvent);
 		verify(failEventService, times(1)).saveFailEvent(apiEvent, "api error");
 		assertThat(apiEvent.getStatus()).isEqualByComparingTo(EventStatus.FAILED);
 	}
@@ -95,7 +95,7 @@ class EventDispatcherTest {
 	void 이벤트_재전송() throws Exception {
 		//given
 		FailEventService failEventService = mock(FailEventService.class);
-		KakaoApiEventSender kakaoApiEventSender = mock(KakaoApiEventSender.class);
+		KakaoCancelEventSender kakaoCancelEventSender = mock(KakaoCancelEventSender.class);
 
 		AtomicInteger atomicInteger = new AtomicInteger(0);
 
@@ -105,7 +105,7 @@ class EventDispatcherTest {
 			}
 			return null;
 		})
-			.when(kakaoApiEventSender)
+			.when(kakaoCancelEventSender)
 			.send(any(ApiEvent.class));
 
 		ApiEvent apiEvent = ApiEvent.builder()
@@ -115,10 +115,10 @@ class EventDispatcherTest {
 		EventDispatcher eventDispatcher = new EventDispatcher(failEventService);
 
 		//when
-		eventDispatcher.register(apiEvent, kakaoApiEventSender);
+		eventDispatcher.register(apiEvent, kakaoCancelEventSender);
 
 		//then
-		verify(kakaoApiEventSender, times(2)).send(apiEvent);
+		verify(kakaoCancelEventSender, times(2)).send(apiEvent);
 		verify(failEventService, times(0)).saveFailEvent(any(ApiEvent.class), anyString());
 		assertThat(apiEvent.getStatus()).isEqualByComparingTo(EventStatus.COMPLETE);
 	}

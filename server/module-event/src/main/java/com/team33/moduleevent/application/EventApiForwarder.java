@@ -27,9 +27,7 @@ public class EventApiForwarder {
 	public EventApiForwarder(
 		EventRepository eventsRepository,
 		EventSender kakaoApiEventSender,
-		EventSender scheduleRegisterEventSender,
-		EventSender scheduleCancelEventSender,
-		EventSender schedulerPeriodChangedEventSender,
+		EventSender suscribeEventSender,
 		EventDispatcher eventDispatcher
 	) {
 		this.eventsRepository = eventsRepository;
@@ -37,9 +35,7 @@ public class EventApiForwarder {
 		this.eventDispatcher = eventDispatcher;
 		this.eventTypeEventSenderMap = initializeEventSenders(
 			kakaoApiEventSender,
-			scheduleRegisterEventSender,
-			scheduleCancelEventSender,
-			schedulerPeriodChangedEventSender
+			suscribeEventSender
 		);
 	}
 
@@ -63,17 +59,13 @@ public class EventApiForwarder {
 
 	private Map<EventType, EventSender> initializeEventSenders(
 		EventSender kakaoApiEventSender,
-		EventSender scheduleRegisterEventSender,
-		EventSender scheduleCancelEventSender,
-		EventSender schedulerPeriodChangedEventSender
+		EventSender suscribeEventSender
 	) {
 		final Map<EventType, EventSender> eventTypeEventSenderMap = new EnumMap<>(EventType.class);
 
 		eventTypeEventSenderMap.put(EventType.KAKAO_REFUNDED, kakaoApiEventSender);
-		eventTypeEventSenderMap.put(EventType.SCHEDULE_REGISTERED, scheduleRegisterEventSender);
-		eventTypeEventSenderMap.put(EventType.SCHEDULE_CANCELED, scheduleCancelEventSender);
-		eventTypeEventSenderMap.put(EventType.SUBS_CANCELED, kakaoApiEventSender);
-		eventTypeEventSenderMap.put(EventType.SCHEDULE_CHANGED, schedulerPeriodChangedEventSender);
+		eventTypeEventSenderMap.put(EventType.SUBSCRIPTION_CANCELED, kakaoApiEventSender);
+		eventTypeEventSenderMap.put(EventType.SUBSCRIPTION_REGISTERED, suscribeEventSender);
 
 		return eventTypeEventSenderMap;
 	}

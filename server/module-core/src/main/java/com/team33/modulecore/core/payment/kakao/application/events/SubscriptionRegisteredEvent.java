@@ -10,6 +10,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class SubscriptionRegisteredEvent {
 
-	private final Order order;
-	private final KakaoApproveRequest approveRequest;
+	private final Long orderId;
 }

@@ -23,7 +23,7 @@ import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
-import com.team33.moduleevent.handler.SubsCanceledEventHandler;
+import com.team33.moduleevent.handler.SubscriptionCanceledEventHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
@@ -43,7 +43,7 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 	private ApplicationEventPublisher applicationEventPublisher;
 
 	@MockBean
-	private SubsCanceledEventHandler subscriptionEventHandler;
+	private SubscriptionCanceledEventHandler subscriptionEventHandler;
 
 	private MockMvcRequestSpecification given;
 

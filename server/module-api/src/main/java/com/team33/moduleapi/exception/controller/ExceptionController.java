@@ -14,6 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.team33.moduleapi.response.ApiErrorResponse;
 import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.DataSaveException;
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -66,8 +67,15 @@ public class ExceptionController {
 		return ApiErrorResponse.of(e.getMessage());
 	}
 
+	@ExceptionHandler(DataSaveException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public ApiErrorResponse dataSaveExceptionHandler(DataSaveException e) {
+		log.info("DataSaveException => {}", e.getMessage());
+		return ApiErrorResponse.of("알 수 없는 오류가 발생했습니다.");
+	}
+
 	@ExceptionHandler(RuntimeException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiErrorResponse runtimeExceptionHandler(RuntimeException e) {
 		log.error("runtime exception :: {}", e.getLocalizedMessage());
 		log.error("stack trace :: {}, {}", e.getStackTrace()[0].getClassName(), e.getStackTrace()[0]);

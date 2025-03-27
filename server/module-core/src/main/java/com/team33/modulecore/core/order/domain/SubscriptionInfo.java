@@ -26,7 +26,7 @@ public class SubscriptionInfo {
 
 	private ZonedDateTime lastPaymentDay;
 
-	@Builder
+	@Builder(toBuilder = true)
 	public SubscriptionInfo(int period, boolean subscription, ZonedDateTime nextPaymentDay,
 		ZonedDateTime lastPaymentDay) {
 		this.period = period;
@@ -45,10 +45,6 @@ public class SubscriptionInfo {
 			.build();
 	}
 
-	public void cancelSubscription() {
-		this.subscription = false;
-		this.nextPaymentDay = null;
-	}
 
 	public void updatePaymentDay(ZonedDateTime paymentDay) {
 		this.lastPaymentDay = paymentDay;

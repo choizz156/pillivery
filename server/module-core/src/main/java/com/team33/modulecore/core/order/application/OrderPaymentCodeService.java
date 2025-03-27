@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.payment.domain.SubscriptionOrderRepository;
 import com.team33.modulecore.exception.DataSaveException;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class OrderPaymentCodeService {
 	private final static Logger log = LoggerFactory.getLogger("fileLog");
 
 	private final OrderFindHelper orderFindHelper;
+	private final SubscriptionOrderRepository subscriptionOrderRepository;
 
 	@Async
 	public void addTid(Long orderId, String tid) {
@@ -35,13 +37,14 @@ public class OrderPaymentCodeService {
 	}
 
 	@Async
-	public void addSid(long orderId, String sid) {
-		Order order = orderFindHelper.findOrder(orderId);
-		try {
-			order.addSid(sid);
-		} catch (DataAccessException e) {
-			log.error("orderId = {} :: lost sid = {}", order.getId(), sid);
-			throw new DataSaveException(e.getMessage());
-		}
+	public void addSid(long subscriptionOrderId, String sid) {
+		subscriptionOrderRepository.findById(subscriptionOrderId).ifPresent(subscriptionOrder -> {
+			try {
+				subscriptionOrder.addSid(sid);
+			} catch (DataAccessException e) {
+				log.error("orderId = {} :: lost sid = {}", subscriptionOrder.getId(), sid);
+				throw new DataSaveException(e.getMessage());
+			}
+		});
 	}
 }
