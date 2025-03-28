@@ -9,6 +9,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.exception.BusinessLogicException;
 
 import lombok.Builder;
@@ -67,6 +68,22 @@ public class OrderCommonInfo {
 		this.userId = userId;
 	}
 
+	public static OrderCommonInfo createFromContext(List<OrderItem> orderItems, OrderContext orderContext) {
+
+		return OrderCommonInfo.builder()
+			.mainItemName(orderItems.get(0).getProductName())
+			.totalQuantity(orderItems.stream()
+				.map(OrderItem::getQuantity)
+				.mapToInt(Integer::intValue)
+				.sum())
+			.subscriptionInfo(SubscriptionInfo.of(orderContext.isSubscription(), 0))
+			.paymentToken(new PaymentToken())
+			.receiver(orderContext.getReceiver())
+			.userId(orderContext.getUserId())
+			.orderStatus(OrderStatus.REQUEST)
+			.build();
+	}
+
 	public OrderCommonInfo addSid(String sid) {
 
 		String tid = paymentToken.getTid();
@@ -111,6 +128,7 @@ public class OrderCommonInfo {
 	}
 
 	public int getTotalPrice() {
+
 		return this.price.getTotalPrice();
 	}
 

@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoPayLookupService implements RequestService<KakaoLookupResponse> {
+public class KakaoPayLookupService implements RequestService<KakaoLookupResponse, Order> {
 
 	private static final String LOOKUP_URL = "https://open-api.kakaopay.com/online/v1/payment/order";
 	private final PaymentClient<KakaoApiPayLookupResponse> kakaoPayLookupClient;
@@ -24,7 +24,7 @@ public class KakaoPayLookupService implements RequestService<KakaoLookupResponse
 
 	@Override
 	public KakaoLookupResponse request(Order order) {
-		Map<String, Object> lookupParams = parameterProvider.getLookupParams(order.getTid());
+		Map<String, Object> lookupParams = parameterProvider.getPaymentLookupParams(order.getTid());
 
 		KakaoApiPayLookupResponse response = kakaoPayLookupClient.send(lookupParams, LOOKUP_URL);
 

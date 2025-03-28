@@ -15,13 +15,13 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class PaymentItemReader implements ItemReader<OrderVO> {
+public class PaymentItemReader implements ItemReader<SubscriptionOrderVO> {
 
 	private static final int CHUNK_SIZE = 20;
 
 	private Date paymentDate;
 	private DataSource dataSource;
-	private JdbcPagingItemReader<OrderVO> reader;
+	private JdbcPagingItemReader<SubscriptionOrderVO> reader;
 
 	public PaymentItemReader(Date paymentDate, DataSource dataSource) {
 		this.paymentDate = paymentDate;
@@ -30,18 +30,19 @@ public class PaymentItemReader implements ItemReader<OrderVO> {
 	}
 
 	@Override
-	public OrderVO read() throws Exception {
+	public SubscriptionOrderVO read() throws Exception {
 
 		reader.setDataSource(dataSource);
 		reader.setPageSize(CHUNK_SIZE);
-		reader.setRowMapper(new BeanPropertyRowMapper<>(OrderVO.class));
+		reader.setRowMapper(new BeanPropertyRowMapper<>(SubscriptionOrderVO.class));
 
 		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
+
 		queryProvider.setSelectClause(
-			"order_id as orderId, subscription as subscription, next_payment_date as nextPaymentDate"
+			"subscription_order_id as subscriptionOrderId, subscription as subscription, next_payment_date as nextPaymentDate"
 		);
-		queryProvider.setFromClause("from order_item oi inner join orders o on o.id = oi.order_id");
-		queryProvider.setWhereClause("where o.subscription = true and oi.next_payment_date = :paymentDate");
+		queryProvider.setFromClause("from subscription_order so");
+		queryProvider.setWhereClause("where so.subscription = true and so.next_payment_date = :paymentDate");
 
 		queryProvider.setSortKeys(Map.of("order_id", Order.ASCENDING));
 

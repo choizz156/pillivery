@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.team33.modulebatch.step.OrderVO;
+import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -47,9 +47,9 @@ public class ErrorItem {
 		this.status = status;
 	}
 
-	public static ErrorItem of(OrderVO orderVO) {
+	public static ErrorItem of(SubscriptionOrderVO orderVO) {
 		return ErrorItem.builder()
-			.orderId(orderVO.getOrderId().toString())
+			.orderId(orderVO.getSubscriptionOrderId().toString())
 			.idempotentKey(orderVO.getIdempotencyKey())
 			.nextPaymentDate(orderVO.getNextPaymentDate())
 			.lastPaymentDate(orderVO.getLastPaymentDate())

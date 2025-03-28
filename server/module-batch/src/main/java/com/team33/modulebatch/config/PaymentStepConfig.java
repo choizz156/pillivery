@@ -21,7 +21,7 @@ import com.team33.modulebatch.domain.ErrorItemRepository;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.listener.PaymentStepExecutionListener;
-import com.team33.modulebatch.step.OrderVO;
+import com.team33.modulebatch.step.SubscriptionOrderVO;
 import com.team33.modulebatch.step.PaymentItemProcessor;
 import com.team33.modulebatch.step.PaymentItemReader;
 import com.team33.modulebatch.step.PaymentWriter;
@@ -54,7 +54,7 @@ public class PaymentStepConfig {
 		backOffPolicy.setBackOffPeriod(BACK_OFF_PERIOD);
 
 		return stepBuilderFactory.get("paymentJobStep")
-			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
+			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(itemReader(null))
 			.processor(itemProcessor(null))
 			.writer(itemWriter(paymentApiDispatcher))
@@ -72,7 +72,7 @@ public class PaymentStepConfig {
 
 	@Bean
 	@StepScope
-	public ItemProcessor<OrderVO, OrderVO> itemProcessor(
+	public ItemProcessor<SubscriptionOrderVO, SubscriptionOrderVO> itemProcessor(
 		@Value("#{jobParameters['jobId']}") Long jobId
 	) {
 
@@ -80,13 +80,13 @@ public class PaymentStepConfig {
 	}
 
 	@Bean
-	public ItemWriter<OrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher) {
+	public ItemWriter<SubscriptionOrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher) {
 		return new PaymentWriter(paymentApiDispatcher);
 	}
 
 	@Bean
 	@StepScope
-	public ItemReader<OrderVO> itemReader(@Value("#{jobParameters['paymentDate']}") Date paymentDate) {
+	public ItemReader<SubscriptionOrderVO> itemReader(@Value("#{jobParameters['paymentDate']}") Date paymentDate) {
 		return new PaymentItemReader(paymentDate, dataSource);
 	}
 

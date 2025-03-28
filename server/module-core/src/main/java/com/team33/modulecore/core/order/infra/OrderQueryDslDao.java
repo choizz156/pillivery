@@ -18,14 +18,14 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +40,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		OrderPageRequest pageRequest,
 		OrderFindCondition orderFindCondition
 	) {
+
 		List<Order> contents = queryFactory
 			.selectFrom(order)
 			.where(
@@ -102,6 +103,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 	@Override
 	public OrderItem findSubscriptionOrderItemBy(long id) {
+
 		OrderItem fetch = queryFactory
 			.select(orderItem)
 			.from(orderItem)
@@ -117,6 +119,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 	@Override
 	public Order findById(long id) {
+
 		Order fetch = queryFactory.selectFrom(order).where(order.id.eq(id)).fetchOne();
 
 		if (fetch == null) {
@@ -127,41 +130,49 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 	@Override
 	public boolean findIsSubscriptionById(long orderId) {
+
 		return Boolean.TRUE.equals(
-			queryFactory.select(order.subscriptionInfo.subscription).from(order).where(order.id.eq(orderId)).fetchOne()
+			queryFactory.select(order.orderCommonInfo.subscriptionInfo.subscription).from(order).where(order.id.eq(orderId)).fetchOne()
 		);
 	}
 
 	@Override
 	public String findTid(long orderId) {
-		return queryFactory.select(order.paymentId.tid).from(order).where(order.id.eq(orderId)).fetchOne();
+
+		return queryFactory.select(order.orderCommonInfo.paymentToken.tid).from(order).where(order.id.eq(orderId)).fetchOne();
 	}
 
 	private BooleanExpression orderUserAndOrderItemUserEq() {
-		return orderItem.order.userId.eq(order.userId);
+
+		return orderItem.order.orderCommonInfo.userId.eq(order.orderCommonInfo.userId);
 	}
 
 	private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {
+
 		return orderStatus == SUBSCRIBE
-			? order.orderStatus.eq(orderStatus)
+			? order.orderCommonInfo.orderStatus.eq(orderStatus)
 			: null;
 	}
 
 	private BooleanExpression userEq(long userId) {
-		return order.userId.eq(userId);
+
+		return order.orderCommonInfo.userId.eq(userId);
 	}
 
 	private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {
+
 		return orderStatus == REQUEST
-			? order.orderStatus.eq(orderStatus).not()
+			? order.orderCommonInfo.orderStatus.eq(orderStatus).not()
 			: null;
 	}
 
 	private OrderSpecifier<Long> getOrderSort(Direction pageRequest) {
+
 		return pageRequest == Direction.DESC ? order.id.desc() : order.id.asc();
 	}
 
 	private OrderSpecifier<Long> getSubscriptionOrderSort(Direction pageRequest) {
+
 		return pageRequest == Direction.DESC ? orderItem.id.desc() : orderItem.id.asc();
 	}
 }

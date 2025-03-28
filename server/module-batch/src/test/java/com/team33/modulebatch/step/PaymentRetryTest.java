@@ -29,10 +29,10 @@ class PaymentRetryTest extends BatchApiTest {
 	private ItemSkipListener itemSkipListener;
 
 	@MockBean
-	private ItemReader<OrderVO> testItemReader;
+	private ItemReader<SubscriptionOrderVO> testItemReader;
 
 	@MockBean
-	private ItemWriter<OrderVO> testItemWriter;
+	private ItemWriter<SubscriptionOrderVO> testItemWriter;
 
 	private Step step;
 
@@ -41,7 +41,7 @@ class PaymentRetryTest extends BatchApiTest {
 		backOffPolicy.setBackOffPeriod(0L);
 
 		step = stepBuilderFactory.get("paymentJobStep")
-			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
+			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(testItemReader)
 			.writer(testItemWriter)
 			.faultTolerant()
@@ -57,8 +57,8 @@ class PaymentRetryTest extends BatchApiTest {
 	void test1() throws Exception {
 		// given
 		testStep();
-		OrderVO order = new OrderVO();
-		when(testItemReader.read()).thenReturn(order, (OrderVO)null);
+		SubscriptionOrderVO order = new SubscriptionOrderVO();
+		when(testItemReader.read()).thenReturn(order, (SubscriptionOrderVO)null);
 
 		doThrow(new PaymentApiException("test exception 1"))
 			.doThrow(new PaymentApiException("test exception 2"))
@@ -82,8 +82,8 @@ class PaymentRetryTest extends BatchApiTest {
 	void test2() throws Exception {
 		//given
 		testStep();
-		OrderVO order = new OrderVO();
-		when(testItemReader.read()).thenReturn(order, (OrderVO)null);
+		SubscriptionOrderVO order = new SubscriptionOrderVO();
+		when(testItemReader.read()).thenReturn(order, (SubscriptionOrderVO)null);
 
 		doThrow(new PaymentApiException("test exception 1"))
 			.when(testItemWriter).write(anyList());

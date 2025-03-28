@@ -39,7 +39,7 @@ public class SubscriptionService {
 	public void applySchedule(long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);
 		order.getOrderItems().stream()
-			.filter(OrderItem::isSubscription)
+			.filter(orderItem -> orderItem.getSubscriptionOrder().isSubscription())
 			.forEach(orderItem -> startSchedule(orderId, orderItem));
 	}
 

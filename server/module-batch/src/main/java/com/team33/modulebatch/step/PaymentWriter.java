@@ -9,18 +9,16 @@ import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class PaymentWriter implements ItemWriter<OrderVO> {
+public class PaymentWriter implements ItemWriter<SubscriptionOrderVO> {
 
 	private final PaymentApiDispatcher paymentApiDispatcher;
 
 	@Override
-	public void write(List<? extends OrderVO> list) {
+	public void write(List<? extends SubscriptionOrderVO> list) {
 
 		if (list.isEmpty()) {
 			return;
 		}
-
-
 
 		paymentApiDispatcher.dispatch(list);
 	}

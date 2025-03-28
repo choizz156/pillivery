@@ -5,7 +5,7 @@ import org.springframework.batch.item.ItemProcessor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class PaymentItemProcessor implements ItemProcessor<OrderVO, OrderVO> {
+public class PaymentItemProcessor implements ItemProcessor<SubscriptionOrderVO, SubscriptionOrderVO> {
 
 	private Long jobId;
 
@@ -14,9 +14,9 @@ public class PaymentItemProcessor implements ItemProcessor<OrderVO, OrderVO> {
 	}
 
 	@Override
-	public OrderVO process(OrderVO orderVO) {
+	public SubscriptionOrderVO process(SubscriptionOrderVO orderVO) {
 
-		String idempotencyKey = jobId + "_" + orderVO.getOrderId() + "_" + orderVO.getNextPaymentDate();
+		String idempotencyKey = jobId + "_" + orderVO.getSubscriptionOrderId() + "_" + orderVO.getNextPaymentDate();
 		orderVO.setIdempotencyKey(idempotencyKey);
 
 		return orderVO;

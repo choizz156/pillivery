@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.moduleapi.api.payment.PayController;
-import com.team33.moduleapi.api.payment.mapper.PaymentDataService;
+import com.team33.moduleapi.api.payment.mapper.PaymentDataMapper;
 import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
@@ -52,7 +52,7 @@ class PaymentAcceptanceTest extends ApiTest {
 	private PaymentMapper paymentMapper;
 
 	@Autowired
-	private PaymentDataService paymentDataService;
+	private PaymentDataMapper paymentDataMapper;
 
 	@Autowired
 	private OrderStatusService orderStatusService;
@@ -80,7 +80,7 @@ class PaymentAcceptanceTest extends ApiTest {
 						approveFacade,
 						requestFacade,
 						paymentMapper,
-						paymentDataService,
+						paymentDataMapper,
 						orderStatusService,
 						paymentCodeService
 					)
@@ -133,7 +133,7 @@ class PaymentAcceptanceTest extends ApiTest {
 
 		given(approveFacade.approveInitially(any(KakaoApproveRequest.class))).willReturn(kakaoApproveResponse);
 
-		paymentDataService.addData(1L, "tid");
+		paymentDataMapper.addData(1L, "tid");
 
 		//@formatter:off
             given

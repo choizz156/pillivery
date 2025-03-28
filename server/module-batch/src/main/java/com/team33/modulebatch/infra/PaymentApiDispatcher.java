@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.team33.modulebatch.step.OrderVO;
+import com.team33.modulebatch.step.SubscriptionOrderVO;
 import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 import lombok.RequiredArgsConstructor;
@@ -27,24 +27,24 @@ public class PaymentApiDispatcher {
 		.expireAfterWrite(Duration.ofHours(12L))
 		.build();
 
-	public void dispatch(List<? extends OrderVO> list) {
-		List<? extends OrderVO> orderList = checkDuplicationKeyInCache(list);
+	public void dispatch(List<? extends SubscriptionOrderVO> list) {
+		List<? extends SubscriptionOrderVO> orderList = checkDuplicationKeyInCache(list);
 
 		orderList.forEach(order -> {
-			send(order.getOrderId());
+			send(order.getSubscriptionOrderId());
 			idempotencyCache.put(order.getIdempotencyKey(), "finished");
 		});
 	}
 
-	private List<? extends OrderVO> checkDuplicationKeyInCache(List<? extends OrderVO> list) {
+	private List<? extends SubscriptionOrderVO> checkDuplicationKeyInCache(List<? extends SubscriptionOrderVO> list) {
 		return list.stream()
 			.filter(order -> idempotencyCache.getIfPresent(order.getIdempotencyKey()) == null)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
-	private void send(long orderId) {
+	private void send(long subscriptionOrderId) {
 		restTemplateSender.sendToPost(
-			URL + orderId,
+			URL + subscriptionOrderId,
 			null,
 			null,
 			String.class

@@ -38,9 +38,9 @@ public class OrderItemSimpleResponse {
         return OrderItemSimpleResponse.builder()
             .orderItemId(orderItem.getId())
             .quantity(orderItem.getQuantity())
-            .period(orderItem.getPeriod())
-            .nextPaymentDay(orderItem.getNextPaymentDay())
-            .subscription(orderItem.isSubscription())
+            .period(orderItem.getSubscriptionOrder().getPeriod())
+            .nextPaymentDay(orderItem.getSubscriptionOrder().getNextPaymentDay())
+            .subscription(orderItem.getSubscriptionOrder().isSubscription())
             .item(ItemSimpleResponseDto.of(orderItem.getItem()))
             .build();
     }

@@ -37,10 +37,10 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 	private StepBuilderFactory stepBuilderFactory;
 
 	@MockBean
-	private ItemReader<OrderVO> testItemReader;
+	private ItemReader<SubscriptionOrderVO> testItemReader;
 
 	@MockBean
-	private ItemWriter<OrderVO> testItemWriter;
+	private ItemWriter<SubscriptionOrderVO> testItemWriter;
 
 	private Step step;
 
@@ -57,7 +57,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 		when(testItemReader.read())
 			.thenThrow(new DataAccessException("Simulated DB error") {
 			})
-			.thenReturn(new OrderVO())
+			.thenReturn(new SubscriptionOrderVO())
 			.thenReturn(null);
 
 		//when
@@ -82,7 +82,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 		when(testItemReader.read())
 			.thenThrow(new DataAccessException("Simulated DB error1") {
 			})
-			.thenReturn(new OrderVO())
+			.thenReturn(new SubscriptionOrderVO())
 			.thenThrow(new DataAccessException("Simulated DB error2") {
 			})
 			.thenReturn(null);
@@ -105,7 +105,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 
 	private void testStep() {
 		step = stepBuilderFactory.get("paymentJobStep")
-			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
+			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(testItemReader)
 			.writer(testItemWriter)
 			.faultTolerant()

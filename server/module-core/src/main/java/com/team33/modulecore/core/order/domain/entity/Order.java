@@ -129,4 +129,12 @@ public class Order extends BaseEntity {
 	public void changeOrderStatus(OrderStatus orderStatus) {
 		this.orderCommonInfo = this.orderCommonInfo.changeOrderStatus(orderStatus);
 	}
+
+	public String getTid() {
+		return this.orderCommonInfo.getTid();
+	}
+
+	public Long getUserId() {
+		return this.orderCommonInfo.getUserId();
+	}
 }

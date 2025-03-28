@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
@@ -26,19 +27,14 @@ public class OrderCreateService {
 		return orderCommandRepository.save(order);
 	}
 
-	public Order deepCopy(Order order) {
-		Order newOrder = new Order(order);
-		orderCommandRepository.save(newOrder);
-
-		return newOrder;
-	}
-
 	public Order findOrder(long orderId) {
 		return orderCommandRepository.findById(orderId)
-			.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
+				.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND));
 	}
 
 	private Order createOrder(List<OrderItem> orderItems, OrderContext orderContext) {
-		return Order.create(orderItems, orderContext);
+		OrderCommonInfo commonInfo = OrderCommonInfo.createFromContext(orderItems, orderContext);
+				
+		return Order.create(orderItems, commonInfo, orderContext);
 	}
 }

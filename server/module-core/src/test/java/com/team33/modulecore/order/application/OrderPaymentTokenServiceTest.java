@@ -12,11 +12,11 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
-import com.team33.modulecore.exception.DataSaveException;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.exception.DataSaveException;
 
 @ExtendWith(OutputCaptureExtension.class)
-class OrderPaymentIdServiceTest {
+class OrderPaymentTokenServiceTest {
 
 	@DisplayName("sid를 저장할 수 있다.")
 	@Test

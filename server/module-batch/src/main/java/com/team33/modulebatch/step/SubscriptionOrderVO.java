@@ -8,19 +8,19 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderVO {
+public class SubscriptionOrderVO {
 
-	private Long orderId;
+	private Long subscriptionOrderId;
 	private boolean subscription;
 	private LocalDate nextPaymentDate;
 	private LocalDate lastPaymentDate;
 	private String idempotencyKey;
 
 	@Builder
-	public OrderVO(Long orderId, boolean subscription, LocalDate paymentDate) {
-		this.orderId = orderId;
+	public SubscriptionOrderVO(Long subscriptionOrderId, boolean subscription, LocalDate paymentDate) {
+
+		this.subscriptionOrderId = subscriptionOrderId;
 		this.subscription = subscription;
 		this.nextPaymentDate = paymentDate;
 	}
-
 }

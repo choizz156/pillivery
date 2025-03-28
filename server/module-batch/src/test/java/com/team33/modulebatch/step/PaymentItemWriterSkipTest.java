@@ -41,18 +41,18 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 	@MockBean
 	private ItemSkipListener itemSkipListener;
 
-	private ItemReader<OrderVO> testItemReader;
-	private ItemWriter<OrderVO> testItemWriter;
+	private ItemReader<SubscriptionOrderVO> testItemReader;
+	private ItemWriter<SubscriptionOrderVO> testItemWriter;
 
 	private Step step;
-	private List<OrderVO> orders;
+	private List<SubscriptionOrderVO> orders;
 
 	@BeforeEach
 	void setUpEach() {
 		orders = List.of(
-			new OrderVO(1L, true, NOW),
-			new OrderVO(2L, true, NOW),
-			new OrderVO(3L, true, NOW)
+			new SubscriptionOrderVO(1L, true, NOW),
+			new SubscriptionOrderVO(2L, true, NOW),
+			new SubscriptionOrderVO(3L, true, NOW)
 		);
 	}
 
@@ -76,7 +76,7 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 
 		//then
 		verify(itemSkipListener).onSkipInWrite(
-			argThat(item -> (item.getOrderId().equals(2L))),
+			argThat(item -> (item.getSubscriptionOrderId().equals(2L))),
 			any(PaymentApiException.class)
 		);
 
@@ -109,12 +109,12 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 
 		//then
 		verify(itemSkipListener, times(1)).onSkipInWrite(
-			argThat(item -> item.getOrderId() == 2L),
+			argThat(item -> item.getSubscriptionOrderId() == 2L),
 			any(PaymentApiException.class)
 		);
 
 		verify(itemSkipListener, never()).onSkipInWrite(
-			argThat(item -> item.getOrderId() == 3L),
+			argThat(item -> item.getSubscriptionOrderId() == 3L),
 			any(PaymentApiException.class)
 		);
 
@@ -126,7 +126,7 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 
 	private void testStep() {
 		step = stepBuilderFactory.get("paymentJobStep")
-			.<OrderVO, OrderVO>chunk(CHUNK_SIZE)
+			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(testItemReader)
 			.writer(testItemWriter)
 			.faultTolerant()
@@ -137,12 +137,12 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 			.build();
 	}
 
-	private void setUpData(List<OrderVO> orders, List<Long> errorIds) {
+	private void setUpData(List<SubscriptionOrderVO> orders, List<Long> errorIds) {
 		testItemReader = new IteratorItemReader<>(orders);
 
 		testItemWriter = items -> {
-			for (OrderVO item : items) {
-				if (errorIds.contains(item.getOrderId())) {
+			for (SubscriptionOrderVO item : items) {
+				if (errorIds.contains(item.getSubscriptionOrderId())) {
 					throw new PaymentApiException("Payment API error");
 				}
 			}

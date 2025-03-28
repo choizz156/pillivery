@@ -3,16 +3,15 @@ package com.team33.modulebatch.listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.SkipListener;
-import org.springframework.dao.DataAccessException;
 
 import com.team33.modulebatch.domain.ErrorItemRepository;
 import com.team33.modulebatch.domain.entity.ErrorItem;
-import com.team33.modulebatch.step.OrderVO;
+import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ItemSkipListener implements SkipListener<OrderVO, OrderVO> {
+public class ItemSkipListener implements SkipListener<SubscriptionOrderVO, SubscriptionOrderVO> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
@@ -24,18 +23,18 @@ public class ItemSkipListener implements SkipListener<OrderVO, OrderVO> {
 	}
 
 	@Override
-	public void onSkipInWrite(OrderVO orderVO, Throwable throwable) {
+	public void onSkipInWrite(SubscriptionOrderVO subscriptionOrderVO, Throwable throwable) {
 		LOGGER.warn("item writer skip 결제요청 실패 ::: order IdempotencyKey = {}, exception = {}",
-			orderVO.getIdempotencyKey(),
+		subscriptionOrderVO.getIdempotencyKey(),
 			throwable.getMessage()
 		);
 
-		ErrorItem entity = ErrorItem.of(orderVO);
+		ErrorItem entity = ErrorItem.of(subscriptionOrderVO);
 		errorItemRepository.save(entity);
 	}
 
 	@Override
-	public void onSkipInProcess(OrderVO orderVO, Throwable throwable) {
+	public void onSkipInProcess(SubscriptionOrderVO subscriptionOrderVO, Throwable throwable) {
 
 	}
 }

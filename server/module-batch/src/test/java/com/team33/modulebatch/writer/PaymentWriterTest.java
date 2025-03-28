@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulebatch.step.OrderVO;
+import com.team33.modulebatch.step.SubscriptionOrderVO;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.step.PaymentWriter;
 
@@ -20,8 +20,8 @@ class PaymentWriterTest {
 		PaymentApiDispatcher mockDispatcher = mock(PaymentApiDispatcher.class);
 		PaymentWriter paymentWriter = new PaymentWriter(mockDispatcher);
 
-		OrderVO order1 = new OrderVO();
-		OrderVO order2 = new OrderVO();
+		SubscriptionOrderVO order1 = new SubscriptionOrderVO();
+		SubscriptionOrderVO order2 = new SubscriptionOrderVO();
 		var orders = List.of(order1, order2);
 
 		// when
@@ -38,7 +38,7 @@ class PaymentWriterTest {
 		PaymentApiDispatcher mockDispatcher = mock(PaymentApiDispatcher.class);
 		PaymentWriter paymentWriter = new PaymentWriter(mockDispatcher);
 
-		List<OrderVO> emptyList = List.of();
+		List<SubscriptionOrderVO> emptyList = List.of();
 
 		// when
 		paymentWriter.write(emptyList);

@@ -37,13 +37,13 @@ class PaymentStepConfigTest extends BatchApiTest {
 	private static final FixtureMonkey FIXTURE_MONKEY = FixtureMonkeyFactory.get();
 
 	@Autowired
-	private ItemReader<OrderVO> itemReader;
+	private ItemReader<SubscriptionOrderVO> itemReader;
 
 	@Autowired
-	private ItemWriter<OrderVO> itemWriter;
+	private ItemWriter<SubscriptionOrderVO> itemWriter;
 
 	@Autowired
-	private ItemProcessor<OrderVO, OrderVO> itemProcessor;
+	private ItemProcessor<SubscriptionOrderVO, SubscriptionOrderVO> itemProcessor;
 
 	@Autowired
 	private DataSource dataSource;
@@ -67,14 +67,14 @@ class PaymentStepConfigTest extends BatchApiTest {
 		LongStream.rangeClosed(1, count).forEach(orderId -> {
 			boolean isSubscription = orderId % 2 == 0;
 
-			OrderVO order = FIXTURE_MONKEY.giveMeBuilder(OrderVO.class)
+			SubscriptionOrderVO order = FIXTURE_MONKEY.giveMeBuilder(SubscriptionOrderVO.class)
 				.set("orderId", orderId)
 				.set("subscription", isSubscription)
 				.sample();
 
 			jdbcTemplate.update(
 				"INSERT INTO orders (id, subscription) VALUES (?, ?)",
-				order.getOrderId(),
+				order.getSubscriptionOrderId(),
 				order.isSubscription()
 			);
 
@@ -84,7 +84,7 @@ class PaymentStepConfigTest extends BatchApiTest {
 
 			jdbcTemplate.update(
 				"INSERT INTO order_item (order_id, next_payment_date) VALUES (?, ?)",
-				order.getOrderId(),
+				order.getSubscriptionOrderId(),
 				java.sql.Date.valueOf(paymentDate.toLocalDate())
 			);
 		});
@@ -122,8 +122,8 @@ class PaymentStepConfigTest extends BatchApiTest {
 		StepExecution stepExecution = MetaDataInstanceFactory.createStepExecution(jobParameters);
 		StepSynchronizationManager.register(stepExecution);
 
-		OrderVO order;
-		var list = new ArrayList<OrderVO>();
+		SubscriptionOrderVO order;
+		var list = new ArrayList<SubscriptionOrderVO>();
 		while ((order = itemReader.read()) != null) {
 			list.add(order);
 		}
@@ -148,8 +148,8 @@ class PaymentStepConfigTest extends BatchApiTest {
 		StepExecution stepExecution = MetaDataInstanceFactory.createStepExecution(jobParameters);
 		StepSynchronizationManager.register(stepExecution);
 
-		OrderVO order;
-		var list = new ArrayList<OrderVO>();
+		SubscriptionOrderVO order;
+		var list = new ArrayList<SubscriptionOrderVO>();
 		//when
 		while ((order = itemReader.read()) != null) {
 			System.out.println(order.getNextPaymentDate());

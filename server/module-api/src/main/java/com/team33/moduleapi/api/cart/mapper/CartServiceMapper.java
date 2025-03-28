@@ -31,15 +31,15 @@ public class CartServiceMapper {
 			.build();
 	}
 
-	private SubscriptionInfo toSubscriptionInfo(SubscriptionCartItemPostDto postDto) {
-		return SubscriptionInfo.of(postDto.isSubscription(), postDto.getPeriod());
-	}
-
 	public SubscriptionContext toSubscriptionContext(SubscriptionCartItemPostDto postDto) {
 		return SubscriptionContext.builder()
 			.item(toItemVO(postDto.getItemId()))
 			.subscriptionInfo(toSubscriptionInfo(postDto))
 			.quantity(postDto.getQuantity())
 			.build();
+	}
+
+	private SubscriptionInfo toSubscriptionInfo(SubscriptionCartItemPostDto postDto) {
+		return SubscriptionInfo.of(postDto.isSubscription(), postDto.getPeriod());
 	}
 }
