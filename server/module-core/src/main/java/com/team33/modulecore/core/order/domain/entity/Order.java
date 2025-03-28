@@ -19,6 +19,8 @@ import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.OrderStatus;
+import com.team33.modulecore.core.order.domain.Price;
+import com.team33.modulecore.core.order.domain.Receiver;
 import com.team33.modulecore.core.order.dto.OrderContext;
 
 import lombok.AccessLevel;
@@ -106,11 +108,6 @@ public class Order extends BaseEntity {
 		return this.orderCommonInfo.getTotalPrice();
 	}
 
-	public int getTotalAmount() {
-
-		return this.orderCommonInfo.getTotalQuantity();
-	}
-
 	public String getMainItemName() {
 
 		return this.orderCommonInfo.getMainItemName();
@@ -127,14 +124,42 @@ public class Order extends BaseEntity {
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {
+
 		this.orderCommonInfo = this.orderCommonInfo.changeOrderStatus(orderStatus);
 	}
 
 	public String getTid() {
+
 		return this.orderCommonInfo.getTid();
 	}
 
 	public Long getUserId() {
+
 		return this.orderCommonInfo.getUserId();
+	}
+
+	public Price getPrice() {
+
+		return this.orderCommonInfo.getPrice();
+	}
+
+	public Receiver getReceiver() {
+
+		return this.orderCommonInfo.getReceiver();
+	}
+
+	public OrderStatus getOrderStatus() {
+
+		return this.orderCommonInfo.getOrderStatus();
+	}
+
+	public int getExpectPrice() {
+
+		return this.orderCommonInfo.getPrice().getTotalPrice();
+	}
+
+	public int getTotalQuantity() {
+
+		return this.orderCommonInfo.getTotalQuantity();
 	}
 }

@@ -80,4 +80,9 @@ public class OrderItem extends BaseEntity {
 	public String getProductName() {
 		return item.getProductName();
 	}
+
+	public boolean isSubscription() {
+
+		return this.subscriptionOrder.isSubscription();
+	}
 }

@@ -18,9 +18,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/payments/lookup")
 public class PayLookupController {
 
-	private final RequestService<KakaoLookupResponse> kakaoPayLookupService;
+	private final RequestService<KakaoLookupResponse, Order> kakaoPayLookupService;
 	private final OrderFindHelper orderFindHelper;
-
 
 	@GetMapping("/{orderId}")
 	public SingleResponseDto<KakaoLookupResponse> findOrder(

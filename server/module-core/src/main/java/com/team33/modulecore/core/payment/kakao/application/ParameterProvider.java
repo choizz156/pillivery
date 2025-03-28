@@ -100,7 +100,7 @@ public class ParameterProvider {
 
 		return PaymentParams.builder()
 			.totalAmount(order.getTotalPrice())
-			.quantity(order.getTotalAmount())
+			.quantity(order.getTotalQuantity())
 			.itemName(getItemName(order))
 			.orderId(order.getId())
 			.build();

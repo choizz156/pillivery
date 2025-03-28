@@ -1,6 +1,7 @@
 package com.team33.modulecore.core.order.domain;
 
 import java.util.List;
+
 import javax.persistence.Embeddable;
 
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
@@ -17,8 +18,8 @@ import lombok.NoArgsConstructor;
 public class Price {
 
     private int totalPrice;
-
     private int totalDiscountPrice;
+    private int expectPrice;
 
     @Builder
     public Price(int totalPrice, int totalDiscountPrice) {
@@ -29,7 +30,7 @@ public class Price {
     public Price(List<OrderItem> orderItems) {
         int totalPrice = countTotalPrice(orderItems);
         int totalDiscountPrice = countTotalDiscountPrice(orderItems);
-        this.totalPrice = totalPrice;
+        this.expectPrice = totalPrice - totalPrice;
         this.totalDiscountPrice = totalDiscountPrice;
     }
 

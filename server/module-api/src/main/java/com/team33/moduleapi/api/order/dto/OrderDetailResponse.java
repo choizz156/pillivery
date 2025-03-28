@@ -4,9 +4,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.Receiver;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.order.domain.OrderStatus;
 
 import lombok.Builder;
 import lombok.Data;
@@ -63,7 +63,7 @@ public class OrderDetailResponse {
             .totalItems(order.getTotalItemsCount())
             .totalPrice(order.getPrice().getTotalPrice())
             .totalDiscountPrice(order.getPrice().getTotalDiscountPrice())
-            .expectPrice(order.getPrice().getTotalPrice())
+            .expectPrice(order.getExpectPrice())
             .subscription(order.isSubscription())
             .itemOrders(
                     order.getOrderItems()
