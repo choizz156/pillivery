@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class EventDispatcher {
 
-	private static final Logger log = LoggerFactory.getLogger("fileLog");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 	private static final int MAX_RETRIES = 2;
 
 	private final FailEventService failEventService;
@@ -30,7 +30,7 @@ public class EventDispatcher {
 				isSuccess = true;
 			} catch (RuntimeException e) {
 				retry++;
-				log.warn("retry : {}, parameters : {}", retry, e.getMessage());
+				LOGGER.warn("retry : {}, parameters : {}", retry, e.getMessage());
 				handleFailure(apiEvent, retry);
 			}
 		}

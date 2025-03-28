@@ -3,7 +3,7 @@ package com.team33.modulecore.core.payment.kakao.application.approve;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
@@ -17,11 +17,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoSubsApproveService implements SubscriptionApproveService<KakaoApproveResponse> {
+public class KakaoSubsApproveService implements SubscriptionApproveService<KakaoApproveResponse, SubscriptionOrder> {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final KakaoFirstSubsApproveDispatcher kakaoFirstSubsApproveDispatcher;
-	private final SubscriptionApprove<KakaoApiApproveResponse> subscriptionApprove;
+	private final SubscriptionApprove<KakaoApiApproveResponse, SubscriptionOrder> subscriptionApprove;
 
 	@Override
 	public KakaoApproveResponse approveInitially(ApproveRequest approveRequest) {
@@ -36,10 +36,11 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 	}
 
 	@Override
-	public KakaoApproveResponse approveSubscribe(Order order) {
-		KakaoApiApproveResponse response = subscriptionApprove.approveSubscription(order);
+	public KakaoApproveResponse approveSubscribe(SubscriptionOrder subscriptionOrder) {
 
-		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(order.getId()));
+		KakaoApiApproveResponse response = subscriptionApprove.approveSubscription(subscriptionOrder);
+
+		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(subscriptionOrder.getId()));
 
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
 	}

@@ -26,5 +26,4 @@ public class KakaoRequestService implements RequestService<KakaoRequestResponse,
 		
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreRequestResponse(response);
 	}
-
 }

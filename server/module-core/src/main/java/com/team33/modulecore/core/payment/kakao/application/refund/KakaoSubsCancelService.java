@@ -7,17 +7,17 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoSubsCancelService implements CancelSubscriptionService {
+public class KakaoSubsCancelService implements CancelSubscriptionService<SubscriptionOrder> {
 
 	private final static String CANCEL_URL = "https://open-api.kakaopay.com/online/v1/payment/manage/subscription/inactive";
 
@@ -26,19 +26,19 @@ public class KakaoSubsCancelService implements CancelSubscriptionService {
 	private final ObjectMapper objectMapper;
 
 	@Override
-	public void cancelSubscription(Order order) {
+	public void cancelSubscription(SubscriptionOrder subscriptionOrder) {
 
-		String sid = checkSidNull(order);
+		String sid = checkSidNull(subscriptionOrder);
 		String params = mapToString(parameterProvider.getSubsCancelParams(sid));
 
 		applicationEventPublisher.publishEvent(new KakaoSubsCanceledEvent(params, CANCEL_URL));
 	}
 
-	private String checkSidNull(Order order) {
-		String sid = order.getSid();
+	private String checkSidNull(SubscriptionOrder subscriptionOrder) {
+		String sid = subscriptionOrder.getSid();
 
 		if (sid == null) {
-			throw new NullPointerException("orderId = "+ order.getId() +"의 sid가 존재하지 않습니다.");
+			throw new NullPointerException("orderId = "+ subscriptionOrder.getId() +"의 sid가 존재하지 않습니다.");
 		}
 
 		return sid;

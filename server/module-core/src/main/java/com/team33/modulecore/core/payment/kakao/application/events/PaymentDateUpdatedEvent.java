@@ -4,14 +4,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Getter
 public class PaymentDateUpdatedEvent {
 
-	private final long orderId;
+	private final Long SubscriptionOrderId;
 	private final ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-	public PaymentDateUpdatedEvent(long orderId) {
-		this.orderId = orderId;
-	}
 }

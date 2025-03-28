@@ -27,8 +27,11 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class SubscriptionRegisterHandler {
 
+
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
-	private static final String URL = "https://localhost:8080/api/payments/subscriptions/";
+
+	public static final String HOST = "https://localhost:8080";
+	private static final String URL = HOST + "/api/payments/subscriptions/";
 
 	private final SubscriptionOrderService subscriptionOrderService;
 	private final EventRepository eventRepository;
@@ -40,6 +43,7 @@ public class SubscriptionRegisterHandler {
 
 		Order order = orderFindHelper.findOrder(event.getOrderId());
 		List<SubscriptionOrder> subscriptionOrders = subscriptionOrderService.create(order);
+
 
 		subscriptionOrders.forEach(subscriptionOrder -> {
 			ApiEvent apiEvent = toEvent(subscriptionOrder.getId());

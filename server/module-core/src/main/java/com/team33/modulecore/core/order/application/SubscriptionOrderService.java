@@ -25,7 +25,8 @@ public class SubscriptionOrderService {
 
 	public List<SubscriptionOrder> create(Order order) {
 
-		List<SubscriptionOrder> subscriptionOrders = order.getOrderItems().stream()
+		List<SubscriptionOrder> subscriptionOrders = order.getOrderItems()
+			.stream()
 			.map(orderItem -> getSubscriptionOrderToPriceZero(order, orderItem))
 			.collect(Collectors.toUnmodifiableList());
 

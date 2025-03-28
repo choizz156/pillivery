@@ -32,7 +32,7 @@ public class OrderCommonInfo {
 	private SubscriptionInfo subscriptionInfo;
 
 	@Embedded
-	private PaymentId paymentId;
+	private PaymentToken paymentToken;
 
 	@Embedded
 	private Price price;
@@ -50,7 +50,7 @@ public class OrderCommonInfo {
 		String mainItemName,
 		int totalQuantity,
 		SubscriptionInfo subscriptionInfo,
-		PaymentId paymentId,
+		PaymentToken paymentToken,
 		Price price,
 		Receiver receiver,
 		OrderStatus orderStatus,
@@ -60,7 +60,7 @@ public class OrderCommonInfo {
 		this.mainItemName = mainItemName;
 		this.totalQuantity = totalQuantity;
 		this.subscriptionInfo = subscriptionInfo;
-		this.paymentId = paymentId;
+		this.paymentToken = paymentToken;
 		this.price = price;
 		this.receiver = receiver;
 		this.orderStatus = orderStatus;
@@ -69,21 +69,21 @@ public class OrderCommonInfo {
 
 	public OrderCommonInfo addSid(String sid) {
 
-		String tid = paymentId.getTid();
+		String tid = paymentToken.getTid();
 
 		if (tid == null) {
 			throw new BusinessLogicException("tid는 null일 수 없습니다.");
 		}
 
 		return this.toBuilder()
-			.paymentId(new PaymentId(sid, tid))
+			.paymentToken(new PaymentToken(sid, tid))
 			.build();
 	}
 
 	public OrderCommonInfo addTid(String tid) {
 
 		return this.toBuilder()
-			.paymentId(new PaymentId(null, tid))
+			.paymentToken(new PaymentToken(null, tid))
 			.build();
 	}
 
@@ -106,21 +106,8 @@ public class OrderCommonInfo {
 		countTotalAmount(orderItems);
 		return this.toBuilder()
 			.price(new Price(orderItems))
-			.totalAmount(totalQuantity)
+			.totalQuantity(totalQuantity)
 			.build();
-	}
-
-	private void countTotalAmount(List<OrderItem> orderItems) {
-
-		if (orderItems.isEmpty()) {
-			this.totalQuantity = 0;
-			return;
-		}
-
-		this.totalQuantity = orderItems.stream()
-			.map(OrderItem::getQuantity)
-			.mapToInt(Integer::intValue)
-			.sum();
 	}
 
 	public int getTotalPrice() {
@@ -129,12 +116,12 @@ public class OrderCommonInfo {
 
 	public String getSid() {
 
-		return this.paymentId.getSid();
+		return this.paymentToken.getSid();
 	}
 
 	public String getTid() {
 
-		return this.paymentId.getTid();
+		return this.paymentToken.getTid();
 	}
 
 	public OrderCommonInfo cancelSubscription() {
@@ -185,5 +172,18 @@ public class OrderCommonInfo {
 		return this.toBuilder()
 			.price(new Price(List.of()))
 			.build();
+	}
+
+	private void countTotalAmount(List<OrderItem> orderItems) {
+
+		if (orderItems.isEmpty()) {
+			this.totalQuantity = 0;
+			return;
+		}
+
+		this.totalQuantity = orderItems.stream()
+			.map(OrderItem::getQuantity)
+			.mapToInt(Integer::intValue)
+			.sum();
 	}
 }

@@ -1,9 +1,9 @@
 package com.team33.moduleexternalapi.infra.kakao;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,28 +18,30 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class KakaoApproveClient implements PaymentClient<KakaoApiApproveResponse> {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
+
 	private final WebClientSender webClientSender;
 
 	@Override
 	public KakaoApiApproveResponse send(Map<String, Object> params, String url) {
-		CompletableFuture<KakaoApiApproveResponse> completableFuture = sendApprove(params, url);
-		try {
-			return completableFuture.get();
-		} catch (InterruptedException | ExecutionException e) {
-			throw new PaymentApiException(e.getMessage());
-		}
+		return approve(params, url);
 	}
 
-	private CompletableFuture<KakaoApiApproveResponse> sendApprove(Map<String, Object> params, String url) {
+	private KakaoApiApproveResponse approve(Map<String, Object> params, String url) {
+
 		try {
-			return webClientSender.sendToPost(
+			return webClientSender.sendToPostSync(
 				params,
 				url,
 				KakaoHeader.HTTP_HEADERS.getHeaders(),
 				KakaoApiApproveResponse.class
 			);
 		} catch (JsonProcessingException e) {
-			throw new PaymentApiException(e.getMessage());
+			LOGGER.info("카카오페이 승인 요청 중 오류: {}", e.getMessage());
+			throw new PaymentApiException("카카오페이 승인 요청 중 오류가 발생했습니다.");
+		} catch (Exception e) {
+			LOGGER.info("카카오페이 승인 처리 중 오류: {}", e.getMessage());
+			throw new PaymentApiException("카카오페이 승인 처리 중 오류가 발생했습니다.");
 		}
 	}
 }

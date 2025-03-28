@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Embeddable
-public class PaymentId {
+public class PaymentToken {
 
 	private String sid;
 
 	private String tid;
 
-	public PaymentId(String sid, String tid) {
+	public PaymentToken(String sid, String tid) {
 		this.sid = sid;
 		this.tid = tid;
 	}

@@ -18,6 +18,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.OrderCommonInfo;
+import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.dto.OrderContext;
 
 import lombok.AccessLevel;
@@ -55,6 +56,7 @@ public class Order extends BaseEntity {
 		int totalItemsCount,
 		List<OrderItem> orderItems
 	) {
+
 		this.isOrderedAtCart = isOrderedAtCart;
 		this.orderCommonInfo = orderCommonInfo;
 		this.orderItems = orderItems;
@@ -66,6 +68,7 @@ public class Order extends BaseEntity {
 		OrderCommonInfo orderCommonInfo,
 		OrderContext orderContext
 	) {
+
 		Order order = Order.builder()
 			.orderCommonInfo(orderCommonInfo)
 			.isOrderedAtCart(orderContext.isOrderedCart())
@@ -79,35 +82,51 @@ public class Order extends BaseEntity {
 	}
 
 	public void addPrice(List<OrderItem> orderItems) {
+
 		this.orderCommonInfo = this.orderCommonInfo.addPrice(orderItems);
 	}
 
 	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
+
 		this.orderCommonInfo = this.orderCommonInfo.adjustPriceAndTotalQuantity(orderItems);
 	}
 
 	public Item getFirstItem() {
+
 		return orderItems.get(0).getItem();
 	}
 
 	public void addTid(String tid) {
+
 		this.orderCommonInfo = this.orderCommonInfo.addTid(tid);
 	}
 
 	public int getTotalPrice() {
+
 		return this.orderCommonInfo.getTotalPrice();
 	}
 
 	public int getTotalAmount() {
+
 		return this.orderCommonInfo.getTotalQuantity();
 	}
 
 	public String getMainItemName() {
+
 		return this.orderCommonInfo.getMainItemName();
 	}
 
-	public Object getSid() {
+	public String getSid() {
 
-		return null;
+		return this.orderCommonInfo.getSid();
+	}
+
+	public boolean isSubscription() {
+
+		return this.orderCommonInfo.isSubscription();
+	}
+
+	public void changeOrderStatus(OrderStatus orderStatus) {
+		this.orderCommonInfo = this.orderCommonInfo.changeOrderStatus(orderStatus);
 	}
 }

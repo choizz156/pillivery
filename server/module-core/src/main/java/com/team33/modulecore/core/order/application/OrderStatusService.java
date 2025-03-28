@@ -1,7 +1,5 @@
 package com.team33.modulecore.core.order.application;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
 import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
@@ -29,8 +28,8 @@ public class OrderStatusService {
 
 	private final ApplicationContext applicationContext;
 	private final OrderFindHelper orderFindHelper;
-	private final OrderPaymentCodeService orderPaymentCodeService;
-	private final CancelSubscriptionService kakaoSubsCancelService;
+	private final SubscriptionOrderService subscriptionOrderService;
+	private final CancelSubscriptionService<SubscriptionOrder> kakaoSubsCancelService;
 	private final RefundService refundService;
 
 	public void processOneTimeStatus(Long orderId) {
@@ -45,8 +44,8 @@ public class OrderStatusService {
 		applicationContext.publishEvent(new CartRefreshedEvent(order, orderedItemsId));
 	}
 
-
 	public void processCancel(Long orderId, RefundContext refundContext) {
+
 		Order order = orderFindHelper.findOrder(orderId);
 
 		order.changeOrderStatus(OrderStatus.REFUND);
@@ -54,14 +53,16 @@ public class OrderStatusService {
 		refundService.refund(orderId, refundContext);
 	}
 
-	public void processSubscriptionCancel(long orderId) {
-		Order order = orderFindHelper.findOrder(orderId);
-		order.changeOrderStatus(OrderStatus.SUBSCRIBE_CANCEL);
+	public void processSubscriptionCancel(Long subscriptionOrderId) {
 
-		kakaoSubsCancelService.cancelSubscription(order);
+		SubscriptionOrder subscriptionOrder = subscriptionOrderService.findById(subscriptionOrderId);
+		subscriptionOrder.changeOrderStatus(OrderStatus.SUBSCRIBE_CANCEL);
+
+		kakaoSubsCancelService.cancelSubscription(subscriptionOrder);
 	}
 
 	private List<Long> getOrderedIds(Order order) {
+
 		return order.getOrderItems()
 			.stream()
 			.map(orderItem -> orderItem.getItem().getId())

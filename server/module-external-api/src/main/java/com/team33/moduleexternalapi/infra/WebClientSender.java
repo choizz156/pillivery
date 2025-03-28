@@ -39,6 +39,29 @@ public class WebClientSender {
 			.retrieve()
 			.bodyToMono(responseClass);
 
-		return mono.toFuture();
+		return mono.doOnSuccess(response -> log.info("외부 API 호출 성공: {}", uri))
+			.doOnError(error -> log.error("외부 API 호출 실패: {}, 오류: {}", uri, error.getMessage()))
+			.toFuture();
 	}
+
+	public <T> T sendToPostSync(
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass
+	) throws JsonProcessingException {
+
+		String kakaoRequest = objectMapper.writeValueAsString(params);
+
+		return webClient.post()
+			.uri(uri)
+			.headers(httpHeaders -> httpHeaders.addAll(headers))
+			.bodyValue(kakaoRequest)
+			.retrieve()
+			.bodyToMono(responseClass)
+			.doOnSuccess(response -> log.info("외부 API 호출 성공: {}", uri))
+			.doOnError(error -> log.error("외부 API 호출 실패: {}, 오류: {}", uri, error.getMessage()))
+			.block();
+	}
+
 }

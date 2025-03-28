@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class SubscribeEventSender implements EventSender {
+public class SubscribeRegisterEventSender implements EventSender {
 
 	private final RestTemplateSender restTemplateSender;
 

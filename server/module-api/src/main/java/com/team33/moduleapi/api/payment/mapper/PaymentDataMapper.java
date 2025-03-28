@@ -7,22 +7,22 @@ import org.springframework.stereotype.Component;
 import net.jodah.expiringmap.ExpiringMap;
 
 @Component
-public class PaymentDataService {
+public class PaymentDataMapper {
 
 	private final ExpiringMap<Long, PaymentData> store = ExpiringMap.builder()
 		.expiration(10, TimeUnit.MINUTES)
 		.build();
 
-	public void addData(Long orderId, String tid) {
+	public void addData(Long targetId, String tid) {
 		PaymentData data = PaymentData.builder()
-			.orderId(orderId)
+			.targetId(targetId)
 			.tid(tid)
 			.build();
 
-		store.put(orderId, data);
+		store.put(targetId, data);
 	}
 
-	public PaymentData getData(Long orderId) {
-		return store.get(orderId);
+	public PaymentData getData(Long targetId) {
+		return store.get(targetId);
 	}
 }

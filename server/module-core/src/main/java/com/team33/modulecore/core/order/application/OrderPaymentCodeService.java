@@ -37,7 +37,6 @@ public class OrderPaymentCodeService {
 		}
 	}
 
-	@Async
 	public void addSid(long subscriptionOrderId, String sid) {
 
 		subscriptionOrderRepository.findById(subscriptionOrderId).ifPresent(subscriptionOrder -> {

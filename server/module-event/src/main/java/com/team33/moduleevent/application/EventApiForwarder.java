@@ -20,22 +20,20 @@ import lombok.extern.slf4j.Slf4j;
 public class EventApiForwarder {
 
 	private final EventRepository eventsRepository;
-	private final EventSender kakaoApiEventSender;
 	private final EventDispatcher eventDispatcher;
 	private final Map<EventType, EventSender> eventTypeEventSenderMap;
 
 	public EventApiForwarder(
 		EventRepository eventsRepository,
-		EventSender kakaoApiEventSender,
-		EventSender suscribeEventSender,
-		EventDispatcher eventDispatcher
+		EventDispatcher eventDispatcher,
+		EventSender kakaoCancelEventSender,
+		EventSender subscriptionRegisterEventSender
 	) {
 		this.eventsRepository = eventsRepository;
-		this.kakaoApiEventSender = kakaoApiEventSender;
 		this.eventDispatcher = eventDispatcher;
 		this.eventTypeEventSenderMap = initializeEventSenders(
-			kakaoApiEventSender,
-			suscribeEventSender
+			kakaoCancelEventSender,
+			subscriptionRegisterEventSender
 		);
 	}
 
@@ -53,19 +51,19 @@ public class EventApiForwarder {
 
 	private void registerEventWithDispatcher(ApiEvent apiEvent) {
 		EventType type = apiEvent.getType();
-		EventSender eventSender = eventTypeEventSenderMap.getOrDefault(type, kakaoApiEventSender);
+		EventSender eventSender = eventTypeEventSenderMap.getOrDefault(type, e -> {});
 		eventDispatcher.register(apiEvent, eventSender);
 	}
 
 	private Map<EventType, EventSender> initializeEventSenders(
-		EventSender kakaoApiEventSender,
-		EventSender suscribeEventSender
+		EventSender kakaoCancelEventSender,
+		EventSender subscriptionRegisterEventSender
 	) {
 		final Map<EventType, EventSender> eventTypeEventSenderMap = new EnumMap<>(EventType.class);
 
-		eventTypeEventSenderMap.put(EventType.KAKAO_REFUNDED, kakaoApiEventSender);
-		eventTypeEventSenderMap.put(EventType.SUBSCRIPTION_CANCELED, kakaoApiEventSender);
-		eventTypeEventSenderMap.put(EventType.SUBSCRIPTION_REGISTERED, suscribeEventSender);
+		eventTypeEventSenderMap.put(EventType.KAKAO_REFUNDED, kakaoCancelEventSender);
+		eventTypeEventSenderMap.put(EventType.SUBSCRIPTION_CANCELED, kakaoCancelEventSender);
+		eventTypeEventSenderMap.put(EventType.SUBSCRIPTION_REGISTERED, subscriptionRegisterEventSender);
 
 		return eventTypeEventSenderMap;
 	}

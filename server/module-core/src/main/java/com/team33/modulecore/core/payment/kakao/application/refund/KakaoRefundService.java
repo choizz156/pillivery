@@ -30,7 +30,7 @@ public class KakaoRefundService implements RefundService {
 	public void refund(Long orderId, RefundContext refundContext) {
 
 		String tid = orderFindHelper.findTid(orderId);
-		String params = mapToString(parameterProvider.getRefundParams(refundContext, tid));
+		String params = mapToString(parameterProvider.getPaymentRefundParams(refundContext, tid));
 
 		applicationEventPublisher.publishEvent(new KakaoRefundedEvent(params, REFUND_URL));
 	}

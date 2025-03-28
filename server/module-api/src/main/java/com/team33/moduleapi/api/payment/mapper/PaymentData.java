@@ -6,14 +6,14 @@ import lombok.Getter;
 @Getter
 public class PaymentData {
 
-	private String tid;
-	private String sid;
-	private Long orderId;
+	private final String tid;
+	private final String sid;
+	private final Long targetId;
 
 	@Builder
-	public PaymentData(String tid, String sid, Long orderId) {
+	public PaymentData(String tid, String sid, Long targetId) {
 		this.tid = tid;
 		this.sid = sid;
-		this.orderId = orderId;
+		this.targetId = targetId;
 	}
 }
