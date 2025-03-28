@@ -1,4 +1,4 @@
-package com.team33.modulecore.payment.kakao.application.approve;
+package com.team33.modulecore.core.payment.kakao.application.approve;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.core.payment.kakao.application.approve.KakaoFirstSubsApproveDispatcher;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
@@ -23,12 +22,13 @@ class KakaoFirstSubsApproveDispatcherTest {
 			parameterProvider
 		);
 
-		//when
 		KakaoApproveRequest request = KakaoApproveRequest.builder()
 			.orderId(1L)
 			.pgtoken("pgToken")
 			.tid("tid")
 			.build();
+
+		//when
 		KakaoApiApproveResponse kaKaoApiApproveResponse = kakaoFirstSubsApproveDispatcher.approveFirstSubscription(request);
 
 		//then

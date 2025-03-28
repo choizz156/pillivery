@@ -1,6 +1,6 @@
-package com.team33.modulecore.payment.kakao.application;
+package com.team33.modulecore.core.payment.kakao;
 
-import static com.team33.modulecore.payment.kakao.application.ParamsConst.*;
+import static com.team33.modulecore.core.payment.kakao.ParamsConst.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -14,16 +14,30 @@ import org.junit.jupiter.api.TestInstance;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.order.domain.Price;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParameterProviderTest {
 
 	private Order order;
+	private SubscriptionOrder subscriptionOrder;
 
 	@BeforeAll
 	void beforeAll() {
+
 		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("id", 1L)
+			.set("mainItemName", "test")
+			.set("totalItemsCount", 3)
+			.set("totalQuantity", 3)
+			.set("orderPrice", new Price(3000, 200))
+			.set("orderItems", List.of())
+			.set("receiver", null)
+			.set("paymentCode.sid", "sid")
+			.sample();
+
+		subscriptionOrder = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionOrder.class)
 			.set("id", 1L)
 			.set("mainItemName", "test")
 			.set("totalItemsCount", 3)
@@ -42,7 +56,7 @@ class ParameterProviderTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, Object> oneTimeReqsParams = parameterProvider.getOneTimeReqsParams(order);
+		Map<String, Object> oneTimeReqsParams = parameterProvider.getOneTimePaymentRequestParams(order);
 
 		//then
 		assertThat(oneTimeReqsParams).hasSize(10)
@@ -68,7 +82,7 @@ class ParameterProviderTest {
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionReqsParams(order);
+		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionPaymentRequestParams(subscriptionOrder);
 
 		//then
 		assertThat(subscriptionReqsParams).hasSize(10)
@@ -89,12 +103,12 @@ class ParameterProviderTest {
 
 	@DisplayName("단건 승인 시 파라미터를 생성할 수 있다.")
 	@Test
-	void 단건_승인() throws Exception{
+	void 단건_승인() throws Exception {
 		//given
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, Object> subscriptionReqsParams = parameterProvider.getOneTimeApproveParams("tid", "pgToken", 1L);
+		Map<String, Object> subscriptionReqsParams = parameterProvider.getOneTimePaymentApprovalParams("tid", "pgToken", 1L);
 
 		//then
 		assertThat(subscriptionReqsParams).hasSize(5)
@@ -110,12 +124,13 @@ class ParameterProviderTest {
 
 	@DisplayName("정기 결제 최초 승인 시 파라미터를 생성할 수 있다.")
 	@Test
-	void 정기_결제_최초_승인() throws Exception{
+	void 정기_결제_최초_승인() throws Exception {
 		//given
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionFirstApproveParams("tid", "pgToken", 1L);
+		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionFirstPaymentApprovalParams("tid",
+			"pgToken", 1L);
 
 		//then
 		assertThat(subscriptionReqsParams).hasSize(5)
@@ -131,12 +146,12 @@ class ParameterProviderTest {
 
 	@DisplayName("정기 결제 승인 시 파라미터를 생성할 수 있다.")
 	@Test
-	void 정기_결제_승인() throws Exception{
+	void 정기_결제_승인() throws Exception {
 		//given
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when
-		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionApproveParams(order);
+		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionPaymentApprovalParams(subscriptionOrder);
 
 		//then
 		assertThat(subscriptionReqsParams).hasSize(10)

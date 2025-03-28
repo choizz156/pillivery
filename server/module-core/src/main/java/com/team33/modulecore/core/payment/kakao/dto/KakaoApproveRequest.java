@@ -29,14 +29,11 @@ public class KakaoApproveRequest implements ApproveRequest {
 			.build();
 	}
 
-	public static KakaoApproveRequest toSubscriptionRequest(KakaoApproveRequest approveRequest, Long subscriptionOrderId) {
-
-		Long previousOrderId = approveRequest.getOrderId();
+	public static KakaoApproveRequest toSubscriptionRequest(String tid, String pgtoken, Long subscriptionOrderId) {
 
 		return KakaoApproveRequest.builder()
-			.tid(approveRequest.getTid())
-			.pgtoken(approveRequest.getPgtoken())
-			.orderId(previousOrderId)
+			.tid(tid)
+			.pgtoken(pgtoken)
 			.subscriptionOrderId(subscriptionOrderId)
 			.build();
 	}

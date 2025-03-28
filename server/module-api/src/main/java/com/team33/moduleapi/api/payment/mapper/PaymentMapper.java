@@ -13,6 +13,10 @@ public class PaymentMapper {
 		return KakaoApproveRequest.of(tid, pgToken, orderId);
 	}
 
+	public KakaoApproveRequest toApproveSubscribe(String tid, String pgToken, Long subscriptionId) {
+		return KakaoApproveRequest.toSubscriptionRequest(tid, pgToken, subscriptionId);
+	}
+
 	public RefundContext toRefundContext(RefundDto refundDto) {
 		return RefundContext.builder()
 			.cancelAmount(refundDto.getCancelAmount())

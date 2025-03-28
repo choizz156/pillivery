@@ -30,7 +30,7 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 
 		KakaoApiApproveResponse response = kakaoFirstSubsApproveDispatcher.approveFirstSubscription(request);
 
-		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(request.getOrderId()));
+		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(request.getSubscriptionOrderId()));
 
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
 	}

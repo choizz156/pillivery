@@ -86,9 +86,9 @@ public class PayController {
 
 		PaymentData data = paymentDataMapper.getData(subscriptionOrderId);
 		KakaoApproveRequest approveSidRequest =
-			paymentMapper.toApproveOneTime(data.getTid(), pgToken, data.getTargetId());
+			paymentMapper.toApproveSubscribe(data.getTid(), pgToken, data.getTargetId());
 
-		KakaoApproveResponse approveResponse = approveFacade.registerSid(approveSidRequest);
+		KakaoApproveResponse approveResponse = approveFacade.approveSid(approveSidRequest);
 		orderPaymentCodeService.addSid(subscriptionOrderId, approveResponse.getSid());
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approveResponse));

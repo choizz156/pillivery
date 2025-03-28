@@ -13,8 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
@@ -27,23 +25,23 @@ import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.payment.kakao.application.approve.KakaoApproveFacade;
-import com.team33.modulecore.core.payment.kakao.application.events.ScheduleRegisteredEvent;
-import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestFacade;
+import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestService;
+import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubscriptionRequestService;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
-import com.team33.moduleevent.handler.ScheduleRegisterHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
-
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PaymentAcceptanceTest extends ApiTest {
 
+	private KakaoApproveFacade approveFacade;
+	private KakaoRequestService kakaoRequestService;
+	private KakaoSubscriptionRequestService kakaoSubscriptionRequestService;
 	private MockMvcRequestSpecification given;
-	private KakaoRequestFacade requestFacade;
 
 	@Autowired
 	private OrderCommandRepository orderCommandRepository;
@@ -60,29 +58,24 @@ class PaymentAcceptanceTest extends ApiTest {
 	@Autowired
 	private OrderPaymentCodeService paymentCodeService;
 
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
-
-	@MockBean
-	private ScheduleRegisterHandler scheduleRegisterHandler;
-
-
-	private KakaoApproveFacade approveFacade;
-
 	@BeforeAll
 	void beforeAll() {
-		requestFacade = mock(KakaoRequestFacade.class);
+
+		kakaoRequestService = mock(KakaoRequestService.class);
+		kakaoSubscriptionRequestService = mock(KakaoSubscriptionRequestService.class);
 		approveFacade = mock(KakaoApproveFacade.class);
+
 		given = RestAssuredMockMvc.given()
 			.mockMvc(
 				standaloneSetup(
 					new PayController(
 						approveFacade,
-						requestFacade,
 						paymentMapper,
 						paymentDataMapper,
 						orderStatusService,
-						paymentCodeService
+						paymentCodeService,
+						kakaoRequestService,
+						kakaoSubscriptionRequestService
 					)
 				).build()
 			).log().all();
@@ -91,6 +84,7 @@ class PaymentAcceptanceTest extends ApiTest {
 
 	@BeforeEach
 	void setUp() {
+
 		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.setNull("id")
 			.setNull("orderItems")
@@ -99,7 +93,7 @@ class PaymentAcceptanceTest extends ApiTest {
 		orderCommandRepository.save(order);
 	}
 
-	@DisplayName("카카오 단건, 정기 결제 요청을 보내면 tid, redirect_url 등을 받을 수 있다.")
+	@DisplayName("카카오 단건 결제 요청을 보내면 tid, redirect_url 등을 받을 수 있다.")
 	@Test
 	void 결제_요청() throws Exception {
 
@@ -110,7 +104,7 @@ class PaymentAcceptanceTest extends ApiTest {
 			.set("next_redirect_pc_url", "url")
 			.sample();
 
-		given(requestFacade.request(anyLong())).willReturn(sample);
+		given(kakaoRequestService.request(anyLong())).willReturn(sample);
 
 		//@formatter:off
             given
@@ -123,6 +117,32 @@ class PaymentAcceptanceTest extends ApiTest {
                     .expect(jsonPath("$.data.createAt").isNotEmpty())
                     .log().all();
         //@formatter:on
+	}
+
+	@DisplayName("카카오 정기 결제 요청을 보내면 tid, redirect_url 등을 받을 수 있다.")
+	@Test
+	void 결제_요청2() throws Exception {
+
+		//given
+		KakaoRequestResponse sample = FixtureMonkeyFactory.get()
+			.giveMeBuilder(KakaoRequestResponse.class)
+			.set("tid", "tid")
+			.set("next_redirect_pc_url", "url")
+			.sample();
+
+		given(kakaoSubscriptionRequestService.request(anyLong())).willReturn(sample);
+
+		//@formatter:off
+		given
+			.when()
+			.post("/api/payments/{orderId}",1)
+			.then()
+			.statusCode(HttpStatus.CREATED.value())
+			.expect(jsonPath("$.data.tid").value("tid"))
+			.expect(jsonPath("$.data.next_redirect_pc_url").value("url"))
+			.expect(jsonPath("$.data.createAt").isNotEmpty())
+			.log().all();
+		//@formatter:on
 	}
 
 	@DisplayName("카카오 단건, 정기 결제(최초) 승인 시 결제 승인 정보를 받을 수 있다.")
@@ -182,18 +202,5 @@ class PaymentAcceptanceTest extends ApiTest {
 				.expect(jsonPath("$.data.quantity").exists());
 
 		//@formatter:on
-	}
-
-	@DisplayName("스케쥴 등록 이벤트가 발행되면, 이벤트 핸들로가 동작한다.")
-	@Test
-	void 스케쥴_등록_이벤트() throws Exception {
-		//given
-		ScheduleRegisteredEvent scheduleRegisteredEvent = new ScheduleRegisteredEvent(1L);
-
-		//when
-		applicationEventPublisher.publishEvent(scheduleRegisteredEvent);
-
-		//then
-		verify(scheduleRegisterHandler, times(1)).onEventSet(scheduleRegisteredEvent);
 	}
 }

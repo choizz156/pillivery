@@ -15,7 +15,6 @@ public abstract class KaKaoApproveTemplate {
 
 	private final PaymentClient<KakaoApiApproveResponse> kakaoApproveClient;
 
-
 	public abstract Map<String, Object> getApproveParams(ApproveRequest approveRequest);
 
 	public KakaoApiApproveResponse approve(ApproveRequest approveRequest) {

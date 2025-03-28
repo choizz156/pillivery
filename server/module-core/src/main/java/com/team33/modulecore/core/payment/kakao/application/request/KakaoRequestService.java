@@ -21,6 +21,7 @@ public class KakaoRequestService implements RequestService<KakaoRequestResponse,
 
 	@Override
 	public KakaoRequestResponse request(Long orderId) {
+
 		Order order = orderFindHelper.findOrder(orderId);
 		KakaoApiRequestResponse response = kakaoOneTimeRequest.request(order);
 		

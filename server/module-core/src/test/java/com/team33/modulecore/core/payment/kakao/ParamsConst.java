@@ -1,10 +1,8 @@
-package com.team33.modulecore.payment.kakao.application;
-
-import static lombok.AccessLevel.PROTECTED;
+package com.team33.modulecore.core.payment.kakao;
 
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 public abstract class ParamsConst {
 
     protected static final String PARTNER = "pillivery";

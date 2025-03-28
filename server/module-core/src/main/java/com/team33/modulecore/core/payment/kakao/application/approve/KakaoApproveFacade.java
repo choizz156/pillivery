@@ -49,7 +49,7 @@ public class KakaoApproveFacade implements ApproveFacade<KakaoApproveResponse, K
 		return kakaoSubsApproveService.approveSubscribe(subscriptionOrder);
 	}
 
-	public KakaoApproveResponse registerSid(ApproveRequest approveRequest) {
+	public KakaoApproveResponse approveSid(ApproveRequest approveRequest) {
 
 		return kakaoSubsApproveService.approveInitially(approveRequest);
 	}
