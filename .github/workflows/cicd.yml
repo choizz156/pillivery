@@ -1,75 +1,75 @@
-on:
-  push:
-    branches: [ "main" ]
+# on:
+#   push:
+#     branches: [ "main" ]
 
-  workflow_dispatch: 
+#   workflow_dispatch: 
 
-env:
-  ECR_REPO_URL: ${{ secrets.ECR_REPO_URL }}
-  IMAGE_TAG: ${{ github.sha }}
-  MYSQL_USER: ${{ secrets.MYSQL_USER }}
-  MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-  MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+# env:
+#   ECR_REPO_URL: ${{ secrets.ECR_REPO_URL }}
+#   IMAGE_TAG: ${{ github.sha }}
+#   MYSQL_USER: ${{ secrets.MYSQL_USER }}
+#   MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+#   MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
 
-jobs:
-  compose:
-    runs-on: ubuntu-latest
+# jobs:
+#   compose:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4 
-        with:
-          submodules: recursive
-          token: ${{ secrets.SECRET_TOKEN }}
-          fetch-depth: 0
+#     steps:
+#       - uses: actions/checkout@v4 
+#         with:
+#           submodules: recursive
+#           token: ${{ secrets.SECRET_TOKEN }}
+#           fetch-depth: 0
 
-      - name: AWS credentials 셋팅
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+#       - name: AWS credentials 셋팅
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ap-northeast-2
 
-      - name: ECR 로그인 
-        run: aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
+#       - name: ECR 로그인 
+#         run: aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        run: | 
-          cd ./server
-          docker compose -f quartz.compose.yml build --push
+#       - name: Build, tag, and push docker image to Amazon ECR
+#         run: | 
+#           cd ./server
+#           docker compose -f quartz.compose.yml build --push
 
-      - name: Set correct permissions for db-init-scripts
-        run: |
-          sudo chmod -R 755 ./server/module-quartz/db-init-scripts
-          sudo chmod 777 ./server/module-quartz/db-init-scripts/init.sql
+#       - name: Set correct permissions for db-init-scripts
+#         run: |
+#           sudo chmod -R 755 ./server/module-quartz/db-init-scripts
+#           sudo chmod 777 ./server/module-quartz/db-init-scripts/init.sql
 
-      - name: Change ownership of target directory on remote server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PEM_KEY }}
-          script: |
-            sudo mkdir -p $HOME/${{ github.repository_id }}
-            sudo chown -R ${{ secrets.USERNAME }}:${{ secrets.USERNAME }} $HOME/${{ github.repository_id }}
+#       - name: Change ownership of target directory on remote server
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.HOST }}
+#           username: ${{ secrets.USERNAME }}
+#           key: ${{ secrets.SSH_PEM_KEY }}
+#           script: |
+#             sudo mkdir -p $HOME/${{ github.repository_id }}
+#             sudo chown -R ${{ secrets.USERNAME }}:${{ secrets.USERNAME }} $HOME/${{ github.repository_id }}
 
 
-      - name: 배포 파일 서버로 복사
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PEM_KEY }}
-          source: "./server/quartz.compose.yml, ./server/module-quartz/db-init-scripts/init.sql"
-          target: "$HOME/${{ github.repository_id }}"
+#       - name: 배포 파일 서버로 복사
+#         uses: appleboy/scp-action@v0.1.7
+#         with:
+#           host: ${{ secrets.HOST }}
+#           username: ${{ secrets.USERNAME }}
+#           key: ${{ secrets.SSH_PEM_KEY }}
+#           source: "./server/quartz.compose.yml, ./server/module-quartz/db-init-scripts/init.sql"
+#           target: "$HOME/${{ github.repository_id }}"
 
-      - name: 도커 컴포즈 배포
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PEM_KEY }}
-          envs: ECR_REPO_URL,IMAGE_TAG,MYSQL_USER,MYSQL_PASSWORD,MYSQL_ROOT_PASSWORD
-          script: |
-            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
-            cd $HOME/${{ github.repository_id }}/server
-            docker compose -f quartz.compose.yml up -d
+#       - name: 도커 컴포즈 배포
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.HOST }}
+#           username: ${{ secrets.USERNAME }}
+#           key: ${{ secrets.SSH_PEM_KEY }}
+#           envs: ECR_REPO_URL,IMAGE_TAG,MYSQL_USER,MYSQL_PASSWORD,MYSQL_ROOT_PASSWORD
+#           script: |
+#             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REPO_URL
+#             cd $HOME/${{ github.repository_id }}/server
+#             docker compose -f quartz.compose.yml up -d
