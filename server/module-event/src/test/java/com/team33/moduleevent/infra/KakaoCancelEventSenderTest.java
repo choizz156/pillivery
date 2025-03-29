@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleexternalapi.infra.kakao.KakaoCancelClient;
 
@@ -16,9 +17,9 @@ class KakaoCancelEventSenderTest {
 	void send() {
 		//given
 		KakaoCancelClient kakaoCancelClient = mock(KakaoCancelClient.class);
-		doNothing().when(kakaoCancelClient).send(anyString(), anyString());
+		doNothing().when(kakaoCancelClient).send(anyMap(), anyString());
 
-		KakaoCancelEventSender kakaoCancelEventSender = new KakaoCancelEventSender(kakaoCancelClient);
+		KakaoCancelEventSender kakaoCancelEventSender = new KakaoCancelEventSender(kakaoCancelClient, new ObjectMapper());
 
 		ApiEvent apiEvent = ApiEvent.builder()
 			.parameters("parameters")
@@ -29,6 +30,6 @@ class KakaoCancelEventSenderTest {
 		kakaoCancelEventSender.send(apiEvent);
 
 		//then
-		verify(kakaoCancelClient, times(1)).send(anyString(), anyString());
+		verify(kakaoCancelClient, times(1)).send(anyMap(), anyString());
 	}
 }

@@ -1,33 +1,64 @@
 package com.team33.moduleevent.handler;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.ZonedDateTime;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataAccessException;
 
-import com.team33.modulecore.core.order.application.OrderItemService;
+import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
+import com.team33.modulecore.exception.DataSaveException;
 
 class PaymentDateUpdatedHandlerTest {
 
-	@DisplayName("다음 결제일을 저장할 수 있다.")
+	private SubscriptionOrderService subscriptionOrderService;
+	private PaymentDateUpdatedHandler paymentDateUpdatedHandler;
+
+	@BeforeEach
+	void setUp() {
+
+		subscriptionOrderService = mock(SubscriptionOrderService.class);
+		paymentDateUpdatedHandler = new PaymentDateUpdatedHandler(subscriptionOrderService);
+	}
+
+	@DisplayName("결제일 업데이트 이벤트가 성공적으로 처리된다")
 	@Test
-	void 결제일_변경() throws Exception {
-		//given
+	void test1() {
+		// given
+		ZonedDateTime paymentDay = ZonedDateTime.now().plusMonths(1);
+		long subscriptionOrderId = 1L;
+		PaymentDateUpdatedEvent event = new PaymentDateUpdatedEvent(subscriptionOrderId);
 
-		OrderItemService orderItemService = mock(OrderItemService.class);
-		PaymentDateUpdatedHandler paymentDateUpdatedHandler = new PaymentDateUpdatedHandler(orderItemService);
+		doNothing().when(subscriptionOrderService).updateNextPaymentDate(paymentDay, subscriptionOrderId);
 
-		PaymentDateUpdatedEvent apiEvent = new PaymentDateUpdatedEvent(1L);
+		// when
+		paymentDateUpdatedHandler.onEventSet(event);
 
-		//when
-		paymentDateUpdatedHandler.onEventSet(apiEvent);
+		// then
+		verify(subscriptionOrderService).updateNextPaymentDate(paymentDay, subscriptionOrderId);
+	}
 
-		//then
-		verify(orderItemService, times(1))
-			.updateNextPaymentDate(
-				apiEvent.getPaymentDay(),
-				1L
-			);
+	@DisplayName("데이터 접근 예외가 발생하면 DataSaveException으로 전환된다")
+	@Test
+	void test2() {
+		// given
+		ZonedDateTime paymentDay = ZonedDateTime.now().plusMonths(1);
+		long subscriptionOrderId = 1L;
+		PaymentDateUpdatedEvent event = new PaymentDateUpdatedEvent(subscriptionOrderId);
+
+		doThrow(new DataAccessException("DB 접근 오류") {
+		}).when(subscriptionOrderService)
+			.updateNextPaymentDate(paymentDay, subscriptionOrderId);
+
+		// when, then
+		assertThatThrownBy(() -> paymentDateUpdatedHandler.onEventSet(event))
+			.isInstanceOf(DataSaveException.class);
+
+		verify(subscriptionOrderService).updateNextPaymentDate(paymentDay, subscriptionOrderId);
 	}
 }

@@ -38,7 +38,7 @@ class EventRepositoryTest {
 		IntStream.range(0, 10).forEach(
 			i -> eventRepository.save(
 				ApiEvent.builder()
-					.type(EventType.SUBS_CANCELED)
+					.type(EventType.SUBSCRIPTION_CANCELED)
 					.createdAt(LocalDateTime.of(2020, 1, 1, i, 0, 0))
 					.status(EventStatus.READY)
 					.build()

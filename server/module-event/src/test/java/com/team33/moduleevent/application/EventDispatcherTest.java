@@ -5,102 +5,76 @@ import static org.mockito.Mockito.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.infra.KakaoCancelEventSender;
-import com.team33.moduleevent.infra.ScheduleRegisterEventSender;
 import com.team33.moduleexternalapi.config.RestTemplateErrorHandler;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 class EventDispatcherTest {
 
-	@DisplayName("카카오 api 이벤트를 보낼 수 있다.")
-	@Test
-	void 카카오_api_이벤트_전송() throws Exception {
-		//given
-		FailEventService failEventService = mock(FailEventService.class);
-		KakaoCancelEventSender kakaoCancelEventSender = mock(KakaoCancelEventSender.class);
+	private FailEventService failEventService;
+	private KakaoCancelEventSender kakaoCancelEventSender;
+	private EventDispatcher eventDispatcher;
+	private ApiEvent apiEvent;
 
-		doNothing().when(kakaoCancelEventSender).send(any(ApiEvent.class));
-		ApiEvent apiEvent = ApiEvent.builder()
+	@BeforeEach
+	void setUp() {
+		failEventService = mock(FailEventService.class);
+		kakaoCancelEventSender = mock(KakaoCancelEventSender.class);
+		eventDispatcher = new EventDispatcher(failEventService);
+		
+		apiEvent = ApiEvent.builder()
 			.status(EventStatus.READY)
 			.build();
+	}
 
-		EventDispatcher eventDispatcher = new EventDispatcher(failEventService);
+	@Test
+	@DisplayName("이벤트 전송 성공시 상태가 COMPLETE로 변경된다")
+	void test1() {
+		// given
+		doNothing().when(kakaoCancelEventSender).send(any(ApiEvent.class));
 
-		//when
+		// when
 		eventDispatcher.register(apiEvent, kakaoCancelEventSender);
 
-		//then
+		// then
 		verify(kakaoCancelEventSender, times(1)).send(apiEvent);
-		verify(failEventService, times(0)).saveFailEvent(any(ApiEvent.class), anyString());
-		assertThat(apiEvent.getStatus()).isEqualByComparingTo(EventStatus.COMPLETE);
+		verify(failEventService, never()).saveFailEvent(any(ApiEvent.class), anyString());
+		assertThat(apiEvent.getStatus()).isEqualTo(EventStatus.COMPLETE);
 	}
 
-	@DisplayName("스케쥴 등록 이벤트를 보낼 수 있다.")
 	@Test
-	void 스케쥴_등록_이벤트_전송() throws Exception {
-		//given
-		FailEventService failEventService = mock(FailEventService.class);
-		ScheduleRegisterEventSender scheduleRegisterEventSender = mock(ScheduleRegisterEventSender.class);
-
-		doNothing().when(scheduleRegisterEventSender).send(any(ApiEvent.class));
-
-		ApiEvent apiEvent = ApiEvent.builder()
-			.status(EventStatus.READY)
-			.build();
-
-		EventDispatcher eventDispatcher = new EventDispatcher(failEventService);
-
-		//when
-		eventDispatcher.register(apiEvent, scheduleRegisterEventSender);
-
-		//then
-		verify(scheduleRegisterEventSender, times(1)).send(apiEvent);
-		verify(failEventService, times(0)).saveFailEvent(any(ApiEvent.class), anyString());
-		assertThat(apiEvent.getStatus()).isEqualByComparingTo(EventStatus.COMPLETE);
-	}
-
-	@DisplayName("이벤트 전송이 두 번 실패했을 경우 이벤트 실패 저장소에 저장한다.")
-	@Test
-	void 이벤트_전송_실패1() throws Exception {
-		//given
-		FailEventService failEventService = mock(FailEventService.class);
-		KakaoCancelEventSender kakaoCancelEventSender = mock(KakaoCancelEventSender.class);
-
-		doThrow(new PaymentApiException("api error")).when(kakaoCancelEventSender).send(any(ApiEvent.class));
-
-		ApiEvent apiEvent = ApiEvent.builder()
-			.status(EventStatus.READY)
-			.build();
+	@DisplayName("이벤트 전송이 두 번 실패하면 상태가 FAILED로 변경되고 실패 이벤트로 저장된다")
+	void test2() {
+		// given
+		doThrow(new PaymentApiException("api error"))
+			.when(kakaoCancelEventSender)
+			.send(any(ApiEvent.class));
 
 		RestTemplateErrorHandler.ThreadLocalErrorMessage.set("api error");
 
-		EventDispatcher eventDispatcher = new EventDispatcher(failEventService);
-
-		//when
+		// when
 		eventDispatcher.register(apiEvent, kakaoCancelEventSender);
 
-		//then
+		// then
 		verify(kakaoCancelEventSender, times(2)).send(apiEvent);
 		verify(failEventService, times(1)).saveFailEvent(apiEvent, "api error");
-		assertThat(apiEvent.getStatus()).isEqualByComparingTo(EventStatus.FAILED);
+		assertThat(apiEvent.getStatus()).isEqualTo(EventStatus.FAILED);
 	}
 
-	@DisplayName("이벤트 전송이 한 번 실패했을 경우 재전송한다.")
 	@Test
-	void 이벤트_재전송() throws Exception {
-		//given
-		FailEventService failEventService = mock(FailEventService.class);
-		KakaoCancelEventSender kakaoCancelEventSender = mock(KakaoCancelEventSender.class);
-
-		AtomicInteger atomicInteger = new AtomicInteger(0);
+	@DisplayName("이벤트 전송이 한 번 실패하고 재시도 시 성공하면 상태가 COMPLETE로 변경된다")
+	void test3() {
+		// given
+		AtomicInteger attemptCount = new AtomicInteger(0);
 
 		doAnswer(invocation -> {
-			if (atomicInteger.getAndIncrement() == 0) {
+			if (attemptCount.getAndIncrement() == 0) {
 				throw new PaymentApiException("api error");
 			}
 			return null;
@@ -108,18 +82,12 @@ class EventDispatcherTest {
 			.when(kakaoCancelEventSender)
 			.send(any(ApiEvent.class));
 
-		ApiEvent apiEvent = ApiEvent.builder()
-			.status(EventStatus.READY)
-			.build();
-
-		EventDispatcher eventDispatcher = new EventDispatcher(failEventService);
-
-		//when
+		// when
 		eventDispatcher.register(apiEvent, kakaoCancelEventSender);
 
-		//then
+		// then
 		verify(kakaoCancelEventSender, times(2)).send(apiEvent);
-		verify(failEventService, times(0)).saveFailEvent(any(ApiEvent.class), anyString());
-		assertThat(apiEvent.getStatus()).isEqualByComparingTo(EventStatus.COMPLETE);
+		verify(failEventService, never()).saveFailEvent(any(ApiEvent.class), anyString());
+		assertThat(apiEvent.getStatus()).isEqualTo(EventStatus.COMPLETE);
 	}
 }
