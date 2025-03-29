@@ -43,7 +43,7 @@ public class OrderPaymentCodeService {
 			try {
 				subscriptionOrder.addSid(sid);
 			} catch (DataAccessException e) {
-				log.error("orderId = {} :: lost sid = {}", subscriptionOrder.getId(), sid);
+				log.error("subscriptionOrderId = {} :: lost sid = {}", subscriptionOrder.getId(), sid);
 				throw new DataSaveException(e.getMessage());
 			}
 		});

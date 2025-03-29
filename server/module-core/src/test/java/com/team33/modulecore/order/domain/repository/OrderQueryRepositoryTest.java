@@ -4,8 +4,6 @@ import static com.team33.modulecore.core.category.domain.CategoryName.*;
 import static java.util.Comparator.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,10 +25,10 @@ import org.springframework.data.domain.Page;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.item.domain.entity.Item;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
@@ -50,8 +48,90 @@ class OrderQueryRepositoryTest {
 	private OrderQueryRepository orderQueryRepository;
 	private User MOCK_USER;
 
+	private void persistOrder() {
+
+		MOCK_USER = getMockUser();
+		em.persist(MOCK_USER);
+
+		List<Item> mockItems = getMockItems();
+		mockItems.forEach(em::persist);
+
+		persistMockOrder(mockItems);
+	}
+
+	private User getMockUser() {
+
+		return FixtureMonkeyFactory.get().giveMeBuilder(User.class)
+			.set("id", null)
+			.sample();
+	}
+
+	private List<Item> getMockItems() {
+
+		var value = new AtomicInteger(0);
+		var value1 = new AtomicReference<>(1D);
+
+		var items = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
+			.set("id", null)
+			.setLazy("statistics.sales", () -> value.addAndGet(1))
+			.setLazy("information.price.discountRate", () -> value1.getAndSet(value1.get() + 1D))
+			.setLazy("information.price.realPrice", () -> value.intValue() * 1000)
+			.setLazy("information.productName", () -> "title" + value)
+			.set("itemCategory", Set.of(EYE))
+			.set("categories", null)
+			.sampleList(8);
+
+		var items2 = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
+			.set("id", null)
+			.set("statistics.sales", 0)
+			.set("information.price.discountRate", 0D)
+			.set("information.price.realPrice", 1)
+			.set("itemCategory", Set.of(BONE))
+			.set("categories", null)
+			.setLazy("information.productName", () -> "test" + value.addAndGet(1))
+			.sampleList(8);
+
+		items.addAll(items2);
+		return items;
+	}
+
+	private void persistMockOrder(List<Item> mockItems) {
+
+		OrderContext orderContext1 = OrderContext.builder()
+			.userId(1L)
+			.isOrderedCart(false)
+			.isSubscription(false)
+			.build();
+
+		mockItems.stream()
+			.takeWhile(item -> item.getId() <= 8)
+			.map(item -> OrderItem.create(item, 1)
+			)
+			.map(orderItem -> Order.create(List.of(orderItem), new OrderCommonInfo(), orderContext1))
+			.forEach(order -> {
+				order.changeOrderStatus(OrderStatus.COMPLETE);
+				em.persist(order);
+			});
+
+		OrderContext orderContext2 = OrderContext.builder()
+			.userId(1L)
+			.isOrderedCart(false)
+			.isSubscription(true)
+			.build();
+
+		mockItems.stream()
+			.dropWhile(item -> item.getId() <= 8)
+			.map(item -> OrderItem.create(item, 1))
+			.map(orderItem -> Order.create(List.of(orderItem), new OrderCommonInfo(), orderContext2))
+			.forEach(order -> {
+				order.changeOrderStatus(OrderStatus.SUBSCRIBE);
+				em.persist(order);
+			});
+	}
+
 	@BeforeAll
 	void beforeAll() {
+
 		emf = Persistence.createEntityManagerFactory("test");
 		em = emf.createEntityManager();
 		em.getTransaction().begin();
@@ -61,6 +141,7 @@ class OrderQueryRepositoryTest {
 
 	@AfterAll
 	void afterAll() {
+
 		em.getTransaction().rollback(); // 커넥션 반납용 롤백
 		em.close();
 		emf.close();
@@ -156,90 +237,5 @@ class OrderQueryRepositoryTest {
 
 		//then
 		assertThat(tid).isEqualTo("tid");
-	}
-
-	private void persistOrder() {
-		MOCK_USER = getMockUser();
-		em.persist(MOCK_USER);
-
-		List<Item> mockItems = getMockItems();
-		mockItems.forEach(em::persist);
-
-		persistMockOrder(mockItems);
-	}
-
-	private User getMockUser() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(User.class)
-			.set("id", null)
-			.sample();
-	}
-
-	private List<Item> getMockItems() {
-		var value = new AtomicInteger(0);
-		var value1 = new AtomicReference<>(1D);
-
-		var items = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
-			.set("id", null)
-			.setLazy("statistics.sales", () -> value.addAndGet(1))
-			.setLazy("information.price.discountRate", () -> value1.getAndSet(value1.get() + 1D))
-			.setLazy("information.price.realPrice", () -> value.intValue() * 1000)
-			.setLazy("information.productName", () -> "title" + value)
-			.set("itemCategory", Set.of(EYE))
-			.set("categories", null)
-			.sampleList(8);
-
-		var items2 = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
-			.set("id", null)
-			.set("statistics.sales", 0)
-			.set("information.price.discountRate", 0D)
-			.set("information.price.realPrice", 1)
-			.set("itemCategory", Set.of(BONE))
-			.set("categories", null)
-			.setLazy("information.productName", () -> "test" + value.addAndGet(1))
-			.sampleList(8);
-
-		items.addAll(items2);
-		return items;
-	}
-
-	private void persistMockOrder( List<Item> mockItems) {
-		OrderContext orderContext1 = OrderContext.builder()
-			.userId(1L)
-			.isOrderedCart(false)
-			.isSubscription(false)
-			.build();
-
-		mockItems.stream()
-			.takeWhile(item -> item.getId() <= 8)
-			.map(item -> OrderItem.create(
-					item,
-					SubscriptionInfo.of(false, 60),
-					1
-				)
-			)
-			.map(orderItem -> Order.create(List.of(orderItem), orderContext1))
-			.forEach(order -> {
-				order.changeOrderStatus(OrderStatus.COMPLETE);
-				em.persist(order);
-			});
-
-		OrderContext orderContext2 = OrderContext.builder()
-			.userId(1L)
-			.isOrderedCart(false)
-			.isSubscription(true)
-			.build();
-
-		mockItems.stream()
-			.dropWhile(item -> item.getId() <= 8)
-			.map(item -> OrderItem.create(
-				item,
-				SubscriptionInfo.of(true, 60),
-				1
-			))
-			.map(orderItem -> Order.create(List.of(orderItem), orderContext2))
-			.forEach(order -> {
-				order.changeOrderStatus(OrderStatus.SUBSCRIBE);
-				em.persist(order);
-			});
 	}
 }
