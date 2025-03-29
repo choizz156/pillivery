@@ -16,7 +16,7 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.Header;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiCancelResponse;
@@ -26,20 +26,26 @@ import com.team33.moduleexternalapi.infra.kakao.KakaoCancelClient;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoCancelClientTest {
 
-	private ClientAndServer mockServer;
-
+	private static final String CANCEL_URL = "http://localhost:9090";
 	private static final String HOST = "localhost";
 	private static final int PORT = 9090;
-	private static final String CANCEL_URL = "http://localhost:9090";
+	private final ObjectMapper objectMapper = new ObjectMapper();
+	private ClientAndServer mockServer;
 	private MockServerClient mockServerClient;
+	private WebClient webClient;
 
 	@BeforeAll
 	void beforeAll() {
+
 		mockServer = ClientAndServer.startClientAndServer(PORT);
+		webClient = WebClient.builder()
+			.baseUrl(CANCEL_URL)
+			.build();
 	}
 
 	@AfterAll
 	void afterAll() {
+
 		if (mockServerClient != null) {
 			mockServerClient.close();
 		}
@@ -53,7 +59,6 @@ class KakaoCancelClientTest {
 	@Test
 	void test() throws Exception {
 		// Given
-		ObjectMapper objectMapper = new ObjectMapper();
 
 		KakaoApiCancelResponse dto = KakaoApiCancelResponse.builder().build();
 		String response = objectMapper.writeValueAsString(dto);
@@ -77,15 +82,14 @@ class KakaoCancelClientTest {
 				.withBody(response)
 			);
 
-		Map<String, Object> parameters = getMap("tid");
-		String request = objectMapper.writeValueAsString(parameters);
+		Map<String, Object> parameters = getMap();
 
 		KakaoCancelClient kakaoCancelClient = new KakaoCancelClient(
-			new RestTemplateSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
+			new WebClientSender(objectMapper, webClient)
 		);
 
 		// Then
-		assertThatNoException().isThrownBy(() -> kakaoCancelClient.send(request, CANCEL_URL));
+		assertThatNoException().isThrownBy(() -> kakaoCancelClient.send(parameters, CANCEL_URL));
 	}
 
 	@DisplayName("환불 요청 오류 시 예외를 던진다.")
@@ -116,21 +120,22 @@ class KakaoCancelClientTest {
 				.withBody(response)
 			);
 
-		Map<String, Object> parameters = getMap("ti");
-		String request = objectMapper.writeValueAsString(parameters);
+		Map<String, Object> parameters = getMap();
+
 		KakaoCancelClient kakaoCancelClient = new KakaoCancelClient(
-			new RestTemplateSender(new ObjectMapper(), new TestRestTemplate().getRestTemplate())
+			new WebClientSender(objectMapper, webClient)
 		);
 
 		// when //Then
-		assertThatThrownBy(() -> kakaoCancelClient.send(request, CANCEL_URL))
+		assertThatThrownBy(() -> kakaoCancelClient.send(parameters, CANCEL_URL))
 			.isInstanceOf(PaymentApiException.class);
 	}
 
-	private Map<String, Object> getMap(String ti) {
+	private Map<String, Object> getMap() {
+
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 
-		parameters.put("tid", ti);
+		parameters.put("tid", "tid");
 		parameters.put("cid", "cid");
 		parameters.put("cancel_amount", 2200);
 		parameters.put("cancel_tax_free_amount", 0);

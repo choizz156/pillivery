@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
+import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
@@ -81,20 +82,26 @@ class KakaoSubsApproveServiceTest {
 
 		when(subscriptionApprove.approveSubscription(subscriptionOrder)).thenReturn(apiResponse);
 
-		ArgumentCaptor<PaymentDateUpdatedEvent> eventCaptor =
+		ArgumentCaptor<PaymentDateUpdatedEvent> paymentCaptor =
 			ArgumentCaptor.forClass(PaymentDateUpdatedEvent.class);
+
+		ArgumentCaptor<ItemSaleCountedEvent> itemEventCaptor =
+			ArgumentCaptor.forClass(ItemSaleCountedEvent.class);
 
 		// when
 		KakaoApproveResponse response = kakaoSubsApproveService.approveSubscribe(subscriptionOrder);
 
 		// then
 		verify(subscriptionApprove, times(1)).approveSubscription(subscriptionOrder);
-		verify(applicationEventPublisher, times(1)).publishEvent(eventCaptor.capture());
+		verify(applicationEventPublisher, times(1)).publishEvent(paymentCaptor.capture());
+		verify(applicationEventPublisher, times(1)).publishEvent(itemEventCaptor.capture());
 
-		PaymentDateUpdatedEvent capturedEvent = eventCaptor.getValue();
-		assertThat(capturedEvent.getSubscriptionOrderId()).isEqualTo(subscriptionOrderId);
+		PaymentDateUpdatedEvent paymentCaptorValue = paymentCaptor.getValue();
+		assertThat(paymentCaptorValue.getSubscriptionOrderId()).isEqualTo(subscriptionOrderId);
+
+		ItemSaleCountedEvent itemEventCaptorValue = itemEventCaptor.getValue();
+		assertThat(itemEventCaptorValue.getItemId()).isEqualTo(subscriptionOrderId);
 
 		assertThat(response).isNotNull();
 	}
-
 }
