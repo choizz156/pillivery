@@ -1,6 +1,7 @@
 package com.team33.modulecore.core.order.domain.entity;
 
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -125,5 +126,9 @@ public class SubscriptionOrder extends BaseEntity {
 
 	public String getSid() {
 		return this.orderCommonInfo.getSid();
+	}
+
+	public List<Long> getItemId() {
+		return Collections.singletonList(this.orderItem.getItem().getId());
 	}
 }

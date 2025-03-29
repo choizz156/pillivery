@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
+import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
@@ -41,6 +42,7 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 		KakaoApiApproveResponse response = subscriptionApprove.approveSubscription(subscriptionOrder);
 
 		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(subscriptionOrder.getId()));
+		applicationEventPublisher.publishEvent(new ItemSaleCountedEvent(subscriptionOrder.getItemId()));
 
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
 	}
