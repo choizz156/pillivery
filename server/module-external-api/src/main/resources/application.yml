@@ -1,1 +1,37 @@
-spring.application.name=module-external-api
+spring:
+  profiles:
+    active: circuit-breaker
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      paymentApiClient:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - com.team33.moduleexternalapi.exception.PaymentApiException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+
+  timelimiter:
+    instances:
+      paymentApiClient:
+        timeoutDuration: 5s
+        cancelRunningFuture: true
+
+retry:
+  instances:
+    paymentApiClient:
+      maxAttempts: 3
+      waitDuration: 1000ms
+      retryExceptions:
+        - java.io.IOException
+        - java.util.concurrent.TimeoutException
+      ignoreExceptions:
+        - com.team33.moduleexternalapi.exception.PaymentApiException

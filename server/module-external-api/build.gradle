@@ -5,4 +5,11 @@ dependencies {
     testImplementation 'org.mock-server:mockserver-junit-jupiter-no-dependencies:5.15.0'
 
     implementation 'io.netty:netty-all:4.1.84.Final'
+
+    // Resilience4j
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.0'
+    implementation 'io.github.resilience4j:resilience4j-reactor:1.7.0'
+    implementation 'io.github.resilience4j:resilience4j-circuitbreaker:1.7.0'
+    implementation 'io.github.resilience4j:resilience4j-timelimiter:1.7.0'
+    implementation 'io.github.resilience4j:resilience4j-retry:1.7.0'
 }
