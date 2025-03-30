@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.config;
+package com.team33.modulebatch.config;
 
 import java.io.BufferedReader;
 import java.io.IOException;

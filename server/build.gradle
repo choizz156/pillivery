@@ -93,7 +93,6 @@ project(':module-batch') {
 
     dependencies {
         implementation project(':module-core')
-        implementation project(':module-external-api')
         implementation project(':module-logging')
     }
 }

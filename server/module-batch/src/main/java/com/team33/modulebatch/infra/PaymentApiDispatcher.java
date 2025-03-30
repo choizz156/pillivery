@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.team33.modulebatch.step.SubscriptionOrderVO;
-import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 import lombok.RequiredArgsConstructor;
 

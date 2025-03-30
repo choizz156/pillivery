@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(
 	scanBasePackages = {
 		"com.team33.modulecore",
-		"com.team33.moduleexternalapi",
 		"com.team33.modulebatch"
 	}
 )

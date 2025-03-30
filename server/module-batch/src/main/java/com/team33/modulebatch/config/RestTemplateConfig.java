@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.config;
+package com.team33.modulebatch.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -8,8 +8,19 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import com.team33.moduleexternalapi.config.RestTemplateErrorHandler;
+
 @Configuration
 public class RestTemplateConfig {
+
+    @Bean
+    public RestTemplate restTemplate(HttpComponentsClientHttpRequestFactory factory) {
+        RestTemplate restTemplate = new RestTemplate(factory);
+        restTemplate.setErrorHandler(new RestTemplateErrorHandler());
+        restTemplate.setRequestFactory(new BufferingClientHttpRequestFactory(factory));
+
+        return restTemplate;
+    }
 
     @Bean
     HttpClient httpClient() {
@@ -27,14 +38,5 @@ public class RestTemplateConfig {
         factory.setHttpClient(httpClient);
 
         return factory;
-    }
-
-    @Bean
-    public RestTemplate restTemplate(HttpComponentsClientHttpRequestFactory factory) {
-        RestTemplate restTemplate = new RestTemplate(factory);
-        restTemplate.setErrorHandler(new RestTemplateErrorHandler());
-        restTemplate.setRequestFactory(new BufferingClientHttpRequestFactory(factory));
-
-        return restTemplate;
     }
 }

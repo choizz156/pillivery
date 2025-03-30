@@ -36,7 +36,7 @@ public class KakaoPayLookupClient implements PaymentClient<KakaoApiPayLookupResp
 
 	private CompletableFuture<KakaoApiPayLookupResponse> sendRequest(Map<String, Object> params, String url) {
 		try {
-			return webClientSender.sendToPost(
+			return webClientSender.sendToPostAsync(
 				params,
 				url,
 				KakaoHeader.HTTP_HEADERS.getHeaders(),
