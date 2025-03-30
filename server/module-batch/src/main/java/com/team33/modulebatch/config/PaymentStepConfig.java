@@ -1,6 +1,8 @@
 package com.team33.modulebatch.config;
 
+import java.net.ConnectException;
 import java.util.Date;
+import java.util.concurrent.TimeoutException;
 
 import javax.sql.DataSource;
 
@@ -18,23 +20,22 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.domain.ErrorItemRepository;
+import com.team33.modulebatch.exception.BatchInternalApiException;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.listener.PaymentStepExecutionListener;
-import com.team33.modulebatch.step.SubscriptionOrderVO;
 import com.team33.modulebatch.step.PaymentItemProcessor;
 import com.team33.modulebatch.step.PaymentItemReader;
 import com.team33.modulebatch.step.PaymentWriter;
-import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 @Configuration
 public class PaymentStepConfig {
 
-	private static final int CHUNK_SIZE = 20;
-	private static final int SKIP_LIMIT = 10;
-	private static final int RETRY_LIMIT = 3;
 	private static final long BACK_OFF_PERIOD = 3000L;
-
+	private static final int CHUNK_SIZE = 20;
+	private static final int RETRY_LIMIT = 3;
+	private static final int SKIP_LIMIT = 10;
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
@@ -48,7 +49,7 @@ public class PaymentStepConfig {
 	private ErrorItemRepository errorItemRepository;
 
 	@Bean
-	public Step paymentJobStep() throws Exception {
+	public Step paymentJobStep() {
 
 		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
 		backOffPolicy.setBackOffPeriod(BACK_OFF_PERIOD);
@@ -60,10 +61,11 @@ public class PaymentStepConfig {
 			.writer(itemWriter(paymentApiDispatcher))
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
-			.skip(PaymentApiException.class)
+			.skip(BatchInternalApiException.class)
 			.skip(DataAccessException.class)
 			.retryLimit(RETRY_LIMIT)
-			.retry(PaymentApiException.class)
+			.retry(TimeoutException.class)
+			.retry(ConnectException.class)
 			.backOffPolicy(backOffPolicy)
 			.listener(new ItemSkipListener(errorItemRepository))
 			.listener(new PaymentStepExecutionListener())
@@ -81,12 +83,14 @@ public class PaymentStepConfig {
 
 	@Bean
 	public ItemWriter<SubscriptionOrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher) {
+
 		return new PaymentWriter(paymentApiDispatcher);
 	}
 
 	@Bean
 	@StepScope
 	public ItemReader<SubscriptionOrderVO> itemReader(@Value("#{jobParameters['paymentDate']}") Date paymentDate) {
+
 		return new PaymentItemReader(paymentDate, dataSource);
 	}
 

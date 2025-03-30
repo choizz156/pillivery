@@ -8,7 +8,6 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import com.team33.moduleexternalapi.config.RestTemplateErrorHandler;
 
 @Configuration
 public class RestTemplateConfig {

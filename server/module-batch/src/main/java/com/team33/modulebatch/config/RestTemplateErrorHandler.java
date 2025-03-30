@@ -10,46 +10,52 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 
+import com.team33.modulebatch.exception.BatchInternalApiException;
+
 public class RestTemplateErrorHandler implements ResponseErrorHandler {
 
-    private final static Logger log = LoggerFactory.getLogger("fileLog");
+	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
-    @Override
-    public boolean hasError(final ClientHttpResponse response) throws IOException {
-        final HttpStatus statusCode = response.getStatusCode();
-        return !statusCode.is2xxSuccessful();
-    }
+	@Override
+	public boolean hasError(final ClientHttpResponse response) throws IOException {
 
-    @Override
-    public void handleError(final ClientHttpResponse response) throws IOException {
-        final String error = getErrorAsString(response);
-        log.error("======payment error=====");
-        log.error("Headers: {}", response.getHeaders());
-        log.error("Response Status : {}", response.getRawStatusCode());
-        log.error("Response body: {}", error);
-        log.error("================");
-        ThreadLocalErrorMessage.set(error);
-    }
+		final HttpStatus statusCode = response.getStatusCode();
+		return !statusCode.is2xxSuccessful();
+	}
 
-    private String getErrorAsString(final ClientHttpResponse response) throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody()))) {
-            return br.readLine();
-        }
-    }
+	@Override
+	public void handleError(final ClientHttpResponse response) throws IOException {
 
-    public static class ThreadLocalErrorMessage {
-        private static final ThreadLocal<String> errorMessage = new ThreadLocal<>();
+		if (response.getStatusCode().is4xxClientError()) {
+			logging(response);
+			throw new BatchInternalApiException(response.getStatusCode().getReasonPhrase());
+		}
 
-        public static String get() {
-            return errorMessage.get();
-        }
+		if (response.getStatusCode().is5xxServerError()) {
+			logging(response);
+			throw new BatchInternalApiException(response.getStatusCode().getReasonPhrase());
+		}
+	}
 
-        public static void set(String error) {
-            errorMessage.set(error);
-        }
+	private void logging(ClientHttpResponse response) throws IOException {
+		String body = getErrorAsString(response);
+		String logMessage = String.format(
+			"======payment error=====\nHeaders: %s\nResponse Status: %s\nResponse body: %s\n================",
+			response.getHeaders(), response.getRawStatusCode(), body
+		);
 
-        public static void clear(){
-            errorMessage.remove();
-        }
-    }
+		if (response.getStatusCode().is4xxClientError()) {
+			LOGGER.info(logMessage);
+		} else if (response.getStatusCode().is5xxServerError()) {
+			LOGGER.warn(logMessage);
+		}else{
+			LOGGER.info(logMessage);
+		}
+	}
+
+	private String getErrorAsString(final ClientHttpResponse response) throws IOException {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody()))) {
+			return br.readLine();
+		}
+	}
 }

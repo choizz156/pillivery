@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.moduleevent.domain.entity.ApiEvent;
-import com.team33.moduleexternalapi.config.RestTemplateErrorHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,8 +29,9 @@ public class EventDispatcher {
 				isSuccess = true;
 			} catch (RuntimeException e) {
 				retry++;
-				LOGGER.warn("retry : {}, parameters : {}", retry, e.getMessage());
-				handleFailure(apiEvent, retry);
+				String message = e.getMessage();
+				LOGGER.warn("retry : {}, parameters : {}", retry, message);
+				handleFailure(apiEvent, retry, message);
 			}
 		}
 	}
@@ -41,14 +41,11 @@ public class EventDispatcher {
 		apiEvent.changeStatusToComplete();
 	}
 
-	private void handleFailure(ApiEvent apiEvent, int retry) {
+	private void handleFailure(ApiEvent apiEvent, int retry, String message) {
 		if (retry == MAX_RETRIES) {
 			apiEvent.changeStatusToFail();
 
-			String reason = RestTemplateErrorHandler.ThreadLocalErrorMessage.get();
-			RestTemplateErrorHandler.ThreadLocalErrorMessage.clear();
-
-			failEventService.saveFailEvent(apiEvent, reason);
+			failEventService.saveFailEvent(apiEvent, message);
 		}
 	}
 
