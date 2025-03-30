@@ -21,17 +21,30 @@ resilience4j:
 
   timelimiter:
     instances:
-      paymentApiClient:
+      paymentLookUpClient:
         timeoutDuration: 5s
         cancelRunningFuture: true
 
-retry:
-  instances:
-    paymentApiClient:
-      maxAttempts: 3
-      waitDuration: 1000ms
-      retryExceptions:
-        - java.io.IOException
-        - java.util.concurrent.TimeoutException
-      ignoreExceptions:
-        - com.team33.moduleexternalapi.exception.PaymentApiException
+  retry:
+    instances:
+      paymentApiClient:
+        maxAttempts: 3
+        waitDuration: 1000ms
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+        ignoreExceptions:
+          - com.team33.moduleexternalapi.exception.PaymentApiException
+
+      paymentLookUpClient:
+        maxAttempts: 5
+        waitDuration: 1000ms
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+        ignoreExceptions:
+          - com.team33.moduleexternalapi.exception.PaymentApiException

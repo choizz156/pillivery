@@ -42,6 +42,6 @@ class SubscriptionRegisterEventSenderTest {
         subscriptionRegisterEventSender.send(apiEvent);
 
         // then
-        verify(webClientSender).sendToPost(eq(Map.of()), eq(url + parameters), isNull(), eq(String.class));
+        verify(webClientSender).sendToPostAsync(eq(Map.of()), eq(url + parameters), isNull(), eq(String.class));
     }
 }
