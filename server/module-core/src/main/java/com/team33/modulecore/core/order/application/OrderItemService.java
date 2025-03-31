@@ -31,25 +31,6 @@ public class OrderItemService {
 			.collect(Collectors.toList());
 	}
 
-	// public void changeItemPeriod(int newPeriod, long itemOrderId) {
-	// 	findOrderItem(itemOrderId).changePeriod(newPeriod);
-	// }
-
-	// public void updateNextPaymentDate(
-	// 	ZonedDateTime paymentDay,
-	// 	long orderId
-	// ) {
-	// 	OrderItem orderItem = orderQueryRepository.findSubscriptionOrderItemBy(orderId);
-	// 	orderItem.updateSubscriptionPaymentDay(paymentDay);
-	// }
-
-	public OrderItem findOrderItem(long itemOrderId) {
-		return orderQueryRepository.findSubscriptionOrderItemBy(itemOrderId);
-	}
-	// public void cancelSubscription(long itemOrderId) {
-	// 	findOrderItem(itemOrderId).cancelSubscription();
-	// }
-
 	private Item findItem(long id) {
 		return itemFindHelper.findItem(id);
 	}
@@ -63,6 +44,4 @@ public class OrderItemService {
 		);
 	}
 
-	//
-	//
 }

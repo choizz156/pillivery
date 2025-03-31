@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
-import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.infra.WebClientSender;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class KakaoApproveClient implements PaymentClient<KakaoApiApproveResponse
 		return approve(params, url);
 	}
 
-	private KakaoApiApproveResponse approve(Map<String, Object> params, String url) {
+	private KakaoApiApproveResponse approve(Map<String, Object> params, String url)  {
 
 		try {
 			return webClientSender.sendToPostSync(
@@ -37,11 +36,7 @@ public class KakaoApproveClient implements PaymentClient<KakaoApiApproveResponse
 				KakaoApiApproveResponse.class
 			);
 		} catch (JsonProcessingException e) {
-			LOGGER.info("카카오페이 승인 요청 중 오류: {}", e.getMessage());
-			throw new PaymentApiException("카카오페이 승인 요청 중 오류가 발생했습니다.");
-		} catch (Exception e) {
-			LOGGER.info("카카오페이 승인 처리 중 오류: {}", e.getMessage());
-			throw new PaymentApiException("카카오페이 승인 처리 중 오류가 발생했습니다.");
+			throw new RuntimeException(e);
 		}
 	}
 }

@@ -25,7 +25,7 @@ public class ItemSkipListener implements SkipListener<SubscriptionOrderVO, Subsc
 	@Override
 	public void onSkipInWrite(SubscriptionOrderVO subscriptionOrderVO, Throwable throwable) {
 		LOGGER.warn("item writer skip 결제요청 실패 ::: order IdempotencyKey = {}, exception = {}",
-		subscriptionOrderVO.getIdempotencyKey(),
+			subscriptionOrderVO.getIdempotencyKey(),
 			throwable.getMessage()
 		);
 

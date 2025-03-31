@@ -76,25 +76,27 @@ public class WebClientSender {
 			.block();
 	}
 
-	private void externalApiFallback(
+	private <T> T externalApiFallback(
 		Map<String, Object> params,
 		String uri,
 		HttpHeaders headers,
+		Class<T> responseClass,
 		Throwable throwable
 	) {
 
-		LOGGER.error("Circuit Breaker 작동 (동기 호출) - URI: {}, Params: {}, Headers: {}, 오류: {}",
+		LOGGER.error("Circuit Breaker 작동 - URI: {}, responseClass: {}, Params: {}, Headers: {}, message: {}",
 			uri,
+			responseClass,
 			params,
 			headers,
 			throwable.getMessage()
 		);
 
 		throw new RuntimeException("외부 API 동기 호출 실패 (Circuit Breaker 작동): " + throwable.getMessage(), throwable);
+
 	}
 
 	private void successLogging(String uri) {
-
 		LOGGER.info("외부 API 호출 성공: {}", uri);
 	}
 

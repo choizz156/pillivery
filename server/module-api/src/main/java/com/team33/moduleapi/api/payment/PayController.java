@@ -94,12 +94,12 @@ public class PayController {
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approveResponse));
 	}
 
-	@PostMapping("/approve/subscriptions/{orderId}")
+	@PostMapping("/approve/subscriptions/{subscriptionOrderId}")
 	public SingleResponseDto<KaKaoApproveResponseDto> subscription(
-		@PathVariable long orderId
+		@PathVariable long subscriptionOrderId
 	) {
 
-		KakaoApproveResponse kaKaoApiApproveResponse = approveFacade.approveSubscription(orderId);
+		KakaoApproveResponse kaKaoApiApproveResponse = approveFacade.approveSubscription(subscriptionOrderId);
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(kaKaoApiApproveResponse));
 	}

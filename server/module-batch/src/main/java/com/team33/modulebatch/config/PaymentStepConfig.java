@@ -20,7 +20,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.domain.ErrorItemRepository;
-import com.team33.modulebatch.exception.BatchInternalApiException;
+import com.team33.modulebatch.exception.BatchApiException;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.listener.PaymentStepExecutionListener;
@@ -61,7 +61,7 @@ public class PaymentStepConfig {
 			.writer(itemWriter(paymentApiDispatcher))
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
-			.skip(BatchInternalApiException.class)
+			.skip(BatchApiException.class)
 			.skip(DataAccessException.class)
 			.retryLimit(RETRY_LIMIT)
 			.retry(TimeoutException.class)

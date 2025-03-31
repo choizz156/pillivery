@@ -43,7 +43,7 @@ public class ApiErrorResponse {
             .build();
     }
 
-    public static ApiErrorResponse of(HttpStatus httpStatus, String msg) {//저장되어 있는 문구
+    public static ApiErrorResponse of(HttpStatus httpStatus, String msg) {
         return ApiErrorResponse.builder()
             .status(httpStatus.value())
             .message(msg)

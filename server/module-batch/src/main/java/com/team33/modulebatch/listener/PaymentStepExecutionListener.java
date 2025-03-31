@@ -17,9 +17,13 @@ public class PaymentStepExecutionListener implements StepExecutionListener {
 
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
-		if(stepExecution.getStatus() == BatchStatus.FAILED){
+		if (stepExecution.getStatus() == BatchStatus.FAILED) {
 			Throwable exception = stepExecution.getFailureExceptions().get(0);
-			LOGGER.error("Step 실패: {}", exception.getMessage());
+			LOGGER.error("Step 실패: {}, stepId: {}, jobId: {}",
+					exception.getMessage(),
+					stepExecution.getId(),
+					stepExecution.getJobExecution().getId()
+			);
 		}
 		return stepExecution.getExitStatus();
 	}
