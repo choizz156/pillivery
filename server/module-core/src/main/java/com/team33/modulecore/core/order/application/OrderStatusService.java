@@ -8,13 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
+import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
-import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
-import com.team33.modulecore.core.payment.domain.refund.RefundService;
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class OrderStatusService {
 	private final OrderFindHelper orderFindHelper;
 	private final SubscriptionOrderService subscriptionOrderService;
 	private final CancelSubscriptionService<SubscriptionOrder> kakaoSubsCancelService;
-	private final RefundService refundService;
 
 	public void processOneTimeStatus(Long orderId) {
 
@@ -49,8 +47,6 @@ public class OrderStatusService {
 		Order order = orderFindHelper.findOrder(orderId);
 
 		order.changeOrderStatus(OrderStatus.REFUND);
-
-		refundService.refund(orderId, refundContext);
 	}
 
 	public void processSubscriptionCancel(Long subscriptionOrderId) {

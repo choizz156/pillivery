@@ -20,6 +20,7 @@ import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
+import com.team33.moduleredis.domain.annotation.DistributedLock;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,18 +39,27 @@ public class SubscriptionRegisterHandler {
 	private final OrderFindHelper orderFindHelper;
 
 	@Async
+	@DistributedLock(key = "'subscription:registered:' + #event.orderId")
 	@EventListener
 	public void onEventSet(SubscriptionRegisteredEvent event) {
-
+		
 		Order order = orderFindHelper.findOrder(event.getOrderId());
 		List<SubscriptionOrder> subscriptionOrders = subscriptionOrderService.create(order);
-
-
+	
 		subscriptionOrders.forEach(subscriptionOrder -> {
-			ApiEvent apiEvent = toEvent(subscriptionOrder.getId());
-			saveEvent(subscriptionOrder.getId(), apiEvent);
-		});
 
+			Long subscriptionOrderId = subscriptionOrder.getId();
+			
+			if (eventRepository.findByTypeAndParameters(
+					EventType.SUBSCRIPTION_REGISTERED, 
+					String.valueOf(subscriptionOrderId)).isPresent()) {
+				LOGGER.info("중복 구독 등록 이벤트 감지: subscriptionOrderId={}", subscriptionOrderId);
+				return;
+			}
+			
+			ApiEvent apiEvent = toEvent(subscriptionOrderId);
+			saveEvent(subscriptionOrderId, apiEvent);
+		});
 	}
 
 	private ApiEvent toEvent(Long subscriptionOrderId) {

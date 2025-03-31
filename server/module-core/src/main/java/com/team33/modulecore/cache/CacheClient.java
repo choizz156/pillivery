@@ -28,9 +28,8 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class CacheClient {
 
-	private static final int MAIN_ITEM_TIMEOUT = 7;
 	private static final int CATEGORY_ITEM_TIMEOUT = 3;
-
+	private static final int MAIN_ITEM_TIMEOUT = 7;
 	private final RedissonClient redissonClient;
 
 	private final ItemQueryRepository itemQueryRepository;

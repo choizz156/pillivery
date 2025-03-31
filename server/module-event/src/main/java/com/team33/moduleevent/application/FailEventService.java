@@ -10,6 +10,7 @@ import com.team33.modulecore.exception.DataSaveException;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.entity.FailEvent;
 import com.team33.moduleevent.domain.repository.FailEventRepository;
+import com.team33.moduleredis.domain.annotation.DistributedLock;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +24,9 @@ public class FailEventService {
 	private final FailEventRepository failEventRepository;
 
 	@Async
+	@DistributedLock(key = "'event:saveFailEvent'")
 	public void saveFailEvent(ApiEvent apiEvent, String reason) {
+
 		log.warn("eventId : {}, type : {}, reason : {}", apiEvent.getId(), apiEvent.getType(), reason);
 
 		FailEvent failEvent = FailEvent.builder()

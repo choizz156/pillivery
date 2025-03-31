@@ -12,6 +12,7 @@ import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.api.payment.dto.RefundDto;
 import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderStatusService;
+import com.team33.modulecore.core.payment.domain.refund.RefundService;
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class RefundController {
 
 	private final PaymentMapper paymentMapper;
+	private final RefundService refundService;
 	private final OrderStatusService orderStatusService;
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -32,6 +34,7 @@ public class RefundController {
 	) {
 
 		RefundContext refundContext = paymentMapper.toRefundContext(refundDto);
+		refundService.refund(orderId, refundContext);
 		orderStatusService.processCancel(orderId , refundContext);
 
 		return new SingleResponseDto<>("complete");

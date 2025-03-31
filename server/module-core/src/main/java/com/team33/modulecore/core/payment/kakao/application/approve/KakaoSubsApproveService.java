@@ -3,8 +3,8 @@ package com.team33.modulecore.core.payment.kakao.application.approve;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
-import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;

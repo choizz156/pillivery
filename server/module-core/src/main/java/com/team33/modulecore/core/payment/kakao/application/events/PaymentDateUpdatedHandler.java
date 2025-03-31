@@ -1,4 +1,4 @@
-package com.team33.moduleevent.handler;
+package com.team33.modulecore.core.payment.kakao.application.events;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.order.application.SubscriptionOrderService;
-import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 import com.team33.modulecore.exception.DataSaveException;
+import com.team33.moduleredis.domain.annotation.DistributedLock;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,12 +22,14 @@ public class PaymentDateUpdatedHandler {
 	private final SubscriptionOrderService subscriptionOrderService;
 
 	@Async
+	@DistributedLock(key = "'payment:date:updated:' + #apiEvent.subscriptionOrderId")
 	@EventListener
 	public void onEventSet(PaymentDateUpdatedEvent apiEvent) {
 		updatePaymentDate(apiEvent);
 	}
 
 	private void updatePaymentDate(PaymentDateUpdatedEvent apiEvent) {
+
 		try {
 			subscriptionOrderService.updateNextPaymentDate(apiEvent.getPaymentDay(), apiEvent.getSubscriptionOrderId());
 		} catch (DataAccessException e) {

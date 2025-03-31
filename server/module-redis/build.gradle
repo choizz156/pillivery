@@ -1,0 +1,11 @@
+dependencies {
+    //redis
+    implementation 'org.redisson:redisson-spring-boot-starter:3.22.0'
+    implementation 'com.github.codemonstur:embedded-redis:1.4.3'
+
+    testImplementation 'org.mockito:mockito-core'
+}
+
+test {
+    useJUnitPlatform()
+} 

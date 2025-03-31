@@ -12,6 +12,7 @@ import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
+import com.team33.moduleredis.domain.annotation.DistributedLock;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,16 +38,19 @@ public class EventApiForwarder {
 		);
 	}
 
-	@Transactional
+	
 	@Scheduled(cron = "0 0 * * * *")
 	public void fetchAndForwardEvents() {
-
-		List<ApiEvent> apiEvents = eventsRepository
-			.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
-
+		List<ApiEvent> apiEvents = fetchReadyEvents();
+		
 		if (!apiEvents.isEmpty()) {
 			apiEvents.forEach(this::registerEventWithDispatcher);
 		}
+	}
+
+	@DistributedLock(key = "'event:fetchReadyEvents'")
+	public List<ApiEvent> fetchReadyEvents() {
+		return eventsRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
 	}
 
 	private void registerEventWithDispatcher(ApiEvent apiEvent) {

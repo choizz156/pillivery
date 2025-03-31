@@ -48,6 +48,7 @@ public class SubscriptionOrderService {
 		long subscriptionOrderId
 	) {
 		SubscriptionOrder subscriptionOrder = findById(subscriptionOrderId);
+
 		subscriptionOrder.updateSubscriptionPaymentDay(paymentDay);
 	}
 
