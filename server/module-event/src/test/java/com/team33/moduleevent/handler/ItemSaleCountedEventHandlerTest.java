@@ -8,9 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulecore.core.item.application.ItemSaleCountEventHandler;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
-import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
+import com.team33.modulecore.core.item.event.ItemSaleCountEventHandler;
+import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
 
 class ItemSaleCountedEventHandlerTest {
 

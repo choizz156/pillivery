@@ -17,6 +17,7 @@ import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.common.UserFindHelper;
 import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
 import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.order.application.OrderSubscriptionService;
@@ -28,7 +29,6 @@ import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
-import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.core.payment.domain.refund.RefundService;
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 import com.team33.modulecore.core.user.domain.Address;
@@ -40,59 +40,6 @@ class OrderServiceTest {
 
 	private User user;
 	private OrderCommandRepository orderCommandRepository;
-
-	private Item getMockItem() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
-			.set("id", 1L)
-			.set("statistics.sales", 1)
-			.set("information.price.discountRate", 3D)
-			.set("information.price.realPrice", 3000)
-			.set("information.productName", "mockItem")
-			.sample();
-	}
-
-	private User getMockUser() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(User.class)
-			.set("id", 1L)
-			.set("cartId", null)
-			.sample();
-	}
-
-	private Order getNoCartOrder() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-			.set("isOrderedAtCart", false)
-			.set("isSubscription", false)
-			.setNull("paymentCode.sid")
-			.sample();
-	}
-
-	private Order getCartOrder() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-			.set("isOrderedAtCart", true)
-			.set("isSubscription", true)
-			.setNull("paymentCode.sid")
-			.sample();
-	}
-
-	private Order getMockOrderWithOrderItem() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-			.set("id", 1L)
-			.set("orderItems", getMockOrderItems())
-			.set("totalQuantity", 9)
-			.set("orderPrice", new Price(getMockOrderItems()))
-			.set("user", user)
-			.set("paymentCode.sid", "sid")
-			.sample();
-	}
-
-	private List<OrderItem> getMockOrderItems() {
-		return FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
-			.set("item", getMockItem())
-			.set("quantity", 3)
-			.set("item.information.price.realPrice", 1000)
-			.set("item.information.price.discountPrice", 500)
-			.sampleList(3);
-	}
 
 	@BeforeAll
 	void beforeAll() {
@@ -246,5 +193,58 @@ class OrderServiceTest {
 		assertThat(order.getTotalQuantity()).isEqualTo(8);
 		assertThat(order.getTotalPrice()).isEqualTo(8000);
 		assertThat(order.getPrice().getTotalDiscountPrice()).isEqualTo(4000);
+	}
+
+	private Item getMockItem() {
+		return FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
+			.set("id", 1L)
+			.set("statistics.sales", 1)
+			.set("information.price.discountRate", 3D)
+			.set("information.price.realPrice", 3000)
+			.set("information.productName", "mockItem")
+			.sample();
+	}
+
+	private User getMockUser() {
+		return FixtureMonkeyFactory.get().giveMeBuilder(User.class)
+			.set("id", 1L)
+			.set("cartId", null)
+			.sample();
+	}
+
+	private Order getNoCartOrder() {
+		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("isOrderedAtCart", false)
+			.set("isSubscription", false)
+			.setNull("paymentCode.sid")
+			.sample();
+	}
+
+	private Order getCartOrder() {
+		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("isOrderedAtCart", true)
+			.set("isSubscription", true)
+			.setNull("paymentCode.sid")
+			.sample();
+	}
+
+	private Order getMockOrderWithOrderItem() {
+		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.set("id", 1L)
+			.set("orderItems", getMockOrderItems())
+			.set("totalQuantity", 9)
+			.set("orderPrice", new Price(getMockOrderItems()))
+			.set("user", user)
+			.set("paymentCode.sid", "sid")
+			.sample();
+	}
+
+	private List<OrderItem> getMockOrderItems() {
+		return FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
+			.set("item", getMockItem())
+			.set("quantity", 3)
+			.set("item.information.price.realPrice", 1000)
+			.set("item.information.price.discountPrice", 500)
+			.sampleList(3);
 	}
 }

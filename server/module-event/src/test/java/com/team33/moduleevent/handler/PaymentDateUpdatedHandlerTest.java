@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 
 import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedHandler;
 import com.team33.modulecore.exception.DataSaveException;
 
 class PaymentDateUpdatedHandlerTest {

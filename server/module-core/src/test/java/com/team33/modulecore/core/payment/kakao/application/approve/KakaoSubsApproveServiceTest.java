@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 
+import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
-import com.team33.modulecore.core.order.events.ItemSaleCountedEvent;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
