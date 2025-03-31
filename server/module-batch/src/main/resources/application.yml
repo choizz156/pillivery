@@ -88,3 +88,42 @@ spring:
 
     job-store-type: memory
 
+---
+
+spring:
+  profiles:
+    active: circuit-breaker-batch
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      internalPaymentApiClient:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - com.team33.moduleexternalapi.exception.PaymentApiException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - java.net.ConnectException
+
+  retry:
+    instances:
+      internalPaymentApiClient:
+        maxAttempts: 3
+        waitDuration: 1000ms
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - java.net.ConnectException
+        ignoreExceptions:
+          - com.team33.moduleexternalapi.exception.PaymentApiException
+
+    
