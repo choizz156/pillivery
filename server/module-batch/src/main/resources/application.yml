@@ -111,6 +111,7 @@ resilience4j:
           - java.io.IOException
           - java.util.concurrent.TimeoutException
           - java.net.ConnectException
+          - org.springframework.web.client.HttpServerErrorException
 
   retry:
     instances:

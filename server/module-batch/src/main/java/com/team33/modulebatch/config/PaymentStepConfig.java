@@ -1,8 +1,8 @@
 package com.team33.modulebatch.config;
 
-import java.net.ConnectException;
+import java.util.Collections;
 import java.util.Date;
-import java.util.concurrent.TimeoutException;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -12,12 +12,17 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.Order;
+import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.web.client.HttpServerErrorException;
 
 import com.team33.modulebatch.domain.ErrorItemRepository;
 import com.team33.modulebatch.exception.BatchApiException;
@@ -25,9 +30,9 @@ import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.listener.PaymentStepExecutionListener;
 import com.team33.modulebatch.step.PaymentItemProcessor;
-import com.team33.modulebatch.step.PaymentItemReader;
 import com.team33.modulebatch.step.PaymentWriter;
 import com.team33.modulebatch.step.SubscriptionOrderVO;
+import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 
 @Configuration
 public class PaymentStepConfig {
@@ -48,8 +53,11 @@ public class PaymentStepConfig {
 	@Autowired
 	private ErrorItemRepository errorItemRepository;
 
+	@Autowired
+	private SubscriptionOrderService subscriptionOrderService;
+
 	@Bean
-	public Step paymentJobStep() {
+	public Step paymentJobStep() throws Exception {
 
 		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
 		backOffPolicy.setBackOffPeriod(BACK_OFF_PERIOD);
@@ -58,14 +66,13 @@ public class PaymentStepConfig {
 			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(itemReader(null))
 			.processor(itemProcessor(null))
-			.writer(itemWriter(paymentApiDispatcher))
+			.writer(itemWriter(paymentApiDispatcher, subscriptionOrderService))
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
 			.skip(BatchApiException.class)
 			.skip(DataAccessException.class)
 			.retryLimit(RETRY_LIMIT)
-			.retry(TimeoutException.class)
-			.retry(ConnectException.class)
+			.retry(HttpServerErrorException.class)
 			.backOffPolicy(backOffPolicy)
 			.listener(new ItemSkipListener(errorItemRepository))
 			.listener(new PaymentStepExecutionListener())
@@ -82,16 +89,37 @@ public class PaymentStepConfig {
 	}
 
 	@Bean
-	public ItemWriter<SubscriptionOrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher) {
+	public ItemWriter<SubscriptionOrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher, SubscriptionOrderService subscriptionOrderService) {
 
-		return new PaymentWriter(paymentApiDispatcher);
+		return new PaymentWriter(paymentApiDispatcher, subscriptionOrderService);
 	}
 
 	@Bean
 	@StepScope
-	public ItemReader<SubscriptionOrderVO> itemReader(@Value("#{jobParameters['paymentDate']}") Date paymentDate) {
+	public ItemReader<SubscriptionOrderVO> itemReader(@Value("#{jobParameters['paymentDate']}") Date paymentDate)
+		throws Exception {
 
-		return new PaymentItemReader(paymentDate, dataSource);
+		JdbcPagingItemReader<SubscriptionOrderVO> reader = new JdbcPagingItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setPageSize(CHUNK_SIZE);
+		reader.setRowMapper(new BeanPropertyRowMapper<>(SubscriptionOrderVO.class));
+
+		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
+
+		queryProvider.setSelectClause(
+			"subscription_order_id as subscriptionOrderId, subscription as subscription, next_payment_date as nextPaymentDate"
+		);
+		queryProvider.setFromClause("from subscription_order so");
+		queryProvider.setWhereClause("where so.subscription = true and so.next_payment_date = :paymentDate");
+
+		queryProvider.setSortKeys(Map.of("order_id", Order.ASCENDING));
+
+		reader.setParameterValues(Collections.singletonMap("paymentDate", paymentDate));
+		reader.setQueryProvider(queryProvider);
+		reader.afterPropertiesSet();
+
+		return reader;
 	}
 
 }

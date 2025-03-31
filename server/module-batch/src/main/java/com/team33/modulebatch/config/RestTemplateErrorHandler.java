@@ -33,6 +33,7 @@ public class RestTemplateErrorHandler implements ResponseErrorHandler {
 
 	@Override
 	public void handleError(final ClientHttpResponse response) throws IOException {
+
 		String responseBody = new BufferedReader(
 				new InputStreamReader(response.getBody(), StandardCharsets.UTF_8))
 				.lines()

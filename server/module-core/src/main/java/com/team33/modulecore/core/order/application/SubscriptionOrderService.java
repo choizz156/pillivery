@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
@@ -50,8 +51,12 @@ public class SubscriptionOrderService {
 		subscriptionOrder.updateSubscriptionPaymentDay(paymentDay);
 	}
 
-	public void cancelSubscription(long itemOrderId) {
-		findById(itemOrderId).cancelSubscription();
+	public void cancelSubscription(long subscriptionOrderId) {
+		findById(subscriptionOrderId).cancelSubscription();
+	}
+
+	public void updateOrderStatus(long subscriptionOrderId) {
+		findById(subscriptionOrderId).changeOrderStatus(OrderStatus.SUBSCRIBE_PAYMENT_FAIL);
 	}
 
 	private SubscriptionOrder getSubscriptionOrderToPriceZero(Order order, OrderItem orderItem) {

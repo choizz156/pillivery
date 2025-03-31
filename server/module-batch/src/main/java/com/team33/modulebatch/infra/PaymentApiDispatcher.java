@@ -27,6 +27,7 @@ public class PaymentApiDispatcher {
 		.build();
 
 	public void dispatch(List<? extends SubscriptionOrderVO> list) {
+
 		List<? extends SubscriptionOrderVO> orderList = checkDuplicationKeyInCache(list);
 
 		orderList.forEach(order -> {
@@ -36,15 +37,17 @@ public class PaymentApiDispatcher {
 	}
 
 	private List<? extends SubscriptionOrderVO> checkDuplicationKeyInCache(List<? extends SubscriptionOrderVO> list) {
+
 		return list.stream()
 			.filter(order -> idempotencyCache.getIfPresent(order.getIdempotencyKey()) == null)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	private void send(long subscriptionOrderId) {
+
 		restTemplateSender.sendToPost(
+			String.valueOf(subscriptionOrderId),
 			URL + subscriptionOrderId,
-			null,
 			null,
 			String.class
 		);
