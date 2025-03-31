@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class ItemSaleCountEventHandler {
+public class ItemSaleCountedEventHandler {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
 

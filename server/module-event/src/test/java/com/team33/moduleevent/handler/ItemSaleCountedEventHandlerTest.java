@@ -9,19 +9,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
-import com.team33.modulecore.core.item.event.ItemSaleCountEventHandler;
 import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
+import com.team33.modulecore.core.item.event.ItemSaleCountedEventHandler;
 
 class ItemSaleCountedEventHandlerTest {
 
 	private ItemCommandRepository itemCommandRepository;
-	private ItemSaleCountEventHandler itemSaleCountEventHandler;
+	private ItemSaleCountedEventHandler itemSaleCountedEventHandler;
 
 	@BeforeEach
 	void setUp() {
 
 		itemCommandRepository = mock(ItemCommandRepository.class);
-		itemSaleCountEventHandler = new ItemSaleCountEventHandler(itemCommandRepository);
+		itemSaleCountedEventHandler = new ItemSaleCountedEventHandler(itemCommandRepository);
 	}
 
 	@DisplayName("아이템 판매 수량 이벤트 발생 시 각 아이템의 판매 수량이 증가한다")
@@ -32,7 +32,7 @@ class ItemSaleCountedEventHandlerTest {
 		ItemSaleCountedEvent event = new ItemSaleCountedEvent(itemIds);
 
 		// when
-		itemSaleCountEventHandler.onItemSaleCounted(event);
+		itemSaleCountedEventHandler.onItemSaleCounted(event);
 
 		// then
 		verify(itemCommandRepository).incrementSales(1L);
@@ -48,7 +48,7 @@ class ItemSaleCountedEventHandlerTest {
 		ItemSaleCountedEvent event = new ItemSaleCountedEvent(emptyItemIds);
 
 		// when
-		itemSaleCountEventHandler.onItemSaleCounted(event);
+		itemSaleCountedEventHandler.onItemSaleCounted(event);
 
 		// then
 		verifyNoInteractions(itemCommandRepository);
@@ -62,7 +62,7 @@ class ItemSaleCountedEventHandlerTest {
 		ItemSaleCountedEvent event = new ItemSaleCountedEvent(duplicateItemIds);
 
 		// when
-		itemSaleCountEventHandler.onItemSaleCounted(event);
+		itemSaleCountedEventHandler.onItemSaleCounted(event);
 
 		// then
 		verify(itemCommandRepository, times(2)).incrementSales(1L);
