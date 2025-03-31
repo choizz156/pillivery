@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
@@ -30,6 +29,7 @@ public class EventApiForwarder {
 		EventSender kakaoCancelEventSender,
 		EventSender subscriptionRegisterEventSender
 	) {
+
 		this.eventsRepository = eventsRepository;
 		this.eventDispatcher = eventDispatcher;
 		this.eventTypeEventSenderMap = initializeEventSenders(
@@ -38,11 +38,11 @@ public class EventApiForwarder {
 		);
 	}
 
-	
 	@Scheduled(cron = "0 0 * * * *")
 	public void fetchAndForwardEvents() {
+
 		List<ApiEvent> apiEvents = fetchReadyEvents();
-		
+
 		if (!apiEvents.isEmpty()) {
 			apiEvents.forEach(this::registerEventWithDispatcher);
 		}
@@ -50,12 +50,15 @@ public class EventApiForwarder {
 
 	@DistributedLock(key = "'event:fetchReadyEvents'")
 	public List<ApiEvent> fetchReadyEvents() {
+
 		return eventsRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
 	}
 
 	private void registerEventWithDispatcher(ApiEvent apiEvent) {
+
 		EventType type = apiEvent.getType();
-		EventSender eventSender = eventTypeEventSenderMap.getOrDefault(type, e -> {});
+		EventSender eventSender = eventTypeEventSenderMap.getOrDefault(type, e -> {
+		});
 		eventDispatcher.register(apiEvent, eventSender);
 	}
 
@@ -63,6 +66,7 @@ public class EventApiForwarder {
 		EventSender kakaoCancelEventSender,
 		EventSender subscriptionRegisterEventSender
 	) {
+
 		final Map<EventType, EventSender> eventTypeEventSenderMap = new EnumMap<>(EventType.class);
 
 		eventTypeEventSenderMap.put(EventType.KAKAO_REFUNDED, kakaoCancelEventSender);
