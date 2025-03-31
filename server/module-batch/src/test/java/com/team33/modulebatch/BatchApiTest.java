@@ -15,8 +15,8 @@ import org.springframework.test.context.ActiveProfiles;
 import com.team33.modulebatch.config.PaymentJobConfig;
 import com.team33.modulebatch.config.PaymentStepConfig;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
+import com.team33.modulebatch.infra.RestTemplateSender;
 import com.team33.modulecore.config.redis.EmbededRedisConfig;
-import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 import io.restassured.RestAssured;
 
@@ -32,20 +32,16 @@ import io.restassured.RestAssured;
 @ActiveProfiles("test")
 public abstract class BatchApiTest {
 
-	@LocalServerPort
-	private int port;
-
 	@Autowired
 	protected StepBuilderFactory stepBuilderFactory;
-
 	@Autowired
 	protected JobRepository jobRepository;
-
 	@Autowired
 	protected PaymentApiDispatcher paymentApiDispatcher;
-
 	@MockBean
 	protected RestTemplateSender restTemplateSender;
+	@LocalServerPort
+	private int port;
 
 	@BeforeEach
 	void beforeEach() throws Exception {

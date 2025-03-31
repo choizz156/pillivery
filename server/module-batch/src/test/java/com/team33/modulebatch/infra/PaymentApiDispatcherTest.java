@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.team33.modulebatch.step.SubscriptionOrderVO;
-import com.team33.moduleexternalapi.infra.RestTemplateSender;
 
 class PaymentApiDispatcherTest {
 
@@ -53,6 +52,7 @@ class PaymentApiDispatcherTest {
 	@DisplayName("list의 요소의 개수가 여러 개일 경우 그 수 만큼 요청을 보낸다.")
 	@Test
 	void testDispatch_WhenListHasMultipleOrders_ExecutesSendForEachOrder() {
+
 		RestTemplateSender mockRestTemplateSender = mock(RestTemplateSender.class);
 		PaymentApiDispatcher paymentApiDispatcher = new PaymentApiDispatcher(mockRestTemplateSender);
 

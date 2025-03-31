@@ -3,19 +3,14 @@ package com.team33.modulecore.order.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.common.ItemFindHelper;
 import com.team33.modulecore.core.order.application.OrderItemService;
-import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
-import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
 class OrderItemServiceTest {
@@ -58,73 +53,4 @@ class OrderItemServiceTest {
 		verify(itemFindHelper, times(2)).findItem(anyLong());
 
 	}
-
-	//TODO: subscription order test에 적용
-	// @DisplayName("다음 결제일을 업데이트 할 수 있다.")
-	// @Test
-	// void 다음_결제일_업데이트() throws Exception {
-	// 	//given
-	// 	OrderItem orderItem = FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
-	// 		.set("id", 1L)
-	// 		.set("subscriptionInfo", SubscriptionInfo.of(true, 30))
-	// 		.sample();
-	//
-	// 	OrderQueryRepository orderQueryRepository = mock(OrderQueryRepository.class);
-	// 	when(orderQueryRepository.findSubscriptionOrderItemBy(anyLong())).thenReturn(orderItem);
-	//
-	// 	OrderItemService orderItemService = new OrderItemService(null, orderQueryRepository);
-	//
-	// 	ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-	//
-	// 	//when
-	// 	orderItemService.updateNextPaymentDate(now, orderItem.getId());
-	//
-	// 	//then
-	// 	assertThat(orderItem.getSubscriptionInfo().getNextPaymentDay()).isEqualTo(now.plusDays(30));
-	// }
-	//
-    // @DisplayName("아이템 구독 기간을 변경할 수 있다.")
-    // @Test
-    // void changeItemPeriodTest() throws Exception {
-    //     //given
-    //     OrderItem orderItem = FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
-    //         .set("id", 1L)
-    //         .set("subscriptionInfo", SubscriptionInfo.of(true, 30))
-    //         .sample();
-	//
-    //     OrderQueryRepository orderQueryRepository = mock(OrderQueryRepository.class);
-    //     when(orderQueryRepository.findSubscriptionOrderItemBy(anyLong())).thenReturn(orderItem);
-	//
-    //     OrderItemService orderItemService = new OrderItemService(null, orderQueryRepository);
-	//
-    //     int newPeriod = 60;
-	//
-    //     //when
-    //     orderItemService.changeItemPeriod(newPeriod, orderItem.getId());
-	//
-    //     //then
-    //     assertThat(orderItem.getSubscriptionInfo().getPeriod()).isEqualTo(newPeriod);
-    // }
-	//
-    // @DisplayName("구독을 취소할 수 있다.")
-    // @Test
-    // void cancelSubscriptionTest() throws Exception {
-    //     //given
-    //     OrderItem orderItem = FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
-    //         .set("id", 1L)
-    //         .set("subscriptionInfo", SubscriptionInfo.of(true, 30))
-    //         .sample();
-	//
-    //     OrderQueryRepository orderQueryRepository = mock(OrderQueryRepository.class);
-    //     when(orderQueryRepository.findSubscriptionOrderItemBy(anyLong())).thenReturn(orderItem);
-	//
-    //     OrderItemService orderItemService = new OrderItemService(null, orderQueryRepository);
-	//
-    //     //when
-    //     orderItemService.cancelSubscription( orderItem.getId());
-	//
-    //     //then
-    //     assertThat(orderItem.getSubscriptionInfo().isSubscription()).isFalse();
-	// 	assertThat(orderItem.getSubscriptionInfo().getNextPaymentDay()).isNull();
-    // }
 }

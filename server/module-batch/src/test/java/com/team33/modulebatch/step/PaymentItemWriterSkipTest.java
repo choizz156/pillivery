@@ -3,7 +3,6 @@ package com.team33.modulebatch.step;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,15 +25,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
 
 import com.team33.modulebatch.BatchApiTest;
+import com.team33.modulebatch.exception.BatchApiException;
 import com.team33.modulebatch.listener.ItemSkipListener;
-import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 class PaymentItemWriterSkipTest extends BatchApiTest {
 
 	private static final int CHUNK_SIZE = 1;
-	private static final int SKIP_LIMIT = 1;
 	private static final LocalDate NOW = LocalDate.now();
-
+	private static final int SKIP_LIMIT = 1;
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
@@ -49,6 +47,7 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 
 	@BeforeEach
 	void setUpEach() {
+
 		orders = List.of(
 			new SubscriptionOrderVO(1L, true, NOW),
 			new SubscriptionOrderVO(2L, true, NOW),
@@ -77,7 +76,7 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 		//then
 		verify(itemSkipListener).onSkipInWrite(
 			argThat(item -> (item.getSubscriptionOrderId().equals(2L))),
-			any(PaymentApiException.class)
+			any(BatchApiException.class)
 		);
 
 		assertThat(jobExecution.getStepExecutions().iterator().next().getSkipCount()).isEqualTo(1);
@@ -110,12 +109,12 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 		//then
 		verify(itemSkipListener, times(1)).onSkipInWrite(
 			argThat(item -> item.getSubscriptionOrderId() == 2L),
-			any(PaymentApiException.class)
+			any(BatchApiException.class)
 		);
 
 		verify(itemSkipListener, never()).onSkipInWrite(
 			argThat(item -> item.getSubscriptionOrderId() == 3L),
-			any(PaymentApiException.class)
+			any(BatchApiException.class)
 		);
 
 		assertThat(exception).isInstanceOf(SkipLimitExceededException.class);
@@ -125,25 +124,27 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 	}
 
 	private void testStep() {
+
 		step = stepBuilderFactory.get("paymentJobStep")
 			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(testItemReader)
 			.writer(testItemWriter)
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
-			.skip(PaymentApiException.class)
+			.skip(BatchApiException.class)
 			.skip(DataAccessException.class)
 			.listener(itemSkipListener)
 			.build();
 	}
 
 	private void setUpData(List<SubscriptionOrderVO> orders, List<Long> errorIds) {
+
 		testItemReader = new IteratorItemReader<>(orders);
 
 		testItemWriter = items -> {
 			for (SubscriptionOrderVO item : items) {
 				if (errorIds.contains(item.getSubscriptionOrderId())) {
-					throw new PaymentApiException("Payment API error");
+					throw new BatchApiException("Payment API error");
 				}
 			}
 		};

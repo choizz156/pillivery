@@ -17,8 +17,8 @@ import org.springframework.retry.ExhaustedRetryException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.BatchApiTest;
+import com.team33.modulebatch.exception.BatchApiException;
 import com.team33.modulebatch.listener.ItemSkipListener;
-import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 class PaymentRetryTest extends BatchApiTest {
 
@@ -36,22 +36,6 @@ class PaymentRetryTest extends BatchApiTest {
 
 	private Step step;
 
-	private void testStep() {
-		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-		backOffPolicy.setBackOffPeriod(0L);
-
-		step = stepBuilderFactory.get("paymentJobStep")
-			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
-			.reader(testItemReader)
-			.writer(testItemWriter)
-			.faultTolerant()
-			.retryLimit(RETRY_LIMIT)
-			.retry(PaymentApiException.class)
-			.backOffPolicy(backOffPolicy)
-			.listener(itemSkipListener)
-			.build();
-	}
-
 	@DisplayName("item writer에서 에러 발생시 retry limit만큼 재시도한다.")
 	@Test
 	void test1() throws Exception {
@@ -60,8 +44,8 @@ class PaymentRetryTest extends BatchApiTest {
 		SubscriptionOrderVO order = new SubscriptionOrderVO();
 		when(testItemReader.read()).thenReturn(order, (SubscriptionOrderVO)null);
 
-		doThrow(new PaymentApiException("test exception 1"))
-			.doThrow(new PaymentApiException("test exception 2"))
+		doThrow(new BatchApiException("test exception 1"))
+			.doThrow(new BatchApiException("test exception 2"))
 			.doNothing() //이것도 try한거임.
 			.when(testItemWriter).write(anyList());
 
@@ -85,7 +69,7 @@ class PaymentRetryTest extends BatchApiTest {
 		SubscriptionOrderVO order = new SubscriptionOrderVO();
 		when(testItemReader.read()).thenReturn(order, (SubscriptionOrderVO)null);
 
-		doThrow(new PaymentApiException("test exception 1"))
+		doThrow(new BatchApiException("test exception 1"))
 			.when(testItemWriter).write(anyList());
 
 		JobExecution jobExecution = jobRepository.createJobExecution("testJob", new JobParameters());
@@ -103,6 +87,23 @@ class PaymentRetryTest extends BatchApiTest {
 		assertThat(exception).isInstanceOf(ExhaustedRetryException.class);
 		assertThat(stepExecution.getStatus()).isEqualTo(BatchStatus.FAILED);
 		verify(testItemWriter, times(RETRY_LIMIT)).write(anyList());
+	}
+
+	private void testStep() {
+
+		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
+		backOffPolicy.setBackOffPeriod(0L);
+
+		step = stepBuilderFactory.get("paymentJobStep")
+			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
+			.reader(testItemReader)
+			.writer(testItemWriter)
+			.faultTolerant()
+			.retryLimit(RETRY_LIMIT)
+			.retry(BatchApiException.class)
+			.backOffPolicy(backOffPolicy)
+			.listener(itemSkipListener)
+			.build();
 	}
 
 }
