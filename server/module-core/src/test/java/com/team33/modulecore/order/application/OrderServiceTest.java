@@ -98,8 +98,7 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null,
-				null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null);
 
 		//when
 		orderService.processOneTimeStatus(order.getId());
@@ -126,8 +125,7 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null,
-				null);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null);
 
 		//when
 		orderService.processOneTimeStatus(order.getId());
@@ -160,8 +158,7 @@ class OrderServiceTest {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 
 		var orderService =
-			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null,
-				refundService);
+			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null);
 
 		//when
 		orderService.processCancel(order.getId(), refundContext);

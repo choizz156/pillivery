@@ -16,15 +16,13 @@ import com.team33.modulebatch.config.PaymentJobConfig;
 import com.team33.modulebatch.config.PaymentStepConfig;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.infra.RestTemplateSender;
-import com.team33.modulecore.config.redis.EmbededRedisConfig;
 
 import io.restassured.RestAssured;
 
 @SpringBootTest(classes = {
 	PaymentStepConfig.class,
 	PaymentJobConfig.class,
-	PaymentApiDispatcher.class,
-	EmbededRedisConfig.class
+	PaymentApiDispatcher.class
 }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SpringBatchTest
 @EnableAutoConfiguration

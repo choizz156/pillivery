@@ -22,6 +22,7 @@ import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
+import com.team33.modulecore.core.payment.domain.refund.RefundService;
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleevent.handler.RefundEventHandler;
 
@@ -38,6 +39,9 @@ class RefundAcceptanceTest extends ApiTest {
 
 	@Autowired
 	private OrderStatusService orderStatusService;
+
+	@Autowired
+	private RefundService refundService;
 
 	@Autowired
 	private PaymentMapper paymentMapper;
@@ -65,6 +69,7 @@ class RefundAcceptanceTest extends ApiTest {
 			.mockMvc(standaloneSetup(
 					new RefundController(
 						paymentMapper,
+						refundService,
 						orderStatusService
 					)
 				)
