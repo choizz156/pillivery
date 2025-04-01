@@ -14,8 +14,8 @@ import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.api.cart.mapper.CartServiceMapper;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
 import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.cart.application.NormalCartItemService;
@@ -26,6 +26,7 @@ import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 class NormalCartAcceptanceTest extends ApiTest {
 
 	private static final String KEY = CartKeySupplier.from(1L);
+
 	@Autowired
 	private ItemCommandRepository itemCommandRepository;
 

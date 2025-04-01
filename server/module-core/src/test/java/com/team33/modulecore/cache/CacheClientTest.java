@@ -29,13 +29,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
 import com.team33.modulecore.cache.dto.CachedMainItems;
-import com.team33.modulecore.config.redis.EmbededRedisConfig;
 import com.team33.modulecore.core.category.domain.Categories;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.item.dto.query.ItemPage;
 import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
 import com.team33.modulecore.core.item.dto.query.PriceFilter;
+import com.team33.moduleredis.config.EmbededRedisConfig;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")

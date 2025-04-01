@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -13,25 +14,23 @@ import com.team33.modulecore.core.common.UserFindHelper;
 import com.team33.modulecore.core.user.domain.entity.User;
 import com.team33.modulecore.core.user.domain.repository.UserRepository;
 import com.team33.modulecore.security.infra.JwtTokenProvider;
+import com.team33.moduleredis.config.EmbededRedisConfig;
 
 import io.restassured.RestAssured;
 
-@ActiveProfiles({"auth", "test"})
+@ActiveProfiles("test")
+@Import(EmbededRedisConfig.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class ApiTest {
 
-	@LocalServerPort
-	private int port;
-
 	@Autowired
 	protected UserFindHelper userFindHelper;
-
 	@Autowired
 	protected UserRepository userRepository;
-
 	@Autowired
 	protected JwtTokenProvider jwtTokenProvider;
-
+	@LocalServerPort
+	private int port;
 	@Autowired
 	private DataCleaner dataCleaner;
 

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.infra.KakaoCancelEventSender;
-import com.team33.moduleexternalapi.config.RestTemplateErrorHandler;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 class EventDispatcherTest {
@@ -55,8 +54,6 @@ class EventDispatcherTest {
 		doThrow(new PaymentApiException("api error"))
 			.when(kakaoCancelEventSender)
 			.send(any(ApiEvent.class));
-
-		RestTemplateErrorHandler.ThreadLocalErrorMessage.set("api error");
 
 		// when
 		eventDispatcher.register(apiEvent, kakaoCancelEventSender);

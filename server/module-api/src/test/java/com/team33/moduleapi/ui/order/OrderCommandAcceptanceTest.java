@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.api.order.dto.OrderPostDto;
 import com.team33.moduleapi.api.order.dto.OrderPostListDto;
 import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.Image;
 import com.team33.modulecore.core.item.domain.Information;
@@ -26,8 +26,8 @@ import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderItemService;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
@@ -63,6 +63,7 @@ class OrderCommandAcceptanceTest extends ApiTest {
 			.when()
 			.post("/api/orders")
 			.then()
+			.log().all()
 			.statusCode(HttpStatus.CREATED.value())
 			.body("data.orderId", equalTo(1))
 			.body("data.totalItems", equalTo(1))
@@ -99,7 +100,7 @@ class OrderCommandAcceptanceTest extends ApiTest {
 	@Test
 	void 정기_주문_수량_변경() throws Exception {
 		//given
-		아이템_저장("test", 10000, 0.0, CategoryName.INTESTINE, "brand");
+		아이템_저장("test", 10000, 0.0D, CategoryName.INTESTINE, "brand");
 		주문_저장();
 
 		//when

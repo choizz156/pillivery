@@ -29,6 +29,7 @@ import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
@@ -47,6 +48,132 @@ class OrderQueryRepositoryTest {
 	private EntityManager em;
 	private OrderQueryRepository orderQueryRepository;
 	private User MOCK_USER;
+
+	@BeforeAll
+	void beforeAll() {
+
+		emf = Persistence.createEntityManagerFactory("test");
+		em = emf.createEntityManager();
+		em.getTransaction().begin();
+		orderQueryRepository = new OrderQueryDslDao(new JPAQueryFactory(em));
+		persistOrder();
+	}
+
+	@AfterAll
+	void afterAll() {
+
+		em.getTransaction().rollback(); // 커넥션 반납용 롤백
+		em.close();
+		emf.close();
+	}
+
+	@DisplayName("유저가 구매한 주문 목록을 조회할 수 있다.")
+	@Test
+	void 주문_조회() throws Exception {
+		//given
+		var orderPageDto = new OrderPage();
+		orderPageDto.setPage(1);
+		orderPageDto.setSize(11);
+
+		var orderPageRequest = OrderPageRequest.of(orderPageDto);
+
+		var orderFindCondition =
+			OrderFindCondition.to(1L, OrderStatus.COMPLETE);
+
+		//when
+		Page<Order> allOrders =
+			orderQueryRepository.findOrders(orderPageRequest, orderFindCondition);
+
+		//then
+		List<Order> content = allOrders.getContent();
+		assertThat(content).hasSize(8)
+			.isSortedAccordingTo(comparing(Order::getId).reversed());
+		assertThat(allOrders.getSize()).isEqualTo(11);
+		assertThat(allOrders.getTotalPages()).isEqualTo(1);
+		assertThat(allOrders.getTotalElements()).isEqualTo(8);
+		assertThat(allOrders.getNumberOfElements()).isEqualTo(8);
+	}
+
+	@DisplayName("유저의 정기 주문(구독) 목록을 조회할 수 있다.")
+	@Test
+	void 정기_주문_목록_조회() throws Exception {
+		//given
+		var orderPageDto1 = new OrderPage();
+		orderPageDto1.setPage(1);
+		orderPageDto1.setSize(10);
+
+		var orderPageRequest = OrderPageRequest.of(orderPageDto1);
+		var orderFindCondition = OrderFindCondition.to(MOCK_USER.getId(), OrderStatus.SUBSCRIBE);
+
+		persistSubscriptionOrder();
+
+		//when
+		List<OrderItem> subscriptionOrderItem =
+			orderQueryRepository.findSubscriptionOrderItems(orderPageRequest, orderFindCondition);
+
+		//then
+		assertThat(subscriptionOrderItem).hasSize(8)
+			.extracting("item.information.productName")
+			.as("page 1, size 8, offset 0, 내림차순")
+			.contains("title5", Index.atIndex(3));
+
+	}
+
+	@DisplayName("구독 정보를 조회할 수 있다.")
+	@Test
+	void 구독_정보_조회() throws Exception {
+		//given
+		SubscriptionOrder subscriptionOrder = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionOrder.class)
+			.setNull("id")
+			.set("orderItem", null)
+			.set("orderCommonInfo.price.expectPrice", 100)
+			.set("orderCommonInfo.subscriptionInfo.subscription", true)
+			.sample();
+
+		em.persist(subscriptionOrder);
+
+		//when
+		boolean isSubscriptionById = orderQueryRepository.findIsSubscriptionById(subscriptionOrder.getId());
+
+		//then
+		assertThat(isSubscriptionById).isTrue();
+	}
+
+	@DisplayName("tid를 조회할 수 있다.")
+	@Test
+	void tid_조회() throws Exception {
+
+		//given
+		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
+			.setNull("id")
+			.setNull("orderItems")
+			.setNull("user")
+			.set("orderCommonInfo.paymentToken.tid", "tid")
+			.sample();
+
+		em.persist(order);
+
+		//when
+		String tid = orderQueryRepository.findTid(order.getId());
+
+		//then
+		assertThat(tid).isEqualTo("tid");
+	}
+
+	private void persistSubscriptionOrder() {
+
+		for (long i = 1; i <= 8; i++) {
+			Order order = em.find(Order.class, i);
+			order.getOrderItems().stream()
+				.map(orderItem ->
+					{
+						SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order, orderItem);
+						subscriptionOrder.changeOrderStatus(OrderStatus.SUBSCRIBE);
+						return subscriptionOrder;
+					}
+				).forEach(em::persist);
+		}
+	}
 
 	private void persistOrder() {
 
@@ -107,135 +234,16 @@ class OrderQueryRepositoryTest {
 			.takeWhile(item -> item.getId() <= 8)
 			.map(item -> OrderItem.create(item, 1)
 			)
-			.map(orderItem -> Order.create(List.of(orderItem), new OrderCommonInfo(), orderContext1))
+			.map(orderItem ->
+				Order.create(
+					List.of(orderItem),
+					OrderCommonInfo.createFromContext(List.of(orderItem), orderContext1),
+					orderContext1
+				)
+			)
 			.forEach(order -> {
 				order.changeOrderStatus(OrderStatus.COMPLETE);
 				em.persist(order);
 			});
-
-		OrderContext orderContext2 = OrderContext.builder()
-			.userId(1L)
-			.isOrderedCart(false)
-			.isSubscription(true)
-			.build();
-
-		mockItems.stream()
-			.dropWhile(item -> item.getId() <= 8)
-			.map(item -> OrderItem.create(item, 1))
-			.map(orderItem -> Order.create(List.of(orderItem), new OrderCommonInfo(), orderContext2))
-			.forEach(order -> {
-				order.changeOrderStatus(OrderStatus.SUBSCRIBE);
-				em.persist(order);
-			});
-	}
-
-	@BeforeAll
-	void beforeAll() {
-
-		emf = Persistence.createEntityManagerFactory("test");
-		em = emf.createEntityManager();
-		em.getTransaction().begin();
-		orderQueryRepository = new OrderQueryDslDao(new JPAQueryFactory(em));
-		persistOrder();
-	}
-
-	@AfterAll
-	void afterAll() {
-
-		em.getTransaction().rollback(); // 커넥션 반납용 롤백
-		em.close();
-		emf.close();
-	}
-
-	@DisplayName("유저가 구매한 주문 목록을 조회할 수 있다.")
-	@Test
-	void 주문_조회() throws Exception {
-		//given
-		var orderPageDto = new OrderPage();
-		orderPageDto.setPage(1);
-		orderPageDto.setSize(10);
-
-		var orderPageRequest = OrderPageRequest.of(orderPageDto);
-
-		var orderFindCondition =
-			OrderFindCondition.to(1L, OrderStatus.REQUEST);
-
-		//when
-		Page<Order> allOrders =
-			orderQueryRepository.findOrders(orderPageRequest, orderFindCondition);
-
-		//then
-		List<Order> content = allOrders.getContent();
-		assertThat(content).hasSize(10)
-			.isSortedAccordingTo(comparing(Order::getId).reversed());
-		assertThat(allOrders.getSize()).isEqualTo(10);
-		assertThat(allOrders.getTotalPages()).isEqualTo(2);
-		assertThat(allOrders.getTotalElements()).isEqualTo(16);
-		assertThat(allOrders.getNumberOfElements()).isEqualTo(10);
-	}
-
-	@DisplayName("유저의 정기 주문(구독) 목록을 조회할 수 있다.")
-	@Test
-	void 정기_주문_목록_조회() throws Exception {
-		//given
-		var orderPageDto1 = new OrderPage();
-		orderPageDto1.setPage(1);
-		orderPageDto1.setSize(10);
-
-		var orderPageRequest = OrderPageRequest.of(orderPageDto1);
-
-		var orderFindCondition = OrderFindCondition.to(MOCK_USER.getId(), OrderStatus.SUBSCRIBE);
-
-		//when
-		List<OrderItem> subscriptionOrderItem =
-			orderQueryRepository.findSubscriptionOrderItems(orderPageRequest, orderFindCondition);
-
-		//then
-		assertThat(subscriptionOrderItem).hasSize(8)
-			.extracting("item.information.productName")
-			.as("page 1, size 8, offset 0, 내림차순")
-			.contains("test13", Index.atIndex(3));
-
-	}
-
-	@DisplayName("구독 정보를 조회할 수 있다.")
-	@Test
-	void 구독_정보_조회() throws Exception {
-		//given
-		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-			.setNull("id")
-			.set("paymentCode.sid", "sid")
-			.set("paymentCode.tid", "tid")
-			.setNull("orderItems")
-			.set("isSubscription", true)
-			.sample();
-
-		em.persist(order);
-
-		//when
-		boolean isSubscriptionById = orderQueryRepository.findIsSubscriptionById(order.getId());
-
-		//then
-		assertThat(isSubscriptionById).isTrue();
-	}
-
-	@DisplayName("tid를 조회할 수 있다.")
-	@Test
-	void tid_조회() throws Exception {
-
-		//given
-		Order order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-			.setNull("id")
-			.setNull("orderItems")
-			.setNull("user")
-			.set("paymentCode.tid", "tid").sample();
-
-		em.persist(order);
-
-		//when
-		String tid = orderQueryRepository.findTid(order.getId());
-
-		//then
-		assertThat(tid).isEqualTo("tid");
 	}
 }

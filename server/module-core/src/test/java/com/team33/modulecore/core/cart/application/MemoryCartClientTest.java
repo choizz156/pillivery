@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.config.redis.EmbededRedisConfig;
 import com.team33.modulecore.core.cart.domain.CartItemVO;
 import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.cart.domain.CartVO;
@@ -27,6 +26,7 @@ import com.team33.modulecore.core.cart.domain.NormalCartVO;
 import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
+import com.team33.moduleredis.config.EmbededRedisConfig;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @JsonInclude(JsonInclude.Include.NON_NULL)

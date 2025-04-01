@@ -21,12 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.config.redis.EmbededRedisConfig;
 import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
 import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
 import com.team33.modulecore.core.cart.domain.entity.SubscriptionCartEntity;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
+import com.team33.moduleredis.config.EmbededRedisConfig;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")
@@ -38,16 +38,14 @@ import com.team33.modulecore.core.cart.domain.repository.CartRepository;
 @SpringBootTest
 class SubscriptionCartServiceTest {
 
+	private static final String CART = "cart";
+	private static final String KEY = "mem:cartId : 1";
 	@Autowired
 	private MemoryCartClient memoryCartClient;
 	@Autowired
 	private RedissonClient redissonClient;
 	@Autowired
 	private CartRepository cartRepository;
-
-	private static final String KEY = "mem:cartId : 1";
-	private static final String CART = "cart";
-
 	private SubscriptionCartVO subscriptionCart;
 	private SubscriptionCartEntity subscriptionCartEntity;
 

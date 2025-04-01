@@ -11,13 +11,15 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.team33.moduleapi.ApiTest;
 
+
 class ViewInterceptorTest extends ApiTest {
 
 	@Autowired
 	private RedissonClient redissonClient;
 
 	@AfterEach
-	void setUpEach(){
+	void setUpEach() {
+
 		redissonClient.getKeys().flushall();
 	}
 

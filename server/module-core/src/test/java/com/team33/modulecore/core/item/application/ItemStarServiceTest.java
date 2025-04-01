@@ -17,12 +17,11 @@ import org.springframework.test.context.ContextConfiguration;
 import com.team33.modulecore.core.item.domain.Information;
 import com.team33.modulecore.core.item.domain.Statistic;
 import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.moduleredis.aop.DistributedLockAspect;
 
 @ActiveProfiles("test")
-
-//TODO: 다시 해야함.
 @EnableAutoConfiguration
-@ContextConfiguration(classes = { ItemStarService.class, Item.class, DistributedLockAop.class})
+@ContextConfiguration(classes = { ItemStarService.class, Item.class, DistributedLockAspect.class, DistributedLockAspect.class})
 @SpringBootTest
 public class ItemStarServiceTest {
 
