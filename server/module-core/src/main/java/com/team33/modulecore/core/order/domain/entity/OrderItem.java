@@ -1,5 +1,6 @@
 package com.team33.modulecore.core.order.domain.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,8 +42,7 @@ public class OrderItem extends BaseEntity {
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "subscription_order_id")
+	@OneToOne(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
 	private SubscriptionOrder subscriptionOrder;
 
 	@Builder
@@ -79,10 +79,5 @@ public class OrderItem extends BaseEntity {
 
 	public String getProductName() {
 		return item.getProductName();
-	}
-
-	public boolean isSubscription() {
-
-		return this.subscriptionOrder.isSubscription();
 	}
 }

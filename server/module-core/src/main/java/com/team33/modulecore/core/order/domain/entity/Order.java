@@ -78,14 +78,9 @@ public class Order extends BaseEntity {
 			.totalItemsCount(orderItems.size())
 			.build();
 
-		order.addPrice(order.getOrderItems());
+		order.getOrderCommonInfo().addPrice(orderItems);
 		order.getOrderItems().forEach(orderItem -> orderItem.addOrder(order));
 		return order;
-	}
-
-	public void addPrice(List<OrderItem> orderItems) {
-
-		this.orderCommonInfo = this.orderCommonInfo.addPrice(orderItems);
 	}
 
 	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
@@ -162,4 +157,5 @@ public class Order extends BaseEntity {
 
 		return this.orderCommonInfo.getTotalQuantity();
 	}
+
 }

@@ -56,7 +56,7 @@ public class OrderDetailResponse {
         this.receiver = receiver;
     }
 
-    public static OrderDetailResponse of(Order order) {
+    public static OrderDetailResponse fromOrder(Order order) {
         return OrderDetailResponse.builder()
             .receiver(order.getReceiver())
             .orderId(order.getId())
@@ -68,7 +68,7 @@ public class OrderDetailResponse {
             .itemOrders(
                     order.getOrderItems()
                         .stream()
-                        .map(OrderItemSimpleResponse::of)
+                        .map(OrderItemSimpleResponse::fromOrder)
                         .collect(Collectors.toList())
             )
             .orderStatus(order.getOrderStatus())

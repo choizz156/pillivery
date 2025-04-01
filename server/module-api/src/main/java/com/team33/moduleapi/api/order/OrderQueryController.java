@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.response.MultiResponseDto;
-import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.api.order.dto.OrderDetailResponse;
 import com.team33.moduleapi.api.order.dto.OrderItemSimpleResponse;
 import com.team33.moduleapi.api.order.dto.OrderSimpleResponseDto;
 import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
+import com.team33.moduleapi.response.MultiResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.order.application.OrderQueryService;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -83,7 +83,7 @@ public class OrderQueryController {
 		@PathVariable Long orderId
 	) {
 		Order order = orderQueryService.findOrder(orderId);
-		OrderDetailResponse orderDetailResponse = OrderDetailResponse.of(order);
+		OrderDetailResponse orderDetailResponse = OrderDetailResponse.fromOrder(order);
 
 		return new SingleResponseDto<>(orderDetailResponse);
 	}

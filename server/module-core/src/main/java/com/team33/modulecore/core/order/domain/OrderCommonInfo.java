@@ -111,19 +111,19 @@ public class OrderCommonInfo {
 			.build();
 	}
 
-	public OrderCommonInfo addPrice(List<OrderItem> orderItems) {
+	public void addPrice(List<OrderItem> orderItems) {
 
-		return this.toBuilder()
-			.price(new Price(orderItems))
-			.build();
+		this.price = new Price(orderItems);
+		this.toBuilder().build();
 	}
 
 	public OrderCommonInfo adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
 
-		countTotalAmount(orderItems);
+		int newTotalQuantity = countTotalQuantity(orderItems);
+		
 		return this.toBuilder()
 			.price(new Price(orderItems))
-			.totalQuantity(totalQuantity)
+			.totalQuantity(newTotalQuantity)
 			.build();
 	}
 
@@ -192,14 +192,13 @@ public class OrderCommonInfo {
 			.build();
 	}
 
-	private void countTotalAmount(List<OrderItem> orderItems) {
+	private int countTotalQuantity(List<OrderItem> orderItems) {
 
 		if (orderItems.isEmpty()) {
-			this.totalQuantity = 0;
-			return;
+			return 0;
 		}
 
-		this.totalQuantity = orderItems.stream()
+		return orderItems.stream()
 			.map(OrderItem::getQuantity)
 			.mapToInt(Integer::intValue)
 			.sum();

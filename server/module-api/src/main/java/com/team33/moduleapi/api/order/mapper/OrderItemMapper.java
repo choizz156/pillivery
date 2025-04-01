@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import com.team33.moduleapi.api.order.dto.OrderItemSimpleResponse;
 import com.team33.moduleapi.api.order.dto.OrderPostDto;
 import com.team33.moduleapi.api.order.dto.OrderPostListDto;
-import com.team33.modulecore.core.user.domain.Address;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.Receiver;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
+import com.team33.modulecore.core.user.domain.Address;
 
 @Component
 public class OrderItemMapper {
@@ -29,7 +29,7 @@ public class OrderItemMapper {
 
 	public List<OrderItemSimpleResponse> toOrderSimpleResponse(List<OrderItem> allSubscriptions) {
 		return allSubscriptions.stream()
-			.map(OrderItemSimpleResponse::of)
+			.map(OrderItemSimpleResponse::fromSubscriptionOrder)
 			.collect(Collectors.toUnmodifiableList());
 	}
 

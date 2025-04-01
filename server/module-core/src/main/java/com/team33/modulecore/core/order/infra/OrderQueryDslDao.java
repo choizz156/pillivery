@@ -3,6 +3,7 @@ package com.team33.modulecore.core.order.infra;
 import static com.team33.modulecore.core.order.domain.OrderStatus.*;
 import static com.team33.modulecore.core.order.domain.entity.QOrder.*;
 import static com.team33.modulecore.core.order.domain.entity.QOrderItem.*;
+import static com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -84,9 +85,9 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		List<OrderItem> fetch = queryFactory
 			.select(orderItem)
 			.from(orderItem)
-			.innerJoin(orderItem.order, order)
+			.innerJoin(orderItem.subscriptionOrder, subscriptionOrder)
 			.where(
-				orderUserAndOrderItemUserEq(),
+				subscriptionOrder.orderCommonInfo.userId.eq(orderFindCondition.getUserId()),
 				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
 			)
 			.limit(pageRequest.getSize())
@@ -129,10 +130,13 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public boolean findIsSubscriptionById(long orderId) {
+	public boolean findIsSubscriptionById(long subscriptionOrderId) {
 
 		return Boolean.TRUE.equals(
-			queryFactory.select(order.orderCommonInfo.subscriptionInfo.subscription).from(order).where(order.id.eq(orderId)).fetchOne()
+			queryFactory.select(subscriptionOrder.orderCommonInfo.subscriptionInfo.subscription)
+				.from(subscriptionOrder)
+				.where(subscriptionOrder.id.eq(subscriptionOrderId))
+				.fetchOne()
 		);
 	}
 
@@ -142,15 +146,15 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		return queryFactory.select(order.orderCommonInfo.paymentToken.tid).from(order).where(order.id.eq(orderId)).fetchOne();
 	}
 
-	private BooleanExpression orderUserAndOrderItemUserEq() {
+	private BooleanExpression subscriptionOrderUserAndOrderItemUserEq() {
 
-		return orderItem.order.orderCommonInfo.userId.eq(order.orderCommonInfo.userId);
+		return orderItem.subscriptionOrder.orderCommonInfo.userId.eq(subscriptionOrder.orderCommonInfo.userId);
 	}
 
 	private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {
 
 		return orderStatus == SUBSCRIBE
-			? order.orderCommonInfo.orderStatus.eq(orderStatus)
+			? subscriptionOrder.orderCommonInfo.orderStatus.eq(orderStatus)
 			: null;
 	}
 

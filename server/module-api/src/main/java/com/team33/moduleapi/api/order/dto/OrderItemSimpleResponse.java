@@ -35,13 +35,24 @@ public class OrderItemSimpleResponse {
 		this.item = item;
     }
 
-    public static OrderItemSimpleResponse of(OrderItem orderItem) {
+    public static OrderItemSimpleResponse fromOrder(OrderItem orderItem) {
         return OrderItemSimpleResponse.builder()
             .orderItemId(orderItem.getId())
             .quantity(orderItem.getQuantity())
-            .period(orderItem.getSubscriptionOrder().getPeriod())
-            .nextPaymentDay(orderItem.getSubscriptionOrder().getNextPaymentDay())
-            .subscription(orderItem.isSubscription())
+            .period(orderItem.getOrder().getOrderCommonInfo().getSubscriptionInfo().getPeriod())
+            .nextPaymentDay(orderItem.getOrder().getOrderCommonInfo().getNextPaymentDay())
+            .subscription(orderItem.getOrder().getOrderCommonInfo().isSubscription())
+            .item(ItemSimpleResponseDto.of(orderItem.getItem()))
+            .build();
+    }
+
+    public static OrderItemSimpleResponse fromSubscriptionOrder(OrderItem orderItem) {
+        return OrderItemSimpleResponse.builder()
+            .orderItemId(orderItem.getId())
+            .quantity(orderItem.getQuantity())
+            .period(orderItem.getSubscriptionOrder().getOrderCommonInfo().getSubscriptionInfo().getPeriod())
+            .nextPaymentDay(orderItem.getSubscriptionOrder().getOrderCommonInfo().getNextPaymentDay())
+            .subscription(orderItem.getSubscriptionOrder().getOrderCommonInfo().isSubscription())
             .item(ItemSimpleResponseDto.of(orderItem.getItem()))
             .build();
     }

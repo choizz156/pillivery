@@ -26,6 +26,7 @@ dependencies {
 
     //redis
     implementation 'org.redisson:redisson-spring-boot-starter:3.22.0'
+    implementation 'com.github.codemonstur:embedded-redis:1.4.3'
 
     //security test
     testImplementation 'org.springframework.security:spring-security-test'

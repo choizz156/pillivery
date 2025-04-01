@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.api.order.dto.OrderDetailResponse;
 import com.team33.moduleapi.api.order.dto.OrderPostListDto;
 import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
-import com.team33.modulecore.core.order.application.OrderItemService;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.order.application.OrderCreateService;
+import com.team33.modulecore.core.order.application.OrderItemService;
 import com.team33.modulecore.core.order.application.OrderSubscriptionService;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
@@ -56,7 +56,7 @@ public class OrderCommandController {
 
 		Order order = orderCreateService.callOrder(orderItems, orderContext);
 
-		return new SingleResponseDto<>(OrderDetailResponse.of(order));
+		return new SingleResponseDto<>(OrderDetailResponse.fromOrder(order));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)

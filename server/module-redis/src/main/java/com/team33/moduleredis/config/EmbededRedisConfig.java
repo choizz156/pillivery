@@ -22,8 +22,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import redis.embedded.RedisServer;
 
-@Profile("test || local")
 @Slf4j
+@Profile("test || local")
 @Configuration
 public class EmbededRedisConfig {
 
@@ -100,6 +100,6 @@ public class EmbededRedisConfig {
 			throw new RuntimeException(e);
 		}
 
-		return !StringUtils.hasLength(pidInfo.toString());
+		return StringUtils.hasLength(pidInfo.toString());
 	}
 }
