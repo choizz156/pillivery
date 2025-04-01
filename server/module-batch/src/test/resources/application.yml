@@ -3,21 +3,22 @@ spring:
     activate:
       on-profile: test
 
-
   batch:
     job:
       enabled: false
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
-        format_sql: false
-        use_sql_comments: true
-    show-sql: false
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        format_sql: true
+        hbm2ddl:
+          auto: create
+        show_sql: true
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/testdb1;MODE=MySQL;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:tcp:mem
     username: sa
     password:
     driver-class-name: org.h2.Driver
