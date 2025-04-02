@@ -11,14 +11,18 @@ public enum Params {
 
 	ONE_TIME_APPROVAL_URL(BASE_URL.value + "approve"),
 	SUBSCRIPTION_APPROVAL_URL(BASE_URL.value + "approve/subscriptions"),
-	CANCEL_URL(BASE_URL.value + "cancel"),
-	FAIL_URL(BASE_URL.value + "fail"),
+	CANCEL_URI(BASE_URL.value + "cancel"),
+	FAIL_URI(BASE_URL.value + "fail"),
 
 	PARTNER("pillivery"),
 	ONE_TIME_CID("TC0ONETIME"),
 	SUBSCRIPTION_CID("TCSUBSCRIP"),
 	CID("cid"),
+
 	APPROVAL_URL("approval_url"),
+	CANCEL_URL("cancel_url"),
+	FAIL_URL("fail_url"),
+
 	SID("sid"),
 	TID("tid"),
 	PARTNER_ORDER_ID("partner_order_id"),

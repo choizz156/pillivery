@@ -8,8 +8,6 @@ import static com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder.
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -37,7 +35,6 @@ import lombok.RequiredArgsConstructor;
 public class OrderQueryDslDao implements OrderQueryRepository {
 
 	private final JPAQueryFactory queryFactory;
-	private final EntityManager entityManager;
 
 	@Override
 	public Page<Order> findOrders(

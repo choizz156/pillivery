@@ -113,6 +113,7 @@ public class ParameterProvider {
 			.quantity(subscriptionOrder.getTotalQuantity())
 			.itemName(getItemName(subscriptionOrder))
 			.orderId(subscriptionOrder.getId())
+			.sid(subscriptionOrder.getSid())
 			.build();
 	}
 
@@ -122,11 +123,15 @@ public class ParameterProvider {
 		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(paymentParams.getOrderId()));
 		parameters.put(PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
 		parameters.put(ITEM_NAME.getValue(), paymentParams.getItemName());
-		parameters.put(QUANTITY.getValue(), "0");
-		parameters.put(TOTAL_AMOUNT.getValue(), "0");
+		parameters.put(QUANTITY.getValue(),
+			paymentParams.getSid() == null ? String.valueOf(paymentParams.getQuantity()) : "0"
+		);
+		parameters.put(TOTAL_AMOUNT.getValue(), 
+			paymentParams.getSid() == null ? 	String.valueOf(paymentParams.getTotalAmount()) : "0"
+		);
 		parameters.put(TAX_FREE_AMOUNT.getValue(), "0");
-		parameters.put(CANCEL_URL.getValue(), CANCEL_URL.getValue());
-		parameters.put(FAIL_URL.getValue(), FAIL_URL.getValue());
+		parameters.put(CANCEL_URL.getValue(), CANCEL_URI.getValue());
+		parameters.put(FAIL_URL.getValue(), FAIL_URI.getValue());
 		return parameters;
 	}
 
