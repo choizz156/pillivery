@@ -2,6 +2,7 @@ package com.team33.modulecore.core.order.domain;
 
 import javax.persistence.Embeddable;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class PaymentToken {
 
 	private String tid;
 
+	@Builder
 	public PaymentToken(String sid, String tid) {
 		this.sid = sid;
 		this.tid = tid;

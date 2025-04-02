@@ -14,7 +14,6 @@ import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
 import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
-import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,10 +41,8 @@ public class OrderStatusService {
 		applicationContext.publishEvent(new CartRefreshedEvent(order, orderedItemsId));
 	}
 
-	public void processCancel(Long orderId, RefundContext refundContext) {
-
+	public void processCancel(Long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);
-
 		order.changeOrderStatus(OrderStatus.REFUND);
 	}
 

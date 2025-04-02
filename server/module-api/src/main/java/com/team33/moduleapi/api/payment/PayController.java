@@ -78,7 +78,7 @@ public class PayController {
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
 	}
 
-	@GetMapping("/approve/subscriptions/{subscriptionOrderId}")
+	@GetMapping("/approve/subscriptionsFirst/{subscriptionOrderId}")
 	public SingleResponseDto<KaKaoApproveResponseDto> approveSubscription(
 		@RequestParam("pg_token") String pgToken,
 		@PathVariable Long subscriptionOrderId
@@ -94,7 +94,7 @@ public class PayController {
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approveResponse));
 	}
 
-	@PostMapping("/approve/subscriptionsFirst/{subscriptionOrderId}")
+	@PostMapping("/approve/subscriptions/{subscriptionOrderId}")
 	public SingleResponseDto<KaKaoApproveResponseDto> subscription(
 		@PathVariable long subscriptionOrderId
 	) {

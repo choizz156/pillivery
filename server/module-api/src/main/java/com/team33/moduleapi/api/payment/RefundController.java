@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.api.payment.dto.RefundDto;
 import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.payment.domain.refund.RefundService;
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
@@ -35,7 +35,7 @@ public class RefundController {
 
 		RefundContext refundContext = paymentMapper.toRefundContext(refundDto);
 		refundService.refund(orderId, refundContext);
-		orderStatusService.processCancel(orderId , refundContext);
+		orderStatusService.processCancel(orderId);
 
 		return new SingleResponseDto<>("complete");
 	}

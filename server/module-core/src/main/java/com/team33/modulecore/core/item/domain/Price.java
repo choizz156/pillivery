@@ -29,16 +29,21 @@ public class Price {
 	public Price(int originPrice, double discountRate) {
 		validateOriginPrice(originPrice);
 		this.originPrice = originPrice;
-		
-		 
+
 		BigDecimal normalizedRate = normalizeDiscountRate(discountRate);
 		this.discountRate = normalizedRate.doubleValue();
-		
-	
+
 		this.discountPrice = calculateDiscountAmount(originPrice, normalizedRate);
 		this.realPrice = originPrice - this.discountPrice;
 	}
 	
+	public int getDiscountedPrice() {
+		return this.realPrice;
+	}
+	
+	public double getDiscountRatePercent() {
+		return this.discountRate * 100;
+	}
 	
 	private void validateOriginPrice(int originPrice) {
 		if (originPrice < 0) {
@@ -46,46 +51,30 @@ public class Price {
 		}
 	}
 	
-	
 	private BigDecimal normalizeDiscountRate(double rate) {
-		
+
 		if (rate < 0) {
 			return BigDecimal.ZERO;
 		}
-		
-	
+
 		BigDecimal rateDecimal = new BigDecimal(String.valueOf(rate)).setScale(1, RoundingMode.HALF_UP);
-		
-		
+
 		if (rateDecimal.compareTo(BigDecimal.ZERO) == 0) {
 			return BigDecimal.ZERO;
 		}
-		
-		
+
 		return rateDecimal.divide(new BigDecimal("100"), 10, RoundingMode.HALF_UP);
 	}
 	
-
 	private int calculateDiscountAmount(int price, BigDecimal rate) {
-		
+
 		if (rate.compareTo(BigDecimal.ZERO) == 0) {
 			return 0;
 		}
-		
-		
+
 		BigDecimal priceDecimal = new BigDecimal(price);
 		return priceDecimal.multiply(rate)
 				.setScale(0, RoundingMode.HALF_UP)
 				.intValue();
-	}
-	
-	
-	public int getDiscountedPrice() {
-		return this.realPrice;
-	}
-	
-	
-	public double getDiscountRatePercent() {
-		return this.discountRate * 100;
 	}
 }
