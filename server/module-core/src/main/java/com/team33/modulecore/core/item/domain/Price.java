@@ -10,38 +10,82 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 상품 가격 정보를 표현하는 값 객체
+ * 원가, 할인율, 할인가격, 실제가격 정보를 포함합니다.
+ */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Price {
 
-	private int originPrice;
+	private int originPrice;   
+	private int realPrice;     
+	private int discountPrice; 
+	private Double discountRate; 
 
-	private int realPrice;
-
-	private int discountPrice;
-
-	private Double discountRate;
 
 	@Builder
 	public Price(int originPrice, double discountRate) {
+		validateOriginPrice(originPrice);
 		this.originPrice = originPrice;
-		this.discountRate = discountRate;
 		
-		BigDecimal rateDecimal = new BigDecimal(discountRate);
-		BigDecimal zero = BigDecimal.ZERO;
+		 
+		BigDecimal normalizedRate = normalizeDiscountRate(discountRate);
+		this.discountRate = normalizedRate.doubleValue();
 		
-		if(rateDecimal.compareTo(zero) == 0){
-			this.discountPrice = 0;
-			this.realPrice = originPrice;
-			return;
+	
+		this.discountPrice = calculateDiscountAmount(originPrice, normalizedRate);
+		this.realPrice = originPrice - this.discountPrice;
+	}
+	
+	
+	private void validateOriginPrice(int originPrice) {
+		if (originPrice < 0) {
+			throw new IllegalArgumentException("원가는 음수가 될 수 없습니다: " + originPrice);
 		}
-
-		BigDecimal origin = new BigDecimal(originPrice);
-		BigDecimal rate = rateDecimal.divide(new BigDecimal(100), 10, RoundingMode.HALF_UP);
-		BigDecimal discount = origin.multiply(rate).setScale(0, RoundingMode.HALF_UP);
+	}
+	
+	
+	private BigDecimal normalizeDiscountRate(double rate) {
 		
-		this.discountPrice = discount.intValue();
-		this.realPrice = originPrice - discountPrice;
+		if (rate < 0) {
+			return BigDecimal.ZERO;
+		}
+		
+	
+		BigDecimal rateDecimal = new BigDecimal(String.valueOf(rate)).setScale(1, RoundingMode.HALF_UP);
+		
+		
+		if (rateDecimal.compareTo(BigDecimal.ZERO) == 0) {
+			return BigDecimal.ZERO;
+		}
+		
+		
+		return rateDecimal.divide(new BigDecimal("100"), 10, RoundingMode.HALF_UP);
+	}
+	
+
+	private int calculateDiscountAmount(int price, BigDecimal rate) {
+		
+		if (rate.compareTo(BigDecimal.ZERO) == 0) {
+			return 0;
+		}
+		
+		
+		BigDecimal priceDecimal = new BigDecimal(price);
+		return priceDecimal.multiply(rate)
+				.setScale(0, RoundingMode.HALF_UP)
+				.intValue();
+	}
+	
+	
+	public int getDiscountedPrice() {
+		return this.realPrice;
+	}
+	
+	
+	public double getDiscountRatePercent() {
+		return this.discountRate * 100;
 	}
 }

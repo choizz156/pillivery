@@ -2,6 +2,7 @@ package com.team33.modulecore.core.order.domain.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.ZonedDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,7 +28,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString(exclude = "orderItems")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
@@ -114,8 +117,9 @@ public class Order extends BaseEntity {
 	}
 
 	public boolean isSubscription() {
-
-		return this.orderCommonInfo.isSubscription();
+		
+		return orderItems.stream()
+			.anyMatch(orderItem -> orderItem.getSubscriptionInfo().isSubscription());
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {
@@ -157,5 +161,32 @@ public class Order extends BaseEntity {
 
 		return this.orderCommonInfo.getTotalQuantity();
 	}
-
+	
+	public int getPeriod() {
+		
+		if (orderItems.isEmpty()) {
+			return 0;
+		}
+		return orderItems.get(0).getSubscriptionInfo().getPeriod();
+	}
+	
+	public ZonedDateTime getNextPaymentDay() {
+		
+		if (orderItems.isEmpty()) {
+			return null;
+		}
+		return orderItems.get(0).getSubscriptionInfo().getNextPaymentDay();
+	}
+	
+	public void updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
+		
+		orderItems.forEach(orderItem -> 
+			orderItem.getSubscriptionInfo().updatePaymentDay(paymentDay));
+	}
+	
+	public void changePeriod(int newPeriod) {
+		
+		orderItems.forEach(orderItem -> 
+			orderItem.getSubscriptionInfo().changePeriod(newPeriod));
+	}
 }

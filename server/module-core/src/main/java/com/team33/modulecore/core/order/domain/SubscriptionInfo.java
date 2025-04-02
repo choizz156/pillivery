@@ -56,6 +56,10 @@ public class SubscriptionInfo {
 		updateNextPaymentDay();
 	}
 
+	public void cancelSubscription() {
+		this.subscription = false;
+	}
+
 	private void updateNextPaymentDay() {
 		this.nextPaymentDay = lastPaymentDay.plusDays(this.period);
 	}

@@ -59,7 +59,7 @@ public class ApiErrorResponse {
         return new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), errors);
     }
 
-    public static ApiErrorResponse of(String message) { //직접 쓰는 문장
+    public static ApiErrorResponse of(String message) {
         return ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value()).message(message).build();
     }
 

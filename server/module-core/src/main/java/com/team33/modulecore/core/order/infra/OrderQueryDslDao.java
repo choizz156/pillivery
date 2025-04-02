@@ -8,6 +8,8 @@ import static com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder.
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -35,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderQueryDslDao implements OrderQueryRepository {
 
 	private final JPAQueryFactory queryFactory;
+	private final EntityManager entityManager;
 
 	@Override
 	public Page<Order> findOrders(
@@ -87,7 +90,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 			.from(orderItem)
 			.innerJoin(orderItem.subscriptionOrder, subscriptionOrder)
 			.where(
-				subscriptionOrder.orderCommonInfo.userId.eq(orderFindCondition.getUserId()),
+				subscriptionOrderUserAndOrderItemUserEq(orderFindCondition.getUserId()),
 				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
 			)
 			.limit(pageRequest.getSize())
@@ -133,10 +136,10 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	public boolean findIsSubscriptionById(long subscriptionOrderId) {
 
 		return Boolean.TRUE.equals(
-			queryFactory.select(subscriptionOrder.orderCommonInfo.subscriptionInfo.subscription)
-				.from(subscriptionOrder)
-				.where(subscriptionOrder.id.eq(subscriptionOrderId))
-				.fetchOne()
+			queryFactory.select(subscriptionOrder.orderItem.subscriptionInfo.subscription)
+			.from(subscriptionOrder)
+			.where(subscriptionOrder.id.eq(subscriptionOrderId))
+			.fetchOne()
 		);
 	}
 
@@ -146,9 +149,9 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		return queryFactory.select(order.orderCommonInfo.paymentToken.tid).from(order).where(order.id.eq(orderId)).fetchOne();
 	}
 
-	private BooleanExpression subscriptionOrderUserAndOrderItemUserEq() {
+	private BooleanExpression subscriptionOrderUserAndOrderItemUserEq(long userId) {
 
-		return orderItem.subscriptionOrder.orderCommonInfo.userId.eq(subscriptionOrder.orderCommonInfo.userId);
+		return 	subscriptionOrder.orderCommonInfo.userId.eq(userId);
 	}
 
 	private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {

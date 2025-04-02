@@ -2,6 +2,7 @@ package com.team33.modulecore.core.order.domain.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,12 +15,15 @@ import javax.persistence.Table;
 
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString(exclude = {"order", "subscriptionOrder", "item"})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "order_item")
@@ -30,6 +34,9 @@ public class OrderItem extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_item_id")
 	private Long id;
+
+	@Embedded
+	private SubscriptionInfo subscriptionInfo;
 
 	@Column(nullable = false)
 	private int quantity;
@@ -46,38 +53,47 @@ public class OrderItem extends BaseEntity {
 	private SubscriptionOrder subscriptionOrder;
 
 	@Builder
-	private OrderItem(int quantity, Item item) {
+	private OrderItem(SubscriptionInfo subscriptionInfo, int quantity, Item item) {
+		this.subscriptionInfo = subscriptionInfo;
 		this.quantity = quantity;
 		this.item = item;
 	}
 
 	public static OrderItem create(
 		Item item,
-		int quantity
+		int quantity,
+		SubscriptionInfo subscriptionInfo
 	) {
+
 		return OrderItem.builder()
 			.item(item)
 			.quantity(quantity)
+			.subscriptionInfo(subscriptionInfo)
 			.build();
 	}
 
 	public void addOrder(Order order) {
+
 		this.order = order;
 	}
 
 	public void addSubscriptionOrder(SubscriptionOrder subscriptionOrder) {
+
 		this.subscriptionOrder = subscriptionOrder;
 	}
 
 	public void changeQuantity(int quantity) {
+
 		this.quantity = quantity;
 	}
 
 	public boolean containsItem(Long id) {
+
 		return item.getId().equals(id);
 	}
 
 	public String getProductName() {
+
 		return item.getProductName();
 	}
 }

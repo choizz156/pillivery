@@ -30,9 +30,6 @@ public class OrderCommonInfo {
 	private int totalQuantity;
 
 	@Embedded
-	private SubscriptionInfo subscriptionInfo;
-
-	@Embedded
 	private PaymentToken paymentToken;
 
 	@Embedded
@@ -50,7 +47,6 @@ public class OrderCommonInfo {
 	public OrderCommonInfo(
 		String mainItemName,
 		int totalQuantity,
-		SubscriptionInfo subscriptionInfo,
 		PaymentToken paymentToken,
 		Price price,
 		Receiver receiver,
@@ -60,7 +56,6 @@ public class OrderCommonInfo {
 
 		this.mainItemName = mainItemName;
 		this.totalQuantity = totalQuantity;
-		this.subscriptionInfo = subscriptionInfo;
 		this.paymentToken = paymentToken;
 		this.price = price;
 		this.receiver = receiver;
@@ -76,7 +71,6 @@ public class OrderCommonInfo {
 				.map(OrderItem::getQuantity)
 				.mapToInt(Integer::intValue)
 				.sum())
-			.subscriptionInfo(SubscriptionInfo.of(orderContext.isSubscription(), 0))
 			.paymentToken(new PaymentToken())
 			.receiver(orderContext.getReceiver())
 			.userId(orderContext.getUserId())
@@ -112,9 +106,7 @@ public class OrderCommonInfo {
 	}
 
 	public void addPrice(List<OrderItem> orderItems) {
-
 		this.price = new Price(orderItems);
-		this.toBuilder().build();
 	}
 
 	public OrderCommonInfo adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
@@ -143,52 +135,8 @@ public class OrderCommonInfo {
 	}
 
 	public OrderCommonInfo cancelSubscription() {
-
 		return this.toBuilder()
-			.subscriptionInfo(SubscriptionInfo.of(false, 0))
 			.orderStatus(OrderStatus.SUBSCRIBE_CANCEL)
-			.build();
-	}
-
-	public int getPeriod() {
-
-		return this.subscriptionInfo.getPeriod();
-	}
-
-	public boolean isSubscription() {
-
-		return this.subscriptionInfo.isSubscription();
-	}
-
-	public OrderCommonInfo updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
-
-		SubscriptionInfo newSubscriptionInfo = subscriptionInfo.toBuilder().build();
-		newSubscriptionInfo.updatePaymentDay(paymentDay);
-
-		return this.toBuilder()
-			.subscriptionInfo(newSubscriptionInfo)
-			.build();
-	}
-
-	public ZonedDateTime getNextPaymentDay() {
-
-		return this.subscriptionInfo.getNextPaymentDay();
-	}
-
-	public OrderCommonInfo changePeriod(int newPeriod) {
-
-		SubscriptionInfo newSubscriptionInfo = subscriptionInfo.toBuilder().build();
-		newSubscriptionInfo.changePeriod(newPeriod);
-
-		return this.toBuilder()
-			.subscriptionInfo(newSubscriptionInfo)
-			.build();
-	}
-
-	public OrderCommonInfo setPriceToZero() {
-
-		return this.toBuilder()
-			.price(new Price(List.of()))
 			.build();
 	}
 

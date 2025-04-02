@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.OrderStatus;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -68,36 +69,47 @@ public class SubscriptionOrder extends BaseEntity {
 		return subscriptionOrder;
 	}
 
+	public static SubscriptionOrder create(OrderCommonInfo orderCommonInfo, OrderItem orderItem) {
+
+		SubscriptionOrder subscriptionOrder = SubscriptionOrder.builder()
+			.orderItem(orderItem)
+			.orderCommonInfo(orderCommonInfo)
+			.build();
+
+		subscriptionOrder.getOrderCommonInfo().addPrice(List.of(orderItem));
+		orderItem.addSubscriptionOrder(subscriptionOrder);
+		return subscriptionOrder;
+	}
+
 	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
 		this.orderCommonInfo = this.orderCommonInfo.adjustPriceAndTotalQuantity(orderItems);
 	}
 
 	public void cancelSubscription() {
 		this.orderCommonInfo = this.orderCommonInfo.cancelSubscription();
+		if (this.orderItem != null) {
+			cancelSubscribeOrderItem();
+		}
 	}
 
 	public int getPeriod() {
-		return this.orderCommonInfo.getPeriod();
+		return this.orderItem.getSubscriptionInfo().getPeriod();
 	}
 
 	public boolean isSubscription() {
-		return this.orderCommonInfo.isSubscription();
+		return this.orderItem.getSubscriptionInfo().isSubscription();
 	}
 
 	public void updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
-		this.orderCommonInfo = this.orderCommonInfo.updateSubscriptionPaymentDay(paymentDay);
+		this.orderItem.getSubscriptionInfo().updatePaymentDay(paymentDay);
 	}
 
 	public ZonedDateTime getNextPaymentDay() {
-		return this.orderCommonInfo.getSubscriptionInfo().getNextPaymentDay();
+		return this.orderItem.getSubscriptionInfo().getNextPaymentDay();
 	}
 
 	public void changePeriod(int newPeriod) {
-		this.orderCommonInfo = this.orderCommonInfo.changePeriod(newPeriod);
-	}
-
-	public void setPriceToZero() {
-		this.orderCommonInfo = this.orderCommonInfo.setPriceToZero();
+		this.orderItem.getSubscriptionInfo().changePeriod(newPeriod);
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {
@@ -130,5 +142,12 @@ public class SubscriptionOrder extends BaseEntity {
 
 	public List<Long> getItemId() {
 		return Collections.singletonList(this.orderItem.getItem().getId());
+	}
+
+	private void cancelSubscribeOrderItem() {
+		SubscriptionInfo subscriptionInfo = this.orderItem.getSubscriptionInfo();
+		if (subscriptionInfo != null) {
+			subscriptionInfo.cancelSubscription();
+		}
 	}
 }

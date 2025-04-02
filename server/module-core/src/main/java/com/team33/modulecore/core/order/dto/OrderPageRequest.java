@@ -4,15 +4,16 @@ import org.springframework.data.domain.Sort.Direction;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString
 @Getter
 public class OrderPageRequest {
 
     private static final int DEFAULT_PAGE_SIZE = 7;
+    private static final Direction DEFAULT_SORT_TYPE = Direction.DESC;
     private static final int MAX_SIZE = 2000;
     private static final int MIN_SIZE = 1;
-    private static final Direction DEFAULT_SORT_TYPE = Direction.DESC;
-
     private int page = MIN_SIZE;
     private int size = DEFAULT_PAGE_SIZE;
     private Direction sort = DEFAULT_SORT_TYPE;

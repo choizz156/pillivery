@@ -62,11 +62,11 @@ public class OrderQueryController {
 		@RequestParam(defaultValue = "DESC") Direction sort
 	) {
 		OrderPageRequest orderPageRequest = OrderPageRequest.of(page, size, sort);
-
 		List<OrderItem> allSubscriptions = orderQueryService.findAllSubscriptions(userId, orderPageRequest);
 
 		List<OrderItemSimpleResponse> orderSimpleResponse =
 			orderItemMapper.toOrderSimpleResponse(allSubscriptions);
+
 
 		return new MultiResponseDto<>(
 			orderSimpleResponse,

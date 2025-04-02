@@ -33,7 +33,7 @@ public class KakaoFirstSubsApproveDispatcher extends KaKaoApproveTemplate {
 		return parameterProvider.getSubscriptionFirstPaymentApprovalParams(
 			request.getTid(),
 			request.getPgtoken(),
-			request.getOrderId()
+			request.getSubscriptionOrderId()
 		);
 	}
 }

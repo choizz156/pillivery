@@ -39,9 +39,6 @@ public class OrderItemSimpleResponse {
         return OrderItemSimpleResponse.builder()
             .orderItemId(orderItem.getId())
             .quantity(orderItem.getQuantity())
-            .period(orderItem.getOrder().getOrderCommonInfo().getSubscriptionInfo().getPeriod())
-            .nextPaymentDay(orderItem.getOrder().getOrderCommonInfo().getNextPaymentDay())
-            .subscription(orderItem.getOrder().getOrderCommonInfo().isSubscription())
             .item(ItemSimpleResponseDto.of(orderItem.getItem()))
             .build();
     }
@@ -50,9 +47,9 @@ public class OrderItemSimpleResponse {
         return OrderItemSimpleResponse.builder()
             .orderItemId(orderItem.getId())
             .quantity(orderItem.getQuantity())
-            .period(orderItem.getSubscriptionOrder().getOrderCommonInfo().getSubscriptionInfo().getPeriod())
-            .nextPaymentDay(orderItem.getSubscriptionOrder().getOrderCommonInfo().getNextPaymentDay())
-            .subscription(orderItem.getSubscriptionOrder().getOrderCommonInfo().isSubscription())
+            .period(orderItem.getSubscriptionInfo().getPeriod())
+            .nextPaymentDay(orderItem.getSubscriptionInfo().getNextPaymentDay())
+            .subscription(orderItem.getSubscriptionInfo().isSubscription())
             .item(ItemSimpleResponseDto.of(orderItem.getItem()))
             .build();
     }

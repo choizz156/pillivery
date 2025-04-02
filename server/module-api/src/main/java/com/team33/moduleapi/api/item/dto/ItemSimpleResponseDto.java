@@ -48,6 +48,7 @@ public class ItemSimpleResponseDto {
             .thumbnail(item.getThumbnailUrl())
             .product(item.getProductName())
             .originPrice(item.getOriginPrice())
+            .realPrice(item.getRealPrice())
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())
             .build();

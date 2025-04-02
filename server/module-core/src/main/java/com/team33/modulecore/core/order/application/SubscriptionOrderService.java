@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
 import com.team33.modulecore.exception.BusinessLogicException;
@@ -28,7 +27,7 @@ public class SubscriptionOrderService {
 
 		List<SubscriptionOrder> subscriptionOrders = order.getOrderItems()
 			.stream()
-			.map(orderItem -> getSubscriptionOrderToPriceZero(order, orderItem))
+			.map(orderItem -> SubscriptionOrder.create(order, orderItem))
 			.collect(Collectors.toUnmodifiableList());
 
 		return subscriptionOrderRepository.saveAll(subscriptionOrders);
@@ -58,11 +57,5 @@ public class SubscriptionOrderService {
 
 	public void updateOrderStatus(long subscriptionOrderId) {
 		findById(subscriptionOrderId).changeOrderStatus(OrderStatus.SUBSCRIBE_PAYMENT_FAIL);
-	}
-
-	private SubscriptionOrder getSubscriptionOrderToPriceZero(Order order, OrderItem orderItem) {
-		SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order, orderItem);
-		subscriptionOrder.setPriceToZero();
-		return subscriptionOrder;
 	}
 }

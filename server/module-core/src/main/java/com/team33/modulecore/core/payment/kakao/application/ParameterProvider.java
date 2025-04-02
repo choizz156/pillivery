@@ -37,9 +37,9 @@ public class ParameterProvider {
 		return addCidParam(getCommonApproveParams(tid, pgToken, orderId), ONE_TIME_CID.getValue());
 	}
 
-	public Map<String, Object> getSubscriptionFirstPaymentApprovalParams(String tid, String pgToken, Long orderId) {
+	public Map<String, Object> getSubscriptionFirstPaymentApprovalParams(String tid, String pgToken, Long subscriptionOrderId) {
 
-		return addCidParam(getCommonApproveParams(tid, pgToken, orderId), SUBSCRIPTION_CID.getValue());
+		return addCidParam(getCommonApproveParams(tid, pgToken, subscriptionOrderId), SUBSCRIPTION_CID.getValue());
 	}
 
 	public Map<String, Object> getSubscriptionPaymentApprovalParams(SubscriptionOrder subscriptionOrder) {
@@ -122,8 +122,8 @@ public class ParameterProvider {
 		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(paymentParams.getOrderId()));
 		parameters.put(PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
 		parameters.put(ITEM_NAME.getValue(), paymentParams.getItemName());
-		parameters.put(QUANTITY.getValue(), String.valueOf(paymentParams.getQuantity()));
-		parameters.put(TOTAL_AMOUNT.getValue(), String.valueOf(paymentParams.getTotalAmount()));
+		parameters.put(QUANTITY.getValue(), "0");
+		parameters.put(TOTAL_AMOUNT.getValue(), "0");
 		parameters.put(TAX_FREE_AMOUNT.getValue(), "0");
 		parameters.put(CANCEL_URL.getValue(), CANCEL_URL.getValue());
 		parameters.put(FAIL_URL.getValue(), FAIL_URL.getValue());

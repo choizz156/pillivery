@@ -54,7 +54,7 @@ public class ExceptionController {
 	) {
 
 		LOGGER.debug("methodArgumentTypeMismatchExceptionHandler => {}", e.getMessage());
-		return ApiErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage());
+		return ApiErrorResponse.of(HttpStatus.BAD_REQUEST, "잘못된 파라미터 타입입니다.");
 	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)
@@ -80,7 +80,7 @@ public class ExceptionController {
 	public ApiErrorResponse dataSaveExceptionHandler(DataSaveException e) {
 
 		LOGGER.info("DataSaveException => {}", e.getMessage());
-		return ApiErrorResponse.of("알 수 없는 오류가 발생했습니다.");
+		return ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 	}
 
 	@ExceptionHandler(SubscriptionPaymentException.class)
@@ -105,7 +105,7 @@ public class ExceptionController {
 
 		LOGGER.error("runtime exception :: {}", e.getLocalizedMessage());
 		LOGGER.error("stack trace :: {}, {}", e.getStackTrace()[0].getClassName(), e.getStackTrace()[0]);
-		return ApiErrorResponse.of("알 수 없는 오류가 발생했습니다.");
+		return ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 	}
 
 }
