@@ -44,7 +44,7 @@ class ParameterProviderTest {
 			.set("orderCommonInfo.price.totalPrice", 3000)
 			.set("orderItems", List.of())
 			.set("orderCommonInfo.receiver", null)
-			.set("orderCommonInfo.paymentToken.sid", "sid")
+			.set("orderCommonInfo.paymentToken.sid", "first")
 			.sample();
 	}
 
@@ -90,8 +90,8 @@ class ParameterProviderTest {
 				tuple(PARTNER_ORDER_ID, "1"),
 				tuple(PARTNER_USER_ID, PARTNER),
 				tuple(ITEM_NAME, "test"),
-				tuple(QUANTITY, "0"),
-				tuple(TOTAL_AMOUNT, "0"),
+				tuple(QUANTITY, "3"),
+				tuple(TOTAL_AMOUNT, "3000"),
 				tuple(TAX_FREE_AMOUNT, "0"),
 				tuple(CANCEL_URL, CANCEL_URI),
 				tuple(FAIL_URL, FAIL_URI),
@@ -147,6 +147,8 @@ class ParameterProviderTest {
 	@Test
 	void 정기_결제_승인() throws Exception {
 		//given
+
+		subscriptionOrder.addSid("sid");
 		ParameterProvider parameterProvider = new ParameterProvider();
 
 		//when

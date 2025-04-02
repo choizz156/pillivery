@@ -50,8 +50,6 @@ class SubscriptionCartServiceTest {
 	@BeforeEach
 	void setUp() {
 
-
-
 		subscriptionCartEntity = cartRepository.save(SubscriptionCartEntity.create());
 	}
 
