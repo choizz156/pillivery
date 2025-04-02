@@ -130,7 +130,7 @@ class PaymentAcceptanceTest extends ApiTest {
 			.set("next_redirect_pc_url", "url")
 			.sample();
 
-		given(kakaoSubscriptionRequestService.request(anyLong())).willReturn(sample);
+		given(kakaoRequestService.request(anyLong())).willReturn(sample);
 
 		//@formatter:off
 		given

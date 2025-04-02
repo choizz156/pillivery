@@ -19,25 +19,23 @@ import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.moduleapi.api.payment.SubscriptionCancelController;
 import com.team33.moduleapi.exception.controller.ExceptionController;
 import com.team33.modulecore.core.order.application.OrderStatusService;
-import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
+import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
 import com.team33.moduleevent.handler.SubscriptionCanceledEventHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 
+
 @ExtendWith(MockitoExtension.class)
 class SubscriptionCancelAcceptanceTest extends ApiTest {
-
-	private Order order;
 
 	@Autowired
 	private OrderStatusService orderStatusService;
 
 	@Autowired
-	private OrderCommandRepository orderCommandRepository;
+	private SubscriptionOrderRepository subscriptionOrderRepository;
 
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -46,10 +44,17 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 	private SubscriptionCanceledEventHandler subscriptionEventHandler;
 
 	private MockMvcRequestSpecification given;
-
+	private SubscriptionOrder subscriptionOrder;
 
 	@BeforeEach
 	void setUp() {
+
+		subscriptionOrder = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionOrder.class)
+			.setNull("id")
+			.setNull("orderItem")
+			.set("orderCommonInfo.paymentToken.sid", "sid")
+			.sample();
+
 		given = RestAssuredMockMvc.given()
 			.mockMvc(standaloneSetup(
 					new SubscriptionCancelController(
@@ -66,21 +71,9 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 	@Test
 	void 정기_결제_취소() throws Exception {
 		//given
-		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-			.setNull("id")
-			.setNull("user")
-			.setNull("orderItems")
-			.set("isSubscription", true)
-			.set("orderStatus", OrderStatus.SUBSCRIBE)
-			.set("totalItemsCount", 2)
-			.set("mainItemName", "testItem")
-			.set("paymentCode.tid", "tid")
-			.set("paymentCode.sid", "sid")
-			.sample();
+		subscriptionOrderRepository.save(subscriptionOrder);
 
-		orderCommandRepository.save(order);
-
-		//when
+		//when then
 		//@formatter:off
 		given
 		.when()
@@ -96,19 +89,8 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 	@Test
 	void 정기_결제_취소_예외() throws Exception {
 		//given
-		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
-			.setNull("id")
-			.setNull("user")
-			.setNull("orderItems")
-			.set("isSubscription", true)
-			.set("orderStatus", OrderStatus.SUBSCRIBE)
-			.set("totalItemsCount", 2)
-			.set("mainItemName", "testItem")
-			.set("paymentCode.tid", "tid")
-			.setNull("paymentCode.sid")
-			.sample();
-
-		orderCommandRepository.save(order);
+		subscriptionOrder.addSid(null);
+		subscriptionOrderRepository.save(subscriptionOrder);
 
 		//@formatter:off
 		given
@@ -116,7 +98,7 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 			.post("/api/payments/subscriptions/cancel/{orderId}", 1)
 		.then()
 			.log().all()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.body(containsString("알 수 없는 오류가 발생했습니다."));
 		//@formatter:on
 	}

@@ -6,16 +6,18 @@ import static org.hamcrest.Matchers.*;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.api.order.dto.OrderPostDto;
 import com.team33.moduleapi.api.order.dto.OrderPostListDto;
 import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.Image;
 import com.team33.modulecore.core.item.domain.Information;
@@ -25,14 +27,18 @@ import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderItemService;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
+import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
+
 class OrderQueryAcceptanceTest extends ApiTest {
+
 	@Autowired
 	private ItemCommandRepository itemCommandRepository;
 
@@ -43,10 +49,19 @@ class OrderQueryAcceptanceTest extends ApiTest {
 	private OrderItemService orderItemService;
 
 	@Autowired
+	private SubscriptionOrderService subscriptionOrderService;
+
+	@Autowired
+	private SubscriptionOrderRepository subscriptionOrderRepository;
+
+	@Autowired
 	private OrderItemMapper orderItemMapper;
 
 	@Autowired
 	private OrderCreateService orderCreateService;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	@DisplayName("일반 주문 정보를 조회하여 api 응답을 보낼 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
@@ -76,7 +91,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.body("data[0].firstItem.thumbnail", equalTo("thumbnailUrl"))
 			.body("data[0].firstItem.product", equalTo("16종혼합유산균 디에스"))
 			.body("data[0].firstItem.originPrice", equalTo(10000))
-			.body("data[0].firstItem.realPrice", equalTo(0))
+			.body("data[0].firstItem.realPrice", equalTo(10000))
 			.body("data[0].firstItem.discountRate", equalTo(0.0f))
 			.body("data[0].firstItem.discountPrice", equalTo(0))
 
@@ -88,6 +103,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.body("pageInfo.totalPages", equalTo(1));
 	}
 
+
 	@DisplayName("구독 주문 정보를 가지고 올 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
 	@Test
@@ -98,7 +114,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 
 
 		given()
-			.queryParam("userId", 1)
+			.queryParam("userId", 1L)
 			.header("Authorization", getToken())
 			.log().all()
 			.when()
@@ -116,7 +132,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.body("data[0].item.thumbnail", equalTo("thumbnailUrl"))
 			.body("data[0].item.product", equalTo("종혼합유산균 디에스2"))
 			.body("data[0].item.originPrice", equalTo(10000))
-			.body("data[0].item.realPrice", equalTo(0))
+			.body("data[0].item.realPrice", equalTo(10000))
 			.body("data[0].item.discountRate", equalTo(0.0f))
 			.body("data[0].item.discountPrice", equalTo(0))
 			.body("data[1].period", equalTo(60))
@@ -126,7 +142,6 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.body("pageInfo.size", equalTo(8))
 			.body("pageInfo.totalElements", equalTo(4))
 			.body("pageInfo.totalPages", equalTo(1));
-
 	}
 
 	@DisplayName("특정 주문을 조회하여 api 응답을 받을 수 있다.")
@@ -145,45 +160,44 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
 			.body("data.orderId", is(1))
-            .body("data.totalItems", is(2))
-            .body("data.totalPrice", is(20000))
-            .body("data.totalDiscountPrice", is(0))
-            .body("data.expectPrice", is(20000))
-            .body("data.subscription", is(false))
-            .body("data.itemOrders[0].orderItemId", is(1))
-            .body("data.itemOrders[0].quantity", is(1))
-            .body("data.itemOrders[0].period", is(0))
-            .body("data.itemOrders[0].subscription", is(false))
-            .body("data.itemOrders[0].item.itemId", is(1))
-            .body("data.itemOrders[0].item.enterprise", is("(주)씨티씨바이오"))
-            .body("data.itemOrders[0].item.thumbnail", is("thumbnailUrl"))
-            .body("data.itemOrders[0].item.product", is("16종혼합유산균 디에스"))
-            .body("data.itemOrders[0].item.originPrice", is(10000))
-            .body("data.itemOrders[0].item.realPrice", is(0))
-            .body("data.itemOrders[0].item.discountRate", is(0.0f))
-            .body("data.itemOrders[0].item.discountPrice", is(0))
-            .body("data.itemOrders[1].orderItemId", is(2))
-            .body("data.itemOrders[1].quantity", is(1))
-            .body("data.itemOrders[1].period", is(0))
-            .body("data.itemOrders[1].subscription", is(false))
-            .body("data.itemOrders[1].item.itemId", is(2))
-            .body("data.itemOrders[1].item.enterprise", is("(주)씨티씨바이오"))
-            .body("data.itemOrders[1].item.thumbnail", is("thumbnailUrl"))
-            .body("data.itemOrders[1].item.product", is("종혼합유산균 디에스2"))
-            .body("data.itemOrders[1].item.originPrice", is(10000))
-            .body("data.itemOrders[1].item.realPrice", is(0))
-            .body("data.itemOrders[1].item.discountRate", is(0.0f))
-            .body("data.itemOrders[1].item.discountPrice", is(0))
-            .body("data.orderStatus", is("COMPLETE"))
-            .body("data.createdAt", notNullValue())
-            .body("data.updatedAt", notNullValue())
-            .body("data.totalQuantity", is(2))
-            .body("data.receiver.realName", is("홍길동"))
-            .body("data.receiver.phone", is("010-1111-1111"))
-            .body("data.receiver.address.city", is("서울"))
-            .body("data.receiver.address.detailAddress", is("101 번지"))
-            .body("createTime", notNullValue());
-
+			.body("data.totalItems", is(2))
+			.body("data.totalPrice", is(20000))
+			.body("data.totalDiscountPrice", is(0))
+			.body("data.expectPrice", is(20000))
+			.body("data.subscription", is(false))
+			.body("data.itemOrders[0].orderItemId", is(1))
+			.body("data.itemOrders[0].quantity", is(1))
+			.body("data.itemOrders[0].period", is(0))
+			.body("data.itemOrders[0].subscription", is(false))
+			.body("data.itemOrders[0].item.itemId", is(1))
+			.body("data.itemOrders[0].item.enterprise", is("(주)씨티씨바이오"))
+			.body("data.itemOrders[0].item.thumbnail", is("thumbnailUrl"))
+			.body("data.itemOrders[0].item.product", is("16종혼합유산균 디에스"))
+			.body("data.itemOrders[0].item.originPrice", is(10000))
+			.body("data.itemOrders[0].item.realPrice", is(10000))
+			.body("data.itemOrders[0].item.discountRate", is(0.0f))
+			.body("data.itemOrders[0].item.discountPrice", is(0))
+			.body("data.itemOrders[1].orderItemId", is(2))
+			.body("data.itemOrders[1].quantity", is(1))
+			.body("data.itemOrders[1].period", is(0))
+			.body("data.itemOrders[1].subscription", is(false))
+			.body("data.itemOrders[1].item.itemId", is(2))
+			.body("data.itemOrders[1].item.enterprise", is("(주)씨티씨바이오"))
+			.body("data.itemOrders[1].item.thumbnail", is("thumbnailUrl"))
+			.body("data.itemOrders[1].item.product", is("종혼합유산균 디에스2"))
+			.body("data.itemOrders[1].item.originPrice", is(10000))
+			.body("data.itemOrders[1].item.realPrice", is(10000))
+			.body("data.itemOrders[1].item.discountRate", is(0.0f))
+			.body("data.itemOrders[1].item.discountPrice", is(0))
+			.body("data.orderStatus", is("COMPLETE"))
+			.body("data.createdAt", notNullValue())
+			.body("data.updatedAt", notNullValue())
+			.body("data.totalQuantity", is(2))
+			.body("data.receiver.realName", is("홍길동"))
+			.body("data.receiver.phone", is("010-1111-1111"))
+			.body("data.receiver.address.city", is("서울"))
+			.body("data.receiver.address.detailAddress", is("101 번지"))
+			.body("createTime", notNullValue());
 
 	}
 
@@ -197,9 +211,12 @@ class OrderQueryAcceptanceTest extends ApiTest {
 		List<OrderItem> orderItems = orderItemService.convertToOrderItems(orderItemPostDto);
 
 		Order order = orderCreateService.callOrder(orderItems, orderContext);
-
 		order.changeOrderStatus(orderStatus);
 		orderCommandRepository.save(order);
+
+		if (postListDto.isSubscription()) {
+			subscriptionOrderService.create(order);
+		}
 	}
 
 	private OrderPostListDto 주문_정보(boolean subscription, int period) {
@@ -234,6 +251,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 		String productName,
 		CategoryName categoryName
 	) {
+
 		Information information = Information.builder()
 			.enterprise("(주)씨티씨바이오")
 			.productName(productName)
@@ -255,7 +273,7 @@ class OrderQueryAcceptanceTest extends ApiTest {
 				"4. 납(mg/kg) : 1.0 이하\n" +
 				"5. 카드뮴(mg/kg) : 0.3 이하")
 			.image(new Image("thumbnailUrl", "descriptionImage"))
-			.price(new Price(10000, 0))
+			.price(new Price(10000, 0.0))
 			.build();
 
 		Item item = Item.builder()

@@ -79,7 +79,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				"1. 성상 : 고유의 향미가 있고 이미, 이취가 없는 흰노란색의 분말\n2. 프로바이오틱스 수 : 200,000,000,000(2000억) CFU/g 이상\n3. 대장균군 : 음성\n4. 납(mg/kg) : 1.0 이하\n5. 카드뮴(mg/kg) : 0.3 이하"))
 			.body("data.realPrice", equalTo(9000))
 			.body("data.originPrice", equalTo(10000))
-			.body("data.discountRate", equalTo(10.0f))
+			.body("data.discountRate", equalTo(0.1f))
 			.body("data.discountPrice", equalTo(1000))
 			.body("data.sales", equalTo(0))
 			.body("data.starAvg", equalTo(0.0f))
@@ -222,6 +222,48 @@ class ItemQueryAcceptanceTest extends ApiTest {
 		}
 	}
 
+	private void 아이템_저장(
+		String productName,
+		int originPrice,
+		double discountRate,
+		CategoryName categoryName,
+		String enterprise
+	) {
+		Information information = Information.builder()
+			.enterprise(enterprise)
+			.productName(productName)
+			.statementNumber("20040017059225")
+			.registeredDate("20220225")
+			.distributionPeriod("제조일로부터 24개월까지")
+			.sungsang("고유의 향미가 있고 이미, 이취가 없는 흰노란색의 분말")
+			.servingUse("건강기능식품 원료로 사용")
+			.preservePeriod("냉장보관(10℃이하)")
+			.intake("- 질환이 있거나 의약품 복용 시 전문가와 상담할 것\n" +
+				"- 알레르기 체질 등은 개인에 따라 과민반응을 나타낼 수 있음\n" +
+				"- 어린이가 함부로 섭취하지 않도록 일일섭취량 방법을 지도할 것\n" +
+				"- 이상사례 발생 시 섭취를 중단하고 전문가와 상담할 것\n" +
+				"- 원료로 사용 시 개봉 후 오염 우려가 있으니 신속하게 사용하고 남은 것은 밀봉 후 냉장보관할 것")
+			.mainFunction("[프로바이오틱스] 유산균 증식 및 유해균 억제･배변활동 원활･장 건강에 도움을 줄 수 있음")
+			.baseStandard("1. 성상 : 고유의 향미가 있고 이미, 이취가 없는 흰노란색의 분말\n" +
+				"2. 프로바이오틱스 수 : 200,000,000,000(2000억) CFU/g 이상\n" +
+				"3. 대장균군 : 음성\n" +
+				"4. 납(mg/kg) : 1.0 이하\n" +
+				"5. 카드뮴(mg/kg) : 0.3 이하")
+			.image(new Image("thumbnailUrl", "descriptionImage"))
+			.price(new Price(originPrice, discountRate))
+			.build();
+
+		Item item = Item.builder()
+			.information(information)
+			.statistics(new Statistic())
+			.build();
+
+		item.addIncludedCategories(Set.of(categoryName));
+		item.getItemCategory().add(categoryName);
+
+		itemCommandRepository.save(item);
+	}
+
 	@Nested
 	@DisplayName("아이템 조회 필터링 api 테스트")
 	class ItemSearch {
@@ -251,7 +293,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("data[0].baseStandard", equalTo(
 					"1. 성상 : 고유의 향미가 있고 이미, 이취가 없는 흰노란색의 분말\n2. 프로바이오틱스 수 : 200,000,000,000(2000억) CFU/g 이상\n3. 대장균군 : 음성\n4. 납(mg/kg) : 1.0 이하\n5. 카드뮴(mg/kg) : 0.3 이하"))
 				.body("data[0].realPrice", equalTo(9000))
-				.body("data[0].discountRate", equalTo(10.0f))
+				.body("data[0].discountRate", equalTo(0.1f))
 				.body("data[0].discountPrice", equalTo(1000))
 				.body("data[0].sales", equalTo(0))
 				.body("data[0].starAvg", equalTo(0.0f))
@@ -349,7 +391,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 			아이템_저장("16종혼합유산균 디에스3", 13000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스4", 14000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
 			아이템_저장("16종혼합유산균 디에스5", 15000, 0, CategoryName.INTESTINE, "(주)씨티씨바이오");
-			
+
 			//when
 			given()
 				.queryParam("page", 1)
@@ -496,48 +538,6 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("pageInfo.totalElements", equalTo(5))
 				.body("pageInfo.totalPages", equalTo(1));
 		}
-	}
-
-	private void 아이템_저장(
-		String productName,
-		int originPrice,
-		double discountRate,
-		CategoryName categoryName,
-		String enterprise
-	) {
-		Information information = Information.builder()
-			.enterprise(enterprise)
-			.productName(productName)
-			.statementNumber("20040017059225")
-			.registeredDate("20220225")
-			.distributionPeriod("제조일로부터 24개월까지")
-			.sungsang("고유의 향미가 있고 이미, 이취가 없는 흰노란색의 분말")
-			.servingUse("건강기능식품 원료로 사용")
-			.preservePeriod("냉장보관(10℃이하)")
-			.intake("- 질환이 있거나 의약품 복용 시 전문가와 상담할 것\n" +
-				"- 알레르기 체질 등은 개인에 따라 과민반응을 나타낼 수 있음\n" +
-				"- 어린이가 함부로 섭취하지 않도록 일일섭취량 방법을 지도할 것\n" +
-				"- 이상사례 발생 시 섭취를 중단하고 전문가와 상담할 것\n" +
-				"- 원료로 사용 시 개봉 후 오염 우려가 있으니 신속하게 사용하고 남은 것은 밀봉 후 냉장보관할 것")
-			.mainFunction("[프로바이오틱스] 유산균 증식 및 유해균 억제･배변활동 원활･장 건강에 도움을 줄 수 있음")
-			.baseStandard("1. 성상 : 고유의 향미가 있고 이미, 이취가 없는 흰노란색의 분말\n" +
-				"2. 프로바이오틱스 수 : 200,000,000,000(2000억) CFU/g 이상\n" +
-				"3. 대장균군 : 음성\n" +
-				"4. 납(mg/kg) : 1.0 이하\n" +
-				"5. 카드뮴(mg/kg) : 0.3 이하")
-			.image(new Image("thumbnailUrl", "descriptionImage"))
-			.price(new Price(originPrice, discountRate))
-			.build();
-
-		Item item = Item.builder()
-			.information(information)
-			.statistics(new Statistic())
-			.build();
-
-		item.addIncludedCategories(Set.of(categoryName));
-		item.getItemCategory().add(categoryName);
-
-		itemCommandRepository.save(item);
 	}
 
 }
