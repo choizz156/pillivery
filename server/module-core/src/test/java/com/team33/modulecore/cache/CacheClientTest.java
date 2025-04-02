@@ -1,6 +1,5 @@
 package com.team33.modulecore.cache;
 
-import static com.team33.modulecore.cache.RedisCacheKey.*;
 import static com.team33.modulecore.core.category.domain.CategoryName.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -43,9 +42,6 @@ import com.team33.moduleredis.config.EmbededRedisConfig;
 @ContextConfiguration(classes = EmbededRedisConfig.class)
 @SpringBootTest
 class CacheClientTest {
-
-	// @Autowired
-	// private RedisTemplate<String, Object> redisTemplate;
 
 	@Autowired
 	private RedissonClient redissonClient;

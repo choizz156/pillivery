@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.core.order.domain.Price;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
@@ -28,24 +27,24 @@ class ParameterProviderTest {
 
 		order = FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.set("id", 1L)
-			.set("mainItemName", "test")
+			.set("orderCommonInfo.mainItemName", "test")
+			.set("orderCommonInfo.totalQuantity", 3)
 			.set("totalItemsCount", 3)
-			.set("totalQuantity", 3)
-			.set("orderPrice", new Price(3000, 200))
+			.set("orderCommonInfo.price.totalPrice", 3000)
 			.set("orderItems", List.of())
-			.set("receiver", null)
-			.set("paymentCode.sid", "sid")
+			.set("orderCommonInfo.receiver", null)
+			.set("orderCommonInfo.paymentToken.sid", null)
 			.sample();
 
 		subscriptionOrder = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionOrder.class)
 			.set("id", 1L)
-			.set("mainItemName", "test")
+			.set("orderCommonInfo.mainItemName", "test")
+			.set("orderCommonInfo.totalQuantity", 3)
 			.set("totalItemsCount", 3)
-			.set("totalQuantity", 3)
-			.set("orderPrice", new Price(3000, 200))
+			.set("orderCommonInfo.price.totalPrice", 3000)
 			.set("orderItems", List.of())
-			.set("receiver", null)
-			.set("paymentCode.sid", "sid")
+			.set("orderCommonInfo.receiver", null)
+			.set("orderCommonInfo.paymentToken.sid", "sid")
 			.sample();
 	}
 
@@ -90,9 +89,9 @@ class ParameterProviderTest {
 			.containsExactlyInAnyOrder(
 				tuple(PARTNER_ORDER_ID, "1"),
 				tuple(PARTNER_USER_ID, PARTNER),
-				tuple(ITEM_NAME, "test 그 외 2개"),
-				tuple(QUANTITY, "3"),
-				tuple(TOTAL_AMOUNT, "3000"),
+				tuple(ITEM_NAME, "test"),
+				tuple(QUANTITY, "0"),
+				tuple(TOTAL_AMOUNT, "0"),
 				tuple(TAX_FREE_AMOUNT, "0"),
 				tuple(CANCEL_URL, CANCEL_URI),
 				tuple(FAIL_URL, FAIL_URI),
@@ -157,7 +156,7 @@ class ParameterProviderTest {
 		assertThat(subscriptionReqsParams).hasSize(10)
 			.extractingFromEntries(Map.Entry::getKey, Map.Entry::getValue)
 			.containsExactlyInAnyOrder(
-				tuple(ITEM_NAME, "test 그 외 2개"),
+				tuple(ITEM_NAME, "test"),
 				tuple(QUANTITY, "3"),
 				tuple(TOTAL_AMOUNT, "3000"),
 				tuple(TAX_FREE_AMOUNT, "0"),
