@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class PaymentToken {
 
-	private String sid;
+	private static final String NOT_REGISTER_SUBSCRIPTION_YET = "not_register_subscription_yet";
+    
+    private String sid = NOT_REGISTER_SUBSCRIPTION_YET;
 
 	private String tid;
 

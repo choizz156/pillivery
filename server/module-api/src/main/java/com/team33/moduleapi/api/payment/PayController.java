@@ -51,7 +51,7 @@ public class PayController {
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/subscriptions/{subscriptionOrderId}")
+	@PostMapping("/subscriptionsFirst/{subscriptionOrderId}")
 	public SingleResponseDto<KaKaoPayNextUrlDto> requestSid(
 		@PathVariable long subscriptionOrderId
 	) {
@@ -94,7 +94,7 @@ public class PayController {
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approveResponse));
 	}
 
-	@PostMapping("/approve/subscriptions/{subscriptionOrderId}")
+	@PostMapping("/approve/subscriptionsFirst/{subscriptionOrderId}")
 	public SingleResponseDto<KaKaoApproveResponseDto> subscription(
 		@PathVariable long subscriptionOrderId
 	) {

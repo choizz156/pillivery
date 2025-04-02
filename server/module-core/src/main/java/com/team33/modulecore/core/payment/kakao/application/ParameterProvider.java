@@ -37,7 +37,8 @@ public class ParameterProvider {
 		return addCidParam(getCommonApproveParams(tid, pgToken, orderId), ONE_TIME_CID.getValue());
 	}
 
-	public Map<String, Object> getSubscriptionFirstPaymentApprovalParams(String tid, String pgToken, Long subscriptionOrderId) {
+	public Map<String, Object> getSubscriptionFirstPaymentApprovalParams(String tid, String pgToken,
+		Long subscriptionOrderId) {
 
 		return addCidParam(getCommonApproveParams(tid, pgToken, subscriptionOrderId), SUBSCRIPTION_CID.getValue());
 	}
@@ -48,7 +49,6 @@ public class ParameterProvider {
 		params.put(Params.SID.getValue(), subscriptionOrder.getSid());
 		return addCidParam(params, SUBSCRIPTION_CID.getValue());
 	}
-
 
 	public Map<String, Object> getPaymentRefundParams(RefundContext refundContext, String tid) {
 
@@ -119,20 +119,26 @@ public class ParameterProvider {
 
 	private Map<String, Object> getCommonReqsParams(PaymentParams paymentParams) {
 
+		String totalAmount = calculateTotalAmount(paymentParams);
+
 		Map<String, Object> parameters = new ConcurrentHashMap<>();
 		parameters.put(PARTNER_ORDER_ID.getValue(), String.valueOf(paymentParams.getOrderId()));
 		parameters.put(PARTNER_USER_ID.getValue(), Params.PARTNER.getValue());
 		parameters.put(ITEM_NAME.getValue(), paymentParams.getItemName());
-		parameters.put(QUANTITY.getValue(),
-			paymentParams.getSid() == null ? String.valueOf(paymentParams.getQuantity()) : "0"
-		);
-		parameters.put(TOTAL_AMOUNT.getValue(), 
-			paymentParams.getSid() == null ? 	String.valueOf(paymentParams.getTotalAmount()) : "0"
-		);
+		parameters.put(QUANTITY.getValue(), String.valueOf(paymentParams.getQuantity()));
+		parameters.put(TOTAL_AMOUNT.getValue(), totalAmount);
 		parameters.put(TAX_FREE_AMOUNT.getValue(), "0");
 		parameters.put(CANCEL_URL.getValue(), CANCEL_URI.getValue());
 		parameters.put(FAIL_URL.getValue(), FAIL_URI.getValue());
 		return parameters;
+	}
+
+	private String calculateTotalAmount(PaymentParams paymentParams) {
+		String firstYet = "not_register_subscription_yet";
+		String sid = paymentParams.getSid();
+		return firstYet.equals(sid)
+			? "0"
+			: String.valueOf(paymentParams.getTotalAmount());
 	}
 
 	private Map<String, Object> getCommonApproveParams(String tid, String pgToken, Long orderId) {

@@ -32,7 +32,7 @@ public class SubscriptionRegisterHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	public static final String HOST = "https://localhost:8080";
-	private static final String URL = HOST + "/api/payments/subscriptions/";
+	private static final String URL = HOST + "/api/payments/subscriptionsFirst/";
 
 	private final SubscriptionOrderService subscriptionOrderService;
 	private final EventRepository eventRepository;
