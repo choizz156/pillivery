@@ -16,6 +16,7 @@ import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUp
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
+import java.util.List;
 
 class KakaoSubsApproveServiceTest {
 
@@ -32,10 +33,9 @@ class KakaoSubsApproveServiceTest {
 		subscriptionApprove = mock(SubscriptionApprove.class);
 
 		kakaoSubsApproveService = new KakaoSubsApproveService(
-			applicationEventPublisher,
-			kakaoFirstSubsApproveDispatcher,
-			subscriptionApprove
-		);
+				applicationEventPublisher,
+				kakaoFirstSubsApproveDispatcher,
+				subscriptionApprove);
 	}
 
 	@Test
@@ -44,17 +44,16 @@ class KakaoSubsApproveServiceTest {
 		// given
 		long subscriptionOrderId = 1L;
 		KakaoApproveRequest request = KakaoApproveRequest.builder()
-			.tid("tid")
-			.pgtoken("pg_token")
-			.subscriptionOrderId(subscriptionOrderId)
-			.build();
+				.tid("tid")
+				.pgtoken("pg_token")
+				.subscriptionOrderId(subscriptionOrderId)
+				.build();
 
-		KakaoApiApproveResponse apiResponse =new KakaoApiApproveResponse();
+		KakaoApiApproveResponse apiResponse = new KakaoApiApproveResponse();
 
 		when(kakaoFirstSubsApproveDispatcher.approveFirstSubscription(request)).thenReturn(apiResponse);
 
-		ArgumentCaptor<PaymentDateUpdatedEvent> eventCaptor =
-			ArgumentCaptor.forClass(PaymentDateUpdatedEvent.class);
+		ArgumentCaptor<PaymentDateUpdatedEvent> eventCaptor = ArgumentCaptor.forClass(PaymentDateUpdatedEvent.class);
 
 		// when
 		KakaoApproveResponse response = kakaoSubsApproveService.approveInitially(request);
@@ -76,31 +75,30 @@ class KakaoSubsApproveServiceTest {
 		// given
 		SubscriptionOrder subscriptionOrder = mock(SubscriptionOrder.class);
 		long subscriptionOrderId = 1L;
-		when(subscriptionOrder.getId()).thenReturn( subscriptionOrderId);
+		long itemId = 1L;
+		List<Long> itemIds = List.of(itemId);
+
+		when(subscriptionOrder.getId()).thenReturn(subscriptionOrderId);
+		when(subscriptionOrder.getItemId()).thenReturn(itemIds);
 
 		KakaoApiApproveResponse apiResponse = new KakaoApiApproveResponse();
 
 		when(subscriptionApprove.approveSubscription(subscriptionOrder)).thenReturn(apiResponse);
 
-		ArgumentCaptor<PaymentDateUpdatedEvent> paymentCaptor =
-			ArgumentCaptor.forClass(PaymentDateUpdatedEvent.class);
-
-		ArgumentCaptor<ItemSaleCountedEvent> itemEventCaptor =
-			ArgumentCaptor.forClass(ItemSaleCountedEvent.class);
-
 		// when
 		KakaoApproveResponse response = kakaoSubsApproveService.approveSubscribe(subscriptionOrder);
 
+		ArgumentCaptor<Object> eventCaptor = ArgumentCaptor.forClass(Object.class);
+
 		// then
 		verify(subscriptionApprove, times(1)).approveSubscription(subscriptionOrder);
-		verify(applicationEventPublisher, times(1)).publishEvent(paymentCaptor.capture());
-		verify(applicationEventPublisher, times(1)).publishEvent(itemEventCaptor.capture());
+		verify(applicationEventPublisher, times(2)).publishEvent(eventCaptor.capture());
 
-		PaymentDateUpdatedEvent paymentCaptorValue = paymentCaptor.getValue();
-		assertThat(paymentCaptorValue.getSubscriptionOrderId()).isEqualTo(subscriptionOrderId);
+		List<Object> capturedEvents = eventCaptor.getAllValues();
 
-		ItemSaleCountedEvent itemEventCaptorValue = itemEventCaptor.getValue();
-		assertThat(itemEventCaptorValue.getItemId()).isEqualTo(subscriptionOrderId);
+		assertThat(capturedEvents).hasSize(2);
+		assertThat(capturedEvents.get(0)).isInstanceOf(PaymentDateUpdatedEvent.class);
+		assertThat(capturedEvents.get(1)).isInstanceOf(ItemSaleCountedEvent.class);
 
 		assertThat(response).isNotNull();
 	}

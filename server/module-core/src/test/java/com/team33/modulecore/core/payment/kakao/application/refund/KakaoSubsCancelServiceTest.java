@@ -33,13 +33,12 @@ class KakaoSubsCancelServiceTest {
 		Map<String, Object> cancelParams = new HashMap<>();
 		cancelParams.put(Params.SID.getValue(), sid);
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		String params = objectMapper.writeValueAsString(cancelParams);
-
 		when(subscriptionOrder.getSid()).thenReturn(sid);
 		when(subscriptionOrder.getId()).thenReturn(1L);
 		when(parameterProvider.getSubsCancelParams(sid)).thenReturn(cancelParams);
-		when(objectMapper.writeValueAsString(cancelParams)).thenReturn(params);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String params = objectMapper.writeValueAsString(cancelParams);
 
 		KakaoSubsCancelService kakaoSubsCancelService = new KakaoSubsCancelService(
 			applicationEventPublisher,
@@ -55,7 +54,6 @@ class KakaoSubsCancelServiceTest {
 		// then
 		verify(subscriptionOrder, times(1)).getSid();
 		verify(parameterProvider, times(1)).getSubsCancelParams(sid);
-		verify(objectMapper, times(1)).writeValueAsString(cancelParams);
 		verify(applicationEventPublisher, times(1)).publishEvent(eventCaptor.capture());
 
 		KakaoSubsCanceledEvent capturedEvent = eventCaptor.getValue();

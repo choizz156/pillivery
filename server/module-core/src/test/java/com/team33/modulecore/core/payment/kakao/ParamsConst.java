@@ -8,6 +8,7 @@ public abstract class ParamsConst {
     protected static final String PARTNER = "pillivery";
     protected static final String ONE_TIME_APPROVAL_URL = "http://localhost:8080/api/payments/approve";
     protected static final String SUBSCRIPTION_APPROVAL_URI = "http://localhost:8080/api/payments/approve/subscriptions";
+    protected static final String SUBSCRIPTION_APPROVAL_FIRST_URI = "http://localhost:8080/api/payments/approve/subscriptionsFirst";
     protected static final String CANCEL_URI = "http://localhost:8080/api/payments/cancel";
     protected static final String FAIL_URI = "http://localhost:8080/api/payments/fail";
     protected static final String ONE_TIME_CID = "TC0ONETIME";

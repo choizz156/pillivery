@@ -96,7 +96,7 @@ class ParameterProviderTest {
 				tuple(CANCEL_URL, CANCEL_URI),
 				tuple(FAIL_URL, FAIL_URI),
 				tuple(CID, SUBSCRIP_CID),
-				tuple(APPROVAL_URL, SUBSCRIPTION_APPROVAL_URI + "/1")
+				tuple(APPROVAL_URL, SUBSCRIPTION_APPROVAL_FIRST_URI + "/1")
 			);
 	}
 

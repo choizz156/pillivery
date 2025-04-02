@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RHyperLogLog;
@@ -47,24 +48,30 @@ class CacheClientTest {
 	@Autowired
 	private RedissonClient redissonClient;
 
+	@BeforeEach
+	void setUp() {
+
+		redissonClient.getMapCache(CACHE_MAIN_ITEMS.name()).clear();
+		redissonClient.getMapCache(CATEGORY_ITEM.name()).clear();
+	}
+
 	@DisplayName("메인 상품이 캐시되지 않았을 경우 캐싱을 한다.")
 	@Test
 	void 할인_캐싱_x() throws Exception {
 
-		//given
+		// given
 		ItemQueryRepository itemQueryRepository = mock(ItemQueryRepository.class);
 		when(itemQueryRepository.findItemsWithDiscountRateMain()).thenReturn(
 			List.of(ItemQueryDto.builder()
 				.enterprise("test")
-				.build())
-		);
+				.build()));
 
 		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
-		//when
+		// when
 		CachedMainItems result = cacheClient.getMainDiscountItem();
 
-		//then
+		// then
 		List<ItemQueryDto> mainItems = result.getCachedItems();
 
 		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache(CACHE_MAIN_ITEMS.name());
@@ -78,19 +85,20 @@ class CacheClientTest {
 			.extracting("enterprise")
 			.contains("test");
 
+		verify(itemQueryRepository, times(1)).findItemsWithDiscountRateMain();
+
 		assertThat(mainItems).usingRecursiveComparison().isEqualTo(cachedMainItem.getCachedItems());
 	}
 
 	@DisplayName("캐싱돼 있는 아이템이 있는 경우 db를 거치지 않는다.")
 	@Test
 	void 할인_캐싱_o() throws Exception {
-		//given
+		// given
 		ItemQueryRepository itemQueryRepository = mock(ItemQueryRepository.class);
 		when(itemQueryRepository.findItemsWithDiscountRateMain()).thenReturn(
 			List.of(ItemQueryDto.builder()
 				.enterprise("test")
-				.build())
-		);
+				.build()));
 
 		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache(CACHE_MAIN_ITEMS.name());
 
@@ -98,16 +106,15 @@ class CacheClientTest {
 			CachedMainItems.of(
 				List.of(ItemQueryDto.builder()
 					.enterprise("test")
-					.build()
-				)
-			), 7, TimeUnit.DAYS);
+					.build())),
+			7, TimeUnit.DAYS);
 
 		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
-		//when
+		// when
 		CachedMainItems mainItems = cacheClient.getMainDiscountItem();
 
-		//then
+		// then
 		assertThat(mainItems.getCachedItems()).hasSize(1)
 			.extracting("enterprise")
 			.contains("test");
@@ -118,7 +125,7 @@ class CacheClientTest {
 	@DisplayName("카테고리별 아이템들이 캐싱되지 않았을 경우 캐싱한다. 8개")
 	@Test
 	void 카테고리_캐싱_x() throws Exception {
-		//given
+		// given
 		List<ItemQueryDto> itemQueryDtos = FixtureMonkeyFactory.get().giveMeBuilder(ItemQueryDto.class)
 			.set("categories", new Categories(Set.of(EYE)))
 			.sampleList(8);
@@ -126,42 +133,46 @@ class CacheClientTest {
 		Page<ItemQueryDto> page = PageableExecutionUtils.getPage(
 			itemQueryDtos,
 			PageRequest.of(0, 8),
-			() -> 100
-		);
+			() -> 100);
 
-		//given
+		// given
 		ItemQueryRepository itemQueryRepository = mock(ItemQueryRepository.class);
 		when(itemQueryRepository.findItemsByCategory(
 			any(CategoryName.class),
 			eq(""),
 			any(PriceFilter.class),
-			any(ItemPage.class))
-		)
+			any(ItemPage.class)))
 			.thenReturn(page);
 
 		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
-		//when
-		CachedCategoryItems<ItemQueryDto> categoryItems =
-			cacheClient.getCategoryItems(EYE, "", new PriceFilter(), new ItemPage());
+		// when
+		CachedCategoryItems<ItemQueryDto> categoryItems = cacheClient.getCategoryItems(EYE, "", new PriceFilter(),
+			new ItemPage());
 
-		//then
 		List<ItemQueryDto> content = categoryItems.getContent();
 		RMapCache<String, CachedCategoryItems<ItemQueryDto>> cachedCategoryItems =
 			redissonClient.getMapCache(CATEGORY_ITEM.name());
 
+		// then
 		long ttl = cachedCategoryItems.remainTimeToLive("EYE");
 		long remainingDay = TimeUnit.MILLISECONDS.toDays(ttl);
 
 		assertThat(remainingDay).isEqualTo(2L);
 		assertThat(cachedCategoryItems.get("EYE")).isInstanceOf(CachedCategoryItems.class);
 		assertThat(content).hasSize(8).doesNotContainNull();
+
+		verify(itemQueryRepository, times(1)).findItemsByCategory(
+			eq(EYE), // Use eq() matcher for specific values
+			eq(""),
+			any(PriceFilter.class),
+			any(ItemPage.class));
 	}
 
 	@DisplayName("카테고리별 아이템들이 캐싱되어 있을 경우 db를 거치지 않는다.")
 	@Test
 	void 카테고리_캐싱_o() throws Exception {
-		//given
+		// given
 		List<ItemQueryDto> itemQueryDtos = FixtureMonkeyFactory.get().giveMeBuilder(ItemQueryDto.class)
 			.set("categories", new Categories(Set.of(EYE)))
 			.sampleList(8);
@@ -169,8 +180,7 @@ class CacheClientTest {
 		Page<ItemQueryDto> page = PageableExecutionUtils.getPage(
 			itemQueryDtos,
 			PageRequest.of(0, 8),
-			() -> 100
-		);
+			() -> 100);
 
 		ItemQueryRepository itemQueryRepository = mock(ItemQueryRepository.class);
 		when(itemQueryRepository.findItemsByCategory(any(CategoryName.class), eq(""), any(PriceFilter.class),
@@ -183,11 +193,11 @@ class CacheClientTest {
 
 		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
 
-		//when
-		CachedCategoryItems<ItemQueryDto> categoryItems =
-			cacheClient.getCategoryItems(EYE, "", new PriceFilter(), new ItemPage());
+		// when
+		CachedCategoryItems<ItemQueryDto> categoryItems = cacheClient.getCategoryItems(EYE, "", new PriceFilter(),
+			new ItemPage());
 
-		//then
+		// then
 		List<ItemQueryDto> content = categoryItems.getContent();
 
 		long ttl = cachedCategoryItems.remainTimeToLive("EYE");
@@ -204,7 +214,7 @@ class CacheClientTest {
 	@DisplayName("특정 아이템들의 조회수를 반환할 수 있다.")
 	@Test
 	void 아이템_조회수() throws Exception {
-		//given
+		// given
 		RSet<Integer> viewedItem = redissonClient.getSet(VIEW_COUNT.name());
 		viewedItem.add(11);
 		viewedItem.add(22);
@@ -228,10 +238,10 @@ class CacheClientTest {
 
 		CacheClient cacheClient = new CacheClient(redissonClient, null);
 
-		//when
+		// when
 		Map<String, Long> viewCount = cacheClient.getViewCount();
 
-		//then
+		// then
 		assertThat(viewCount.get("11")).isEqualTo(100L);
 		assertThat(viewCount.get("22")).isEqualTo(50L);
 		assertThat(viewCount.get("33")).isEqualTo(30L);
@@ -239,5 +249,66 @@ class CacheClientTest {
 		assertThat(item1Count.count()).isZero();
 		assertThat(item2Count.count()).isZero();
 		assertThat(item3Count.count()).isZero();
+	}
+
+	@DisplayName("판매량순 메인 상품이 캐시되지 않았을 경우 캐싱을 한다.")
+	@Test
+	void 판매_캐싱_x() throws Exception {
+		//given
+		ItemQueryRepository itemQueryRepository = mock(ItemQueryRepository.class);
+		List<ItemQueryDto> expectedItems = List.of(ItemQueryDto.builder().enterprise("sales_test").build());
+		when(itemQueryRepository.findItemsWithSalesMain()).thenReturn(expectedItems);
+
+		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
+
+		// when	
+		CachedMainItems result = cacheClient.getMainSalesItem();
+
+		// then
+		List<ItemQueryDto> mainItems = result.getCachedItems();
+		assertThat(mainItems).hasSize(1)
+			.extracting("enterprise")
+			.contains("sales_test");
+
+		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache(CACHE_MAIN_ITEMS.name());
+		CachedMainItems cachedMainItem = cachedMainItems.get(MAIN_SALES_ITEM.name());
+
+		assertThat(cachedMainItem).isNotNull();
+		assertThat(mainItems).usingRecursiveComparison().isEqualTo(cachedMainItem.getCachedItems());
+
+		long expireTime = cachedMainItems.remainTimeToLive(MAIN_SALES_ITEM.name());
+		long remainDay = TimeUnit.MILLISECONDS.toDays(expireTime);
+		assertThat(remainDay).isEqualTo(6L);
+
+		verify(itemQueryRepository, times(1)).findItemsWithSalesMain();
+	}
+
+	@DisplayName("판매량순 메인 상품이 캐싱돼 있는 경우 db를 거치지 않는다.")
+	@Test
+	void 판매_캐싱_o() throws Exception {
+		// given
+		ItemQueryRepository itemQueryRepository = mock(ItemQueryRepository.class);
+
+		RMapCache<String, CachedMainItems> cachedMainItems = redissonClient.getMapCache(CACHE_MAIN_ITEMS.name());
+		List<ItemQueryDto> preCachedList = List.of(ItemQueryDto.builder().enterprise("cached_sales").build());
+		cachedMainItems.put(
+			MAIN_SALES_ITEM.name(),
+			CachedMainItems.of(preCachedList),
+			7, TimeUnit.DAYS
+		);
+
+		CacheClient cacheClient = new CacheClient(redissonClient, itemQueryRepository);
+
+		// when
+		CachedMainItems result = cacheClient.getMainSalesItem();
+
+		// then
+		List<ItemQueryDto> mainItems = result.getCachedItems();
+		assertThat(mainItems).hasSize(1)
+			.extracting("enterprise")
+			.contains("cached_sales");
+		assertThat(mainItems).usingRecursiveComparison().isEqualTo(preCachedList);
+
+		verify(itemQueryRepository, never()).findItemsWithSalesMain();
 	}
 }

@@ -46,7 +46,7 @@ class KakaoApproveFacadeTest {
 	}
 
 	@Test
-	@DisplayName("초기 구독 승인 시 이벤트 발행한다.")
+	@DisplayName("최초 구독 승인 시 이벤트 발행한다.")
 	void test1() {
 		// given
 		long orderId = 1L;
@@ -56,6 +56,7 @@ class KakaoApproveFacadeTest {
 
 		when(orderFindHelper.findOrder(orderId)).thenReturn(order);
 		when(order.isSubscription()).thenReturn(true);
+		when(order.getId()).thenReturn(orderId);
 		when(kakaoOneTimeApproveService.approveOneTime(request)).thenReturn(approveResponse);
 
 		ArgumentCaptor<SubscriptionRegisteredEvent> eventCaptor =

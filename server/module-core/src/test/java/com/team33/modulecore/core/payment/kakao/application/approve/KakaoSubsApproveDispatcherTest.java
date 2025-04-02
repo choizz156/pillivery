@@ -1,11 +1,11 @@
 package com.team33.modulecore.core.payment.kakao.application.approve;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
@@ -16,7 +16,7 @@ class KakaoSubsApproveDispatcherTest {
 	@Test
 	void 정기_승인() throws Exception {
 		//given
-		var subscriptionOrder = mock(SubscriptionOrder.class);
+		SubscriptionOrder subscriptionOrder = FixtureMonkeyFactory.get().giveMeOne(SubscriptionOrder.class);
 
 		ParameterProvider parameterProvider = new ParameterProvider();
 		KakaoSubsApproveDispatcher kakaoSubsApproveDispatcher =

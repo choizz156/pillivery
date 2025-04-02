@@ -26,10 +26,10 @@ import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
+import com.team33.modulecore.core.order.mock.FakeOrderCommandRepository;
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 import com.team33.modulecore.core.user.domain.Address;
 import com.team33.modulecore.core.user.domain.entity.User;
-import com.team33.modulecore.core.order.mock.FakeOrderCommandRepository;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class OrderServiceTest {
@@ -156,7 +156,7 @@ class OrderServiceTest {
 			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null);
 
 		//when
-		orderService.processCancel(order.getId(), refundContext);
+		orderService.processCancel(order.getId());
 
 		//then
 

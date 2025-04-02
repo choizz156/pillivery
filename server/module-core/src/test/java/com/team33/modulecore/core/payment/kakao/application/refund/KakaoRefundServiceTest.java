@@ -1,6 +1,7 @@
 package com.team33.modulecore.core.payment.kakao.application.refund;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
@@ -45,12 +47,12 @@ class KakaoRefundServiceTest {
 		long orderId = 1L;
 		when(orderFindHelper.findTid(orderId)).thenReturn(testTid);
 		when(parameterProvider.getPaymentRefundParams(context, testTid)).thenReturn(refundParams);
-		when(objectMapper.writeValueAsString(refundParams)).thenReturn(params);
+
 
 		KakaoRefundService kakaoRefundService =
 			new KakaoRefundService(
 				applicationEventPublisher,
-				new ParameterProvider(),
+				parameterProvider,
 				orderFindHelper,
 				objectMapper
 			);
@@ -63,7 +65,6 @@ class KakaoRefundServiceTest {
 		//then
 		verify(orderFindHelper, times(1)).findTid(orderId);
 		verify(parameterProvider, times(1)).getPaymentRefundParams(context, testTid);
-		verify(objectMapper, times(1)).writeValueAsString(refundParams);
 		verify(applicationEventPublisher, times(1)).publishEvent(eventCaptor.capture());
 
 		KakaoRefundedEvent capturedEvent = eventCaptor.getValue();

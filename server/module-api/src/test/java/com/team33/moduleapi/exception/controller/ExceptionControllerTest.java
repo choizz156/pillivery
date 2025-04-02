@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -34,13 +33,9 @@ import com.team33.moduleexternalapi.exception.PaymentApiException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+
 class ExceptionControllerTest extends ApiTest {
 
-	@BeforeEach
-	void setUp() {
-
-		basePath = "/test";
-	}
 
 	@DisplayName("MethodArgumentNotValidException 처리 테스트")
 	@Test
@@ -237,7 +232,7 @@ class ExceptionControllerTest extends ApiTest {
 
 	@Validated
 	@RestController
-	@RequestMapping("/test")
+	@RequestMapping
 	static class TestExceptionController {
 
 		@PostMapping("/validation")

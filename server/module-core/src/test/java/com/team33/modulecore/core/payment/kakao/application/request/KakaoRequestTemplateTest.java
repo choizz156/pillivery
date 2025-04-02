@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,26 +14,20 @@ import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
 class KakaoRequestTemplateTest {
 
-	private PaymentClient<KakaoApiRequestResponse> kakaoRequestClient;
-	private KakaoRequestTemplate<String> kakaoRequestTemplate;
-
-	@BeforeEach
-	void setUp() {
-
-		kakaoRequestClient = mock(PaymentClient.class);
-
-		kakaoRequestTemplate = spy(new KakaoRequestTemplate<String>(kakaoRequestClient) {
-			@Override
-			public Map<String, Object> getRequestParams(String requestObject) {
-				return null;
-			}
-		});
-	}
-
 	@Test
 	@DisplayName("템플릿 메서드 패턴을 통해 결제 요청을 처리할 수 있다")
 	void test1() {
 		// given
+		var kakaoRequestClient = mock(PaymentClient.class);
+
+		var kakaoRequestTemplate = spy(new KakaoRequestTemplate<String>(kakaoRequestClient) {
+			@Override
+			public Map<String, Object> getRequestParams(String requestObject) {
+
+				return null;
+			}
+		});
+
 		String test = "test";
 
 		Map<String, Object> requestParams = new HashMap<>();
@@ -48,7 +41,7 @@ class KakaoRequestTemplateTest {
 
 		when(kakaoRequestTemplate.getRequestParams(test)).thenReturn(requestParams);
 
-		when(kakaoRequestClient.send(eq(requestParams), eq("reqeustUrl")))
+		when(kakaoRequestClient.send(eq(requestParams), eq("https://open-api.kakaopay.com/online/v1/payment/ready")))
 			.thenReturn(expectedResponse);
 
 		// when
@@ -57,7 +50,7 @@ class KakaoRequestTemplateTest {
 		// then
 		verify(kakaoRequestTemplate, times(1)).getRequestParams(test);
 		verify(kakaoRequestClient, times(1))
-			.send(eq(requestParams), eq("reqeustUrl"));
+			.send(eq(requestParams), eq("https://open-api.kakaopay.com/online/v1/payment/ready"));
 
 		assertThat(response).isNotNull();
 		assertThat(response.getTid()).isEqualTo("test_tid");
