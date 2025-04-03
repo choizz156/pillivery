@@ -17,23 +17,22 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.Header;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiPayLookupResponse;
-import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.infra.kakao.KakaoApproveClient;
 import com.team33.moduleexternalapi.infra.kakao.KakaoPayLookupClient;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoPayLookupClientTest {
 
-	private ClientAndServer mockServer;
-
 	private static final String HOST = "localhost";
 	private static final int PORT = 9090;
 	private static final String SEARCH_URL = "http://localhost:9090";
+	private ClientAndServer mockServer;
 	private MockServerClient mockServerClient;
 
 	@BeforeAll
@@ -85,21 +84,6 @@ class KakaoPayLookupClientTest {
 		assertThat(send).isNotNull();
 	}
 
-	private KakaoApiPayLookupResponse toSendNormal() {
-
-		KakaoPayLookupClient kakaoPayLookupClient =
-			new KakaoPayLookupClient(
-				new WebClientSender(new ObjectMapper(), WebClient.builder().build())
-			);
-
-		Map<String, Object> parameters = new ConcurrentHashMap<>();
-		parameters.put("cid", "TC0ONETIME");
-		parameters.put("tid", "tid");
-
-		// When
-		return kakaoPayLookupClient.send(parameters, SEARCH_URL);
-	}
-
 	@DisplayName("주문 조회 요청 실패시  예외를 던진다.")
 	@Test
 	void test7() throws Exception {
@@ -137,8 +121,23 @@ class KakaoPayLookupClientTest {
 
 		//when // Then
 		assertThatThrownBy(() -> kaKaoApproveClient.send(parameters, SEARCH_URL))
-			.isInstanceOf(PaymentApiException.class);
+			.isInstanceOf(WebClientResponseException.class);
 
+	}
+
+	private KakaoApiPayLookupResponse toSendNormal() {
+
+		KakaoPayLookupClient kakaoPayLookupClient =
+			new KakaoPayLookupClient(
+				new WebClientSender(new ObjectMapper(), WebClient.builder().build())
+			);
+
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
+		parameters.put("cid", "TC0ONETIME");
+		parameters.put("tid", "tid");
+
+		// When
+		return kakaoPayLookupClient.send(parameters, SEARCH_URL);
 	}
 }
 

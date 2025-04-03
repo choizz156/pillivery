@@ -17,21 +17,20 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.Header;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
-import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.infra.kakao.KakaoApproveClient;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KakaoApproveClientTest {
 
-	private ClientAndServer mockServer;
-
+	private static final String APPROVE_URL = "http://localhost:9090";
 	private static final String HOST = "localhost";
 	private static final int PORT = 9090;
-	private static final String APPROVE_URL = "http://localhost:9090";
+	private ClientAndServer mockServer;
 	private MockServerClient mockServerClient;
 
 	@BeforeAll
@@ -83,21 +82,6 @@ class KakaoApproveClientTest {
 		assertThat(send).isNotNull();
 	}
 
-	private KakaoApiApproveResponse toSendNormal() {
-		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
-			new KakaoApproveClient(new WebClientSender(new ObjectMapper(), WebClient.builder().build()));
-
-		Map<String, Object> parameters = new ConcurrentHashMap<>();
-		parameters.put("cid", "TC0ONETIME");
-		parameters.put("tid", "tid");
-		parameters.put("partner_order_id", "1");
-		parameters.put("partner_user_id", "partner_user_id");
-		parameters.put("pg_token", "pgToken");
-
-		// When
-		return kaKaoApproveClient.send(parameters, APPROVE_URL);
-	}
-
 	@DisplayName("최초 정기 결제 승인 요청 시 응답 객체를 가져온다.")
 	@Test
 	void test4() throws Exception {
@@ -134,22 +118,6 @@ class KakaoApproveClientTest {
 		assertThat(send).isNotNull();
 	}
 
-	private KakaoApiApproveResponse toSendSubsFirst() {
-		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
-			new KakaoApproveClient(new WebClientSender(new ObjectMapper(), WebClient.builder().build()));
-
-		Map<String, Object> parameters = new ConcurrentHashMap<>();
-		parameters.put("tid", "tid");
-		parameters.put("partner_order_id", "partner_order_id");
-		parameters.put("partner_user_id", "partner_user_id");
-		parameters.put("pg_token", "pg_token");
-		parameters.put("cid", "sub_cid");
-
-		// When
-		return kaKaoApproveClient.send(parameters, APPROVE_URL);
-	}
-
-
 	@DisplayName("정기 결제 승인 요청 시 응답객체를 받는다.")
 	@Test
 	void test6() throws Exception {
@@ -183,22 +151,6 @@ class KakaoApproveClientTest {
 		// Then
 		assertThat(sendSubs).isNotNull();
 
-	}
-
-	private KakaoApiApproveResponse toSendSubs() {
-		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
-			new KakaoApproveClient(new WebClientSender(new ObjectMapper(), WebClient.builder().build()));
-
-		Map<String, Object> parameters = new ConcurrentHashMap<>();
-		parameters.put("tid", "tid");
-		parameters.put("partner_order_id", "partner_order_id");
-		parameters.put("partner_user_id", "partner_user_id");
-		parameters.put("pg_token", "pg_token");
-		parameters.put("cid", "sub_cid");
-		parameters.put("sid","sid");
-
-
-		return kaKaoApproveClient.send(parameters, APPROVE_URL);
 	}
 
 	@DisplayName("결제 승인 요청 실패시  예외를 던진다.")
@@ -241,8 +193,54 @@ class KakaoApproveClientTest {
 
 		//when // Then
 		assertThatThrownBy(() -> kaKaoApproveClient.send(parameters, APPROVE_URL))
-			.isInstanceOf(PaymentApiException.class);
+			.isInstanceOf(WebClientResponseException.class);
 
+	}
+
+	private KakaoApiApproveResponse toSendNormal() {
+		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
+			new KakaoApproveClient(new WebClientSender(new ObjectMapper(), WebClient.builder().build()));
+
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
+		parameters.put("cid", "TC0ONETIME");
+		parameters.put("tid", "tid");
+		parameters.put("partner_order_id", "1");
+		parameters.put("partner_user_id", "partner_user_id");
+		parameters.put("pg_token", "pgToken");
+
+		// When
+		return kaKaoApproveClient.send(parameters, APPROVE_URL);
+	}
+
+	private KakaoApiApproveResponse toSendSubsFirst() {
+		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
+			new KakaoApproveClient(new WebClientSender(new ObjectMapper(), WebClient.builder().build()));
+
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
+		parameters.put("tid", "tid");
+		parameters.put("partner_order_id", "partner_order_id");
+		parameters.put("partner_user_id", "partner_user_id");
+		parameters.put("pg_token", "pg_token");
+		parameters.put("cid", "sub_cid");
+
+		// When
+		return kaKaoApproveClient.send(parameters, APPROVE_URL);
+	}
+
+	private KakaoApiApproveResponse toSendSubs() {
+		PaymentClient<KakaoApiApproveResponse> kaKaoApproveClient =
+			new KakaoApproveClient(new WebClientSender(new ObjectMapper(), WebClient.builder().build()));
+
+		Map<String, Object> parameters = new ConcurrentHashMap<>();
+		parameters.put("tid", "tid");
+		parameters.put("partner_order_id", "partner_order_id");
+		parameters.put("partner_user_id", "partner_user_id");
+		parameters.put("pg_token", "pg_token");
+		parameters.put("cid", "sub_cid");
+		parameters.put("sid","sid");
+
+
+		return kaKaoApproveClient.send(parameters, APPROVE_URL);
 	}
 }
 
