@@ -22,46 +22,45 @@ public class SubscriptionInfo {
 
 	private boolean subscription;
 
-	private ZonedDateTime nextPaymentDay;
+	private ZonedDateTime nextPaymentDate;
 
-	private ZonedDateTime lastPaymentDay;
+	private ZonedDateTime lastPaymentDate;
 
 	@Builder(toBuilder = true)
-	public SubscriptionInfo(int period, boolean subscription, ZonedDateTime nextPaymentDay,
-		ZonedDateTime lastPaymentDay) {
+	public SubscriptionInfo(int period, boolean subscription, ZonedDateTime nextPaymentDate,
+			ZonedDateTime lastPaymentDate) {
 		this.period = period;
 		this.subscription = subscription;
-		this.nextPaymentDay = nextPaymentDay;
-		this.lastPaymentDay = lastPaymentDay;
+		this.nextPaymentDate = nextPaymentDate;
+		this.lastPaymentDate = lastPaymentDate;
 	}
 
 	public static SubscriptionInfo of(boolean isSubscription, int period) {
 
 		return SubscriptionInfo.builder()
-			.subscription(isSubscription)
-			.period(period)
-			.nextPaymentDay(ZonedDateTime.now())
-			.lastPaymentDay(ZonedDateTime.now())
-			.build();
+				.subscription(isSubscription)
+				.period(period)
+				.nextPaymentDate(ZonedDateTime.now())
+				.lastPaymentDate(ZonedDateTime.now())
+				.build();
 	}
 
-
-	public void updatePaymentDay(ZonedDateTime paymentDay) {
-		this.lastPaymentDay = paymentDay;
-		updateNextPaymentDay();
+	public void updatePaymentDate(ZonedDateTime paymentDate) {
+		this.lastPaymentDate = paymentDate;
+		updateNextPaymentDate();
 	}
 
 	public void changePeriod(@Positive int newPeriod) {
 		this.period = newPeriod;
-		updateNextPaymentDay();
+		updateNextPaymentDate();
 	}
 
 	public void cancelSubscription() {
 		this.subscription = false;
 	}
 
-	private void updateNextPaymentDay() {
-		this.nextPaymentDay = lastPaymentDay.plusDays(this.period);
+	private void updateNextPaymentDate() {
+		this.nextPaymentDate = lastPaymentDate.plusDays(this.period);
 	}
 
 }

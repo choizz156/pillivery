@@ -40,6 +40,9 @@ public class SubscriptionOrder extends BaseEntity {
 	private Long id;
 
 	@Embedded
+	private SubscriptionInfo subscriptionInfo;
+
+	@Embedded
 	private OrderCommonInfo orderCommonInfo;
 
 	@OneToOne(fetch = FetchType.LAZY)
@@ -50,10 +53,12 @@ public class SubscriptionOrder extends BaseEntity {
 	public SubscriptionOrder(
 		Long id,
 		OrderItem orderItem,
+		SubscriptionInfo subscriptionInfo,
 		OrderCommonInfo orderCommonInfo
 	) {
 		this.id = id;
 		this.orderItem = orderItem;
+		this.subscriptionInfo = subscriptionInfo;
 		this.orderCommonInfo = orderCommonInfo;
 	}
 
@@ -62,9 +67,11 @@ public class SubscriptionOrder extends BaseEntity {
 		SubscriptionOrder subscriptionOrder = SubscriptionOrder.builder()
 			.orderItem(orderItem)
 			.orderCommonInfo(order.getOrderCommonInfo())
+			.subscriptionInfo(orderItem.getSubscriptionInfo())
 			.build();
 
 		subscriptionOrder.getOrderCommonInfo().addPrice(List.of(orderItem));
+		subscriptionOrder.getOrderCommonInfo().changeOrderStatus(OrderStatus.SUBSCRIBE);
 		orderItem.addSubscriptionOrder(subscriptionOrder);
 		return subscriptionOrder;
 	}
@@ -74,6 +81,7 @@ public class SubscriptionOrder extends BaseEntity {
 		SubscriptionOrder subscriptionOrder = SubscriptionOrder.builder()
 			.orderItem(orderItem)
 			.orderCommonInfo(orderCommonInfo)
+			.subscriptionInfo(orderItem.getSubscriptionInfo())
 			.build();
 
 		subscriptionOrder.getOrderCommonInfo().addPrice(List.of(orderItem));
@@ -101,11 +109,11 @@ public class SubscriptionOrder extends BaseEntity {
 	}
 
 	public void updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
-		this.orderItem.getSubscriptionInfo().updatePaymentDay(paymentDay);
+		this.orderItem.getSubscriptionInfo().updatePaymentDate(paymentDay);
 	}
 
 	public ZonedDateTime getNextPaymentDay() {
-		return this.orderItem.getSubscriptionInfo().getNextPaymentDay();
+		return this.orderItem.getSubscriptionInfo().getNextPaymentDate();
 	}
 
 	public void changePeriod(int newPeriod) {

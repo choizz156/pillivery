@@ -21,14 +21,14 @@ public class PaymentApiDispatcher {
 
 	private final RestTemplateSender restTemplateSender;
 
-	Cache<String, String> idempotencyCache = Caffeine.newBuilder()
+	private final Cache<String, String> idempotencyCache = Caffeine.newBuilder()
 		.maximumSize(1000)
 		.expireAfterWrite(Duration.ofHours(12L))
 		.build();
 
 	public void dispatch(List<? extends SubscriptionOrderVO> list) {
 
-		List<? extends SubscriptionOrderVO> orderList = checkDuplicationKeyInCache(list);
+		List<SubscriptionOrderVO> orderList = filterProcessedOrders(list);
 
 		orderList.forEach(order -> {
 			send(order.getSubscriptionOrderId());
@@ -36,11 +36,15 @@ public class PaymentApiDispatcher {
 		});
 	}
 
-	private List<? extends SubscriptionOrderVO> checkDuplicationKeyInCache(List<? extends SubscriptionOrderVO> list) {
-
-		return list.stream()
-			.filter(order -> idempotencyCache.getIfPresent(order.getIdempotencyKey()) == null)
+	private List<SubscriptionOrderVO> filterProcessedOrders(List<? extends SubscriptionOrderVO> orders) {
+		return orders.stream()
+			.filter(this::isNotProcessed)
 			.collect(Collectors.toUnmodifiableList());
+	}
+
+	private boolean isNotProcessed(SubscriptionOrderVO order) {
+
+		return idempotencyCache.getIfPresent(order.getIdempotencyKey()) == null;
 	}
 
 	private void send(long subscriptionOrderId) {

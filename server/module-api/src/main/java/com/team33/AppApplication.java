@@ -2,7 +2,6 @@ package com.team33;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration;
 
 @SpringBootApplication(
 	scanBasePackages = {
@@ -12,8 +11,8 @@ import org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration;
 		"com.team33.moduleexternalapi",
 		"com.team33.moduleevent",
 		"com.team33.moduleredis"
-	},
-	exclude = QuartzAutoConfiguration.class
+	}
+	// exclude = QuartzAutoConfiguration.class
 )
 public class AppApplication {
 

@@ -4,11 +4,14 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.team33.modulebatch.domain.ErrorStatus;
 import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 import lombok.Builder;
@@ -34,7 +37,8 @@ public class ErrorItem {
 
 	private LocalDate lastPaymentDate;
 
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private ErrorStatus status;
 
 	@Builder
 	private ErrorItem(
@@ -43,7 +47,7 @@ public class ErrorItem {
 		String idempotentKey,
 		LocalDate nextPaymentDate,
 		LocalDate lastPaymentDate,
-		String status
+		ErrorStatus status
 	) {
 		this.id = id;
 		this.orderId = orderId;
@@ -59,7 +63,7 @@ public class ErrorItem {
 			.idempotentKey(orderVO.getIdempotencyKey())
 			.nextPaymentDate(orderVO.getNextPaymentDate())
 			.lastPaymentDate(orderVO.getLastPaymentDate())
-			.status("ERROR")
+			.status(ErrorStatus.ERROR)
 			.build();
 	}
 

@@ -1,8 +1,8 @@
 package com.team33.modulecore.core.order.domain.entity;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.ZonedDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -175,13 +175,13 @@ public class Order extends BaseEntity {
 		if (orderItems.isEmpty()) {
 			return null;
 		}
-		return orderItems.get(0).getSubscriptionInfo().getNextPaymentDay();
+		return orderItems.get(0).getSubscriptionInfo().getNextPaymentDate();
 	}
 	
 	public void updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
 		
 		orderItems.forEach(orderItem -> 
-			orderItem.getSubscriptionInfo().updatePaymentDay(paymentDay));
+			orderItem.getSubscriptionInfo().updatePaymentDate(paymentDay));
 	}
 	
 	public void changePeriod(int newPeriod) {

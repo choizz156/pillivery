@@ -45,13 +45,19 @@ public class PaymentStepConfig {
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	private PaymentApiDispatcher paymentApiDispatcher;
-
-	@Autowired
 	private DataSource dataSource;
 
 	@Autowired
 	private ErrorItemRepository errorItemRepository;
+
+	@Autowired
+	private PaymentWriter paymentWriter;
+
+	@Autowired
+	private PaymentItemProcessor paymentItemProcessor;
+
+	@Autowired
+	private PaymentApiDispatcher paymentApiDispatcher;
 
 	@Autowired
 	private SubscriptionOrderService subscriptionOrderService;
@@ -66,7 +72,7 @@ public class PaymentStepConfig {
 			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(itemReader(null))
 			.processor(itemProcessor(null))
-			.writer(itemWriter(paymentApiDispatcher, subscriptionOrderService))
+			.writer(itemWriter())
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
 			.skip(BatchApiException.class)
@@ -84,14 +90,14 @@ public class PaymentStepConfig {
 	public ItemProcessor<SubscriptionOrderVO, SubscriptionOrderVO> itemProcessor(
 		@Value("#{jobParameters['jobId']}") Long jobId
 	) {
-
-		return new PaymentItemProcessor(jobId);
+		paymentItemProcessor.initialize(jobId);
+		return paymentItemProcessor;
 	}
 
 	@Bean
-	public ItemWriter<SubscriptionOrderVO> itemWriter(PaymentApiDispatcher paymentApiDispatcher, SubscriptionOrderService subscriptionOrderService) {
-
-		return new PaymentWriter(paymentApiDispatcher, subscriptionOrderService);
+	public ItemWriter<SubscriptionOrderVO> itemWriter() {
+		paymentWriter.initialize(paymentApiDispatcher, subscriptionOrderService);	
+		return paymentWriter;
 	}
 
 	@Bean
@@ -113,7 +119,7 @@ public class PaymentStepConfig {
 		queryProvider.setFromClause("from subscription_order so");
 		queryProvider.setWhereClause("where so.subscription = true and so.next_payment_date = :paymentDate");
 
-		queryProvider.setSortKeys(Map.of("order_id", Order.ASCENDING));
+		queryProvider.setSortKeys(Map.of("subscription_order_id", Order.ASCENDING));
 
 		reader.setParameterValues(Collections.singletonMap("paymentDate", paymentDate));
 		reader.setQueryProvider(queryProvider);
