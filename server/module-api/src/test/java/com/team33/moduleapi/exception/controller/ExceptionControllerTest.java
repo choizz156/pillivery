@@ -2,51 +2,28 @@ package com.team33.moduleapi.exception.controller;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.DataSaveException;
-import com.team33.moduleexternalapi.config.SubscriptionPaymentException;
-import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleapi.ApiTest;
 
 import io.restassured.RestAssured;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ExceptionControllerTest {
+class ExceptionControllerTest extends ApiTest {
 
 	@LocalServerPort
 	private int port;
 
 	@BeforeEach
 	void beforeEach() throws Exception {
+
 		if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
 			RestAssured.port = port;
 		}
@@ -223,94 +200,4 @@ class ExceptionControllerTest {
 			.body("customFieldErrors", nullValue());
 	}
 
-	@TestConfiguration
-	static class TestConfig {
-
-		@Bean
-		public TestExceptionController testExceptionController() {
-			return new TestExceptionController();
-		}
-	}
-
-
-	@Data
-	@AllArgsConstructor
-	static class TestRequest {
-
-		@NotBlank(message = "공백일 수 없습니다")
-		private String name;
-
-		@Min(value = 1, message = "1 이상이어야 합니다")
-		private int age;
-
-	}
-
-	@Validated
-	@RestController
-	@RequestMapping("/test")
-	static class TestExceptionController {
-
-		@PostMapping("/validation")
-		public String validationTest(@Valid @RequestBody TestRequest request) {
-
-			return "성공";
-		}
-
-		@GetMapping("/constraint/{id}")
-		public String constraintTest(@PathVariable @Min(1) int id) {
-
-			return "성공";
-		}
-
-		@GetMapping("/business-logic")
-		public String businessLogicTest() {
-
-			throw new BusinessLogicException("비즈니스 로직 예외 발생");
-		}
-
-		@GetMapping("/type-mismatch/{id}")
-		public String typeMismatchTest(@PathVariable int id) {
-
-			return "성공";
-		}
-
-		@GetMapping("/missing-param")
-		public String missingParamTest(@RequestParam String requiredParam) {
-
-			return "성공";
-		}
-
-		@GetMapping("/illegal-argument")
-		public String illegalArgumentTest() {
-
-			throw new IllegalArgumentException("잘못된 인자가 전달되었습니다");
-		}
-
-		@GetMapping("/data-save")
-		public String dataSaveTest() {
-
-			throw new DataSaveException("데이터 저장 오류");
-		}
-
-		@GetMapping("/subscription-payment")
-		public String subscriptionPaymentTest() {
-
-			SubscriptionPaymentException exception = mock(SubscriptionPaymentException.class);
-			when(exception.getMessage()).thenReturn("구독 결제 실패");
-			when(exception.getErrorBody()).thenReturn("구독 결제 오류");
-			throw exception;
-		}
-
-		@GetMapping("/payment-api")
-		public String paymentApiTest() {
-
-			throw new PaymentApiException("결제 API 오류");
-		}
-
-		@GetMapping("/runtime")
-		public String runtimeTest() {
-
-			throw new RuntimeException("런타임 예외 발생");
-		}
-	}
-} 
+}

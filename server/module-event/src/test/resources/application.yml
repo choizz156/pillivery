@@ -4,19 +4,15 @@ spring:
       on-profile: test
 
   datasource:
-    hikari:
     url: jdbc:h2:mem:test
     username: sa
     password:
+    driver-class-name: org.h2.Driver
 
   data:
     redis:
       port: 6379
       host: localhost
-
-  h2:
-    console:
-      enabled: true
 
   jpa:
     hibernate:
@@ -25,16 +21,10 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-        jdbc:
-          batch_size: 100
-
-#        use_sql_comments: true
-#    defer-datasource-initialization: false
 
 logging:
   level:
     org.hibernate.sql: debug
-    org.hibernate.type.descriptor.sql: TRACE
 
 
 

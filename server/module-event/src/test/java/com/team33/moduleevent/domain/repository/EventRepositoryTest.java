@@ -13,18 +13,20 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 
+@ActiveProfiles("test")
 @EnableAutoConfiguration
 @ContextConfiguration(classes = {
 	EventRepository.class
 })
-@EnableJpaRepositories(basePackages = "com.team33.moduleevent.domain.repository")
-@EntityScan(basePackages = "com.team33.moduleevent.domain.entity")
+@EnableJpaRepositories(basePackages = "com.team33.moduleevent")
+@EntityScan(basePackages = "com.team33.moduleevent")
 @DataJpaTest
 class EventRepositoryTest {
 
@@ -33,7 +35,7 @@ class EventRepositoryTest {
 
 	@DisplayName("이벤트를 조회할 수 있다.")
 	@Test
-	void findTop20ByStatusOrderByCreatedAt() {
+	void test1() {
 		//given
 		IntStream.range(0, 10).forEach(
 			i -> eventRepository.save(
