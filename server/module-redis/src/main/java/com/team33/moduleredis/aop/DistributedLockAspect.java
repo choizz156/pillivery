@@ -43,11 +43,10 @@ public class DistributedLockAspect {
 
 	private boolean hasNotLock(String lockKey, long tryLockTimeOutSecond, long lockLeaseTimeOutSecond) {
 
-		return !distributedLockService.tryLock(lockKey, tryLockTimeOutSecond, lockLeaseTimeOutSecond);
+		return !distributedLockService.hasLock(lockKey, tryLockTimeOutSecond, lockLeaseTimeOutSecond);
 	}
 
 	private void checkLock(String lockKey, long tryLockTimeOutSecond, long lockLeaseTimeOutSecond) {
-
 		if (hasNotLock(lockKey, tryLockTimeOutSecond, lockLeaseTimeOutSecond)) {
 			throw new IllegalStateException("락 획득 실패: " + lockKey);
 		}

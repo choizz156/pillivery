@@ -22,7 +22,7 @@ public class DistributedLockService {
 
 	private final RedissonClient redissonClient;
 
-	public boolean tryLock(String lockKey, long tryLockTime, long leaseTime) {
+	public boolean hasLock(String lockKey, long tryLockTime, long leaseTime) {
 
 		String key = LOCK_PREFIX + lockKey;
 		RLock lock = redissonClient.getLock(key);
@@ -30,7 +30,7 @@ public class DistributedLockService {
 		try {
 			return lock.tryLock(tryLockTime, leaseTime, TimeUnit.SECONDS);
 		} catch (Exception e) {
-			LOGGER.warn("Failed to lock lock", e);
+			LOGGER.warn("redis error", e);
 			throw new RedisException("분산 락 관련 에러", e);
 		}
 	}
@@ -44,4 +44,5 @@ public class DistributedLockService {
 			lock.unlock();
 		}
 	}
+
 }
