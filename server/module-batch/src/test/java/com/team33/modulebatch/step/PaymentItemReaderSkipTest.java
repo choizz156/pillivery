@@ -3,9 +3,6 @@ package com.team33.modulebatch.step;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.BatchStatus;
@@ -28,7 +25,6 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 
 	private static final int CHUNK_SIZE = 1;
 	private static final int SKIP_LIMIT = 1;
-	private static final LocalDate NOW = LocalDate.now();
 
 	@MockBean
 	private ItemSkipListener skipListener;
@@ -39,7 +35,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 	@MockBean
 	private ItemReader<SubscriptionOrderVO> testItemReader;
 
-	@MockBean
+	@MockBean(name = "itemWriter")
 	private ItemWriter<SubscriptionOrderVO> testItemWriter;
 
 	private Step step;

@@ -9,12 +9,16 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,18 +28,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.ApiTest;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.DataSaveException;
 import com.team33.moduleexternalapi.config.SubscriptionPaymentException;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
+import io.restassured.RestAssured;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 
-class ExceptionControllerTest extends ApiTest {
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class ExceptionControllerTest {
 
+	@LocalServerPort
+	private int port;
+
+	@BeforeEach
+	void beforeEach() throws Exception {
+		if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
+			RestAssured.port = port;
+		}
+	}
 
 	@DisplayName("MethodArgumentNotValidException 처리 테스트")
 	@Test
@@ -47,7 +62,7 @@ class ExceptionControllerTest extends ApiTest {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(request)
 			.when()
-			.post("/validation")
+			.post("/test/validation")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -68,7 +83,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/constraint/0")
+			.get("/test/constraint/0")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -87,7 +102,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/business-logic")
+			.get("/test/business-logic")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -103,7 +118,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/type-mismatch/invalid")
+			.get("/test/type-mismatch/invalid")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -119,7 +134,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/missing-param")
+			.get("/test/missing-param")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -135,7 +150,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/illegal-argument")
+			.get("/test/illegal-argument")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -151,7 +166,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/data-save")
+			.get("/test/data-save")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
@@ -167,7 +182,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/subscription-payment")
+			.get("/test/subscription-payment")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -183,7 +198,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/payment-api")
+			.get("/test/payment-api")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -199,7 +214,7 @@ class ExceptionControllerTest extends ApiTest {
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
-			.get("/runtime")
+			.get("/test/runtime")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
@@ -232,7 +247,7 @@ class ExceptionControllerTest extends ApiTest {
 
 	@Validated
 	@RestController
-	@RequestMapping
+	@RequestMapping("/test")
 	static class TestExceptionController {
 
 		@PostMapping("/validation")
@@ -279,7 +294,7 @@ class ExceptionControllerTest extends ApiTest {
 
 		@GetMapping("/subscription-payment")
 		public String subscriptionPaymentTest() {
-			// SubscriptionPaymentException 모의 객체 생성
+
 			SubscriptionPaymentException exception = mock(SubscriptionPaymentException.class);
 			when(exception.getMessage()).thenReturn("구독 결제 실패");
 			when(exception.getErrorBody()).thenReturn("구독 결제 오류");

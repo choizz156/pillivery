@@ -47,7 +47,7 @@ class SubscriptionRegisterHandlerTest {
 
     @DisplayName("구독 등록 이벤트가 발생하면 구독 주문을 생성하고 ApiEvent를 저장한다")
     @Test
-    void test1() {
+    void 구독_등록_이벤트_처리_및_ApiEvent_저장() {
         // given
         Long orderId = 1L;
         SubscriptionRegisteredEvent event = new SubscriptionRegisteredEvent(orderId);
@@ -80,7 +80,7 @@ class SubscriptionRegisterHandlerTest {
 
     @DisplayName("여러 구독 주문이 생성되면 각각에 대해 ApiEvent가 저장된다")
     @Test
-    void test2() {
+    void 여러_구독_주문_생성_시_ApiEvent_저장() {
         // given
         Long orderId = 1L;
         SubscriptionRegisteredEvent event = new SubscriptionRegisteredEvent(orderId);

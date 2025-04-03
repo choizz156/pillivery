@@ -40,7 +40,6 @@ public abstract class ApiTest {
 			RestAssured.port = port;
 			dataCleaner.afterPropertiesSet();
 		}
-
 	}
 
 	@AfterEach

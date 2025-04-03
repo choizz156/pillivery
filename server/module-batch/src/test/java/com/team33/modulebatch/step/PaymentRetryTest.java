@@ -31,7 +31,7 @@ class PaymentRetryTest extends BatchApiTest {
 	@MockBean
 	private ItemReader<SubscriptionOrderVO> testItemReader;
 
-	@MockBean
+	@MockBean(name = "itemWriter")
 	private ItemWriter<SubscriptionOrderVO> testItemWriter;
 
 	private Step step;

@@ -1,11 +1,12 @@
 spring:
   config:
     activate:
-      on-profile: test1
+      on-profile: test
 
-  batch:
-    job:
-      enabled: false
+
+  autoconfigure:
+    exclude: org.redisson.spring.starter.RedissonAutoConfiguration
+
   jpa:
     properties:
       hibernate:
@@ -18,15 +19,14 @@ spring:
         show_sql: true
 
   datasource:
-    url: jdbc:h2:tcp:mem
+    url: jdbc:h2:mem:testdb
     username: sa
     password:
     driver-class-name: org.h2.Driver
 
   sql:
     init:
-      mode: always
-
+      mode: never
 
   quartz:
     properties:
@@ -35,23 +35,18 @@ spring:
           scheduler-name: QRTZ_
           threadPool:
             threadCount: 5
-
-          jobStore:
-            class: org.quartz.impl.jdbcjobstore.JobStoreTX
-            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-            tablePrefix: QRTZ_
-            isClustered: false
-            misfireThreshold: 1000
-            useProperties: true
-
     job-store-type: memory
 
-  logging:
-    level:
-      org.springframework.jdbc.core.JdbcTemplate: DEBUG  # 실행된 SQL 쿼리 출력
-      org.springframework.jdbc.core.StatementCreatorUtils: TRACE  # 파라미터 바인딩 값 출력
-      org.h2: DEBUG  # H2 데이터베이스 내부 로그
-      org.hibernate.SQL: DEBUG  # Hibernate 사용 시 (선택 사항)
-      org.springframework.batch.core: DEBUG
-      org.springframework.jdbc.core: DEBUG
+  batch:
+    job:
+      enabled: false
 
+
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG  # 실행된 SQL 쿼리 출력
+    org.springframework.jdbc.core.StatementCreatorUtils: TRACE  # 파라미터 바인딩 값 출력
+    org.h2: DEBUG  # H2 데이터베이스 내부 로그
+    org.hibernate.SQL: DEBUG  # Hibernate 사용 시 (선택 사항)
+    org.springframework.batch.core: DEBUG
+    org.springframework.jdbc.core: DEBUG
