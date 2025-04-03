@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class FailEventService {
 
 
-	private static final Logger log = LoggerFactory.getLogger("fileLog");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private final FailEventRepository failEventRepository;
 
@@ -27,7 +27,7 @@ public class FailEventService {
 	@DistributedLock(key = "'event:saveFailEvent'")
 	public void saveFailEvent(ApiEvent apiEvent, String reason) {
 
-		log.warn("eventId : {}, type : {}, reason : {}", apiEvent.getId(), apiEvent.getType(), reason);
+		LOGGER.warn("eventId : {}, type : {}, reason : {}", apiEvent.getId(), apiEvent.getType(), reason);
 
 		FailEvent failEvent = FailEvent.builder()
 			.type(apiEvent.getType())
@@ -42,7 +42,7 @@ public class FailEventService {
 		try {
 			failEventRepository.save(failEvent);
 		} catch (DataAccessException e) {
-			log.warn(
+			LOGGER.warn(
 				"fail event save error: eventId : {}, type : {}", apiEvent.getId(), apiEvent.getType());
 			throw new DataSaveException(e.getMessage());
 		}
