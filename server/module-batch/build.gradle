@@ -38,6 +38,9 @@ dependencies {
     implementation 'io.github.resilience4j:resilience4j-timelimiter:1.7.0'
     implementation 'io.github.resilience4j:resilience4j-retry:1.7.0'
 
+
+    testImplementation 'org.mock-server:mockserver-junit-jupiter-no-dependencies:5.15.0'
+
 }
 
 test{
