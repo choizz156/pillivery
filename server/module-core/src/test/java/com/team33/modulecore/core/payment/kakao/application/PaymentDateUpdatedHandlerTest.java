@@ -1,4 +1,4 @@
-package com.team33.moduleevent.handler;
+package com.team33.modulecore.core.payment.kakao.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;

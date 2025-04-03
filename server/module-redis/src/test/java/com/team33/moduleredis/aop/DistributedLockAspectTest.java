@@ -76,9 +76,6 @@ class DistributedLockAspectTest {
     }
 
 
-
-
-
     public static class TestTarget {
         @DistributedLock(key = "test", tryLockTimeOutSecond = 4L, lockLeaseTimeOutSecond = 6L)
         public void lockTest() {

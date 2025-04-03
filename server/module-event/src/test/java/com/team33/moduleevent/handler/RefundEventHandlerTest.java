@@ -1,4 +1,4 @@
-package com.team33.moduleevent.application;
+package com.team33.moduleevent.handler;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -6,8 +6,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +24,6 @@ import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
-import com.team33.moduleevent.handler.RefundEventHandler;
 import com.team33.moduleredis.aop.DistributedLockAspect;
 import com.team33.moduleredis.application.aspect.DistributedLockService;
 import com.team33.moduleredis.config.EmbededRedisConfig;
@@ -56,7 +53,6 @@ class RefundEventHandlerTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-
 		when(redissonClient.getLock(anyString())).thenReturn(rLock);
 		when(rLock.tryLock(anyLong(), anyLong(), any())).thenReturn(true);
 	}
@@ -80,9 +76,8 @@ class RefundEventHandlerTest {
 	@Test
 	@DisplayName("동시에 같은 환불 이벤트가 들어올 경우 하나만 처리되어야 한다")
 	void concurrentRefundEventTest() throws InterruptedException {
-		// Given
+		// given
 		int threadCount = 3;
-		ExecutorService executorService = Executors.newFixedThreadPool(10);
 		CountDownLatch latch = new CountDownLatch(threadCount);
 
 		KakaoRefundedEvent event = new KakaoRefundedEvent("params", "test-url");
@@ -97,22 +92,21 @@ class RefundEventHandlerTest {
 		when(eventRepository.save(any(ApiEvent.class)))
 			.thenAnswer(invocation -> invocation.getArgument(0));
 
-		// When
+		// when
 		for (int i = 0; i < threadCount; i++) {
-			executorService.submit(() -> {
+			new Thread(() -> {
 				try {
 					refundEventHandler.onEventSet(event);
-				} catch (BusinessLogicException ignored) {
-
+				} catch (Exception ignored) {
 				} finally {
 					latch.countDown();
 				}
-			});
+			}).start();
 		}
 
 		latch.await();
 
-		// Then
+		// then
 		verify(eventRepository, times(3)).findByTypeAndParameters(any(EventType.class), anyString());
 		verify(eventRepository, times(1)).save(any(ApiEvent.class));
 	}

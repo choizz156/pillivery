@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,17 +14,58 @@ import com.team33.modulecore.core.item.event.ItemSaleCountedEventHandler;
 
 class ItemSaleCountedEventHandlerTest {
 
-	@DisplayName("아이템의 판매량을 늘릴 수 있다.")
+	private ItemCommandRepository itemCommandRepository;
+	private ItemSaleCountedEventHandler itemSaleCountedEventHandler;
+
+	@BeforeEach
+	void setUp() {
+
+		itemCommandRepository = mock(ItemCommandRepository.class);
+		itemSaleCountedEventHandler = new ItemSaleCountedEventHandler(itemCommandRepository);
+	}
+
+	@DisplayName("아이템 판매 수량 이벤트 발생 시 각 아이템의 판매 수량이 증가한다")
 	@Test
-	void onItemSaleCounted() {
+	void test1() {
+		// given
+		List<Long> itemIds = List.of(1L, 2L, 3L);
+		ItemSaleCountedEvent event = new ItemSaleCountedEvent(itemIds);
 
-		ItemCommandRepository itemCommandRepository = mock(ItemCommandRepository.class);
+		// when
+		itemSaleCountedEventHandler.onItemSaleCounted(event);
 
-		ItemSaleCountedEvent itemSaleCountedEvent = new ItemSaleCountedEvent(List.of(1L, 2L));
-		ItemSaleCountedEventHandler itemSaleCountedEventHandler = new ItemSaleCountedEventHandler(itemCommandRepository);
+		// then
+		verify(itemCommandRepository).incrementSales(1L);
+		verify(itemCommandRepository).incrementSales(2L);
+		verify(itemCommandRepository).incrementSales(3L);
+	}
 
-		itemSaleCountedEventHandler.onItemSaleCounted(itemSaleCountedEvent);
+	@DisplayName("아이템 ID가 없는 경우 아무 작업도 수행하지 않는다")
+	@Test
+	void test2() {
+		// given
+		List<Long> emptyItemIds = List.of();
+		ItemSaleCountedEvent event = new ItemSaleCountedEvent(emptyItemIds);
 
-		verify(itemCommandRepository, times(2)).incrementSales(anyLong());
+		// when
+		itemSaleCountedEventHandler.onItemSaleCounted(event);
+
+		// then
+		verifyNoInteractions(itemCommandRepository);
+	}
+
+	@DisplayName("여러 개의 같은 아이템 ID가 포함된 경우 각 ID마다 한 번씩 증가한다")
+	@Test
+	void test3() {
+		// given
+		List<Long> duplicateItemIds = List.of(1L, 1L, 2L);
+		ItemSaleCountedEvent event = new ItemSaleCountedEvent(duplicateItemIds);
+
+		// when
+		itemSaleCountedEventHandler.onItemSaleCounted(event);
+
+		// then
+		verify(itemCommandRepository, times(2)).incrementSales(1L);
+		verify(itemCommandRepository, times(1)).incrementSales(2L);
 	}
 }
