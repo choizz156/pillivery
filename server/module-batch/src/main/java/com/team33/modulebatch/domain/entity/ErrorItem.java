@@ -29,7 +29,7 @@ public class ErrorItem {
 	@Column(name = "error_item_id")
 	private Long id;
 
-	private String orderId;
+	private Long subscriptionOrderId;
 
 	private String idempotentKey;
 
@@ -43,26 +43,26 @@ public class ErrorItem {
 	@Builder
 	private ErrorItem(
 		Long id,
-		String orderId,
+		Long subscriptionOrderId,
 		String idempotentKey,
 		LocalDate nextPaymentDate,
 		LocalDate lastPaymentDate,
 		ErrorStatus status
 	) {
 		this.id = id;
-		this.orderId = orderId;
+		this.subscriptionOrderId = subscriptionOrderId;
 		this.idempotentKey = idempotentKey;
 		this.nextPaymentDate = nextPaymentDate;
 		this.lastPaymentDate = lastPaymentDate;
 		this.status = status;
 	}
 
-	public static ErrorItem of(SubscriptionOrderVO orderVO) {
+	public static ErrorItem of(SubscriptionOrderVO subscriptionOrderVO) {
 		return ErrorItem.builder()
-			.orderId(orderVO.getSubscriptionOrderId().toString())
-			.idempotentKey(orderVO.getIdempotencyKey())
-			.nextPaymentDate(orderVO.getNextPaymentDate())
-			.lastPaymentDate(orderVO.getLastPaymentDate())
+			.subscriptionOrderId(subscriptionOrderVO.getSubscriptionOrderId())
+			.idempotentKey(subscriptionOrderVO.getIdempotencyKey())
+			.nextPaymentDate(subscriptionOrderVO.getNextPaymentDate())
+			.lastPaymentDate(subscriptionOrderVO.getLastPaymentDate())
 			.status(ErrorStatus.ERROR)
 			.build();
 	}
