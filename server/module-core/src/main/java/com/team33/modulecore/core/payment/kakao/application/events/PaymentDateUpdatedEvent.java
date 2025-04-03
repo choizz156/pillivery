@@ -3,7 +3,6 @@ package com.team33.modulecore.core.payment.kakao.application.events;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import groovy.transform.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 public class PaymentDateUpdatedEvent {
 
 	private final Long SubscriptionOrderId;
-	private final ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+	private ZonedDateTime paymentDay = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
+	public PaymentDateUpdatedEvent(Long SubscriptionOrderId, ZonedDateTime paymentDay) {
+		this.SubscriptionOrderId = SubscriptionOrderId;
+		this.paymentDay = paymentDay;
+	}
 }

@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
+import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
@@ -32,7 +33,7 @@ public class RefundEventHandler {
 		eventsRepository.findByTypeAndParameters(EventType.KAKAO_REFUNDED, apiEvent.getRefundParams())
 		.ifPresent(event -> {
 			LOGGER.info("중복 이벤트 발생 = {}", apiEvent.getRefundParams());
-			return;
+			throw new BusinessLogicException("중복 이벤트 발생");
 		});
 
 
