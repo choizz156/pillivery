@@ -79,7 +79,7 @@ public class SubscriptionRegisterHandler {
 		try {
 			eventRepository.save(apiEvent);
 		} catch (DataAccessException e) {
-			LOGGER.warn("정기 구독 승인 이벤트 저장 실패 :: orderId={}, message = {}", subscriptionOrderId, e.getMessage());
+			LOGGER.warn("정기 구독 승인 이벤트 저장 실패 :: subscriptionOrderId={}, message = {}", subscriptionOrderId, e.getMessage());
 			throw new DataSaveException(e.getMessage(), e.getCause());
 		}
 	}

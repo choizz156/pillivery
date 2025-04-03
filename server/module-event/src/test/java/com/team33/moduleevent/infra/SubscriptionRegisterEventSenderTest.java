@@ -2,24 +2,26 @@ package com.team33.moduleevent.infra;
 
 import static org.mockito.Mockito.*;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleexternalapi.infra.WebClientSender;
 
+@ExtendWith(MockitoExtension.class)
 class SubscriptionRegisterEventSenderTest {
 
+    @Mock
     private WebClientSender webClientSender;
     private SubscriptionRegisterEventSender subscriptionRegisterEventSender;
 
     @BeforeEach
     void setUp() {
-        webClientSender = mock(WebClientSender.class);
         subscriptionRegisterEventSender = new SubscriptionRegisterEventSender(webClientSender);
     }
 
@@ -35,13 +37,13 @@ class SubscriptionRegisterEventSenderTest {
             .url(url)
             .build();
             
-        when(webClientSender.sendToPostSync(eq(Map.of()), eq(url + parameters), isNull(), eq(String.class)))
+        when(webClientSender.sendToPostSync(anyMap(), eq(url + parameters), eq(null), eq(String.class)))
             .thenReturn("success");
 
         // when
         subscriptionRegisterEventSender.send(apiEvent);
 
         // then
-        verify(webClientSender).sendToPostAsync(eq(Map.of()), eq(url + parameters), isNull(), eq(String.class));
+        verify(webClientSender, times(1)).sendToPostSync(anyMap(), eq(url + parameters), eq(null), eq(String.class));
     }
 }

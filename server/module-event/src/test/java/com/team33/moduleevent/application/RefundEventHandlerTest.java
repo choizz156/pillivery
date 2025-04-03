@@ -1,9 +1,10 @@
 package com.team33.moduleevent.application;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
 import com.team33.moduleevent.domain.entity.ApiEvent;
@@ -16,8 +17,9 @@ class RefundEventHandlerTest {
 	@Test
 	void onEventSet() {
 		// given
-		EventRepository eventRepository = Mockito.mock(EventRepository.class);
-		Mockito.doNothing().when(eventRepository).save(ArgumentMatchers.any(ApiEvent.class));
+		EventRepository eventRepository = mock(EventRepository.class);
+		when(eventRepository.save(any(ApiEvent.class)))
+			.thenAnswer(invocation -> invocation.getArgument(0));
 
 		RefundEventHandler refundEventHandler = new RefundEventHandler(eventRepository);
 
@@ -25,6 +27,6 @@ class RefundEventHandlerTest {
 		refundEventHandler.onEventSet(new KakaoRefundedEvent("refundParams", "refundUrl"));
 
 		// then
-		Mockito.verify(eventRepository, Mockito.times(1)).save(ArgumentMatchers.any(ApiEvent.class));
+		verify(eventRepository, times(1)).save(any(ApiEvent.class));
 	}
 }

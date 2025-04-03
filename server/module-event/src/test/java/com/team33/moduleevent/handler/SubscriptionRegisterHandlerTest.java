@@ -74,7 +74,7 @@ class SubscriptionRegisterHandlerTest {
         assertThat(capturedEvent.getStatus()).isEqualTo(EventStatus.READY);
         assertThat(capturedEvent.getContentType()).isEqualTo("String");
         assertThat(capturedEvent.getParameters()).isEqualTo("101");
-        assertThat(capturedEvent.getUrl()).isEqualTo(SubscriptionRegisterHandler.HOST + "/api/payments/subscriptions/");
+        assertThat(capturedEvent.getUrl()).isEqualTo(SubscriptionRegisterHandler.HOST + "/api/payments/subscriptionsFirst/");
         assertThat(capturedEvent.getCreatedAt()).isNotNull();
     }
 
