@@ -25,13 +25,13 @@ class ItemSkipListenerTest {
         // given
         ItemSkipListener listener = new ItemSkipListener(errorItemRepository);
         
-        SubscriptionOrderVO orderVO = new SubscriptionOrderVO();
-        orderVO.setIdempotencyKey("test-key");
+        SubscriptionOrderVO subscriptionOrderVO = new SubscriptionOrderVO();
+        subscriptionOrderVO.setIdempotencyKey("test");
         
         RuntimeException exception = new RuntimeException("결제 실패");
 
         // when
-        listener.onSkipInWrite(orderVO, exception);
+        listener.onSkipInWrite(subscriptionOrderVO, exception);
 
         // then
         ArgumentCaptor<ErrorItem> captor = ArgumentCaptor.forClass(ErrorItem.class);
