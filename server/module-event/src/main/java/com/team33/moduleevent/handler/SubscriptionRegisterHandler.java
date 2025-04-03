@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class SubscriptionRegisterHandler {
 
-
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	public static final String HOST = "https://localhost:8080";
@@ -42,24 +41,28 @@ public class SubscriptionRegisterHandler {
 	@DistributedLock(key = "'subscription:registered:' + #event.orderId")
 	@EventListener
 	public void onEventSet(SubscriptionRegisteredEvent event) {
-		
+
 		Order order = orderFindHelper.findOrder(event.getOrderId());
 		List<SubscriptionOrder> subscriptionOrders = subscriptionOrderService.create(order);
-	
-		subscriptionOrders.forEach(subscriptionOrder -> {
 
+		subscriptionOrders.forEach(subscriptionOrder -> {
 			Long subscriptionOrderId = subscriptionOrder.getId();
-			
-			if (eventRepository.findByTypeAndParameters(
-					EventType.SUBSCRIPTION_REGISTERED, 
-					String.valueOf(subscriptionOrderId)).isPresent()) {
+
+			if (isPresentDuplicatedEvent(subscriptionOrderId)) {
 				LOGGER.info("중복 구독 등록 이벤트 감지: subscriptionOrderId={}", subscriptionOrderId);
 				return;
 			}
-			
+
 			ApiEvent apiEvent = toEvent(subscriptionOrderId);
 			saveEvent(subscriptionOrderId, apiEvent);
 		});
+	}
+
+	private boolean isPresentDuplicatedEvent(Long subscriptionOrderId) {
+
+		return eventRepository
+			.findByTypeAndParameters(EventType.SUBSCRIPTION_REGISTERED, String.valueOf(subscriptionOrderId))
+			.isPresent();
 	}
 
 	private ApiEvent toEvent(Long subscriptionOrderId) {
@@ -79,7 +82,8 @@ public class SubscriptionRegisterHandler {
 		try {
 			eventRepository.save(apiEvent);
 		} catch (DataAccessException e) {
-			LOGGER.warn("정기 구독 승인 이벤트 저장 실패 :: subscriptionOrderId={}, message = {}", subscriptionOrderId, e.getMessage());
+			LOGGER.warn("정기 구독 승인 이벤트 저장 실패 :: subscriptionOrderId={}, message = {}", subscriptionOrderId,
+				e.getMessage());
 			throw new DataSaveException(e.getMessage(), e.getCause());
 		}
 	}

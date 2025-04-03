@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
-import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
@@ -30,12 +29,10 @@ public class RefundEventHandler {
 	@EventListener
 	public void onEventSet(KakaoRefundedEvent apiEvent) {
 
-		eventsRepository.findByTypeAndParameters(EventType.KAKAO_REFUNDED, apiEvent.getRefundParams())
-		.ifPresent(event -> {
+		if (isPresentDuplicatedEvent(apiEvent)) {
 			LOGGER.info("중복 이벤트 발생 = {}", apiEvent.getRefundParams());
-			throw new BusinessLogicException("중복 이벤트 발생");
-		});
-
+			return;
+		}
 
 		ApiEvent apiEventSet = ApiEvent.builder()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -47,5 +44,11 @@ public class RefundEventHandler {
 			.build();
 
 		eventsRepository.save(apiEventSet);
+	}
+
+	private boolean isPresentDuplicatedEvent(KakaoRefundedEvent apiEvent) {
+		return eventsRepository
+			.findByTypeAndParameters(EventType.KAKAO_REFUNDED, apiEvent.getRefundParams())
+			.isPresent();
 	}
 }

@@ -27,11 +27,10 @@ public class SubscriptionCanceledEventHandler {
 	@DistributedLock(key = "'subscription:canceled:' + #apiEvent.cancelParam")
 	public void onEventSet(KakaoSubsCanceledEvent apiEvent) {
 
-		eventsRepository.findByTypeAndParameters(EventType.SUBSCRIPTION_CANCELED, apiEvent.getCancelParam())
-				.ifPresent(event -> {
-					LOGGER.info("중복 이벤트 발생 = {}", apiEvent.getCancelParam());
-					return;
-				});
+		if (isPresentDuplicatedEvent(apiEvent)) {
+			LOGGER.info("중복 이벤트 발생 = {}", apiEvent.getCancelParam());
+			return;
+		}
 
 		ApiEvent refund = ApiEvent.builder()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -42,5 +41,12 @@ public class SubscriptionCanceledEventHandler {
 			.build();
 
 		eventsRepository.save(refund);
+	}
+
+	private boolean isPresentDuplicatedEvent(KakaoSubsCanceledEvent apiEvent) {
+
+		return eventsRepository
+			.findByTypeAndParameters(EventType.SUBSCRIPTION_CANCELED, apiEvent.getCancelParam())
+			.isPresent();
 	}
 }
