@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.DataSaveException;
-import com.team33.moduleexternalapi.config.SubscriptionPaymentException;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleexternalapi.exception.SubscriptionPaymentException;
 
 @Validated
 @RestController

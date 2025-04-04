@@ -20,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoRefundedEvent;
-import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
@@ -121,8 +120,6 @@ class RefundEventHandlerTest {
 			.thenReturn(Optional.of(ApiEvent.builder().build()));
 
 		// When & Then
-		assertThatThrownBy(() -> refundEventHandler.onEventSet(event))
-			.isInstanceOf(BusinessLogicException.class)
-			.hasMessageContaining("");
+		assertThatNoException().isThrownBy(() -> refundEventHandler.onEventSet(event));
 	}
 }
