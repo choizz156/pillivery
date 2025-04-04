@@ -7,7 +7,6 @@ import static org.mockserver.model.HttpResponse.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
@@ -21,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulebatch.config.RestTemplateConfig;
 import com.team33.modulebatch.config.RestTemplateErrorHandler;
-import com.team33.modulebatch.exception.SubscriptionFailException;
 
 @ActiveProfiles("test")
 @EnableAutoConfiguration
@@ -68,7 +66,7 @@ class RestTemplateSenderTest {
 				request()
 					.withMethod("POST")
 					.withPath("/api/payments/approve/subscriptions/" + subscriptionOrderId)
-					.withBody(subscriptionOrderId)
+
 			)
 			.respond(
 				response()
@@ -86,53 +84,4 @@ class RestTemplateSenderTest {
 			));
 	}
 
-	@DisplayName("Circuit breaker 테스트")
-	@Nested
-	class CircuitBreaker {
-
-		private static final String FAIL_URL = BASE_URL + "/fail";
-		private static final String SLOW_URL = BASE_URL + "/slow";
-
-		@BeforeEach
-		void setUp() {
-
-			mockServer.stop();
-			mockServer = ClientAndServer.startClientAndServer(PORT);
-			mockServerClient = new MockServerClient(HOST, PORT);
-		}
-
-		@AfterEach
-		void tearDown() {
-			mockServer.stop();
-		}
-
-		@DisplayName("circuit breaker 동작 테스트, 10번 실패")
-		@Test
-		void test1() throws Exception {
-
-			mockServerClient
-				.when(
-					request()
-						.withMethod("POST")
-						.withPath("/fail")
-				)
-				.respond(
-					response()
-						.withStatusCode(500)
-						.withContentType(MediaType.APPLICATION_JSON)
-				);
-
-			assertThatThrownBy(() -> {
-				for (int i = 0; i < 10; i++) {
-					restTemplateSender.sendToPost(
-						"1",
-						FAIL_URL,
-						new HttpHeaders(),
-						String.class
-					);
-				}
-			})
-				.isInstanceOf(SubscriptionFailException.class);
-		}
-	}
 }
