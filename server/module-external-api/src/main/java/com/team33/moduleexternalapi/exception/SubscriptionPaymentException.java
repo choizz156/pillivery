@@ -1,4 +1,4 @@
-package com.team33.moduleexternalapi.config;
+package com.team33.moduleexternalapi.exception;
 
 import lombok.Getter;
 

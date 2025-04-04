@@ -96,7 +96,7 @@ public class PayController {
 
 	@PostMapping("/approve/subscriptions/{subscriptionOrderId}")
 	public SingleResponseDto<KaKaoApproveResponseDto> subscription(
-		@PathVariable long subscriptionOrderId
+		@PathVariable Long subscriptionOrderId
 	) {
 
 		KakaoApproveResponse kaKaoApiApproveResponse = approveFacade.approveSubscription(subscriptionOrderId);

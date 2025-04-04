@@ -24,25 +24,47 @@ public class RestTemplateSender {
 	private final RestTemplate restTemplate;
 
 	@CircuitBreaker(name = "internalPaymentApiClient", fallbackMethod = "internalApiFallback")
-	@Retry(name = "internalPaymentApiClient")
-	public <T> void sendToPost(String params, String url, HttpHeaders headers, Class<T> responseClass) {
+	public <T> void sendToPost(String subscriptionOrderId, String url, HttpHeaders headers, Class<T> responseClass) {
+		executeWithRetry(subscriptionOrderId, url, headers, responseClass);
+	}
 
-		HttpEntity<String> entity = new HttpEntity<>(params, headers);
+	@Retry(name = "internalPaymentRetry", fallbackMethod = "retryFallback")
+	public <T> void executeWithRetry(String subscriptionOrderId, String url, HttpHeaders headers, Class<T> responseClass) {
 
+		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<T> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
 
-		LOGGER.info("내부 API 호출 성공: {}, subscriptionOrderId: {}, response: {}", url, params, exchange.getBody());
+		LOGGER.info("내부 API 호출 성공: {}, response: {}", url, exchange.getBody());
 	}
 
-	public <T> void internalApiFallback(String params, String url, HttpHeaders headers, Throwable throwable) {
-		
-		LOGGER.error(" app 서버 통신 에러 -> Circuit Breaker 작동  - URI: {}, fail-susbscriptionOrderId: {}, Headers: {}, 오류: {}",
-				url,
-				params,
-				headers,
-				throwable.getMessage());
+	public <T> void internalApiFallback(
+		String subscriptionOrderId,
+		String url,
+		HttpHeaders headers,
+		Class<T> responseClass,
+		Throwable throwable
+	) {
 
-		throw new SubscriptionFailException(throwable.getMessage(), Long.parseLong(params));
+		LOGGER.error(
+			" app 서버 통신 에러 -> Circuit Breaker 작동  - URI: {}, fail-susbscriptionOrderId: {}, Headers: {}, 오류: {}",
+			url,
+			subscriptionOrderId,
+			headers,
+			throwable.getMessage());
+
+		throw new SubscriptionFailException(throwable.getMessage(), Long.parseLong(subscriptionOrderId));
 	}
 
+	public <T> void retryFallback(String subscriptionOrderId, String url, HttpHeaders headers, Class<T> responseClass,
+		Throwable throwable) {
+
+		LOGGER.error(
+			" retry 실패  - URI: {}, fail-susbscriptionOrderId: {}, Headers: {}, 오류: {}",
+			url,
+			subscriptionOrderId,
+			headers,
+			throwable.getMessage());
+
+		throw new SubscriptionFailException(throwable.getMessage(), Long.parseLong(subscriptionOrderId));
+	}
 }

@@ -36,6 +36,7 @@ public class PaymentWriter implements ItemWriter<SubscriptionOrderVO> {
 			LOGGER.info("Payment processed successfully for {} orders", list.size());
 		} catch (SubscriptionFailException e) {
 			long subscriptionOrderId = e.getSubscriptionOrderId();
+			LOGGER.info("subscriptionOrderId={}", subscriptionOrderId);
 			subscriptionOrderService.updateOrderStatus(subscriptionOrderId);
 		}
 	}

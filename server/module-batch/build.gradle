@@ -41,6 +41,11 @@ dependencies {
 
     testImplementation 'org.mock-server:mockserver-junit-jupiter-no-dependencies:5.15.0'
 
+    // Awaitility
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.1'
+
 }
 
 test{

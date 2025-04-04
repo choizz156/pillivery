@@ -15,8 +15,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import com.team33.moduleapi.response.ApiErrorResponse;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.DataSaveException;
-import com.team33.moduleexternalapi.config.SubscriptionPaymentException;
+import com.team33.moduleexternalapi.exception.ExternalApiException;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleexternalapi.exception.SubscriptionPaymentException;
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -97,6 +98,14 @@ public class ExceptionController {
 
 		LOGGER.error("PaymentApiException :: {}", e.getMessage());
 		return ApiErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage());
+	}
+
+	@ExceptionHandler(ExternalApiException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public ApiErrorResponse externalApiExceptionHandler(ExternalApiException e) {
+
+		LOGGER.error("ExternalApiException :: {}", e.getMessage());
+		return ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 	}
 
 	@ExceptionHandler(RuntimeException.class)

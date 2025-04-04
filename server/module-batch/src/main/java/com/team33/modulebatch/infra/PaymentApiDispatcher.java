@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.team33.modulebatch.exception.SubscriptionFailException;
 import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class PaymentApiDispatcher {
 		.expireAfterWrite(Duration.ofHours(12L))
 		.build();
 
-	public void dispatch(List<? extends SubscriptionOrderVO> list) {
+	public void dispatch(List<? extends SubscriptionOrderVO> list) throws SubscriptionFailException {
 
 		List<SubscriptionOrderVO> orderList = filterProcessedOrders(list);
 
@@ -37,6 +38,7 @@ public class PaymentApiDispatcher {
 	}
 
 	private List<SubscriptionOrderVO> filterProcessedOrders(List<? extends SubscriptionOrderVO> orders) {
+
 		return orders.stream()
 			.filter(this::isNotProcessed)
 			.collect(Collectors.toUnmodifiableList());
@@ -50,7 +52,7 @@ public class PaymentApiDispatcher {
 	private void send(long subscriptionOrderId) {
 
 		restTemplateSender.sendToPost(
-			String.valueOf(subscriptionOrderId),
+			"",
 			URL + subscriptionOrderId,
 			null,
 			String.class

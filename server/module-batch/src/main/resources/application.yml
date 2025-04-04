@@ -107,24 +107,26 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
         recordExceptions:
-          - com.team33.moduleexternalapi.exception.PaymentApiException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+          - com.team33.modulebatch.exception.BatchApiException
           - java.io.IOException
           - java.util.concurrent.TimeoutException
           - java.net.ConnectException
-          - org.springframework.web.client.HttpServerErrorException
 
   retry:
     instances:
-      internalPaymentApiClient:
+      internalPaymentRetry:
         maxAttempts: 3
-        waitDuration: 1000ms
-        enableExponentialBackoff: true
-        exponentialBackoffMultiplier: 2
+        waitDuration: 300ms
         retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
           - java.io.IOException
           - java.util.concurrent.TimeoutException
           - java.net.ConnectException
+          - java.net.SocketTimeoutException
         ignoreExceptions:
-          - com.team33.moduleexternalapi.exception.PaymentApiException
+          - com.team33.modulebatch.exception.BatchApiException
 
     

@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.moduleexternalapi.exception.ExternalApiException;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -29,34 +30,30 @@ public class WebClientSender {
 	private final ObjectMapper objectMapper;
 	private final WebClient webClient;
 
-	@CircuitBreaker(name = "paymentApiClient", fallbackMethod = "externalApiFallback")
-	@TimeLimiter(name = "paymentLookUpClient", fallbackMethod = "externalApiFallback")
-	@Retry(name = "paymentLookUpClient")
+	@CircuitBreaker(name = "paymentApiClient", fallbackMethod = "externalApiAsyncFallback")
 	public <T> CompletableFuture<T> sendToPostAsync(
 		Map<String, Object> params,
 		String uri,
 		HttpHeaders headers,
 		Class<T> responseClass
-	)
-		throws JsonProcessingException {
+	) throws JsonProcessingException {
 
-		String kakaoRequest = objectMapper.writeValueAsString(params);
-
-		Mono<T> mono = webClient.post()
-			.uri(uri)
-			.headers(httpHeaders -> httpHeaders.addAll(headers))
-			.bodyValue(kakaoRequest)
-			.retrieve()
-			.bodyToMono(responseClass);
-
-		return mono.doOnSuccess(response -> successLogging(uri))
-			.doOnError(error -> failLogging(uri, error))
-			.toFuture();
+		return executeWithRetryAsync(params, uri, headers, responseClass);
 	}
 
-	@CircuitBreaker(name = "paymentApiClient", fallbackMethod = "externalApiFallback")
-	@Retry(name = "paymentApiClient")
+	@CircuitBreaker(name = "paymentApiClient", fallbackMethod = "externalApiSyncFallback")
 	public <T> T sendToPostSync(
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass
+	) throws JsonProcessingException {
+
+		return executeWithRetrySync(params, uri, headers, responseClass);
+	}
+
+	@Retry(name = "paymentApiClient", fallbackMethod = "externalApiSyncFallback")
+	public <T> T executeWithRetrySync(
 		Map<String, Object> params,
 		String uri,
 		HttpHeaders headers,
@@ -72,11 +69,57 @@ public class WebClientSender {
 			.retrieve()
 			.bodyToMono(responseClass)
 			.doOnSuccess(response -> successLogging(uri))
-			.doOnError(error -> failLogging(uri, error))
+			.doOnError(error -> {
+					failLogging(uri, error);
+					// throw new ExternalApiException("test");
+				}
+			)
 			.block();
 	}
 
-	private <T> T externalApiFallback(
+	@Retry(name = "paymentLookUpClient", fallbackMethod = "externalApiAsyncFallback")
+	public <T> CompletableFuture<T> executeWithRetryAsync(
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass
+	) throws JsonProcessingException {
+
+		return executeWithTimeoutAsync(params, uri, headers, responseClass);
+	}
+
+	@TimeLimiter(name = "paymentLookUpClient", fallbackMethod = "externalApiAsyncFallback")
+	public <T> CompletableFuture<T> executeWithTimeoutAsync(
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass
+	) throws JsonProcessingException {
+		return executeRequestAsync(params, uri, headers, responseClass);
+	}
+
+	private <T> CompletableFuture<T> executeRequestAsync(
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass
+	) throws JsonProcessingException {
+
+		String kakaoRequest = objectMapper.writeValueAsString(params);
+
+		Mono<T> mono = webClient.post()
+			.uri(uri)
+			.headers(httpHeaders -> httpHeaders.addAll(headers))
+			.bodyValue(kakaoRequest)
+			.retrieve()
+			.bodyToMono(responseClass);
+
+		return mono.doOnSuccess(response -> successLogging(uri))
+			.doOnError(error -> failLogging(uri, error))
+			.toFuture();
+	}
+
+	private <T> CompletableFuture<T> externalApiAsyncFallback(
 		Map<String, Object> params,
 		String uri,
 		HttpHeaders headers,
@@ -92,11 +135,29 @@ public class WebClientSender {
 			throwable.getMessage()
 		);
 
-		throw new RuntimeException("외부 API 동기 호출 실패 (Circuit Breaker 작동): " + throwable.getMessage(), throwable);
+		throw new ExternalApiException("외부 API 동기 호출 실패 (Circuit Breaker 작동): " + throwable.getMessage(), throwable);
+	}
 
+	private <T> T externalApiSyncFallback(
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass,
+		Throwable throwable
+	) {
+
+		LOGGER.error("Circuit Breaker 작동 - URI: {}, responseClass: {}, Params: {}, Headers: {}, message: {}",
+			uri,
+			responseClass,
+			params,
+			headers,
+			throwable.getMessage()
+		);
+		throw new ExternalApiException("외부 API 동기 호출 실패 (Circuit Breaker 작동): " + throwable.getMessage(), throwable);
 	}
 
 	private void successLogging(String uri) {
+
 		LOGGER.info("외부 API 호출 성공: {}", uri);
 	}
 

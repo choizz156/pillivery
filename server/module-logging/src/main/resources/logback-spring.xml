@@ -38,6 +38,13 @@
         </logger>
     </springProfile>
 
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="com.team33" level="DEBUG"/>
+    </springProfile>
+
 </configuration>
 
 

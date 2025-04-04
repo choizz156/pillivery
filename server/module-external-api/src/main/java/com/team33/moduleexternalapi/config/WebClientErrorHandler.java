@@ -2,6 +2,7 @@ package com.team33.moduleexternalapi.config;
 
 import java.net.ConnectException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +11,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.moduleexternalapi.exception.ExternalApiException;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
+import com.team33.moduleexternalapi.exception.SubscriptionPaymentException;
 
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.WriteTimeoutException;
@@ -62,6 +66,18 @@ public class WebClientErrorHandler {
 							HttpHeaders.EMPTY
 						));
 				})
+				.onErrorResume(WebClientResponseException.class, ex -> {
+					LOGGER.warn("서버 에러: {}", ex.getMessage());
+					return Mono.error(
+						new WebClientResponseException(
+							ex.getRawStatusCode(),
+							ex.getStatusText(),
+							clientRequest.headers(),
+							ex.getResponseBodyAsByteArray(),
+							StandardCharsets.UTF_8
+						)
+					);
+				})
 				.onErrorResume(UnknownHostException.class, ex -> {
 					LOGGER.warn("알 수 없는 호스트: {}", ex.getMessage());
 					return Mono.error(
@@ -72,10 +88,6 @@ public class WebClientErrorHandler {
 							HttpHeaders.EMPTY
 						));
 				})
-				.onErrorResume(Exception.class, ex -> {
-					LOGGER.warn("기타 네트워크 오류: {}", ex.getMessage());
-					return Mono.error(new PaymentApiException("API 통신 중 오류 발생", ex));
-				})
 				.onErrorResume(ConnectException.class, ex -> {
 					LOGGER.warn("연결 타임아웃: {}", ex.getMessage());
 					return Mono.error(
@@ -85,6 +97,9 @@ public class WebClientErrorHandler {
 							clientRequest.url(),
 							HttpHeaders.EMPTY
 						));
+				}).onErrorResume(Exception.class, ex -> {
+					LOGGER.warn("기타 네트워크 오류: {}", ex.getMessage());
+					return Mono.error(new ExternalApiException("API 통신 중 오류 발생", ex));
 				})));
 	}
 
@@ -92,10 +107,6 @@ public class WebClientErrorHandler {
 
 		if (response.statusCode().is4xxClientError()) {
 			return handleClientError(response, body);
-		}
-
-		if (response.statusCode().is5xxServerError()) {
-			return handleServerError(response, body);
 		}
 
 		return Mono.error(new PaymentApiException("API 오류: " + response.statusCode() + " - " + body));
@@ -118,12 +129,6 @@ public class WebClientErrorHandler {
 		}
 
 		return Mono.error(new PaymentApiException("클라이언트 오류: " + response.statusCode() + " - " + body));
-	}
-
-	private Mono<ClientResponse> handleServerError(ClientResponse response, String body) {
-
-		LOGGER.warn("서버 오류: {} - {}", response.statusCode(), body);
-		return Mono.error(new RuntimeException("서버 오류: " + response.statusCode() + " - " + body));
 	}
 
 	private int parseKakaoErrorResponse(String body) {

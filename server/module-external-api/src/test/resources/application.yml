@@ -1,6 +1,22 @@
 spring:
   profiles:
-    active: circuit-breaker
+    active: test
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuit breakers:
+      enabled: true
+    rate limiters:
+      enabled: true
+    retries:
+      enabled: true
 
 resilience4j:
   circuitbreaker:
@@ -11,11 +27,12 @@ resilience4j:
         slidingWindowSize: 10
         minimumNumberOfCalls: 5
         failureRateThreshold: 50
-        waitDurationInOpenState: 10s
+        waitDurationInOpenState: 1s
         permittedNumberOfCallsInHalfOpenState: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
         recordExceptions:
-          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+          - org.springframework.web.reactive.function.client.WebClientRequestException
           - org.springframework.web.client.ResourceAccessException
           - java.io.IOException
           - java.util.concurrent.TimeoutException
@@ -24,18 +41,19 @@ resilience4j:
   timelimiter:
     instances:
       paymentLookUpClient:
-        timeoutDuration: 5s
+        timeoutDuration: 1s
         cancelRunningFuture: true
 
   retry:
     instances:
       paymentApiClient:
-        maxAttempts: 3
-        waitDuration: 1000ms
-        enableExponentialBackoff: true
-        exponentialBackoffMultiplier: 2
+        maxAttempts: 5
+        waitDuration: 100ms
         retryExceptions:
-          - org.springframework.web.client.HttpServerErrorException
+          - com.team33.moduleexternalapi.exception.ExternalApiException
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - io.netty.channel.AbstractChannel.AnnotatedConnectException
           - org.springframework.web.client.ResourceAccessException
           - java.io.IOException
           - java.util.concurrent.TimeoutException
@@ -49,10 +67,16 @@ resilience4j:
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
         retryExceptions:
-          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+          - org.springframework.web.reactive.function.client.WebClientRequestException
           - org.springframework.web.client.ResourceAccessException
           - java.io.IOException
           - java.util.concurrent.TimeoutException
           - java.net.ConnectException
         ignoreExceptions:
           - com.team33.moduleexternalapi.exception.PaymentApiException
+
+
+
+# logging:
+#   config: classpath:logback-test.xml

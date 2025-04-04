@@ -12,4 +12,11 @@ dependencies {
     implementation 'io.github.resilience4j:resilience4j-circuitbreaker:1.7.0'
     implementation 'io.github.resilience4j:resilience4j-timelimiter:1.7.0'
     implementation 'io.github.resilience4j:resilience4j-retry:1.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+
+    // Awaitility
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.1'
+
 }

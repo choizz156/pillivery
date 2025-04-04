@@ -3,7 +3,7 @@
 <!--  <property name="home" value="/home/ubuntu/api-module/logs/"/>-->
   <property name="home" value="/users/choi/pillivery/server/module-logging/logs/"/>
 
-  <appender name="infoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  <appender name="debugLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
     <file>${home}debug.log</file>
 
@@ -14,7 +14,7 @@
     </filter>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${home}was/infoLog.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
+      <fileNamePattern>${home}was/debugLog.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
       <maxHistory>3</maxHistory>
       <maxFileSize>15MB</maxFileSize>
     </rollingPolicy>
