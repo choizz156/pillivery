@@ -1,13 +1,10 @@
 package com.team33.modulecore.cache.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
-
-import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,23 +13,23 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class CachedCategoryItems<T> implements Serializable {
 
-	private List<T> content;
+	private CachedItems<T> content;
 	private long totalElements;
 	private int totalPages;
 	private int number;
 	private int size;
 
-	public CachedCategoryItems(Page<ItemQueryDto> cachedItems) {
-		this.content = (List<T>)cachedItems.getContent();
-		this.totalElements = cachedItems.getTotalElements();
-		this.totalPages = cachedItems.getTotalPages();
-		this.number = cachedItems.getNumber();
-		this.size = cachedItems.getSize();
+	public CachedCategoryItems(Page<T> items) {
+		this.content = CachedItems.of(items.getContent());
+		this.totalElements = items.getTotalElements();
+		this.totalPages = items.getTotalPages();
+		this.number = items.getNumber();
+		this.size = items.getSize();
 	}
 
 	public Page<T> toPage() {
 		return PageableExecutionUtils.getPage(
-			content,
+			content.getCachedItems(),
 			PageRequest.of(number, size),
 			() -> totalElements
 		);

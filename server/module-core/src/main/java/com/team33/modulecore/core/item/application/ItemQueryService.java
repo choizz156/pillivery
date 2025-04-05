@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.cache.CacheClient;
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
-import com.team33.modulecore.cache.dto.CachedMainItems;
+import com.team33.modulecore.cache.dto.CachedItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
@@ -29,13 +29,13 @@ public class ItemQueryService {
 	}
 
 	public List<ItemQueryDto> findMainDiscountItems() {
-		CachedMainItems cachedMainItems = cacheClient.getMainDiscountItem();
-		return cachedMainItems.getCachedItems();
+		CachedItems cachedItems = cacheClient.getMainDiscountItem();
+		return cachedItems.getCachedItems();
 	}
 
 	public List<ItemQueryDto> findMainSaleItems() {
-		CachedMainItems cachedMainItems = cacheClient.getMainSalesItem();
-		return cachedMainItems.getCachedItems();
+		CachedItems cachedItems = cacheClient.getMainSalesItem();
+		return cachedItems.getCachedItems();
 	}
 
 	public Page<ItemQueryDto> findFilteredItem(

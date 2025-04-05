@@ -1,6 +1,7 @@
 package com.team33.modulecore.cache;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
-import com.team33.modulecore.cache.dto.CachedMainItems;
+import com.team33.modulecore.cache.dto.CachedItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.item.dto.query.ItemPage;
@@ -26,32 +27,39 @@ public class CacheClient {
 
 	private final ItemQueryRepository itemQueryRepository;
 
-	@Cacheable(value = "mainItems", key = "'discount'")
-	public CachedMainItems getMainDiscountItem() {
+	@Cacheable(value = "MAIN_ITEMS", key = "'discount'")
+	public CachedItems<ItemQueryDto> getMainDiscountItem() {
+		LOGGER.info("[Cache miss] mainItems - discount");
 		List<ItemQueryDto> mainItem = itemQueryRepository.findItemsWithDiscountRateMain();
-		return CachedMainItems.of(mainItem);
+		return CachedItems.of(mainItem);
 	}
 
-	@Cacheable(value = "mainItems", key = "'sales'")
-	public CachedMainItems getMainSalesItem() {
+	@Cacheable(value = "MAIN_ITEMS", key = "'sales'")
+	public CachedItems<ItemQueryDto> getMainSalesItem() {
+		LOGGER.info("[Cache miss] mainItems - sales");
 		List<ItemQueryDto> mainItem = itemQueryRepository.findItemsWithSalesMain();
-		return CachedMainItems.of(mainItem);
+		return CachedItems.of(mainItem);
 	}
 
-	@Cacheable(value = "categoryItems", key = "#categoryName.name()")
+	@Cacheable(value = "CATEGORY_ITEMS", key = "#categoryName.name()")
 	public CachedCategoryItems<ItemQueryDto> getCategoryItems(
-			CategoryName categoryName,
-			String keyword,
-			PriceFilter priceFilter,
-			ItemPage pageDto) {
+		CategoryName categoryName,
+		String keyword,
+		PriceFilter priceFilter,
+		ItemPage pageDto) {
 
 		LOGGER.info("[Cache miss] Category: " + categoryName.name());
 		Page<ItemQueryDto> items = itemQueryRepository.findItemsByCategory(
-				categoryName,
-				keyword,
-				priceFilter,
-				pageDto);
+			categoryName,
+			keyword,
+			priceFilter,
+			pageDto);
 
 		return new CachedCategoryItems<>(items);
+	}
+
+	public Map<String, Long> getViewCount() {
+
+		return null;
 	}
 }
