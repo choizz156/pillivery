@@ -13,7 +13,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import com.team33.modulecore.cache.CacheClient;
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
-import com.team33.modulecore.cache.dto.CachedMainItems;
+import com.team33.modulecore.cache.dto.CachedItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.item.dto.query.ItemPage;
@@ -37,7 +37,7 @@ class ItemQueryServiceTest {
 	@Test
 	void 아이템_조회() throws Exception {
 		//given
-		when(cacheClient.getMainDiscountItem()).thenReturn(CachedMainItems.of(List.of()));
+		when(cacheClient.getMainDiscountItem()).thenReturn(CachedItems.of(List.of()));
 
 		//when
 		itemQueryService.findMainDiscountItems();
@@ -50,7 +50,7 @@ class ItemQueryServiceTest {
 	@Test
 	void 아이템_조회2() throws Exception {
 		//given
-		when(cacheClient.getMainSalesItem()).thenReturn(CachedMainItems.of(List.of()));
+		when(cacheClient.getMainSalesItem()).thenReturn(CachedItems.of(List.of()));
 
 		//when
 		itemQueryService.findMainSaleItems();
