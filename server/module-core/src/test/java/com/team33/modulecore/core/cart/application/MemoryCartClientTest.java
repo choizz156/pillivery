@@ -14,11 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
-import com.team33.modulecore.core.cart.domain.CartItemVO;
-import com.team33.modulecore.core.cart.domain.CartVO;
-import com.team33.modulecore.core.cart.domain.ItemVO;
-import com.team33.modulecore.core.cart.domain.NormalCartVO;
-import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
+import com.team33.modulecore.core.cart.dto.CartItemVO;
+import com.team33.modulecore.core.cart.dto.CartVO;
+import com.team33.modulecore.core.cart.dto.ItemVO;
+import com.team33.modulecore.core.cart.dto.NormalCartVO;
+import com.team33.modulecore.core.cart.dto.SubscriptionCartVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.exception.BusinessLogicException;

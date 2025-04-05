@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team33.modulecore.FixtureMonkeyFactory;
-import com.team33.modulecore.core.cart.domain.NormalCartVO;
+import com.team33.modulecore.core.cart.dto.NormalCartVO;
 import com.team33.modulecore.core.cart.domain.entity.NormalCartEntity;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
 import com.team33.moduleredis.config.EmbededRedisConfig;

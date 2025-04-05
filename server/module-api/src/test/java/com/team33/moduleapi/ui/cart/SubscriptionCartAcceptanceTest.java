@@ -21,7 +21,7 @@ import com.team33.moduleapi.api.cart.mapper.CartServiceMapper;
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
 import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
-import com.team33.modulecore.core.cart.domain.ItemVO;
+import com.team33.modulecore.core.cart.dto.ItemVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;

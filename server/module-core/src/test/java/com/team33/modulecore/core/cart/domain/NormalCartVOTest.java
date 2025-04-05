@@ -7,6 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
+import com.team33.modulecore.core.cart.dto.CartItemVO;
+import com.team33.modulecore.core.cart.dto.CartVO;
+import com.team33.modulecore.core.cart.dto.ItemVO;
+import com.team33.modulecore.core.cart.dto.NormalCartVO;
 
 class NormalCartVOTest {
 
