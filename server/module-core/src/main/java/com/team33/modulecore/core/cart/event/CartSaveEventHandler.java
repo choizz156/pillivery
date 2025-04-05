@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CartSaveEventHandler {
 
-	private static final Logger log = LoggerFactory.getLogger("fileLog");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private final CartRepository cartRepository;
 	private final CartEntityMapper cartEntityMapper;
@@ -31,7 +31,7 @@ public class CartSaveEventHandler {
 			CartEntity cartEntity = cartEntityMapper.to(event.getExpiredCartVO());
 			cartRepository.save(cartEntity);
 		} catch (DataAccessException e) {
-			log.warn("장바구니 영속화 실패 cartId : {}, message : {} ", event.getId(), e.getMessage());
+			LOGGER.warn("장바구니 영속화 실패 cartId : {}, message : {} ", event.getId(), e.getMessage());
 			throw new DataSaveException(e.getMessage());
 		}
 	}
