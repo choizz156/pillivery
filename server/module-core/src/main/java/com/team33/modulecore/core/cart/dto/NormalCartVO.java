@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.cart.domain;
+package com.team33.modulecore.core.cart.dto;
 
 import java.util.List;
 

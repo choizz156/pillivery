@@ -23,7 +23,7 @@ import com.team33.moduleapi.api.cart.mapper.CartServiceMapper;
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
 import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
-import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
+import com.team33.modulecore.core.cart.dto.SubscriptionCartVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 
 import lombok.RequiredArgsConstructor;

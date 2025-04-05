@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.cart.domain;
+package com.team33.modulecore.core.cart.dto;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubscriptionCartVO extends CartVO {
 
-	public static SubscriptionCartVO create() {
-		return new SubscriptionCartVO();
-	}
-
 	public SubscriptionCartVO(Long id, CartPrice cartPrice, List<CartItemVO> list) {
 		super(id, cartPrice, list);
+	}
+
+	public static SubscriptionCartVO create() {
+		return new SubscriptionCartVO();
 	}
 
 	public void addSubscriptionItem(CartItemVO cartItem) {

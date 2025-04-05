@@ -9,11 +9,11 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.core.cart.domain.CartItemVO;
-import com.team33.modulecore.core.cart.domain.CartVO;
-import com.team33.modulecore.core.cart.domain.ItemVO;
-import com.team33.modulecore.core.cart.domain.NormalCartVO;
-import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
+import com.team33.modulecore.core.cart.dto.CartItemVO;
+import com.team33.modulecore.core.cart.dto.CartVO;
+import com.team33.modulecore.core.cart.dto.ItemVO;
+import com.team33.modulecore.core.cart.dto.NormalCartVO;
+import com.team33.modulecore.core.cart.dto.SubscriptionCartVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
@@ -71,22 +71,12 @@ public class MemoryCartClient {
 
 	public void changeQuantity(String key, long itemId, int quantity) {
 
+		validateQuantity(quantity);
+
 		CartVO cart = getCart(key, CartVO.class);
 		CartItemVO targetItem = getCartItem(itemId, cart);
 		changeQuantity(quantity, targetItem, cart);
 
-		saveCart(key, cart);
-	}
-
-	public void refresh(String key) {
-
-		CartVO cart = getCart(key, CartVO.class);
-
-		if (cart.getCartItems().isEmpty()) {
-			return;
-		}
-
-		removeAllCartItem(cart);
 		saveCart(key, cart);
 	}
 
@@ -99,6 +89,8 @@ public class MemoryCartClient {
 	}
 
 	public void changePeriod(String key, long itemId, int period) {
+
+		validatePeriod(period);
 
 		SubscriptionCartVO cart = getCart(key, SubscriptionCartVO.class);
 		CartItemVO targetItem = getCartItem(itemId, cart);
@@ -114,6 +106,18 @@ public class MemoryCartClient {
 			return cache.get(key, cartType);
 		}
 		throw new BusinessLogicException(ExceptionCode.CART_NOT_FOUND);
+	}
+
+	private void validatePeriod(int period) {
+		if (period < 1) {
+			throw new IllegalArgumentException("구독 기간은 1일 이상이어야 합니다.");
+		}
+	}
+
+	private void validateQuantity(int quantity) {
+		if (quantity <= 0) {
+			throw new IllegalArgumentException("수량은 1개 이상이어야 합니다.");
+		}
 	}
 
 	private boolean isNotNullCache(String key, Cache cache, Class<?> cartType) {
@@ -150,13 +154,6 @@ public class MemoryCartClient {
 		cart.changeCartItemQuantity(cartItem, quantity);
 	}
 
-	private void removeAllCartItem(CartVO cartVO) {
-
-		cartVO.getCartItems()
-			.forEach(cartItem -> cartItem.remove(cartVO));
-
-		cartVO.getCartItems().clear();
-	}
 
 	private void removeOrderedItem(CartVO cart, List<Long> orderedItemIds) {
 
@@ -165,9 +162,7 @@ public class MemoryCartClient {
 			.filter(cartItem -> orderedItemIds.contains(cartItem.getItem().getId()))
 			.collect(Collectors.toUnmodifiableList());
 
-		removedItems
-			.forEach(cartItem -> cartItem.remove(cart));
-
+		removedItems.forEach(cartItem -> cartItem.remove(cart));
 		removedItems.forEach(cart::removeCartItem);
 	}
 }

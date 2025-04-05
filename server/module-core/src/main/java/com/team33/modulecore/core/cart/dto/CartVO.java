@@ -1,6 +1,7 @@
-package com.team33.modulecore.core.cart.domain;
+package com.team33.modulecore.core.cart.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
@@ -12,11 +13,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public abstract class CartVO{
 
-	private Long id;
-
 	CartPrice price = new CartPrice(0, 0, 0);
-
 	List<CartItemVO> cartItems = new ArrayList<>();
+	private Long id;
 
 	public CartVO(Long id, CartPrice cartPrice, List<CartItemVO> list) {
 		this.id = id;
@@ -54,6 +53,11 @@ public abstract class CartVO{
 
 	public int getExpectedPrice() {
 		return this.price.getTotalPrice() - this.price.getTotalDiscountPrice();
+
+	}
+
+	public List<CartItemVO> getCartItems() {
+		return Collections.unmodifiableList(this.cartItems);
 	}
 
 }

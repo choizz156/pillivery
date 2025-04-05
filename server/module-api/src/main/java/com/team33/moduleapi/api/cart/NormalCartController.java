@@ -21,7 +21,7 @@ import com.team33.moduleapi.api.cart.mapper.CartServiceMapper;
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
 import com.team33.modulecore.core.cart.application.MemoryCartClient;
 import com.team33.modulecore.core.cart.application.NormalCartItemService;
-import com.team33.modulecore.core.cart.domain.NormalCartVO;
+import com.team33.modulecore.core.cart.dto.NormalCartVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,11 +1,11 @@
-package com.team33.modulecore.core.cart.event;
+package com.team33.modulecore.core.cart.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.core.cart.domain.CartVO;
+import com.team33.modulecore.core.cart.dto.CartVO;
 import com.team33.modulecore.core.cart.domain.entity.CartEntity;
 import com.team33.modulecore.core.cart.domain.entity.CartItemEntity;
 import com.team33.modulecore.core.cart.domain.entity.NormalCartEntity;
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-class CartEntityMapper {
+public class CartEntityMapper {
 
 	private final ItemQueryRepository itemQueryRepository;
 

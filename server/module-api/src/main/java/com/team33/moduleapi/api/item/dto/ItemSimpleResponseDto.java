@@ -1,6 +1,6 @@
 package com.team33.moduleapi.api.item.dto;
 
-import com.team33.modulecore.core.cart.domain.ItemVO;
+import com.team33.modulecore.core.cart.dto.ItemVO;
 import com.team33.modulecore.core.item.domain.entity.Item;
 
 import lombok.Builder;

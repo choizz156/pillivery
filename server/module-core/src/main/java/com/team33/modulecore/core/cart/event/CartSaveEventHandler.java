@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.cart.domain.entity.CartEntity;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
+import com.team33.modulecore.core.cart.mapper.CartEntityMapper;
 import com.team33.modulecore.exception.DataSaveException;
 
 import lombok.RequiredArgsConstructor;

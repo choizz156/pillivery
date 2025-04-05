@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 
 import org.hibernate.proxy.HibernateProxy;
 
-import com.team33.modulecore.core.cart.domain.CartPrice;
+import com.team33.modulecore.core.cart.dto.CartPrice;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,16 +20,16 @@ import lombok.NoArgsConstructor;
 @Entity
 public class NormalCartEntity extends CartEntity {
 
+	private NormalCartEntity(Long id, CartPrice price, List<CartItemEntity> cartItemEntities) {
+		super(id, price, cartItemEntities);
+	}
+
 	public static NormalCartEntity create() {
 		return new NormalCartEntity();
 	}
 
 	public static NormalCartEntity of(Long id,CartPrice price, List<CartItemEntity> cartItemEntities) {
 		return new NormalCartEntity(id, price, cartItemEntities);
-	}
-
-	private NormalCartEntity(Long id, CartPrice price, List<CartItemEntity> cartItemEntities) {
-		super(id, price, cartItemEntities);
 	}
 
 	@Override

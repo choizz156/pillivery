@@ -16,7 +16,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.team33.modulecore.core.cart.domain.CartPrice;
+import com.team33.modulecore.core.cart.dto.CartPrice;
 import com.team33.modulecore.core.common.BaseEntity;
 
 import lombok.Getter;
@@ -30,6 +30,10 @@ import lombok.NoArgsConstructor;
 @DiscriminatorColumn(name = "dtype")
 public abstract class CartEntity extends BaseEntity {
 
+	@Embedded
+	CartPrice price = new CartPrice(0, 0, 0);
+	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+	List<CartItemEntity> cartItemEntities = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_id")
@@ -40,13 +44,6 @@ public abstract class CartEntity extends BaseEntity {
 		this.price = price;
 		this.cartItemEntities = cartItemEntities;
 	}
-
-	@Embedded
-	CartPrice price = new CartPrice(0, 0, 0);
-
-	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-	List<CartItemEntity> cartItemEntities = new ArrayList<>();
-
 
 	public int getTotalDiscountPrice() {
 		return this.price.getTotalDiscountPrice();
