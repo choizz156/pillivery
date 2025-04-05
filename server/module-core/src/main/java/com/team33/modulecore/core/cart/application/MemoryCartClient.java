@@ -1,13 +1,12 @@
 package com.team33.modulecore.core.cart.application;
 
+import static com.team33.modulecore.cache.CacheType.*;
+
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.redisson.api.RMapCache;
-import org.redisson.api.RedissonClient;
-import org.redisson.api.map.event.EntryExpiredListener;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import com.team33.modulecore.core.cart.domain.CartItemVO;
@@ -16,7 +15,6 @@ import com.team33.modulecore.core.cart.domain.ItemVO;
 import com.team33.modulecore.core.cart.domain.NormalCartVO;
 import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
-import com.team33.modulecore.core.cart.event.CartSavedEvent;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 
@@ -26,31 +24,19 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class MemoryCartClient {
 
-	private static final long CART_TIME = 2L;
-
-	private final RedissonClient redissonClient;
-	private final ApplicationEventPublisher applicationEventPublisher;
-
-	public CartVO getCart(String key) {
-		RMapCache<String, CartVO> mapCache = getMapCache();
-		return mapCache.get(key);
-	}
+	private final CacheManager cacheManager;
 
 	public void saveCart(String key, CartVO cart) {
-		RMapCache<String, CartVO> mapCache = getMapCache();
-		mapCache.put(key, cart, CART_TIME, TimeUnit.DAYS);
 
-		mapCache.addListener((EntryExpiredListener<String, CartVO>)event -> {
-			String eventKey = event.getKey();
-			CartVO expiredCartEntity = event.getValue();
-
-			String id = String.valueOf(eventKey.charAt(eventKey.length() - 1));
-			applicationEventPublisher.publishEvent(new CartSavedEvent(Long.valueOf(id), expiredCartEntity));
-		});
+		Cache cache = cacheManager.getCache(CARTS.name());
+		if (cache != null) {
+			cache.put(key, cart);
+		}
 	}
 
 	public void addNormalItem(String key, ItemVO item, int quantity) {
-		NormalCartVO normalCartVO = (NormalCartVO)getMapCache().get(key);
+
+		NormalCartVO normalCartVO = getCart(key, NormalCartVO.class);
 		checkDuplication(item, normalCartVO);
 
 		CartItemVO cartItem = CartItemVO.of(item, quantity);
@@ -59,7 +45,8 @@ public class MemoryCartClient {
 	}
 
 	public void addSubscriptionItem(String key, SubscriptionContext subscriptionContext) {
-		SubscriptionCartVO subscriptionCart = (SubscriptionCartVO)getMapCache().get(key);
+
+		SubscriptionCartVO subscriptionCart = getCart(key, SubscriptionCartVO.class);
 
 		CartItemVO cartItem = CartItemVO.of(
 			subscriptionContext.getItem(),
@@ -72,7 +59,8 @@ public class MemoryCartClient {
 	}
 
 	public void deleteCartItem(String key, long itemId) {
-		CartVO cart = getMapCache().get(key);
+
+		CartVO cart = getCart(key, CartVO.class);
 		CartItemVO targetItem = getCartItem(itemId, cart);
 
 		targetItem.remove(cart);
@@ -82,7 +70,8 @@ public class MemoryCartClient {
 	}
 
 	public void changeQuantity(String key, long itemId, int quantity) {
-		CartVO cart = getMapCache().get(key);
+
+		CartVO cart = getCart(key, CartVO.class);
 		CartItemVO targetItem = getCartItem(itemId, cart);
 		changeQuantity(quantity, targetItem, cart);
 
@@ -90,44 +79,57 @@ public class MemoryCartClient {
 	}
 
 	public void refresh(String key) {
-		CartVO cart = getMapCache().get(key);
+
+		CartVO cart = getCart(key, CartVO.class);
 
 		if (cart.getCartItems().isEmpty()) {
 			return;
 		}
-		removeAllCartItem(cart);
 
+		removeAllCartItem(cart);
 		saveCart(key, cart);
 	}
 
 	public void refreshOrderedItem(String key, List<Long> orderedItemIds) {
-		CartVO cart = getMapCache().get(key);
+
+		CartVO cart = getCart(key, CartVO.class);
 		removeOrderedItem(cart, orderedItemIds);
 
 		saveCart(key, cart);
 	}
 
 	public void changePeriod(String key, long itemId, int period) {
-		SubscriptionCartVO cart = (SubscriptionCartVO)getMapCache().get(key);
 
+		SubscriptionCartVO cart = getCart(key, SubscriptionCartVO.class);
 		CartItemVO targetItem = getCartItem(itemId, cart);
 
 		targetItem.changePeriod(period);
 		saveCart(key, cart);
 	}
 
+	public <T extends CartVO> T getCart(String key, Class<T> cartType) {
+
+		Cache cache = cacheManager.getCache(CARTS.name());
+		if (isNotNullCache(key, cache, cartType)) {
+			return cache.get(key, cartType);
+		}
+		throw new BusinessLogicException(ExceptionCode.CART_NOT_FOUND);
+	}
+
+	private boolean isNotNullCache(String key, Cache cache, Class<?> cartType) {
+
+		return cache != null && cache.get(key, cartType) != null;
+	}
+
 	private void checkDuplication(ItemVO item, NormalCartVO normalCart) {
+
 		boolean isIn = normalCart.getCartItems()
 			.stream()
 			.anyMatch(cartItemVO -> cartItemVO.getItem().getId().equals(item.getId()));
 
-		if (isIn){
+		if (isIn) {
 			throw new IllegalArgumentException("이미 장바구니에 있습니다.");
 		}
-	}
-
-	private RMapCache<String, CartVO> getMapCache() {
-		return redissonClient.getMapCache("cart");
 	}
 
 	private CartItemVO getCartItem(long itemId, CartVO cartVO) {
@@ -141,6 +143,7 @@ public class MemoryCartClient {
 	}
 
 	private void changeQuantity(int quantity, CartItemVO cartItem, CartVO cart) {
+
 		if (cartItem.getTotalQuantity() == quantity) {
 			return;
 		}
@@ -148,6 +151,7 @@ public class MemoryCartClient {
 	}
 
 	private void removeAllCartItem(CartVO cartVO) {
+
 		cartVO.getCartItems()
 			.forEach(cartItem -> cartItem.remove(cartVO));
 
@@ -155,6 +159,7 @@ public class MemoryCartClient {
 	}
 
 	private void removeOrderedItem(CartVO cart, List<Long> orderedItemIds) {
+
 		List<CartItemVO> removedItems = cart.getCartItems()
 			.stream()
 			.filter(cartItem -> orderedItemIds.contains(cartItem.getItem().getId()))

@@ -30,8 +30,7 @@ public class SubscriptionCartItemService {
 	}
 
 	private SubscriptionCartVO getSubscriptionCart(long cartId, String key) {
-		System.out.println("=========="+ cartId);
-		SubscriptionCartVO cachedSubscriptionCart = (SubscriptionCartVO)memoryCartClient.getCart(key);
+		SubscriptionCartVO cachedSubscriptionCart = memoryCartClient.getCart(key, SubscriptionCartVO.class);
 
 		if (cachedSubscriptionCart == null) {
 

@@ -31,7 +31,7 @@ public class NormalCartItemService {
 
 	private NormalCartVO getCart(String key, long cartId) {
 
-		NormalCartVO cachedNormalCart = (NormalCartVO)memoryCartClient.getCart(key);
+		NormalCartVO cachedNormalCart = (NormalCartVO)memoryCartClient.getCart(key, NormalCartVO.class);
 
 		if (cachedNormalCart == null) {
 			NormalCartEntity normalCartEntity = cartRepository.findNormalCartById(cartId)
