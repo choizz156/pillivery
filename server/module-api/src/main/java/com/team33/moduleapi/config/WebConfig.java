@@ -1,11 +1,10 @@
 package com.team33.moduleapi.config;
 
-import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.team33.moduleapi.interceptor.ViewInterceptor;
+import com.team33.moduleredis.interceptor.ViewInterceptor;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,12 +12,11 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-	private final RedissonClient redissonClient;
+	private final ViewInterceptor viewInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-
-		registry.addInterceptor(new ViewInterceptor(redissonClient))
+		registry.addInterceptor(viewInterceptor)
 			.addPathPatterns("/api/items/{itemId}");
 	}
 }

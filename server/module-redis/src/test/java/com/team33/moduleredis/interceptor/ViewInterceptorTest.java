@@ -1,4 +1,4 @@
-package com.team33.moduleapi.interceptor;
+package com.team33.moduleredis.interceptor;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -7,12 +7,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.ActiveProfiles;
 
-import com.team33.moduleapi.ApiTest;
+import com.team33.moduleredis.config.EmbededRedisConfig;
 
-
-class ViewInterceptorTest extends ApiTest {
+@ActiveProfiles("test")
+@EnableAutoConfiguration
+@SpringBootTest(classes = EmbededRedisConfig.class,
+	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
+class ViewInterceptorTest {
 
 	@Autowired
 	private RedissonClient redissonClient;

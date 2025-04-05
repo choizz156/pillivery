@@ -1,6 +1,4 @@
-package com.team33.moduleapi.interceptor;
-
-import static com.team33.modulecore.cache.RedisCacheKey.*;
+package com.team33.moduleredis.interceptor;
 
 import java.time.Duration;
 
@@ -10,12 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.redisson.api.RHyperLogLog;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Component
 public class ViewInterceptor implements HandlerInterceptor {
 
 	private final RedissonClient redissonClient;
@@ -33,7 +33,7 @@ public class ViewInterceptor implements HandlerInterceptor {
 
 		int itemId = Character.getNumericValue(pathInfo.charAt(pathInfo.length() - 1));
 
-		RSet<Integer> viewedItem = redissonClient.getSet(VIEW_COUNT.name());
+		RSet<Integer> viewedItem = redissonClient.getSet("viewCount");
 		viewedItem.add(itemId);
 
 		RHyperLogLog<String> viewCheck = redissonClient.getHyperLogLog(String.valueOf(itemId));
