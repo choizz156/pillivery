@@ -1,15 +1,17 @@
 package com.team33.moduleapi.ui.cart;
 
+import static com.team33.modulecore.cache.CacheType.*;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
@@ -25,54 +27,30 @@ import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 
 class NormalCartAcceptanceTest extends ApiTest {
 
-	private static final String KEY = CartKeySupplier.from(1L);
+    private static final String BASE_URL = "/api/carts/normal";
+    private static final Long CART_ID = 1L;
+    private static final String KEY = CartKeySupplier.from(CART_ID);
 
-	@Autowired
-	private ItemCommandRepository itemCommandRepository;
+    @Autowired
+    private ItemCommandRepository itemCommandRepository;
+    @Autowired
+    private CartServiceMapper cartServiceMapper;
+    @Autowired
+    private NormalCartItemService normalCartItemService;
+    @Autowired
+    private MemoryCartClient memoryCartClient;
+    @Autowired
+    private CacheManager cacheManager;
 
-	@Autowired
-	private CartServiceMapper cartServiceMapper;
+    private List<Item> items;
+    private ItemVO firstItem;
 
-	@Autowired
-	private NormalCartItemService normalCartItemService;
-
-	@Autowired
-	private RedissonClient redissonClient;
-
-	@Autowired
-	private MemoryCartClient memoryCartClient;
-
-	private List<Item> items;
-
-	/**
-	 * {@code @UserAccount}에서 회원 가입이 임의로 진행되고, 회원 가입시 카트(id = 1)가 생성됩니다.
-	 * 따라서, 카트를 저장하는 로직은 따로 없습니다.
-	 */
-	@BeforeEach
-	void setUp() {
-		redissonClient.getKeys().flushall();
-
-		items = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
-			.setNull("id")
-			.setNull("itemCategory")
-			.setNull("reviewIds")
-			.setNull("categories")
-			.set("statistics.starAvg", 0.0)
-			.set("statistics.reviewCount", 0)
-			.set("statistics.view", 0)
-			.set("statistics.sales", 0)
-			.set("information.price.realPrice", 10000)
-			.set("information.price.discountPrice", 1000)
-			.set("information.price.discountRate", 10.0)
-			.set("information.price.originPrice", 11000)
-			.sampleList(2);
-
-		itemCommandRepository.saveAll(items);
-		ItemVO itemVO = cartServiceMapper.toItemVO(1L);
-
-		normalCartItemService.findCart(KEY, 1L);
-		memoryCartClient.addNormalItem(KEY, itemVO, 1);
-	}
+    @BeforeEach
+    void setUp() {
+        clearCache();
+        setupTestItems();
+        setupInitialCart();
+    }
 
 	@DisplayName("일반 카트를 조회할 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
@@ -150,4 +128,36 @@ class NormalCartAcceptanceTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.NO_CONTENT.value());
 	}
+
+    private void clearCache() {
+        Objects.requireNonNull(cacheManager.getCache(CARTS.name())).clear();
+    }
+
+    private void setupTestItems() {
+        items = createTestItems();
+        itemCommandRepository.saveAll(items);
+        firstItem = cartServiceMapper.toItemVO(1L);
+    }
+
+    private List<Item> createTestItems() {
+        return FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
+            .setNull("id")
+            .setNull("itemCategory")
+            .setNull("reviewIds")
+            .setNull("categories")
+            .set("statistics.starAvg", 0.0)
+            .set("statistics.reviewCount", 0)
+            .set("statistics.view", 0)
+            .set("statistics.sales", 0)
+            .set("information.price.realPrice", 10000)
+            .set("information.price.discountPrice", 1000)
+            .set("information.price.discountRate", 10.0)
+            .set("information.price.originPrice", 11000)
+            .sampleList(2);
+    }
+
+    private void setupInitialCart() {
+        normalCartItemService.findCart(KEY, CART_ID);
+        memoryCartClient.addNormalItem(KEY, firstItem, 1);
+    }
 }

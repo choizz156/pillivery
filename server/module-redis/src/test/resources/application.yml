@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+
+  redis:
+    host: localhost
+    port: 6379
