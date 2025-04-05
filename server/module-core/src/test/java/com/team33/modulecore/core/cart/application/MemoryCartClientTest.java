@@ -1,216 +1,160 @@
 package com.team33.modulecore.core.cart.application;
 
+import static com.team33.modulecore.cache.CacheType.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.cart.domain.CartItemVO;
-import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.cart.domain.CartVO;
 import com.team33.modulecore.core.cart.domain.ItemVO;
 import com.team33.modulecore.core.cart.domain.NormalCartVO;
 import com.team33.modulecore.core.cart.domain.SubscriptionCartVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
-import com.team33.moduleredis.config.EmbededRedisConfig;
+import com.team33.modulecore.exception.BusinessLogicException;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@ActiveProfiles("test")
-@EnableAutoConfiguration
-@ContextConfiguration(classes = {EmbededRedisConfig.class, MemoryCartClient.class})
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class MemoryCartClientTest {
 
-	@Autowired
-	private MemoryCartClient memoryCartClient;
-	@Autowired
-	private RedissonClient redissonClient;
+    private static final String TEST_KEY = "testKey";
 
-	private ItemVO item;
+    @InjectMocks
+    private MemoryCartClient memoryCartClient;
+    @Mock
+    private CacheManager cacheManager;
+    @Mock
+    private Cache cache;
 
-	@BeforeAll
-	void setUp() {
-		redissonClient.getKeys().flushall();
-		item = FixtureMonkeyFactory.get().giveMeBuilder(ItemVO.class)
-			.set("id", 1L)
-			.set("originPrice", 10000)
-			.set("discountPrice", 1000)
-			.set("realPrice", 9000)
-			.set("discountRate", 0.1)
-			.sample();
-	}
+    @BeforeEach
+    void setUp() {
+        when(cacheManager.getCache(CARTS.name())).thenReturn(cache);
+    }
 
-	@DisplayName("일반 장바구니를 메모리에 저장할 수 있다.")
-	@Test
-	void 일반_장바구니_저장() {
-		//given
-		NormalCartVO normalCart = FixtureMonkeyFactory.get().giveMeBuilder(NormalCartVO.class)
-			.set("id", 1L)
-			.set("cartItems", List.of(CartItemVO.builder().item(item).totalQuantity(1).build()))
-			.set("price", new CartPrice())
-			.sample();
-		//when
-		memoryCartClient.saveCart("test", normalCart);
-		//then
-		CartVO cart = memoryCartClient.getCart("test");
-		assertThat(cart).isNotNull();
-		assertThat(cart.getId()).isEqualTo(normalCart.getId());
-		assertThat(cart.getCartItems()).hasSize(1)
-			.extracting("item.originPrice")
-			.containsExactly(10000);
-	}
+    @Test
+    @DisplayName("잘못된 타입의 장바구니를 요청하면 예외가 발생한다")
+    void test1() {
+        // given
+        when(cache.get(eq(TEST_KEY), eq(SubscriptionCartVO.class))).thenReturn(eq(null));
 
-	@DisplayName("구독 장바구니를 메모리에 저장할 수 있다.")
-	@Test
-	void 구독_장바구니_저장() {
-		//given
-		SubscriptionCartVO subscriptionCart = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionCartVO.class)
-			.set("id", 1L)
-			.set("cartItems",
-				List.of(CartItemVO.builder().subscriptionInfo(SubscriptionInfo.of(true, 30)).item(item).build()))
-			.sample();
-		//when
-		memoryCartClient.saveCart("test", subscriptionCart);
-		//then
-		CartVO cart = memoryCartClient.getCart("test");
-		assertThat(cart).isNotNull();
-		assertThat(cart.getId()).isEqualTo(subscriptionCart.getId());
-		assertThat(cart.getCartItems()).hasSize(1)
-			.extracting("subscriptionInfo.subscription")
-			.contains(true);
-	}
+        // when, then
+        assertThatThrownBy(() -> memoryCartClient.getCart(TEST_KEY, SubscriptionCartVO.class))
+            .isInstanceOf(BusinessLogicException.class);
+    }
 
-	@DisplayName("일반 장바구니에 아이템을 넣을 수 있다.")
-	@Test
-	void 일반_장바구니_아이템_저장() {
-		//given
-		NormalCartVO normalCart = FixtureMonkeyFactory.get().giveMeBuilder(NormalCartVO.class)
-			.set("id", 1L)
-			.set("cartItems", new ArrayList<>())
-			.set("price", new CartPrice())
-			.sample();
-		memoryCartClient.saveCart("test", normalCart);
-		//when
-		memoryCartClient.addNormalItem("test", item, 1);
-		//then
-		CartVO cart = memoryCartClient.getCart("test");
-		assertThat(cart).isNotNull();
-		assertThat(cart).isInstanceOf(NormalCartVO.class);
-		assertThat(cart.getCartItems()).hasSize(1)
-			.extracting("item.originPrice")
-			.containsExactly(10000);
-		assertThat(cart.getPrice()).isEqualTo(new CartPrice(1, 9000, 1000));
-	}
+    @Test
+    @DisplayName("캐시가 없으면 예외가 발생한다")
+    void test2() {
+        // given
+        when(cacheManager.getCache(CARTS.name())).thenReturn(null);
 
-	@DisplayName("구독 장바구니에 아이템을 넣을 수 있다.")
-	@Test
-	void 구독_장바구니_아이템_저장() {
-		//given
-		SubscriptionCartVO subscriptionCart = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionCartVO.class)
-			.set("id", 1L)
-			.set("cartItems", new ArrayList<>())
-			.set("price", new CartPrice())
-			.sample();
-		memoryCartClient.saveCart("test", subscriptionCart);
-		//when
-		memoryCartClient.addSubscriptionItem(
-			"test",
-			SubscriptionContext.builder()
-				.subscriptionInfo(SubscriptionInfo.of(true, 30))
-				.item(item)
-				.quantity(1)
-				.build()
-		);
-		//then
-		CartVO cart = memoryCartClient.getCart("test");
-		assertThat(cart).isNotNull();
-		assertThat(cart).isInstanceOf(SubscriptionCartVO.class);
-		assertThat(cart.getCartItems()).hasSize(1)
-			.extracting(
-				"subscriptionInfo.subscription",
-				"subscriptionInfo.period")
-			.contains(tuple(true, 30));
-		assertThat(cart.getPrice()).isEqualTo(new CartPrice(1, 9000, 1000));
-	}
+        // when, then
+        assertThatThrownBy(() -> memoryCartClient.getCart(TEST_KEY, CartVO.class))
+            .isInstanceOf(BusinessLogicException.class);
+    }
 
-	@DisplayName("장바구니에서 특정 아이템을 삭제할 수 있다.")
-	@Test
-	void 장바구니_아이템_삭제() {
-		//given
-		NormalCartVO normalCart = FixtureMonkeyFactory.get().giveMeBuilder(NormalCartVO.class)
-			.set("id", 1L)
-			.set("cartItems", List.of(CartItemVO.builder().id(1L).item(item).build()))
-			.set("price", new CartPrice())
-			.sample();
-		memoryCartClient.saveCart("test", normalCart);
-		//when
-		memoryCartClient.deleteCartItem("test", 1L);
-		//then
-		CartVO cart = memoryCartClient.getCart("test");
-		assertThat(cart).isNotNull();
-		assertThat(cart.getCartItems()).hasSize(0);
-		assertThat(cart.getPrice()).isEqualTo(new CartPrice());
-	}
+    @DisplayName("일반 상품을 장바구니에 추가할 수 있다")
+    @Test
+    void test3() {
+        // given
+        ItemVO itemVO = createTestItem();
+        NormalCartVO normalCartVO = new NormalCartVO();
+        when(cache.get(anyString(), eq(NormalCartVO.class))).thenReturn(normalCartVO);
 
-	@DisplayName("장바구니의 수량을 변경할 수 있다.")
-	@Test
-	void 장바구니_수량_변경() {
-		//given
-		SubscriptionCartVO subscriptionCart = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionCartVO.class)
-			.set("id", 1L)
-			.set("cartItems", new ArrayList<>())
-			.set("price", new CartPrice())
-			.sample();
-		memoryCartClient.saveCart("test", subscriptionCart);
-		memoryCartClient.addSubscriptionItem(
-			"test",
-			SubscriptionContext.builder()
-				.subscriptionInfo(SubscriptionInfo.of(true, 30))
-				.item(item)
-				.quantity(1)
-				.build()
-		);
-		//when
-		memoryCartClient.changeQuantity("test", 1L, 2);
-		//then
-		CartVO cart = memoryCartClient.getCart("test");
-		assertThat(cart).isNotNull();
-		assertThat(cart.getCartItems()).hasSize(1);
-		assertThat(cart.getPrice().getTotalPrice()).isEqualTo(18000);
-		assertThat(cart.getPrice()).isEqualTo(new CartPrice(2, 18000, 2000));
-	}
+        // when
+        int quantity = 2;
+        memoryCartClient.addNormalItem(TEST_KEY, itemVO, quantity);
 
-	@DisplayName("장바구니를 비울 수 있다.")
-	@Test
-	void 장바구니_비우기() {
-		//given
-		NormalCartVO normalCart = FixtureMonkeyFactory.get().giveMeBuilder(NormalCartVO.class)
-			.set("id", 1L)
-			.set("cartItems", List.of(CartItemVO.builder().id(1L).item(item).build()))
-			.set("price", new CartPrice())
-			.sample();
-		memoryCartClient.saveCart("test", normalCart);
-		//when
-		memoryCartClient.refresh("test");
-		//then
-		CartVO cart = memoryCartClient.getCart("test");
-		assertThat(cart).isNotNull();
-		assertThat(cart.getCartItems()).hasSize(0);
-		assertThat(cart.getPrice()).isEqualTo(new CartPrice());
-	}
+        // then
+        assertThat(normalCartVO.getCartItems()).hasSize(1);
+        assertThat(normalCartVO.getCartItems().get(0).getItem()).isEqualTo(itemVO);
+        assertThat(normalCartVO.getCartItems().get(0).getTotalQuantity()).isEqualTo(quantity);
+    }
+
+    @DisplayName("구독 상품을 장바구니에 추가할 수 있다")
+    @Test
+    void test4() {
+        // given
+        ItemVO item = createTestItem();
+        SubscriptionCartVO subscriptionCart = new SubscriptionCartVO();
+        SubscriptionContext context = createSubscriptionContext(item);
+        when(cache.get(eq(TEST_KEY), eq(SubscriptionCartVO.class))).thenReturn(subscriptionCart);
+
+        // when
+        memoryCartClient.addSubscriptionItem(TEST_KEY, context);
+
+        // then
+        assertThat(subscriptionCart.getCartItems()).hasSize(1);
+        assertThat(subscriptionCart.getCartItems().get(0).getItem()).isEqualTo(item);
+    }
+
+    @Test
+    @DisplayName("장바구니에서 상품을 삭제할 수 있다")
+    void test5() {
+        // given
+        NormalCartVO cart = new NormalCartVO();
+        ItemVO item = createTestItem();
+        CartItemVO cartItem = CartItemVO.of(item, 1);
+        cart.addNormalItem(cartItem);
+        when(cache.get(eq(TEST_KEY), eq(CartVO.class))).thenReturn(cart);
+
+        // when
+        memoryCartClient.deleteCartItem(TEST_KEY, item.getId());
+
+        // then
+        assertThat(cart.getCartItems()).isEmpty();
+    }
+
+    @DisplayName("존재하지 않는 장바구니에 접근하면 예외가 발생한다")
+    @Test
+    void test6() {
+        // given
+        when(cache.get(eq(TEST_KEY), eq(NormalCartVO.class))).thenReturn(eq(null));
+
+        // when, then
+        assertThatThrownBy(() -> memoryCartClient.addNormalItem(TEST_KEY, createTestItem(), 1))
+            .isInstanceOf(BusinessLogicException.class);
+    }
+
+    @DisplayName("이미 장바구니에 있는 상품을 추가하면 예외가 발생한다")
+    @Test
+    void test7() {
+        // given
+        ItemVO item = createTestItem();
+        NormalCartVO cart = new NormalCartVO();
+        cart.addNormalItem(CartItemVO.of(item, 1));
+        when(cache.get(eq(TEST_KEY), eq(NormalCartVO.class))).thenReturn(cart);
+
+        // when, then
+        assertThatThrownBy(() -> memoryCartClient.addNormalItem(TEST_KEY, item, 1))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("이미 장바구니에 있습니다.");
+    }
+
+    private ItemVO createTestItem() {
+
+        return ItemVO.builder()
+            .id(1L)
+            .productName("testItem")
+            .originPrice(1000)
+            .build();
+    }
+
+    private SubscriptionContext createSubscriptionContext(ItemVO item) {
+
+        return SubscriptionContext.builder()
+            .item(item)
+            .quantity(1)
+            .subscriptionInfo(SubscriptionInfo.of(true, 60))
+            .build();
+    }
 }
