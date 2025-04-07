@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		"com.team33.moduleevent",
 		"com.team33.moduleredis"
 	}
-	// exclude = QuartzAutoConfiguration.class
 )
 public class AppApplication {
 

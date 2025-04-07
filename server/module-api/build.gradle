@@ -45,6 +45,8 @@ dependencies {
     //lombok
     testAnnotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
+
+	testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 test {
     useJUnitPlatform()

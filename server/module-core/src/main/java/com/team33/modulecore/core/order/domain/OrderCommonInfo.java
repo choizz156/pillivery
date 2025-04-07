@@ -1,6 +1,5 @@
 package com.team33.modulecore.core.order.domain;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.Embeddable;
@@ -45,14 +44,13 @@ public class OrderCommonInfo {
 
 	@Builder(toBuilder = true)
 	public OrderCommonInfo(
-		String mainItemName,
-		int totalQuantity,
-		PaymentToken paymentToken,
-		Price price,
-		Receiver receiver,
-		OrderStatus orderStatus,
-		Long userId
-	) {
+			String mainItemName,
+			int totalQuantity,
+			PaymentToken paymentToken,
+			Price price,
+			Receiver receiver,
+			OrderStatus orderStatus,
+			Long userId) {
 
 		this.mainItemName = mainItemName;
 		this.totalQuantity = totalQuantity;
@@ -66,16 +64,16 @@ public class OrderCommonInfo {
 	public static OrderCommonInfo createFromContext(List<OrderItem> orderItems, OrderContext orderContext) {
 
 		return OrderCommonInfo.builder()
-			.mainItemName(orderItems.get(0).getProductName())
-			.totalQuantity(orderItems.stream()
-				.map(OrderItem::getQuantity)
-				.mapToInt(Integer::intValue)
-				.sum())
-			.paymentToken(new PaymentToken())
-			.receiver(orderContext.getReceiver())
-			.userId(orderContext.getUserId())
-			.orderStatus(OrderStatus.REQUEST)
-			.build();
+				.mainItemName(orderItems.get(0).getProductName())
+				.totalQuantity(orderItems.stream()
+						.map(OrderItem::getQuantity)
+						.mapToInt(Integer::intValue)
+						.sum())
+				.paymentToken(new PaymentToken())
+				.receiver(orderContext.getReceiver())
+				.userId(orderContext.getUserId())
+				.orderStatus(OrderStatus.REQUEST)
+				.build();
 	}
 
 	public OrderCommonInfo addSid(String sid) {
@@ -87,22 +85,22 @@ public class OrderCommonInfo {
 		}
 
 		return this.toBuilder()
-			.paymentToken(new PaymentToken(sid, tid))
-			.build();
+				.paymentToken(new PaymentToken(sid, tid))
+				.build();
 	}
 
 	public OrderCommonInfo addTid(String tid) {
 
 		return this.toBuilder()
-			.paymentToken(new PaymentToken(null, tid))
-			.build();
+				.paymentToken(new PaymentToken(null, tid))
+				.build();
 	}
 
 	public OrderCommonInfo changeOrderStatus(OrderStatus orderStatus) {
 
 		return this.toBuilder()
-			.orderStatus(orderStatus)
-			.build();
+				.orderStatus(orderStatus)
+				.build();
 	}
 
 	public void addPrice(List<OrderItem> orderItems) {
@@ -112,11 +110,11 @@ public class OrderCommonInfo {
 	public OrderCommonInfo adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
 
 		int newTotalQuantity = countTotalQuantity(orderItems);
-		
+
 		return this.toBuilder()
-			.price(new Price(orderItems))
-			.totalQuantity(newTotalQuantity)
-			.build();
+				.price(new Price(orderItems))
+				.totalQuantity(newTotalQuantity)
+				.build();
 	}
 
 	public int getTotalPrice() {
@@ -136,8 +134,8 @@ public class OrderCommonInfo {
 
 	public OrderCommonInfo cancelSubscription() {
 		return this.toBuilder()
-			.orderStatus(OrderStatus.SUBSCRIBE_CANCEL)
-			.build();
+				.orderStatus(OrderStatus.SUBSCRIBE_CANCEL)
+				.build();
 	}
 
 	private int countTotalQuantity(List<OrderItem> orderItems) {
@@ -147,8 +145,8 @@ public class OrderCommonInfo {
 		}
 
 		return orderItems.stream()
-			.map(OrderItem::getQuantity)
-			.mapToInt(Integer::intValue)
-			.sum();
+				.map(OrderItem::getQuantity)
+				.mapToInt(Integer::intValue)
+				.sum();
 	}
 }

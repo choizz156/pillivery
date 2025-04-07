@@ -1,10 +1,6 @@
 package com.team33.modulecore.core.item.domain;
 
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,9 +21,6 @@ public class Statistic {
 	private double starAvg;
 
 	private int reviewCount;
-
-	@Transient
-	private ReadWriteLock lock = new ReentrantReadWriteLock();
 
 	public void addStarAvg(double star) {
 		if (isFirst(star))

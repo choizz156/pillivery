@@ -14,7 +14,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.moduleadmin.repository.UserBatchDao;
+import com.team33.moduleadmin.infra.UserBatchDao;
 import com.team33.moduleadmin.service.UserBatchService;
 import com.team33.modulecore.core.user.domain.Address;
 import com.team33.modulecore.core.user.domain.UserRoles;
@@ -46,7 +46,7 @@ public class UserBatchTest {
 			.setLazy("displayName", () -> "displayName" + value.addAndGet(1))
 			.setLazy("phone", () -> "010-0000-000" + value.addAndGet(1))
 			.set("password", "password")
-			.set("address", new Address("서울시 부평구 송도동", "101 번지"))
+			.set("address", new Address("서울시 부평구 송도동", "101 번지" + value.addAndGet(1)))
 			.setLazy("realName", () -> "홍길동" + value.addAndGet(1))
 			.set("roles", UserRoles.USER)
 			.set("userStatus", UserStatus.USER_ACTIVE)
@@ -57,14 +57,14 @@ public class UserBatchTest {
 			.sampleList(100000);
 	}
 
-	@Test
 	@DisplayName("Identity 전략 jdbc batchInsert 싱글스레드")
+	@Test
 	void test3() throws Exception {
 		userBatchDao.saveAll(users);
 	}
 
-	@Test
 	@DisplayName("Identity 전략 jdbc batchInsert 멀티스레드")
+	@Test
 	void test4() throws Exception {
 		userBatchService.saveAll(users);
 	}

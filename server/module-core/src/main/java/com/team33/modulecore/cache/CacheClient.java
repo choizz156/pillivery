@@ -41,19 +41,19 @@ public class CacheClient {
 		return CachedItems.of(mainItem);
 	}
 
-	@Cacheable(value = "CATEGORY_ITEMS", key = "#categoryName.name()")
+	@Cacheable(value = "CATEGORY_ITEMS", key = "#categoryName.name() + '-' + #itemPage.page", condition = "#itemPage.page <= 5")
 	public CachedCategoryItems<ItemQueryDto> getCategoryItems(
 		CategoryName categoryName,
 		String keyword,
 		PriceFilter priceFilter,
-		ItemPage pageDto) {
+		ItemPage itemPage) {
 
 		LOGGER.info("[Cache miss] Category: " + categoryName.name());
 		Page<ItemQueryDto> items = itemQueryRepository.findItemsByCategory(
 			categoryName,
 			keyword,
 			priceFilter,
-			pageDto);
+			itemPage);
 
 		return new CachedCategoryItems<>(items);
 	}

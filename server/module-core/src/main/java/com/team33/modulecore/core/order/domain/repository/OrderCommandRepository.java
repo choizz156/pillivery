@@ -11,4 +11,5 @@ public interface OrderCommandRepository extends Repository<Order, Long> {
     Order save(Order order);
     Optional<Order> findById(Long id);
     void delete(Order entity);
+    void saveAll(Iterable<Order> entities);
 }

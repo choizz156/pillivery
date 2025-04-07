@@ -56,8 +56,16 @@ public class MainSourceConfig {
 		return em;
 	}
 
+	@Primary
+	@Bean
+	@ConfigurationProperties(prefix = "spring.datasource.main")
+	public DataSource mainDataSource() {
+		return DataSourceBuilder.create().build();
+	}
+
 	private Properties getJpaProperties() {
 		Properties properties = new Properties();
+		properties.put("hibernate.physical_naming_strategy", env.getProperty("spring.jpa.properties.hibernate.physical_naming_strategy"));
 		properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.properties.hibernate.hbm2ddl.auto"));
 		properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
 		properties.put("hibernate.show_sql", env.getProperty("spring.jpa.properties.hibernate.show_sql"));
@@ -66,12 +74,5 @@ public class MainSourceConfig {
 		properties.put("hibernate.order_inserts", env.getProperty("spring.jpa.properties.hibernate.order_inserts"));
 
 		return properties;
-	}
-
-	@Primary
-	@Bean
-	@ConfigurationProperties(prefix = "spring.datasource.main")
-	public DataSource mainDataSource() {
-		return DataSourceBuilder.create().build();
 	}
 }

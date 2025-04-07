@@ -43,7 +43,7 @@ public class Order extends BaseEntity {
 	@Column(name = "order_id")
 	private Long id;
 
-	@Column(name = "cart_request")
+	@Column(name = "is_ordered_at_cart")
 	private boolean isOrderedAtCart;
 
 	private int totalItemsCount;
@@ -56,11 +56,10 @@ public class Order extends BaseEntity {
 
 	@Builder
 	public Order(
-		boolean isOrderedAtCart,
-		OrderCommonInfo orderCommonInfo,
-		int totalItemsCount,
-		List<OrderItem> orderItems
-	) {
+			boolean isOrderedAtCart,
+			OrderCommonInfo orderCommonInfo,
+			int totalItemsCount,
+			List<OrderItem> orderItems) {
 
 		this.isOrderedAtCart = isOrderedAtCart;
 		this.orderCommonInfo = orderCommonInfo;
@@ -69,17 +68,16 @@ public class Order extends BaseEntity {
 	}
 
 	public static Order create(
-		List<OrderItem> orderItems,
-		OrderCommonInfo orderCommonInfo,
-		OrderContext orderContext
-	) {
+			List<OrderItem> orderItems,
+			OrderCommonInfo orderCommonInfo,
+			OrderContext orderContext) {
 
 		Order order = Order.builder()
-			.orderCommonInfo(orderCommonInfo)
-			.isOrderedAtCart(orderContext.isOrderedCart())
-			.orderItems(orderItems)
-			.totalItemsCount(orderItems.size())
-			.build();
+				.orderCommonInfo(orderCommonInfo)
+				.isOrderedAtCart(orderContext.isOrderedCart())
+				.orderItems(orderItems)
+				.totalItemsCount(orderItems.size())
+				.build();
 
 		order.getOrderCommonInfo().addPrice(orderItems);
 		order.getOrderItems().forEach(orderItem -> orderItem.addOrder(order));
@@ -117,9 +115,9 @@ public class Order extends BaseEntity {
 	}
 
 	public boolean isSubscription() {
-		
+
 		return orderItems.stream()
-			.anyMatch(orderItem -> orderItem.getSubscriptionInfo().isSubscription());
+				.anyMatch(orderItem -> orderItem.getSubscriptionInfo().isSubscription());
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {
@@ -161,32 +159,30 @@ public class Order extends BaseEntity {
 
 		return this.orderCommonInfo.getTotalQuantity();
 	}
-	
+
 	public int getPeriod() {
-		
+
 		if (orderItems.isEmpty()) {
 			return 0;
 		}
 		return orderItems.get(0).getSubscriptionInfo().getPeriod();
 	}
-	
+
 	public ZonedDateTime getNextPaymentDay() {
-		
+
 		if (orderItems.isEmpty()) {
 			return null;
 		}
 		return orderItems.get(0).getSubscriptionInfo().getNextPaymentDate();
 	}
-	
+
 	public void updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
-		
-		orderItems.forEach(orderItem -> 
-			orderItem.getSubscriptionInfo().updatePaymentDate(paymentDay));
+
+		orderItems.forEach(orderItem -> orderItem.getSubscriptionInfo().updatePaymentDate(paymentDay));
 	}
-	
+
 	public void changePeriod(int newPeriod) {
-		
-		orderItems.forEach(orderItem -> 
-			orderItem.getSubscriptionInfo().changePeriod(newPeriod));
+
+		orderItems.forEach(orderItem -> orderItem.getSubscriptionInfo().changePeriod(newPeriod));
 	}
 }
