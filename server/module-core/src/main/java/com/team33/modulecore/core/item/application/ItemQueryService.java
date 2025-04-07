@@ -29,21 +29,6 @@ public class ItemQueryService {
 		return itemQueryRepository.findById(itemId);
 	}
 
-	public ItemQueryDto findItemQueryDtoById(long itemId) {
-
-		Item item = itemQueryRepository.findById(itemId);
-		return ItemQueryDto.builder()
-			.itemId(item.getId())
-			.enterprise(item.getInformation().getEnterprise())
-			.thumbnail(item.getThumbnailUrl())
-			.productName(item.getProductName())
-			.realPrice(item.getRealPrice())
-			.discountRate(item.getDiscountRate())
-			.discountPrice(item.getDiscountPrice())
-			.build();
-
-	}
-
 	public List<ItemQueryDto> findMainDiscountItems() {
 
 		CachedItems<ItemQueryDto> cachedItems = cacheClient.getMainDiscountItem();

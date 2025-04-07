@@ -1,11 +1,11 @@
 package com.team33.modulecore.core.order.infra;
 
+import static com.team33.modulecore.core.item.domain.entity.QItem.*;
 import static com.team33.modulecore.core.order.domain.OrderStatus.*;
 import static com.team33.modulecore.core.order.domain.entity.QOrder.*;
 import static com.team33.modulecore.core.order.domain.entity.QOrderItem.*;
 import static com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder.*;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -19,12 +19,20 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team33.modulecore.core.item.domain.entity.QItem;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
+import com.team33.modulecore.core.order.domain.entity.QOrder;
+import com.team33.modulecore.core.order.domain.entity.QOrderItem;
+import com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.QOrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.QSubscriptionOrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 
@@ -39,100 +47,93 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<Order> findOrders(
-		OrderPageRequest pageRequest,
-		OrderFindCondition orderFindCondition
-	) {
+	public Page<OrderItemQueryDto> findOrdersWithItems(OrderPageRequest pageRequest,
+		OrderFindCondition orderFindCondition) {
 
-		List<Order> contents = queryFactory
-			.selectFrom(order)
+		QOrderItem oi = orderItem;
+		QItem i = item;
+		QOrder o = order;
+
+		List<OrderItemQueryDto> fetch = queryFactory.select(new QOrderItemQueryDto(o, oi, i))
+			.from(o)
+			.innerJoin(o.orderItems, oi)
+			.innerJoin(oi.item, i)
 			.where(
-				userEq(orderFindCondition.getUserId()),
-				notOrderStatusRequest(orderFindCondition.getOrderStatus())
+				orderUserEq(orderFindCondition.getUserId()),
+				orderStatusEq(orderFindCondition.getOrderStatus())
 			)
-			.limit(pageRequest.getSize())
 			.offset(pageRequest.getOffset())
+			.limit(pageRequest.getSize())
 			.orderBy(getOrderSort(pageRequest.getSort()))
 			.fetch();
 
-		if (contents.isEmpty()) {
+		if (fetch.isEmpty()) {
 			return Page.empty();
 		}
 
 		JPAQuery<Long> countQuery = queryFactory
-			.select(order.count())
+			.select(orderItem.count())
 			.from(order)
+			.join(order.orderItems, orderItem)
 			.where(
-				userEq(orderFindCondition.getUserId()),
-				notOrderStatusRequest(orderFindCondition.getOrderStatus())
+				orderUserEq(orderFindCondition.getUserId()),
+				orderStatusEq(orderFindCondition.getOrderStatus())
 			);
 
-
 		return PageableExecutionUtils.getPage(
-			contents,
+			fetch,
 			PageRequest.of(
 				pageRequest.getPage() - 1,
 				pageRequest.getSize(),
 				Sort.by(pageRequest.getSort(), "id")
 			),
-			countQuery::fetchOne
-		);
+			countQuery::fetchOne);
 	}
 
 	@Override
-	public List<OrderItem> findSubscriptionOrderItems(
+	public Page<SubscriptionOrderItemQueryDto> findSubscriptionOrderItemsWithItems(
 		OrderPageRequest pageRequest,
 		OrderFindCondition orderFindCondition
 	) {
 
-		List<OrderItem> fetch = queryFactory
-			.select(orderItem)
-			.from(orderItem)
-			.join(subscriptionOrder)
-			.on(subscriptionOrder.orderItem.eq(orderItem))
+		QOrderItem oi = orderItem;
+		QItem i = item;
+		QSubscriptionOrder so = subscriptionOrder;
+
+		List<SubscriptionOrderItemQueryDto> fetch = queryFactory.select(new QSubscriptionOrderItemQueryDto(so, oi, i))
+			.from(so)
+			.innerJoin(so.orderItem, oi)
+			.innerJoin(oi.item, i)
 			.where(
-				subscriptionOrderUserAndOrderItemUserEq(orderFindCondition.getUserId()),
-				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
+				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus()),
+				subscriptionOrderUserUserEq(orderFindCondition.getUserId())
 			)
-			.limit(pageRequest.getSize())
 			.offset(pageRequest.getOffset())
+			.limit(pageRequest.getSize())
 			.orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
 			.fetch();
 
 		if (fetch.isEmpty()) {
-			return List.of();
+			return Page.empty();
 		}
 
-		return Collections.unmodifiableList(fetch);
-	}
-
-
-
-	public List<OrderItem> findSubscriptionOrderItems1(
-		OrderPageRequest pageRequest,
-		OrderFindCondition orderFindCondition
-	) {
-
-		List<OrderItem> fetch = queryFactory
-			.select(orderItem)
-			.from(orderItem)
-			.join(subscriptionOrder)
-			.on(subscriptionOrder.orderItem.eq(orderItem))
+		JPAQuery<Long> countQuery = queryFactory
+			.select(orderItem.count())
+			.from(subscriptionOrder)
+			.join(subscriptionOrder.orderItem, orderItem)
 			.where(
-				subscriptionOrderUserAndOrderItemUserEq(orderFindCondition.getUserId()),
-				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
-			)
-			.limit(pageRequest.getSize())
-			.offset(pageRequest.getOffset())
-			.orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
-			.fetch();
+				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus()),
+				subscriptionOrderUserUserEq(orderFindCondition.getUserId())
+			);
 
-		if (fetch.isEmpty()) {
-			return List.of();
-		}
-
-		return Collections.unmodifiableList(fetch);
-
+		return PageableExecutionUtils.getPage(
+			fetch,
+			PageRequest.of(
+				pageRequest.getPage() - 1,
+				pageRequest.getSize(),
+				Sort.by(pageRequest.getSort(), "id")
+			),
+			countQuery::fetchOne);
 	}
 
 	@Override
@@ -167,21 +168,21 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 		return Boolean.TRUE.equals(
 			queryFactory.select(subscriptionOrder.subscriptionInfo.subscription)
-			.from(subscriptionOrder)
-			.where(subscriptionOrder.id.eq(subscriptionOrderId))
-			.fetchOne()
-		);
+				.from(subscriptionOrder)
+				.where(subscriptionOrder.id.eq(subscriptionOrderId))
+				.fetchOne());
 	}
 
 	@Override
 	public String findTid(long orderId) {
 
-		return queryFactory.select(order.orderCommonInfo.paymentToken.tid).from(order).where(order.id.eq(orderId)).fetchOne();
+		return queryFactory.select(order.orderCommonInfo.paymentToken.tid).from(order).where(order.id.eq(orderId))
+			.fetchOne();
 	}
 
-	private BooleanExpression subscriptionOrderUserAndOrderItemUserEq(long userId) {
+	private BooleanExpression subscriptionOrderUserUserEq(long userId) {
 
-		return 	subscriptionOrder.orderCommonInfo.userId.eq(userId);
+		return subscriptionOrder.orderCommonInfo.userId.eq(userId);
 	}
 
 	private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {
@@ -191,16 +192,14 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 			: null;
 	}
 
-	private BooleanExpression userEq(long userId) {
+	private BooleanExpression orderUserEq(long userId) {
 
 		return order.orderCommonInfo.userId.eq(userId);
 	}
 
-	private BooleanExpression notOrderStatusRequest(OrderStatus orderStatus) {
+	private BooleanExpression orderStatusEq(OrderStatus orderStatus) {
 
-		return orderStatus == REQUEST
-			? order.orderCommonInfo.orderStatus.eq(orderStatus).not()
-			: null;
+		return order.orderCommonInfo.orderStatus.eq(orderStatus);
 	}
 
 	private OrderSpecifier<Long> getOrderSort(Direction pageRequest) {

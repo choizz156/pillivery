@@ -1,17 +1,16 @@
 package com.team33.modulecore.core.order.application;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,21 +23,21 @@ public class OrderQueryService {
 
 	private final OrderQueryRepository orderQueryRepository;
 
-	public Page<Order> findAllOrders(long userId, OrderPageRequest orderPageRequest) {
-		return orderQueryRepository.findOrders(
+	public Page<OrderItemQueryDto> findAllOrders(long userId, OrderPageRequest orderPageRequest) {
+		Page<OrderItemQueryDto> ordersWithItems = orderQueryRepository.findOrdersWithItems(
 			orderPageRequest,
-			OrderFindCondition.to(userId, OrderStatus.REQUEST)
+			OrderFindCondition.to(userId, OrderStatus.COMPLETE)
 		);
+		return ordersWithItems;
 	}
 
-	public List<OrderItem> findAllSubscriptions(
-		Long userId,
-		OrderPageRequest orderPageRequest
+	public Page<SubscriptionOrderItemQueryDto> findAllSubscriptions(
+			Long userId,
+			OrderPageRequest orderPageRequest
 	) {
-
-		return orderQueryRepository.findSubscriptionOrderItems(
-			orderPageRequest,
-			OrderFindCondition.to(userId, OrderStatus.SUBSCRIPTION)
+		return orderQueryRepository.findSubscriptionOrderItemsWithItems(
+				orderPageRequest,
+				OrderFindCondition.to(userId, OrderStatus.SUBSCRIPTION)
 		);
 	}
 

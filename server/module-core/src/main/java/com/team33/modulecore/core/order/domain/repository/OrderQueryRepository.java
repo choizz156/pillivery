@@ -1,7 +1,5 @@
 package com.team33.modulecore.core.order.domain.repository;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 
@@ -9,24 +7,25 @@ import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 
-public interface OrderQueryRepository{
+public interface OrderQueryRepository {
 
-    Page<Order> findOrders(
-        OrderPageRequest pageRequest,
-        OrderFindCondition orderFindCondition
-    );
+	Page<OrderItemQueryDto> findOrdersWithItems(
+	 	OrderPageRequest pageRequest,
+		OrderFindCondition orderFindCondition);
 
-    List<OrderItem> findSubscriptionOrderItems(
-        OrderPageRequest pageRequest,
-        OrderFindCondition orderFindCondition
-    );
 
-    OrderItem findSubscriptionOrderItemBy(long id);
+	Page<SubscriptionOrderItemQueryDto> findSubscriptionOrderItemsWithItems(
+		OrderPageRequest pageRequest,
+		OrderFindCondition orderFindCondition);
 
-    Order findById(long id);
+	OrderItem findSubscriptionOrderItemBy(long id);
 
-    boolean findIsSubscriptionById(@Param("orderId") long orderId);
+	Order findById(long id);
 
-    String findTid(@Param("orderId") long orderId);
+	boolean findIsSubscriptionById(@Param("orderId") long orderId);
+
+	String findTid(@Param("orderId") long orderId);
 }

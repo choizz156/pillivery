@@ -18,6 +18,8 @@ import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 
 public class FakeOrderQueryDslDao implements OrderQueryRepository {
 
@@ -29,7 +31,6 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 		mockOrders.forEach(order -> orders.put(order.getId(), order));
 	}
 
-	@Override
 	public Page<Order> findOrders(
 		OrderPageRequest pageRequest,
 		OrderFindCondition orderFindCondition
@@ -50,7 +51,6 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 		);
 	}
 
-	@Override
 	public List<OrderItem> findSubscriptionOrderItems(
 		OrderPageRequest pageRequest,
 		OrderFindCondition orderFindCondition
@@ -60,6 +60,19 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 			.map(Order::getOrderItems)
 			.flatMap(List::stream)
 			.collect(Collectors.toUnmodifiableList());
+	}
+
+	@Override
+	public Page<OrderItemQueryDto> findOrdersWithItems(OrderPageRequest pageRequest, OrderFindCondition orderFindCondition) {
+
+		return null;
+	}
+
+	@Override
+	public Page<SubscriptionOrderItemQueryDto> findSubscriptionOrderItemsWithItems(OrderPageRequest pageRequest,
+		OrderFindCondition orderFindCondition) {
+
+		return List.of();
 	}
 
 	@Override
