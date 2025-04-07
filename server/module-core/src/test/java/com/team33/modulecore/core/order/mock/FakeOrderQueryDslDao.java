@@ -72,7 +72,7 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 	public Page<SubscriptionOrderItemQueryDto> findSubscriptionOrderItemsWithItems(OrderPageRequest pageRequest,
 		OrderFindCondition orderFindCondition) {
 
-		return List.of();
+		return Page.empty();
 	}
 
 	@Override

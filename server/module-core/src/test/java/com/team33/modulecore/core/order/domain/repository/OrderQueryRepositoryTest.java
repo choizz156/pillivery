@@ -35,6 +35,8 @@ import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPage;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 import com.team33.modulecore.core.order.infra.OrderQueryDslDao;
 import com.team33.modulecore.core.user.domain.entity.User;
 
@@ -81,13 +83,13 @@ class OrderQueryRepositoryTest {
 			OrderFindCondition.to(1L, OrderStatus.COMPLETE);
 
 		//when
-		Page<Order> allOrders =
-			orderQueryRepository.findOrders(orderPageRequest, orderFindCondition);
+		Page<OrderItemQueryDto> allOrders =
+			orderQueryRepository.findOrdersWithItems(orderPageRequest, orderFindCondition);
 
 		//then
-		List<Order> content = allOrders.getContent();
+		List<OrderItemQueryDto> content = allOrders.getContent();
 		assertThat(content).hasSize(8)
-			.isSortedAccordingTo(comparing(Order::getId).reversed());
+			.isSortedAccordingTo(comparing(OrderItemQueryDto::getOrderId).reversed());
 		assertThat(allOrders.getSize()).isEqualTo(11);
 		assertThat(allOrders.getTotalPages()).isEqualTo(1);
 		assertThat(allOrders.getTotalElements()).isEqualTo(8);
@@ -108,8 +110,8 @@ class OrderQueryRepositoryTest {
 		persistSubscriptionOrder();
 
 		//when
-		List<OrderItem> subscriptionOrderItem =
-			orderQueryRepository.findSubscriptionOrderItems(orderPageRequest, orderFindCondition);
+		Page<SubscriptionOrderItemQueryDto> subscriptionOrderItem =
+			orderQueryRepository.findSubscriptionOrderItemsWithItems(orderPageRequest, orderFindCondition);
 
 		//then
 		assertThat(subscriptionOrderItem).hasSize(8)
