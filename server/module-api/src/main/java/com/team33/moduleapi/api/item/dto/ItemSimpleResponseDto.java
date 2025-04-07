@@ -2,6 +2,7 @@ package com.team33.moduleapi.api.item.dto;
 
 import com.team33.modulecore.core.cart.dto.ItemVO;
 import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -41,13 +42,25 @@ public class ItemSimpleResponseDto {
         this.discountPrice = discountPrice;
     }
 
+    public static ItemSimpleResponseDto of(ItemQueryDto item) {
+        return ItemSimpleResponseDto.builder()
+            .itemId(item.getItemId())
+            .enterprise(item.getEnterprise())
+            .thumbnail(item.getThumbnail())
+            .product(item.getProductName())
+            .realPrice(item.getRealPrice())
+            .discountRate(item.getDiscountRate())
+            .discountPrice(item.getDiscountPrice())
+            .build();
+    }
+
     public static ItemSimpleResponseDto of(Item item) {
+
         return ItemSimpleResponseDto.builder()
             .itemId(item.getId())
             .enterprise(item.getInformation().getEnterprise())
             .thumbnail(item.getThumbnailUrl())
             .product(item.getProductName())
-            .originPrice(item.getOriginPrice())
             .realPrice(item.getRealPrice())
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())

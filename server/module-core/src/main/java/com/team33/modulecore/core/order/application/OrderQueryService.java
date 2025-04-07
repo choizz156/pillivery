@@ -25,7 +25,6 @@ public class OrderQueryService {
 	private final OrderQueryRepository orderQueryRepository;
 
 	public Page<Order> findAllOrders(long userId, OrderPageRequest orderPageRequest) {
-		log.info("Finding all orders for {}", userId);
 		return orderQueryRepository.findOrders(
 			orderPageRequest,
 			OrderFindCondition.to(userId, OrderStatus.REQUEST)
@@ -39,7 +38,7 @@ public class OrderQueryService {
 
 		return orderQueryRepository.findSubscriptionOrderItems(
 			orderPageRequest,
-			OrderFindCondition.to(userId, OrderStatus.SUBSCRIBE)
+			OrderFindCondition.to(userId, OrderStatus.SUBSCRIPTION)
 		);
 	}
 

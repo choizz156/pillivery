@@ -24,10 +24,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 
-@ToString(exclude = "orderItem")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "subscription_order")
@@ -71,7 +69,8 @@ public class SubscriptionOrder extends BaseEntity {
 			.build();
 
 		subscriptionOrder.getOrderCommonInfo().addPrice(List.of(orderItem));
-		subscriptionOrder.getOrderCommonInfo().changeOrderStatus(OrderStatus.SUBSCRIBE);
+		subscriptionOrder.getOrderCommonInfo().changeOrderStatus(OrderStatus.SUBSCRIPTION);
+		subscriptionOrder.addOrderItem(orderItem);
 		return subscriptionOrder;
 	}
 
@@ -84,6 +83,8 @@ public class SubscriptionOrder extends BaseEntity {
 			.build();
 
 		subscriptionOrder.getOrderCommonInfo().addPrice(List.of(orderItem));
+		subscriptionOrder.getOrderCommonInfo().changeOrderStatus(OrderStatus.SUBSCRIPTION);
+		subscriptionOrder.addOrderItem(orderItem);
 		return subscriptionOrder;
 	}
 
@@ -148,6 +149,10 @@ public class SubscriptionOrder extends BaseEntity {
 
 	public List<Long> getItemId() {
 		return Collections.singletonList(this.orderItem.getItem().getId());
+	}
+
+	public void addOrderItem(OrderItem orderItem) {
+		this.orderItem = orderItem;
 	}
 
 	private void cancelSubscribeOrderItem() {

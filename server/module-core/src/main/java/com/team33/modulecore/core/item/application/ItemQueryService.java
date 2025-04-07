@@ -25,16 +25,34 @@ public class ItemQueryService {
 	private final ItemQueryRepository itemQueryRepository;
 
 	public Item findItemById(long itemId) {
+
 		return itemQueryRepository.findById(itemId);
 	}
 
+	public ItemQueryDto findItemQueryDtoById(long itemId) {
+
+		Item item = itemQueryRepository.findById(itemId);
+		return ItemQueryDto.builder()
+			.itemId(item.getId())
+			.enterprise(item.getInformation().getEnterprise())
+			.thumbnail(item.getThumbnailUrl())
+			.productName(item.getProductName())
+			.realPrice(item.getRealPrice())
+			.discountRate(item.getDiscountRate())
+			.discountPrice(item.getDiscountPrice())
+			.build();
+
+	}
+
 	public List<ItemQueryDto> findMainDiscountItems() {
-		CachedItems cachedItems = cacheClient.getMainDiscountItem();
+
+		CachedItems<ItemQueryDto> cachedItems = cacheClient.getMainDiscountItem();
 		return cachedItems.getCachedItems();
 	}
 
 	public List<ItemQueryDto> findMainSaleItems() {
-		CachedItems cachedItems = cacheClient.getMainSalesItem();
+
+		CachedItems<ItemQueryDto> cachedItems = cacheClient.getMainSalesItem();
 		return cachedItems.getCachedItems();
 	}
 
@@ -43,6 +61,7 @@ public class ItemQueryService {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
+
 		return itemQueryRepository.findFilteredItems(keyword, priceFilter, pageDto);
 	}
 
@@ -51,6 +70,7 @@ public class ItemQueryService {
 		ItemPage pageDto,
 		PriceFilter priceFilter
 	) {
+
 		return itemQueryRepository.findItemsOnSale(keyword, priceFilter, pageDto);
 	}
 
@@ -67,6 +87,7 @@ public class ItemQueryService {
 	}
 
 	public Page<ItemQueryDto> findByBrand(String brand, ItemPage searchDto, PriceFilter priceFilter) {
+
 		return itemQueryRepository.findByBrand(brand, searchDto, priceFilter);
 	}
 }

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.team33.moduleapi.api.item.dto.ItemSimpleResponseDto;
 import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -14,9 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class OrderSimpleResponseDto { // 주문 목록 조회
+public class SubscriptionOrderSimpleResponseDto { // 주문 목록 조회
 
-    private long orderId;
+    private long subscriptionOrderId;
     private OrderStatus orderStatus;
     private int totalItems;
     private int expectPrice;
@@ -24,19 +24,20 @@ public class OrderSimpleResponseDto { // 주문 목록 조회
     private ItemSimpleResponseDto firstItem;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
+    private OrderItemSimpleResponse orderItemSimpleResponse;
 
     @Builder
-    private OrderSimpleResponseDto(
-        long orderId,
+    private SubscriptionOrderSimpleResponseDto(
+        long subscriptionOrderId,
         OrderStatus orderStatus,
         int totalItems,
         int expectPrice,
         boolean subscription,
         ItemSimpleResponseDto item,
         ZonedDateTime createdAt,
-        ZonedDateTime updatedAt
-    ) {
-        this.orderId = orderId;
+        ZonedDateTime updatedAt, OrderItemSimpleResponse orderItemSimpleResponse
+	) {
+        this.subscriptionOrderId = subscriptionOrderId;
         this.orderStatus = orderStatus;
         this.totalItems = totalItems;
         this.expectPrice = expectPrice;
@@ -44,21 +45,23 @@ public class OrderSimpleResponseDto { // 주문 목록 조회
         this.firstItem = item;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
+		this.orderItemSimpleResponse = orderItemSimpleResponse;
+	}
 
-    public static List<OrderSimpleResponseDto> toList(List<Order> orders) {
+    public static List<SubscriptionOrderSimpleResponseDto> toList(List<SubscriptionOrder> orders) {
         return orders.stream()
-            .map(order -> OrderSimpleResponseDto. of(order))
+            .map(SubscriptionOrderSimpleResponseDto::of)
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private static OrderSimpleResponseDto of(Order order) {
-        return OrderSimpleResponseDto.builder()
-            .orderId(order.getId())
-            .orderStatus(order.getOrderStatus())
-            .totalItems(order.getTotalItemsCount())
-            .expectPrice(order.getPrice().getTotalPrice())
-            .item(ItemSimpleResponseDto.of(order.getFirstItem()))
+    private static SubscriptionOrderSimpleResponseDto of(SubscriptionOrder order) {
+        return SubscriptionOrderSimpleResponseDto.builder()
+            .subscriptionOrderId(order.getId())
+            .orderStatus(order.getOrderCommonInfo().getOrderStatus())
+            .expectPrice(order.getOrderCommonInfo().getTotalPrice())
+            .subscription(order.isSubscription())
+            .item(ItemSimpleResponseDto.of(order.getOrderItem().getItem()))
+            .orderItemSimpleResponse(OrderItemSimpleResponse.fromSubscriptionOrder(order.getOrderItem()))
             .createdAt(order.getCreatedAt())
             .updatedAt(order.getUpdatedAt())
             .build();

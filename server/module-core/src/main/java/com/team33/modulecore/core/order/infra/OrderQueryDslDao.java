@@ -67,7 +67,6 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 				notOrderStatusRequest(orderFindCondition.getOrderStatus())
 			);
 
-		log.info("Found {} orders", contents.size());
 
 		return PageableExecutionUtils.getPage(
 			contents,
@@ -88,8 +87,37 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 		List<OrderItem> fetch = queryFactory
 			.select(orderItem)
-			.from(subscriptionOrder)
-			.innerJoin(orderItem, subscriptionOrder.orderItem)
+			.from(orderItem)
+			.join(subscriptionOrder)
+			.on(subscriptionOrder.orderItem.eq(orderItem))
+			.where(
+				subscriptionOrderUserAndOrderItemUserEq(orderFindCondition.getUserId()),
+				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
+			)
+			.limit(pageRequest.getSize())
+			.offset(pageRequest.getOffset())
+			.orderBy(getSubscriptionOrderSort(pageRequest.getSort()))
+			.fetch();
+
+		if (fetch.isEmpty()) {
+			return List.of();
+		}
+
+		return Collections.unmodifiableList(fetch);
+	}
+
+
+
+	public List<OrderItem> findSubscriptionOrderItems1(
+		OrderPageRequest pageRequest,
+		OrderFindCondition orderFindCondition
+	) {
+
+		List<OrderItem> fetch = queryFactory
+			.select(orderItem)
+			.from(orderItem)
+			.join(subscriptionOrder)
+			.on(subscriptionOrder.orderItem.eq(orderItem))
 			.where(
 				subscriptionOrderUserAndOrderItemUserEq(orderFindCondition.getUserId()),
 				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
@@ -158,7 +186,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 	private BooleanExpression subscriptionOrderStatusEq(OrderStatus orderStatus) {
 
-		return orderStatus == SUBSCRIBE
+		return orderStatus == SUBSCRIPTION
 			? subscriptionOrder.orderCommonInfo.orderStatus.eq(orderStatus)
 			: null;
 	}

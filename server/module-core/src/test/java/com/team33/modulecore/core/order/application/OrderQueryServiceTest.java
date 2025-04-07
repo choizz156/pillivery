@@ -1,9 +1,7 @@
 package com.team33.modulecore.core.order.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -54,7 +52,7 @@ class OrderQueryServiceTest {
 		// then
 		verify(orderQueryRepository, times(1)).findSubscriptionOrderItems(
 			eq(orderPageRequest),
-			argThat(condition -> condition.getUserId() == userId && condition.getOrderStatus() == OrderStatus.SUBSCRIBE)
+			argThat(condition -> condition.getUserId() == userId && condition.getOrderStatus() == OrderStatus.SUBSCRIPTION)
 		);
 		assertThat(result).isEqualTo(expectedOrderItems);
 	}

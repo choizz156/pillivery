@@ -12,9 +12,9 @@ import org.springframework.data.domain.PageRequest;
 
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.item.domain.entity.Item;
+import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
-import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
@@ -56,7 +56,7 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 		OrderFindCondition orderFindCondition
 	) {
 		return orders.values().stream()
-			.filter(order -> order.getOrderStatus() == OrderStatus.SUBSCRIBE)
+			.filter(order -> order.getOrderStatus() == OrderStatus.SUBSCRIPTION)
 			.map(Order::getOrderItems)
 			.flatMap(List::stream)
 			.collect(Collectors.toUnmodifiableList());
@@ -87,7 +87,7 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 
 		return FixtureMonkeyFactory.get().giveMeBuilder(Order.class)
 			.set("orderItems", List.of(mockOrderItem))
-			.set("orderStatus", OrderStatus.SUBSCRIBE)
+			.set("orderStatus", OrderStatus.SUBSCRIPTION)
 			.set("paymentCode.sid", "sid")
 			.set("paymentCode.tid", "tid")
 			.set("orderPrice", null)

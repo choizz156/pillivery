@@ -94,6 +94,10 @@ public class Order extends BaseEntity {
 		return orderItems.get(0).getItem();
 	}
 
+	public Long getFirstItemId() {
+		return orderItems.get(0).getItem().getId();
+	}
+
 	public void addTid(String tid) {
 
 		this.orderCommonInfo = this.orderCommonInfo.addTid(tid);

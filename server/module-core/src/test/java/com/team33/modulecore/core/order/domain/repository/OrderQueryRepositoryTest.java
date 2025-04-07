@@ -31,7 +31,6 @@ import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
-import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPage;
@@ -104,7 +103,7 @@ class OrderQueryRepositoryTest {
 		orderPageDto1.setSize(10);
 
 		var orderPageRequest = OrderPageRequest.of(orderPageDto1);
-		var orderFindCondition = OrderFindCondition.to(MOCK_USER.getId(), OrderStatus.SUBSCRIBE);
+		var orderFindCondition = OrderFindCondition.to(MOCK_USER.getId(), OrderStatus.SUBSCRIPTION);
 
 		persistSubscriptionOrder();
 
@@ -178,7 +177,7 @@ class OrderQueryRepositoryTest {
 				.map(orderItem ->
 					{
 						SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order, orderItem);
-						subscriptionOrder.changeOrderStatus(OrderStatus.SUBSCRIBE);
+						subscriptionOrder.changeOrderStatus(OrderStatus.SUBSCRIPTION);
 						return subscriptionOrder;
 					}
 				).forEach(em::persist);

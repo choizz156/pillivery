@@ -19,6 +19,7 @@ import com.team33.moduleapi.api.order.dto.OrderSimpleResponseDto;
 import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
 import com.team33.moduleapi.response.MultiResponseDto;
 import com.team33.moduleapi.response.SingleResponseDto;
+import com.team33.modulecore.core.item.application.ItemQueryService;
 import com.team33.modulecore.core.order.application.OrderQueryService;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderQueryController {
 
 	private final OrderQueryService orderQueryService;
+	private final ItemQueryService itemQueryService;
 	private final OrderItemMapper orderItemMapper;
 
 	@GetMapping
@@ -46,7 +48,9 @@ public class OrderQueryController {
 	) {
 		OrderPageRequest orderPageRequest = OrderPageRequest.of(page, size, sort);
 		Page<Order> allOrders = orderQueryService.findAllOrders(userId, orderPageRequest);
+
 		List<Order> orders = allOrders.getContent();
+
 
 		List<OrderSimpleResponseDto> ordersDto = OrderSimpleResponseDto.toList(orders);
 
@@ -65,7 +69,6 @@ public class OrderQueryController {
 
 		List<OrderItemSimpleResponse> orderSimpleResponse =
 			orderItemMapper.toOrderSimpleResponse(allSubscriptions);
-
 
 		return new MultiResponseDto<>(
 			orderSimpleResponse,

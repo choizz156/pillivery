@@ -109,8 +109,8 @@ class OrderQueryAcceptanceTest extends ApiTest {
 	@Test
 	void 구독_주문_조회() throws Exception {
 		//given
-		주문_저장(주문_정보(true, 30), OrderStatus.SUBSCRIBE);
-		주문_저장(주문_정보(true, 60), OrderStatus.SUBSCRIBE);
+		주문_저장(주문_정보(true, 30), OrderStatus.SUBSCRIPTION);
+		주문_저장(주문_정보(true, 60), OrderStatus.SUBSCRIPTION);
 
 
 		given()
