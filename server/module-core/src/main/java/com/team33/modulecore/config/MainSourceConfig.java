@@ -68,7 +68,7 @@ public class MainSourceConfig {
 		properties.put("hibernate.physical_naming_strategy", env.getProperty("spring.jpa.properties.hibernate.physical_naming_strategy"));
 		properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.properties.hibernate.hbm2ddl.auto"));
 		properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
-		properties.put("hibernate.show_sql", env.getProperty("spring.jpa.properties.hibernate.show_sql"));
+		// properties.put("hibernate.show_sql", env.getProperty("spring.jpa.properties.hibernate.show_sql"));
 		properties.put("hibernate.format_sql", env.getProperty("spring.jpa.properties.hibernate.format_sql"));
 		properties.put("hibernate.jdbc.batch_size", env.getProperty("spring.jpa.properties.hibernate.jdbc.batch_size"));
 		properties.put("hibernate.order_inserts", env.getProperty("spring.jpa.properties.hibernate.order_inserts"));

@@ -1,6 +1,5 @@
 package com.team33.modulecore.core.order.domain.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.team33.modulecore.core.common.BaseEntity;
@@ -23,7 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@ToString(exclude = {"order", "subscriptionOrder", "item"})
+@ToString(exclude = {"order", "item"})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "order_item")
@@ -38,7 +36,6 @@ public class OrderItem extends BaseEntity {
 	@Embedded
 	private SubscriptionInfo subscriptionInfo;
 
-	@Column(nullable = false)
 	private int quantity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -48,9 +45,6 @@ public class OrderItem extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
 	private Order order;
-
-	@OneToOne(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
-	private SubscriptionOrder subscriptionOrder;
 
 	@Builder
 	private OrderItem(SubscriptionInfo subscriptionInfo, int quantity, Item item) {
@@ -75,11 +69,6 @@ public class OrderItem extends BaseEntity {
 	public void addOrder(Order order) {
 
 		this.order = order;
-	}
-
-	public void addSubscriptionOrder(SubscriptionOrder subscriptionOrder) {
-
-		this.subscriptionOrder = subscriptionOrder;
 	}
 
 	public void changeQuantity(int quantity) {

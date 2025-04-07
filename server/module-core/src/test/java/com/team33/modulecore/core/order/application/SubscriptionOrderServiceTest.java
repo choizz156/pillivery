@@ -73,7 +73,6 @@ class SubscriptionOrderServiceTest {
 		OrderCommonInfo mockOrderCommonInfo = mock(OrderCommonInfo.class);
 		doNothing().when(mockOrderCommonInfo).addPrice(anyList());
 
-		// Keep necessary stubbings
 		when(mockOrder.getOrderItems()).thenReturn(List.of(mockOrderItem1, mockOrderItem2));
 		when(mockOrder.getOrderCommonInfo()).thenReturn(mockOrderCommonInfo);
 
@@ -87,9 +86,6 @@ class SubscriptionOrderServiceTest {
 		verify(mockOrder, times(1)).getOrderItems();
 		verify(mockOrder, times(2)).getOrderCommonInfo();
 		verify(mockOrderCommonInfo, times(2)).addPrice(anyList());
-		// Verify addSubscriptionOrder interaction (stubbing was removed earlier)
-		verify(mockOrderItem1, times(1)).addSubscriptionOrder(any(SubscriptionOrder.class));
-		verify(mockOrderItem2, times(1)).addSubscriptionOrder(any(SubscriptionOrder.class));
 
 		verify(subscriptionOrderRepository, times(1)).saveAll(captor.capture());
 		List<SubscriptionOrder> savedOrders = captor.getValue();

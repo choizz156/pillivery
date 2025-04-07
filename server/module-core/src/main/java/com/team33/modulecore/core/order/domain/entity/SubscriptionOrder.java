@@ -72,7 +72,6 @@ public class SubscriptionOrder extends BaseEntity {
 
 		subscriptionOrder.getOrderCommonInfo().addPrice(List.of(orderItem));
 		subscriptionOrder.getOrderCommonInfo().changeOrderStatus(OrderStatus.SUBSCRIBE);
-		orderItem.addSubscriptionOrder(subscriptionOrder);
 		return subscriptionOrder;
 	}
 
@@ -85,7 +84,6 @@ public class SubscriptionOrder extends BaseEntity {
 			.build();
 
 		subscriptionOrder.getOrderCommonInfo().addPrice(List.of(orderItem));
-		orderItem.addSubscriptionOrder(subscriptionOrder);
 		return subscriptionOrder;
 	}
 
@@ -101,23 +99,23 @@ public class SubscriptionOrder extends BaseEntity {
 	}
 
 	public int getPeriod() {
-		return this.orderItem.getSubscriptionInfo().getPeriod();
+		return this.subscriptionInfo.getPeriod();
 	}
 
 	public boolean isSubscription() {
-		return this.orderItem.getSubscriptionInfo().isSubscription();
+		return this.subscriptionInfo.isSubscription();
 	}
 
 	public void updateSubscriptionPaymentDay(ZonedDateTime paymentDay) {
-		this.orderItem.getSubscriptionInfo().updatePaymentDate(paymentDay);
+		this.subscriptionInfo.updatePaymentDate(paymentDay);
 	}
 
 	public ZonedDateTime getNextPaymentDay() {
-		return this.orderItem.getSubscriptionInfo().getNextPaymentDate();
+		return this.subscriptionInfo.getNextPaymentDate();
 	}
 
 	public void changePeriod(int newPeriod) {
-		this.orderItem.getSubscriptionInfo().changePeriod(newPeriod);
+		this.subscriptionInfo.changePeriod(newPeriod);
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {
@@ -153,7 +151,7 @@ public class SubscriptionOrder extends BaseEntity {
 	}
 
 	private void cancelSubscribeOrderItem() {
-		SubscriptionInfo subscriptionInfo = this.orderItem.getSubscriptionInfo();
+		SubscriptionInfo subscriptionInfo = this.subscriptionInfo;
 		if (subscriptionInfo != null) {
 			subscriptionInfo.cancelSubscription();
 		}

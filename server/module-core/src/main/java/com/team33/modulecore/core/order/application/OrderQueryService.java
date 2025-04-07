@@ -14,7 +14,9 @@ import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -23,7 +25,7 @@ public class OrderQueryService {
 	private final OrderQueryRepository orderQueryRepository;
 
 	public Page<Order> findAllOrders(long userId, OrderPageRequest orderPageRequest) {
-
+		log.info("Finding all orders for {}", userId);
 		return orderQueryRepository.findOrders(
 			orderPageRequest,
 			OrderFindCondition.to(userId, OrderStatus.REQUEST)

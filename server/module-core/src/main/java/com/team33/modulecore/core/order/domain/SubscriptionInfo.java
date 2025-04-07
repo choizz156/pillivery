@@ -27,8 +27,13 @@ public class SubscriptionInfo {
 	private ZonedDateTime lastPaymentDate;
 
 	@Builder(toBuilder = true)
-	public SubscriptionInfo(int period, boolean subscription, ZonedDateTime nextPaymentDate,
-			ZonedDateTime lastPaymentDate) {
+	public SubscriptionInfo(
+		int period,
+		boolean subscription,
+		ZonedDateTime nextPaymentDate,
+		ZonedDateTime lastPaymentDate
+	) {
+
 		this.period = period;
 		this.subscription = subscription;
 		this.nextPaymentDate = nextPaymentDate;
@@ -38,28 +43,32 @@ public class SubscriptionInfo {
 	public static SubscriptionInfo of(boolean isSubscription, int period) {
 
 		return SubscriptionInfo.builder()
-				.subscription(isSubscription)
-				.period(period)
-				.nextPaymentDate(ZonedDateTime.now())
-				.lastPaymentDate(ZonedDateTime.now())
-				.build();
+			.subscription(isSubscription)
+			.period(period)
+			.nextPaymentDate(ZonedDateTime.now())
+			.lastPaymentDate(ZonedDateTime.now())
+			.build();
 	}
 
 	public void updatePaymentDate(ZonedDateTime paymentDate) {
+
 		this.lastPaymentDate = paymentDate;
 		updateNextPaymentDate();
 	}
 
 	public void changePeriod(@Positive int newPeriod) {
+
 		this.period = newPeriod;
 		updateNextPaymentDate();
 	}
 
 	public void cancelSubscription() {
+
 		this.subscription = false;
 	}
 
 	private void updateNextPaymentDate() {
+
 		this.nextPaymentDate = lastPaymentDate.plusDays(this.period);
 	}
 

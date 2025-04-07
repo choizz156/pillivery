@@ -45,7 +45,6 @@ public class OrderQueryController {
 		@RequestParam(defaultValue = "DESC") Direction sort
 	) {
 		OrderPageRequest orderPageRequest = OrderPageRequest.of(page, size, sort);
-
 		Page<Order> allOrders = orderQueryService.findAllOrders(userId, orderPageRequest);
 		List<Order> orders = allOrders.getContent();
 

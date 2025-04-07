@@ -29,7 +29,9 @@ import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class OrderQueryDslDao implements OrderQueryRepository {
@@ -65,6 +67,8 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 				notOrderStatusRequest(orderFindCondition.getOrderStatus())
 			);
 
+		log.info("Found {} orders", contents.size());
+
 		return PageableExecutionUtils.getPage(
 			contents,
 			PageRequest.of(
@@ -84,8 +88,8 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 		List<OrderItem> fetch = queryFactory
 			.select(orderItem)
-			.from(orderItem)
-			.innerJoin(orderItem.subscriptionOrder, subscriptionOrder)
+			.from(subscriptionOrder)
+			.innerJoin(orderItem, subscriptionOrder.orderItem)
 			.where(
 				subscriptionOrderUserAndOrderItemUserEq(orderFindCondition.getUserId()),
 				subscriptionOrderStatusEq(orderFindCondition.getOrderStatus())
@@ -100,6 +104,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		}
 
 		return Collections.unmodifiableList(fetch);
+
 	}
 
 	@Override
@@ -133,7 +138,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	public boolean findIsSubscriptionById(long subscriptionOrderId) {
 
 		return Boolean.TRUE.equals(
-			queryFactory.select(subscriptionOrder.orderItem.subscriptionInfo.subscription)
+			queryFactory.select(subscriptionOrder.subscriptionInfo.subscription)
 			.from(subscriptionOrder)
 			.where(subscriptionOrder.id.eq(subscriptionOrderId))
 			.fetchOne()

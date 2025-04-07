@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.team33.moduleapi.api.item.dto.ItemSimpleResponseDto;
-import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.OrderStatus;
+import com.team33.modulecore.core.order.domain.entity.Order;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 public class OrderSimpleResponseDto { // 주문 목록 조회
 

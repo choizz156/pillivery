@@ -29,4 +29,9 @@ public class FakeOrderCommandRepository implements OrderCommandRepository {
 		store.remove(entity.getId());
 	}
 
+	@Override
+	public void saveAll(Iterable<Order> entities) {
+
+	}
+
 }
