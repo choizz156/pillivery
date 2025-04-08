@@ -24,11 +24,11 @@ public class OrderQueryService {
 	private final OrderQueryRepository orderQueryRepository;
 
 	public Page<OrderItemQueryDto> findAllOrders(long userId, OrderPageRequest orderPageRequest) {
-		Page<OrderItemQueryDto> ordersWithItems = orderQueryRepository.findOrdersWithItems(
+
+		return orderQueryRepository.findOrdersWithItems(
 			orderPageRequest,
 			OrderFindCondition.to(userId, OrderStatus.COMPLETE)
 		);
-		return ordersWithItems;
 	}
 
 	public Page<SubscriptionOrderItemQueryDto> findAllSubscriptions(

@@ -157,4 +157,25 @@ public class OrderBatchTest {
 
 		subscriptionOrderBatchService.saveAll(subscriptionOrders);
 	}
+
+	@Test
+	void test4() throws Exception {
+
+		Order order = entityManager.find(Order.class, 88L);
+		List<OrderItem> orderItems = FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
+			.setNull("id")
+			.setNull("order")
+			.set("item", item)
+			.set("quantity", 1)
+			.setNull("subscriptionOrder")
+			.set("subscriptionInfo", FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionInfo.class)
+				.set("isSubscription", true)
+				.set("period", 60)
+				.setNull("nextPaymentDate")
+				.sample())
+			.sampleList(20);
+		orderItems.forEach(order::addOrderItems);
+
+		entityManager.persist(order);
+	}
 }

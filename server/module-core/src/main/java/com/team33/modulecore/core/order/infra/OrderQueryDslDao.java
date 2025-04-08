@@ -138,7 +138,6 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 	@Override
 	public OrderItem findSubscriptionOrderItemBy(long id) {
-
 		OrderItem fetch = queryFactory
 			.select(orderItem)
 			.from(orderItem)
@@ -155,11 +154,16 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	@Override
 	public Order findById(long id) {
 
-		Order fetch = queryFactory.selectFrom(order).where(order.id.eq(id)).fetchOne();
+		Order fetch = queryFactory.selectFrom(order)
+			.join(order.orderItems, orderItem).fetchJoin()
+			.join(orderItem.item, item).fetchJoin()
+			.where(order.id.eq(id))
+			.fetchOne();
 
 		if (fetch == null) {
 			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
 		}
+
 		return fetch;
 	}
 

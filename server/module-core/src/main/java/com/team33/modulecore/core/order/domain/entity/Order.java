@@ -84,6 +84,11 @@ public class Order extends BaseEntity {
 		return order;
 	}
 
+	public void addOrderItems(OrderItem orderItem) {
+		this.orderItems.add(orderItem);
+		orderItem.addOrder(this);
+	}
+
 	public void adjustPriceAndTotalQuantity(List<OrderItem> orderItems) {
 
 		this.orderCommonInfo = this.orderCommonInfo.adjustPriceAndTotalQuantity(orderItems);

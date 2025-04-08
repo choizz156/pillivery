@@ -2,6 +2,8 @@ package com.team33.moduleapi.api.order;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.api.order.dto.OrderDetailResponse;
-import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
 import com.team33.moduleapi.response.MultiResponseDto;
 import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.order.application.OrderQueryService;
@@ -22,17 +23,15 @@ import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
 import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Validated
 @RestController
 @RequestMapping("/api/orders")
 public class OrderQueryController {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 	private final OrderQueryService orderQueryService;
-	private final OrderItemMapper orderItemMapper;
 
 	@GetMapping
 	public MultiResponseDto<OrderItemQueryDto> getOrders(
@@ -67,6 +66,8 @@ public class OrderQueryController {
 	@GetMapping("/{orderId}")
 	public SingleResponseDto<OrderDetailResponse> getOrder(
 		@PathVariable Long orderId) {
+
+		LOGGER.info("Order ID: {}", orderId);
 
 		Order order = orderQueryService.findOrder(orderId);
 		OrderDetailResponse orderDetailResponse = OrderDetailResponse.fromOrder(order);

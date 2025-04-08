@@ -23,7 +23,7 @@ public interface OrderQueryRepository {
 
 	OrderItem findSubscriptionOrderItemBy(long id);
 
-	Order findById(long id);
+	Order findById(@Param("id") long id);
 
 	boolean findIsSubscriptionById(@Param("orderId") long orderId);
 

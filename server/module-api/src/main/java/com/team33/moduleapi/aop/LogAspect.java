@@ -18,7 +18,7 @@ public class LogAspect {
 	private static final String TARGET = "TARGET";
 	private static final Logger log = LoggerFactory.getLogger("fileLog");
 
-	@Pointcut("execution(* com.team33.moduleapi.ui..*Controller.*(..))")
+	@Pointcut("execution(* com.team33.moduleapi.api..*Controller.*(..))")
 	public void controllerPointcut() {
 	}
 
