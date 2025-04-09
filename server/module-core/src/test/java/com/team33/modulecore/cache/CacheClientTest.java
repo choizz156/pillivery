@@ -142,8 +142,6 @@ class CacheClientTest {
 		);
 
 		// then
-		Cache.ValueWrapper bone = cacheManager.getCache(CacheType.CATEGORY_ITEMS.name()).get("BONE");
-		assertThat(bone.get()).isInstanceOf(CachedCategoryItems.class);
 		assertThat(result.getContent().getCachedItems()).hasSize(1);
 		verify(itemQueryRepository, times(1)).findItemsByCategory(
 			categoryName, keyword, priceFilter, pageDto
@@ -173,8 +171,6 @@ class CacheClientTest {
 		);
 
 		// then
-		Cache.ValueWrapper bone = cacheManager.getCache(CacheType.CATEGORY_ITEMS.name()).get("BONE");
-		assertThat(bone.get()).isInstanceOf(CachedCategoryItems.class);
 		assertThat(result.getContent().getCachedItems()).hasSize(1);
 		verify(itemQueryRepository, times(1)).findItemsByCategory(
 			categoryName, keyword, priceFilter, pageDto

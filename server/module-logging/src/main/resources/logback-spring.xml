@@ -8,12 +8,12 @@
     <include resource="logs/json-appender.xml"/>
     <include resource="logs/warn-appender.xml"/>
     <include resource="logs/debug-appender.xml"/>
-    <include resource="logs/logstash-appender.xml"/>
+<!--    <include resource="logs/logstash-appender.xml"/>-->
 
     <springProfile name="local">
         <logger name="fileLog">
             <level value="INFO"/>
-            <appender-ref ref="LOGSTASH"/>
+<!--            <appender-ref ref="LOGSTASH"/>-->
             <appender-ref ref="infoLog"/>
             <appender-ref ref="errorLog"/>
             <appender-ref ref="debugLog"/>

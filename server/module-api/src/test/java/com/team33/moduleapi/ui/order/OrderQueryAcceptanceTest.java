@@ -6,8 +6,6 @@ import static org.hamcrest.Matchers.*;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,6 @@ import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
-import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
 
@@ -52,16 +49,11 @@ class OrderQueryAcceptanceTest extends ApiTest {
 	private SubscriptionOrderService subscriptionOrderService;
 
 	@Autowired
-	private SubscriptionOrderRepository subscriptionOrderRepository;
-
-	@Autowired
 	private OrderItemMapper orderItemMapper;
 
 	@Autowired
 	private OrderCreateService orderCreateService;
 
-	@Autowired
-	private EntityManager entityManager;
 
 	@DisplayName("일반 주문 정보를 조회하여 api 응답을 보낼 수 있다.")
 	@UserAccount({"test", "010-0000-0000"})
@@ -80,26 +72,33 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
-			.body("data.size()", is(2))
-			.body("data.subscription", contains(false, false))
+			.body("time", notNullValue())
+			.body("data.size()", is(4))
+			// First order, first item
 			.body("data[0].orderId", equalTo(2))
-			.body("data[0].orderStatus", equalTo("COMPLETE"))
-			.body("data[0].totalItems", equalTo(2))
-			.body("data[0].expectPrice", equalTo(20000))
-			.body("data[0].firstItem.itemId", equalTo(1))
-			.body("data[0].firstItem.enterprise", equalTo("(주)씨티씨바이오"))
-			.body("data[0].firstItem.thumbnail", equalTo("thumbnailUrl"))
-			.body("data[0].firstItem.product", equalTo("16종혼합유산균 디에스"))
-			.body("data[0].firstItem.originPrice", equalTo(10000))
-			.body("data[0].firstItem.realPrice", equalTo(10000))
-			.body("data[0].firstItem.discountRate", equalTo(0.0f))
-			.body("data[0].firstItem.discountPrice", equalTo(0))
-
-			.body("data[1].orderId", equalTo(1))
-
+			.body("data[0].orderItemId", equalTo(3))
+			.body("data[0].quantity", equalTo(1))
+			.body("data[0].itemId", equalTo(1))
+			.body("data[0].itemName", equalTo("16종혼합유산균 디에스"))
+			.body("data[0].price", equalTo(10000))
+			.body("data[0].description", equalTo("descriptionImage"))
+			.body("data[0].imageUrl", equalTo("thumbnailUrl"))
+			.body("data[0].category", equalTo("[INTESTINE]"))
+			// First order, second item
+			.body("data[1].orderId", equalTo(2))
+			.body("data[1].orderItemId", equalTo(4))
+			.body("data[1].itemId", equalTo(2))
+			.body("data[1].itemName", equalTo("종혼합유산균 디에스2"))
+			.body("data[1].category", equalTo("[EYE]"))
+			// Second order items
+			.body("data[2].orderId", equalTo(1))
+			.body("data[2].orderItemId", equalTo(1))
+			.body("data[3].orderId", equalTo(1))
+			.body("data[3].orderItemId", equalTo(2))
+			// Pagination info
 			.body("pageInfo.page", equalTo(1))
 			.body("pageInfo.size", equalTo(8))
-			.body("pageInfo.totalElements", equalTo(2))
+			.body("pageInfo.totalElements", equalTo(4))
 			.body("pageInfo.totalPages", equalTo(1));
 	}
 
@@ -112,7 +111,6 @@ class OrderQueryAcceptanceTest extends ApiTest {
 		주문_저장(주문_정보(true, 30), OrderStatus.SUBSCRIPTION);
 		주문_저장(주문_정보(true, 60), OrderStatus.SUBSCRIPTION);
 
-
 		given()
 			.queryParam("userId", 1L)
 			.header("Authorization", getToken())
@@ -122,22 +120,17 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
+			.body("time", notNullValue())
 			.body("data.size()", is(4))
-			.body("data.orderItemId", containsInAnyOrder(4, 3, 2, 1))
-			.body("data.quantity", containsInAnyOrder(1, 1, 1, 1))
-			.body("data.subscription", containsInAnyOrder(true, true, true, true))
-			.body("data[0].period", equalTo(60))
-			.body("data[0].item.itemId", equalTo(2))
-			.body("data[0].item.enterprise", equalTo("(주)씨티씨바이오"))
-			.body("data[0].item.thumbnail", equalTo("thumbnailUrl"))
-			.body("data[0].item.product", equalTo("종혼합유산균 디에스2"))
-			.body("data[0].item.originPrice", equalTo(10000))
-			.body("data[0].item.realPrice", equalTo(10000))
-			.body("data[0].item.discountRate", equalTo(0.0f))
-			.body("data[0].item.discountPrice", equalTo(0))
-			.body("data[1].period", equalTo(60))
-			.body("data[2].period", equalTo(30))
-			.body("data[3].period", equalTo(30))
+			.body("data[0].subscriptionOrderId", equalTo(4))
+			.body("data[0].orderItemId", equalTo(4))
+			.body("data[0].quantity", equalTo(1))
+			.body("data[0].itemId", equalTo(2))
+			.body("data[0].itemName", equalTo("종혼합유산균 디에스2"))
+			.body("data[0].price", equalTo(10000))
+			.body("data[0].description", equalTo("descriptionImage"))
+			.body("data[0].imageUrl", equalTo("thumbnailUrl"))
+			.body("data[0].category", equalTo("[EYE]"))
 			.body("pageInfo.page", equalTo(1))
 			.body("pageInfo.size", equalTo(8))
 			.body("pageInfo.totalElements", equalTo(4))
@@ -173,8 +166,6 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.body("data.itemOrders[0].item.enterprise", is("(주)씨티씨바이오"))
 			.body("data.itemOrders[0].item.thumbnail", is("thumbnailUrl"))
 			.body("data.itemOrders[0].item.product", is("16종혼합유산균 디에스"))
-			.body("data.itemOrders[0].item.originPrice", is(10000))
-			.body("data.itemOrders[0].item.realPrice", is(10000))
 			.body("data.itemOrders[0].item.discountRate", is(0.0f))
 			.body("data.itemOrders[0].item.discountPrice", is(0))
 			.body("data.itemOrders[1].orderItemId", is(2))
@@ -186,7 +177,6 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.body("data.itemOrders[1].item.thumbnail", is("thumbnailUrl"))
 			.body("data.itemOrders[1].item.product", is("종혼합유산균 디에스2"))
 			.body("data.itemOrders[1].item.originPrice", is(10000))
-			.body("data.itemOrders[1].item.realPrice", is(10000))
 			.body("data.itemOrders[1].item.discountRate", is(0.0f))
 			.body("data.itemOrders[1].item.discountPrice", is(0))
 			.body("data.orderStatus", is("COMPLETE"))
@@ -213,6 +203,8 @@ class OrderQueryAcceptanceTest extends ApiTest {
 		Order order = orderCreateService.callOrder(orderItems, orderContext);
 		order.changeOrderStatus(orderStatus);
 		orderCommandRepository.save(order);
+
+
 
 		if (postListDto.isSubscription()) {
 			subscriptionOrderService.create(order);

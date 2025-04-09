@@ -1,4 +1,4 @@
-package com.team33;
+package com.team33.moduleapi;
 
 import static com.team33.modulecore.core.category.domain.CategoryName.*;
 
@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.moduleadmin.service.SubscriptionOrderBatchService;
-import com.team33.moduleapi.FixtureMonkeyFactory;
 import com.team33.modulecore.core.category.domain.Categories;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
@@ -35,7 +35,7 @@ import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository
 import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
 import com.team33.modulecore.core.user.domain.Address;
 
-// @Disabled("로컬에서만 진행되는 테스트")
+@Disabled("로컬에서만 진행되는 테스트")
 @Commit
 @ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

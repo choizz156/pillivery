@@ -27,7 +27,6 @@ import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 
 class NormalCartAcceptanceTest extends ApiTest {
 
-    private static final String BASE_URL = "/api/carts/normal";
     private static final Long CART_ID = 1L;
     private static final String KEY = CartKeySupplier.from(CART_ID);
 

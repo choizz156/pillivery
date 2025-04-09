@@ -82,7 +82,6 @@ class OrderCommandAcceptanceTest extends ApiTest {
 			.body("data.itemOrders[0].item.thumbnail", equalTo("thumbnailUrl"))
 			.body("data.itemOrders[0].item.product", equalTo("test"))
 			.body("data.itemOrders[0].item.originPrice", equalTo(10000))
-			.body("data.itemOrders[0].item.realPrice", equalTo(10000))
 			.body("data.itemOrders[0].item.discountRate", equalTo(0.0f))
 			.body("data.itemOrders[0].item.discountPrice", equalTo(0))
 

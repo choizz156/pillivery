@@ -97,7 +97,7 @@ public class OrderCommonInfo {
 	}
 
 	public OrderCommonInfo changeOrderStatus(OrderStatus orderStatus) {
-
+		this.orderStatus = orderStatus;
 		return this.toBuilder()
 				.orderStatus(orderStatus)
 				.build();

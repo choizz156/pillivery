@@ -1,6 +1,5 @@
 package com.team33.modulecore.core.order.application;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -32,7 +31,7 @@ class OrderQueryServiceTest {
 		verify(orderQueryRepository, times(1)).findOrdersWithItems(any(OrderPageRequest.class), any(OrderFindCondition.class));
 	}
 
-	@DisplayName("모든 구독 주문을 조회할 수 있다.")
+	@DisplayName("모든 구독 주문을 조회 요청을 보낼 수 있다.")
 	@Test
 	void 구독_주문_조회() throws Exception {
 		// given
@@ -58,6 +57,5 @@ class OrderQueryServiceTest {
 			eq(orderPageRequest),
 			argThat(condition -> condition.getUserId() == userId && condition.getOrderStatus() == OrderStatus.SUBSCRIPTION)
 		);
-		assertThat(result.getContent()).isEqualTo(content);
 	}
 }

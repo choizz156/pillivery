@@ -10,10 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 상품 가격 정보를 표현하는 값 객체
- * 원가, 할인율, 할인가격, 실제가격 정보를 포함합니다.
- */
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable

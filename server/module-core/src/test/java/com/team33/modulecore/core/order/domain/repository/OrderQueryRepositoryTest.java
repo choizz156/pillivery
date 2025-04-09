@@ -14,12 +14,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.assertj.core.data.Index;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.data.domain.Page;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -43,7 +41,6 @@ import com.team33.modulecore.core.user.domain.entity.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@TestInstance(Lifecycle.PER_CLASS)
 class OrderQueryRepositoryTest {
 
 	private EntityManagerFactory emf;
@@ -51,9 +48,8 @@ class OrderQueryRepositoryTest {
 	private OrderQueryRepository orderQueryRepository;
 	private User MOCK_USER;
 
-	@BeforeAll
+	@BeforeEach
 	void beforeAll() {
-
 		emf = Persistence.createEntityManagerFactory("test");
 		em = emf.createEntityManager();
 		em.getTransaction().begin();
@@ -61,9 +57,8 @@ class OrderQueryRepositoryTest {
 		persistOrder();
 	}
 
-	@AfterAll
+	@AfterEach
 	void afterAll() {
-
 		em.getTransaction().rollback(); // 커넥션 반납용 롤백
 		em.close();
 		emf.close();
@@ -82,6 +77,10 @@ class OrderQueryRepositoryTest {
 		var orderFindCondition =
 			OrderFindCondition.to(1L, OrderStatus.COMPLETE);
 
+		// log.info("Subscription Orders count: {}",
+		// 	em.createQuery("SELECT COUNT(o) FROM Order o where o.orderCommonInfo.orderStatus = 'COMPLETE'", Long.class)
+		// 		.getSingleResult());
+		//
 		//when
 		Page<OrderItemQueryDto> allOrders =
 			orderQueryRepository.findOrdersWithItems(orderPageRequest, orderFindCondition);
@@ -109,13 +108,18 @@ class OrderQueryRepositoryTest {
 
 		persistSubscriptionOrder();
 
+
+
 		//when
 		Page<SubscriptionOrderItemQueryDto> subscriptionOrderItem =
 			orderQueryRepository.findSubscriptionOrderItemsWithItems(orderPageRequest, orderFindCondition);
 
 		//then
-		assertThat(subscriptionOrderItem).hasSize(8)
-			.extracting("item.information.productName")
+		List<SubscriptionOrderItemQueryDto> content = subscriptionOrderItem.getContent();
+
+
+		assertThat(content).hasSize(8)
+			.extracting("itemName")
 			.as("page 1, size 8, offset 0, 내림차순")
 			.contains("title5", Index.atIndex(3));
 
@@ -125,20 +129,10 @@ class OrderQueryRepositoryTest {
 	@Test
 	void 구독_정보_조회() throws Exception {
 		//given
-
-		OrderItem orderItem = FixtureMonkeyFactory.get().giveMeBuilder(OrderItem.class)
-			.setNull("id")
-			.setNull("item")
-			.setNull("order")
-			.setNull("subscriptionOrder")
-			.set("subscriptionInfo", SubscriptionInfo.of(true, 60))
-			.sample();
-
-		em.persist(orderItem);
-
 		SubscriptionOrder subscriptionOrder = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionOrder.class)
 			.setNull("id")
-			.set("orderItem", orderItem)
+			.setNull("orderItem")
+			.set("subscriptionInfo", SubscriptionInfo.of(true, 60))
 			.sample();
 
 		em.persist(subscriptionOrder);
@@ -179,7 +173,6 @@ class OrderQueryRepositoryTest {
 				.map(orderItem ->
 					{
 						SubscriptionOrder subscriptionOrder = SubscriptionOrder.create(order, orderItem);
-						subscriptionOrder.changeOrderStatus(OrderStatus.SUBSCRIPTION);
 						return subscriptionOrder;
 					}
 				).forEach(em::persist);

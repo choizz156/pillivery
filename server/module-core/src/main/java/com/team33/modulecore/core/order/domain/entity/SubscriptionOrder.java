@@ -70,7 +70,7 @@ public class SubscriptionOrder extends BaseEntity {
 
 		subscriptionOrder.getOrderCommonInfo().addPrice(List.of(orderItem));
 		subscriptionOrder.getOrderCommonInfo().changeOrderStatus(OrderStatus.SUBSCRIPTION);
-		subscriptionOrder.addOrderItem(orderItem);
+
 		return subscriptionOrder;
 	}
 

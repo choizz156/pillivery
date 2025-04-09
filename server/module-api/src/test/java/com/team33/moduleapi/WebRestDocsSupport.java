@@ -1,5 +1,5 @@
 
-package com.team33.moduleapi.restdocs;
+package com.team33.moduleapi;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 
@@ -19,11 +19,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.team33.moduleapi.DataCleaner;
-import com.team33.modulecore.security.infra.JwtTokenProvider;
 import com.team33.modulecore.core.common.UserFindHelper;
 import com.team33.modulecore.core.user.domain.entity.User;
 import com.team33.modulecore.core.user.domain.repository.UserRepository;
+import com.team33.modulecore.security.infra.JwtTokenProvider;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -36,24 +35,18 @@ import io.restassured.specification.RequestSpecification;
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class WebRestDocsSupport {
 
-	@LocalServerPort
-	private int port;
-
 	@Autowired
 	protected UserFindHelper userFindHelper;
-
 	@Autowired
 	protected JwtTokenProvider jwtTokenProvider;
-
 	@Autowired
 	protected UserRepository userRepository;
-
 	@Autowired
 	protected DataCleaner dataCleaner;
-
 	protected MockMvcRequestSpecification webSpec;
-
 	protected RequestSpecification spec;
+	@LocalServerPort
+	private int port;
 
 	@BeforeEach
 	void beforeEach(WebApplicationContext web, RestDocumentationContextProvider restDocumentation,
@@ -61,6 +54,7 @@ public abstract class WebRestDocsSupport {
 		if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
 			RestAssured.port = port;
 			dataCleaner.afterPropertiesSet();
+			SecurityContextHolder.clearContext();
 		}
 
 		this.webSpec = RestAssuredMockMvc.given()

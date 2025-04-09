@@ -48,7 +48,6 @@ public class ItemSimpleResponseDto {
             .enterprise(item.getEnterprise())
             .thumbnail(item.getThumbnail())
             .product(item.getProductName())
-            .realPrice(item.getRealPrice())
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())
             .build();
@@ -61,7 +60,7 @@ public class ItemSimpleResponseDto {
             .enterprise(item.getInformation().getEnterprise())
             .thumbnail(item.getThumbnailUrl())
             .product(item.getProductName())
-            .realPrice(item.getRealPrice())
+            .originPrice(item.getOriginPrice())
             .discountRate(item.getDiscountRate())
             .discountPrice(item.getDiscountPrice())
             .build();

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team33.moduleadmin.dto.BodyWrapper;
 import com.team33.moduleadmin.dto.ItemDto;
 import com.team33.moduleadmin.dto.ItemWrapper;
@@ -46,12 +47,12 @@ public class ItemRegisterController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @GetMapping
-	public void postItem() throws URISyntaxException {
+	public void postItem() throws URISyntaxException, JsonProcessingException {
 
 		RestTemplate restTemplate = new RestTemplate();
 
-
-		for (int i = 71; i <= 300; i++) {
+		String key = "ZVfQKw1vKRzc5MrFh8Y9y%2BdYV%2Fm465AOUrvcucC428QwNfRrKoJW%2Fx%2FsHz8EPBilmpaGn%2B%2BSM%2BYapFPeKshUg%3D%3D";
+		for (int i = 400; i <= 500; i++) {
 			String url = "https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?pageNo="
 				+ i
 				+ "&numOfRows=100&ServiceKey=yZVfQKw1vKRzc5MrFh8Y9y%2BdYV%2Fm465AOUrvcucC428QwNfRrKoJW%2Fx%2FsHz8EPBilmpaGn%2B%2BSM%2BYapFPeKshUg%3D%3D&type=json";
@@ -59,6 +60,9 @@ public class ItemRegisterController {
 			URI uri = new URI(url);
 
 			BodyWrapper forObject = restTemplate.getForObject(uri, BodyWrapper.class);
+			// ObjectMapper objectMapper = new ObjectMapper();
+			// BodyWrapper bodyWrapper = objectMapper.readValue(forObject, BodyWrapper.class);
+			log.info("ForObject: {}, i = {}", forObject, i);
 			lists.add(forObject);
 		}
 

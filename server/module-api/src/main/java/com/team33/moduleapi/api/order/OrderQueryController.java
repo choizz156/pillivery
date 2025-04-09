@@ -67,8 +67,6 @@ public class OrderQueryController {
 	public SingleResponseDto<OrderDetailResponse> getOrder(
 		@PathVariable Long orderId) {
 
-		LOGGER.info("Order ID: {}", orderId);
-
 		Order order = orderQueryService.findOrder(orderId);
 		OrderDetailResponse orderDetailResponse = OrderDetailResponse.fromOrder(order);
 

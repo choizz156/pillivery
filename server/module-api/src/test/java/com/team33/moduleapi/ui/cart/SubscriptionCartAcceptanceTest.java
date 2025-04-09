@@ -66,6 +66,7 @@ class SubscriptionCartAcceptanceTest extends ApiTest {
         .when()
             .get(BASE_URL + "/{cartId}", CART_ID)
         .then()
+			.log().all()
             .statusCode(HttpStatus.OK.value())
             .body("data.cartId", equalTo(CART_ID.intValue()))
             .body("data.totalItemCount", equalTo(1))
@@ -79,7 +80,6 @@ class SubscriptionCartAcceptanceTest extends ApiTest {
             // Item 정보 검증
             .body("data.cartItems[0].item.itemId", equalTo(1))
             .body("data.cartItems[0].item.originPrice", equalTo(11000))
-            .body("data.cartItems[0].item.realPrice", equalTo(10000))
             .body("data.cartItems[0].item.discountRate", equalTo(10.0f))
             .body("data.cartItems[0].item.discountPrice", equalTo(1000));
     }

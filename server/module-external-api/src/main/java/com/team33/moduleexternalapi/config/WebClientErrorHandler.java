@@ -34,7 +34,7 @@ public class WebClientErrorHandler {
 	public ExchangeFilterFunction errorResponseFilter() {
 
 		return ExchangeFilterFunction.ofResponseProcessor(response -> {
-			if (response.statusCode().is4xxClientError() || response.statusCode().is5xxServerError()) {
+			if (response.statusCode().is4xxClientError()) {
 				return response.bodyToMono(String.class)
 					.flatMap(body -> handleClientResponse(response, body));
 			}
