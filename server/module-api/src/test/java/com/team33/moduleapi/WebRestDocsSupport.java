@@ -48,6 +48,7 @@ public abstract class WebRestDocsSupport {
 	@BeforeEach
 	void beforeEach(WebApplicationContext web, RestDocumentationContextProvider restDocumentation,
 		RestDocumentationContextProvider provider) throws Exception {
+
 		if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
 			RestAssured.port = port;
 			dataCleaner.afterPropertiesSet();
@@ -66,16 +67,22 @@ public abstract class WebRestDocsSupport {
 			);
 
 		spec = new RequestSpecBuilder().addFilter(
-			RestAssuredRestDocumentation.documentationConfiguration(provider)).build();
+				RestAssuredRestDocumentation.documentationConfiguration(provider)
+					.operationPreprocessors()
+					.withRequestDefaults(modifyUris().scheme("https").host("localhost").removePort(),prettyPrint())
+					.withResponseDefaults(prettyPrint()))
+			.build();
 	}
 
 	@AfterEach
 	void tearDown() {
+
 		dataCleaner.execute();
 		SecurityContextHolder.clearContext();
 	}
 
 	protected String getToken() {
+
 		User loginUser = userFindHelper.findUser(1L);
 		return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
 	}
