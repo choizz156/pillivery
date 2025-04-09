@@ -22,3 +22,11 @@ endif::[]
 
 include::api/user/user.adoc
 
+[[Cart-API]]
+== Cart API
+
+include::api/cart/cart.adoc
+
+[[Item-API]]
+include::api/item/item.adoc
+

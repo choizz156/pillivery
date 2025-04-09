@@ -21,7 +21,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.team33.modulecore.core.common.UserFindHelper;
 import com.team33.modulecore.core.user.domain.entity.User;
-import com.team33.modulecore.core.user.domain.repository.UserRepository;
 import com.team33.modulecore.security.infra.JwtTokenProvider;
 
 import io.restassured.RestAssured;
@@ -39,8 +38,6 @@ public abstract class WebRestDocsSupport {
 	protected UserFindHelper userFindHelper;
 	@Autowired
 	protected JwtTokenProvider jwtTokenProvider;
-	@Autowired
-	protected UserRepository userRepository;
 	@Autowired
 	protected DataCleaner dataCleaner;
 	protected MockMvcRequestSpecification webSpec;

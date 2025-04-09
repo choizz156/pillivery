@@ -9,9 +9,11 @@ configurations {
 
 ext { // 전역 변수
     snippetsDir = file('build/generated-snippets')
+    springBootAdminVersion = "2.7.4"
 }
 
 dependencies {
+
 
     //db
     runtimeOnly 'com.h2database:h2'
@@ -42,11 +44,13 @@ dependencies {
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14'
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14'
 
+    implementation 'de.codecentric:spring-boot-admin-starter-server'
+
     //lombok
     testAnnotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
 
-	testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 test {
     useJUnitPlatform()
@@ -74,5 +78,11 @@ bootJar {
     dependsOn asciidoctor
     from("${asciidoctor.outputDir}") {
         into 'static/docs'
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "de.codecentric:spring-boot-admin-dependencies:$springBootAdminVersion"
     }
 }
