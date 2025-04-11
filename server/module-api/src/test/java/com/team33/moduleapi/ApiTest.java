@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,6 +30,8 @@ public abstract class ApiTest {
 	protected UserRepository userRepository;
 	@Autowired
 	protected JwtTokenProvider jwtTokenProvider;
+	@Autowired
+	protected CacheManager cacheManager;
 	@LocalServerPort
 	private int port;
 	@Autowired
@@ -45,6 +48,7 @@ public abstract class ApiTest {
 	@AfterEach
 	void tearDown() {
 		dataCleaner.execute();
+		cacheManager.getCacheNames().forEach(name -> cacheManager.getCache(name).clear());
 		SecurityContextHolder.clearContext();
 	}
 

@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.cart;
+package com.team33.moduleapi.docs;
 
 import static com.team33.modulecore.cache.CacheType.*;
 import static io.restassured.RestAssured.*;
@@ -17,7 +17,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.WebRestDocsSupport;
 import com.team33.moduleapi.api.cart.mapper.CartServiceMapper;
 import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.modulecore.core.cart.application.CartKeySupplier;

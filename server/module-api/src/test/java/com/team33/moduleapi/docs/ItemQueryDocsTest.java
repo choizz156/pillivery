@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.item;
+package com.team33.moduleapi.docs;
 
 import static io.restassured.RestAssured.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import com.team33.moduleapi.WebRestDocsSupport;
 import com.team33.moduleapi.api.item.dto.ItemPageRequestDto;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.Image;

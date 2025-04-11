@@ -376,6 +376,7 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("pageInfo.totalPages", equalTo(1));
 		}
 
+
 	}
 
 	@Nested
@@ -538,6 +539,6 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.body("pageInfo.totalElements", equalTo(5))
 				.body("pageInfo.totalPages", equalTo(1));
 		}
-	}
 
+	}
 }
