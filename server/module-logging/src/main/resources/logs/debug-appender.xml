@@ -6,6 +6,8 @@
   <appender name="debugLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
     <file>${home}debug.log</file>
+    <append>true</append>
+    <immediateFlush>true</immediateFlush>
 
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>DEBUG</level>
@@ -14,9 +16,9 @@
     </filter>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${home}was/debugLog.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
-      <maxHistory>3</maxHistory>
-      <maxFileSize>15MB</maxFileSize>
+      <fileNamePattern>${home}was/debug.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
+      <maxHistory>30</maxHistory>
+      <maxFileSize>12MB</maxFileSize>
     </rollingPolicy>
 
     <encoder>

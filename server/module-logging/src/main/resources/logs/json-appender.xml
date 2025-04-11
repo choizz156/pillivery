@@ -7,6 +7,8 @@
   <appender name="jsonLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
     <file>${home}json.log</file>
+    <append>true</append>
+    <immediateFlush>true</immediateFlush>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <fileNamePattern>${home}json-%d{yyyyMMdd}-%i.log</fileNamePattern>

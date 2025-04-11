@@ -6,6 +6,8 @@
   <appender name="infoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
     <file>${home}info.log</file>
+    <append>true</append>
+    <immediateFlush>true</immediateFlush>
 
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>INFO</level>
@@ -14,9 +16,9 @@
     </filter>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${home}was/infoLog.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
-      <maxHistory>20</maxHistory>
-      <maxFileSize>15MB</maxFileSize>
+      <fileNamePattern>${home}was/info.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
+      <maxHistory>30</maxHistory>
+      <maxFileSize>12MB</maxFileSize>
     </rollingPolicy>
 
     <encoder>
