@@ -1,0 +1,13 @@
+services:
+  promtail:
+    image: grafana/promtail:3.0.0                   # Specifies the Promtail Docker image and version.
+    container_name: promtail                        # Names the container for easier management.
+    volumes:
+      - ./promtail-config.yaml:/mnt/config/promtail-config.yaml # Mounts the Promtail configuration file.
+      - /Users/choi/pillivery/server/module-logging/logs:/Users/choi/pillivery/server/module-logging/logs                      # Mounts the host's log directory.
+    command: -config.file=/mnt/config/promtail-config.yaml # Runs Promtail with the specified configuration file.
+    networks:
+      - loki-net
+
+networks:
+  loki-net:

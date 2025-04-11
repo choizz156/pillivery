@@ -1,0 +1,28 @@
+services:
+  loki:
+    image: grafana/loki:3.0.0                       # Specifies the Loki Docker image and version.
+    container_name: loki                            # Names the container for easier management.
+    volumes:
+      - ./loki-config.yaml:/mnt/config/loki-config.yaml # Mounts the Loki configuration file.
+    ports:
+      - "3100:3100"                                 # Maps port 3100 on the host to port 3100 in the container.
+    command: -config.file=/mnt/config/loki-config.yaml # Runs Loki with the specified configuration file.
+    networks:
+      - loki-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - loki-net
+
+volumes:
+    grafana-storage: { }
+
+networks:
+  loki-net:

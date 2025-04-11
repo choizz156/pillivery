@@ -17,10 +17,10 @@ endif::[]
 | API를 사용하기 위한 인증 키
 |===
 
-[[User-API]]
-== User API
-
-include::api/user/user.adoc
+// [[User-API]]
+// == User API
+//
+// include::api/user/user.adoc
 
 [[Cart-API]]
 == Cart API

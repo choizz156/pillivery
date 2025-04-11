@@ -7,6 +7,8 @@
   <appender name="errorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
     <file>${home}error.log</file>
+    <append>true</append>
+    <immediateFlush>true</immediateFlush>
 
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>ERROR</level>
@@ -15,9 +17,9 @@
     </filter>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${home}was/errorLog.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
+      <fileNamePattern>${home}was/error.%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
       <maxHistory>30</maxHistory>
-      <maxFileSize>15MB</maxFileSize>
+      <maxFileSize>12MB</maxFileSize>
     </rollingPolicy>
 
     <encoder>
