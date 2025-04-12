@@ -1,21 +1,8 @@
 package com.team33.modulecore.cache;
 
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
-
-import com.team33.modulecore.cache.dto.CachedCategoryItems;
-import com.team33.modulecore.cache.dto.CachedItems;
-import com.team33.modulecore.core.category.domain.CategoryName;
-import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
-import com.team33.modulecore.core.item.dto.query.ItemPage;
-import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
-import com.team33.modulecore.core.item.dto.query.PriceFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,43 +10,17 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class CacheClient {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
+	private final CacheManager cacheManager;
 
-	private final ItemQueryRepository itemQueryRepository;
+	public Cache getCache(String cacheName) {
 
-	@Cacheable(value = "MAIN_ITEMS", key = "'discount'")
-	public CachedItems<ItemQueryDto> getMainDiscountItem() {
-		LOGGER.info("[Cache miss] mainItems - discount");
-		List<ItemQueryDto> mainItem = itemQueryRepository.findItemsWithDiscountRateMain();
-		return CachedItems.of(mainItem);
+		Cache cache = cacheManager.getCache(cacheName);
+
+		if(cache == null) {
+			throw new RuntimeException("Cache not found: " + cacheName);
+		}
+
+		return cache;
 	}
 
-	@Cacheable(value = "MAIN_ITEMS", key = "'sales'")
-	public CachedItems<ItemQueryDto> getMainSalesItem() {
-		LOGGER.info("[Cache miss] mainItems - sales");
-		List<ItemQueryDto> mainItem = itemQueryRepository.findItemsWithSalesMain();
-		return CachedItems.of(mainItem);
-	}
-
-	@Cacheable(value = "CATEGORY_ITEMS", key = "#categoryName.name() + '-' + #itemPage.page", condition = "#itemPage.page <= 5")
-	public CachedCategoryItems<ItemQueryDto> getCategoryItems(
-		CategoryName categoryName,
-		String keyword,
-		PriceFilter priceFilter,
-		ItemPage itemPage) {
-
-		LOGGER.info("[Cache miss] Category: " + categoryName.name());
-		Page<ItemQueryDto> items = itemQueryRepository.findItemsByCategory(
-			categoryName,
-			keyword,
-			priceFilter,
-			itemPage);
-
-		return new CachedCategoryItems<>(items);
-	}
-
-	public Map<String, Long> getViewCount() {
-
-		return null;
-	}
 }
