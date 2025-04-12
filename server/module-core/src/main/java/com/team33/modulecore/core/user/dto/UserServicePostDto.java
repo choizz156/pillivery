@@ -1,10 +1,12 @@
 package com.team33.modulecore.core.user.dto;
 
-
 import com.team33.modulecore.core.user.domain.Address;
+
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 public class UserServicePostDto {
 

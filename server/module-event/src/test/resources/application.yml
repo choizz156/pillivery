@@ -26,5 +26,9 @@ logging:
   level:
     org.hibernate.sql: debug
 
+  config: classpath:logback-test.xml
+
+
+
 
 

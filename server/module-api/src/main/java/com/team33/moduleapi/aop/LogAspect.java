@@ -33,6 +33,6 @@ public class LogAspect {
 
 	@AfterReturning("exceptionControllerPointcut()")
 	public void exceptionLog(JoinPoint joinPoint) {
-		log.error("exception :: {}", joinPoint.getSignature());
+		log.info("exception :: {}", joinPoint.getSignature());
 	}
 }

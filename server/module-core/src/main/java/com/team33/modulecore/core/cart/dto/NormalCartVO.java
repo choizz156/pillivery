@@ -5,7 +5,9 @@ import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Getter

@@ -32,6 +32,7 @@ public abstract class CartEntity extends BaseEntity {
 
 	@Embedded
 	CartPrice price = new CartPrice(0, 0, 0);
+
 	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.ALL, orphanRemoval = true)
 	List<CartItemEntity> cartItemEntities = new ArrayList<>();
 	@Id

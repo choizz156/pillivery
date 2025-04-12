@@ -17,11 +17,11 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
 import com.team33.modulecore.security.application.LogoutService;
 import com.team33.modulecore.security.application.ResponseTokenService;
 import com.team33.modulecore.security.infra.JwtTokenProvider;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -34,42 +34,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtVerificationFilter extends OncePerRequestFilter {
 
-    private static final String EXCEPTION_KEY = "exception";
     private static final String AUTHORIZATION = "Authorization";
-
-
+    private static final String EXCEPTION_KEY = "exception";
     private final JwtTokenProvider jwtTokenProvider;
     private final ResponseTokenService responseTokenService;
     private final LogoutService logoutService;
-
-    @Override
-    protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain
-    ) throws ServletException, IOException {
-        putAuthToSecurityContext(request);
-        filterChain.doFilter(request, response);
-    }
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        if (isRequestRefreshToken(request)) {
-            return true;
-        }
-
-        String authorization = request.getHeader(AUTHORIZATION);
-
-        if (checkNull(request, authorization)) {
-            return true;
-        }
-
-        if (checkTokenForm(request, authorization)) {
-            return true;
-        }
-
-        return checkLogout(request);
-    }
 
     private boolean checkLogout(final HttpServletRequest request) {
         if (logoutService.isLogoutAlready(request)) {
@@ -95,7 +64,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             new UsernamePasswordAuthenticationToken(username, null, authorityList);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.warn("{}", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
     }
 
     private boolean isRequestRefreshToken(final HttpServletRequest request) {
@@ -132,7 +100,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private boolean checkNull(final HttpServletRequest request, final String authorization) {
         if (authorization == null) {
-            log.warn(NullPointerException.class.getSimpleName());
             request.setAttribute(EXCEPTION_KEY, new NullPointerException("No Token"));
             return true;
         }
@@ -150,5 +117,34 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private boolean isNullOrEmpty(String value) {
         return value == null || value.isEmpty();
+    }
+
+    @Override
+    protected void doFilterInternal(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain filterChain
+    ) throws ServletException, IOException {
+        putAuthToSecurityContext(request);
+        filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        if (isRequestRefreshToken(request)) {
+            return true;
+        }
+
+        String authorization = request.getHeader(AUTHORIZATION);
+
+        if (checkNull(request, authorization)) {
+            return true;
+        }
+
+        if (checkTokenForm(request, authorization)) {
+            return true;
+        }
+
+        return checkLogout(request);
     }
 }

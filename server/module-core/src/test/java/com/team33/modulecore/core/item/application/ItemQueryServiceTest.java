@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import com.team33.modulecore.cache.CacheClient;
+import com.team33.modulecore.cache.CachedItemManager;
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
 import com.team33.modulecore.cache.dto.CachedItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
@@ -24,39 +24,39 @@ class ItemQueryServiceTest {
 
 	private ItemQueryRepository itemQueryRepository;
 	private ItemQueryService itemQueryService;
-	private CacheClient cacheClient;
+	private CachedItemManager cachedItemManager;
 
 	@BeforeEach
 	void setUp() {
 		itemQueryRepository = mock(ItemQueryRepository.class);
-		cacheClient = mock(CacheClient.class);
-		itemQueryService = new ItemQueryService(cacheClient, itemQueryRepository);
+		cachedItemManager = mock(CachedItemManager.class);
+		itemQueryService = new ItemQueryService(cachedItemManager, itemQueryRepository);
 	}
 
 	@DisplayName("할인 중인 메인 아이템들을 조회할 수 있다.")
 	@Test
 	void 아이템_조회() throws Exception {
 		//given
-		when(cacheClient.getMainDiscountItem()).thenReturn(CachedItems.of(List.of()));
+		when(cachedItemManager.getMainDiscountItem()).thenReturn(CachedItems.of(List.of()));
 
 		//when
 		itemQueryService.findMainDiscountItems();
 
 		//then
-		verify(cacheClient, times(1)).getMainDiscountItem();
+		verify(cachedItemManager, times(1)).getMainDiscountItem();
 	}
 
 	@DisplayName("판매량이 많은 메인 아이템들을 조회할 수 있다.")
 	@Test
 	void 아이템_조회2() throws Exception {
 		//given
-		when(cacheClient.getMainSalesItem()).thenReturn(CachedItems.of(List.of()));
+		when(cachedItemManager.getMainSalesItem()).thenReturn(CachedItems.of(List.of()));
 
 		//when
 		itemQueryService.findMainSaleItems();
 
 		//then
-		verify(cacheClient, times(1)).getMainSalesItem();
+		verify(cachedItemManager, times(1)).getMainSalesItem();
 	}
 
 	@DisplayName("조회 필터링이 있는 아이템들을 조회할 수 있다.")
@@ -114,7 +114,7 @@ class ItemQueryServiceTest {
 			() -> 100
 		);
 
-		when(cacheClient.getCategoryItems(
+		when(cachedItemManager.getCategoryItems(
 			any(CategoryName.class),
 			anyString(),
 			any(PriceFilter.class),
@@ -126,7 +126,7 @@ class ItemQueryServiceTest {
 		itemQueryService.findByCategory(CategoryName.EYE, "test", new PriceFilter(), new ItemPage());
 
 		//then
-		verify(cacheClient, times(1)).getCategoryItems(
+		verify(cachedItemManager, times(1)).getCategoryItems(
 			any(CategoryName.class),
 			anyString(),
 			any(PriceFilter.class),

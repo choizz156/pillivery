@@ -51,6 +51,10 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
 
     testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+
+    implementation 'io.micrometer:micrometer-core'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 test {
     useJUnitPlatform()

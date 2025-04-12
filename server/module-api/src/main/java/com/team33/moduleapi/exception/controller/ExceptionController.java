@@ -1,5 +1,7 @@
 package com.team33.moduleapi.exception.controller;
 
+import java.util.Arrays;
+
 import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
@@ -19,6 +21,9 @@ import com.team33.moduleexternalapi.exception.ExternalApiException;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 import com.team33.moduleexternalapi.exception.SubscriptionPaymentException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class ExceptionController {
 
@@ -43,8 +48,7 @@ public class ExceptionController {
 	@ExceptionHandler(BusinessLogicException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ApiErrorResponse businessLogicExceptionHandler(BusinessLogicException e) {
-
-		LOGGER.info("BusinessLogicException => {}", e.getMessage());
+		LOGGER.info("BusinessLogicException => {}, class = {}", e.getMessage(), e.getStackTrace()[0]);
 		return ApiErrorResponse.of(e.getMessage());
 	}
 
@@ -72,7 +76,7 @@ public class ExceptionController {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ApiErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
 
-		LOGGER.debug("illegalArgumentExceptionHandler => {}", e.getMessage());
+		LOGGER.info("illegalArgumentExceptionHandler => {}", e.getMessage());
 		return ApiErrorResponse.of(e.getMessage());
 	}
 
@@ -112,8 +116,18 @@ public class ExceptionController {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiErrorResponse runtimeExceptionHandler(RuntimeException e) {
 
-		LOGGER.error("runtime exception :: {}", e.getLocalizedMessage());
-		LOGGER.error("stack trace :: {}, {}", e.getStackTrace()[0].getClassName(), e.getStackTrace()[0]);
+		// LOGGER.error("runtime exception :: {}, stack trace :: {}, {}",
+		// 	e.getLocalizedMessage(),
+		// 	e.getStackTrace()[0].getClassName(),
+		// 	e.getStackTrace()[0]
+		// );
+		Arrays.stream(e.getStackTrace()).forEach(a -> {
+			log.error(a.toString());
+		});
+
+		Arrays.stream(e.getStackTrace()).forEach(a -> {
+			LOGGER.error(a.toString());
+		});
 		return ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 	}
 

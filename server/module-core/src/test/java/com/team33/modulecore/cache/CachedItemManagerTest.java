@@ -33,16 +33,16 @@ import com.team33.modulecore.core.item.dto.query.PriceFilter;
 @EnableCaching
 @SpringBootTest(
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-	classes = {CacheConfig.class, CacheClient.class}
+	classes = {CacheConfig.class, CachedItemManager.class}
 )
-class CacheClientTest {
+class CachedItemManagerTest {
 
 	@MockBean
 	private ItemQueryRepository itemQueryRepository;
 	@Autowired
 	private CacheManager cacheManager;
 	@Autowired
-	private CacheClient cacheClient;
+	private CachedItemManager cachedItemManager;
 
 	private List<ItemQueryDto> mockItems = List.of(
 		ItemQueryDto.builder().itemId(1L).productName("item2").discountPrice(2000).discountRate(0).build()
@@ -62,7 +62,7 @@ class CacheClientTest {
 		when(itemQueryRepository.findItemsWithDiscountRateMain()).thenReturn(mockItems);
 
 		// when
-		CachedItems<ItemQueryDto> result = cacheClient.getMainDiscountItem();
+		CachedItems<ItemQueryDto> result = cachedItemManager.getMainDiscountItem();
 
 		// then
 		assertThat(result.getCachedItems()).hasSize(1);
@@ -76,10 +76,10 @@ class CacheClientTest {
 		when(itemQueryRepository.findItemsWithDiscountRateMain()).thenReturn(mockItems);
 
 		//미리 캐싱
-		cacheClient.getMainDiscountItem();
+		cachedItemManager.getMainDiscountItem();
 
 		// when
-		CachedItems result = cacheClient.getMainDiscountItem();
+		CachedItems result = cachedItemManager.getMainDiscountItem();
 
 		// then
 		Cache.ValueWrapper discount = cacheManager.getCache(CacheType.MAIN_ITEMS.name()).get("discount");
@@ -96,7 +96,7 @@ class CacheClientTest {
 		when(itemQueryRepository.findItemsWithSalesMain()).thenReturn(mockItems);
 
 		// when
-		CachedItems result = cacheClient.getMainSalesItem();
+		CachedItems result = cachedItemManager.getMainSalesItem();
 
 		// then
 		assertThat(result.getCachedItems()).hasSize(1);
@@ -109,10 +109,10 @@ class CacheClientTest {
 		// given
 		when(itemQueryRepository.findItemsWithSalesMain()).thenReturn(mockItems);
 
-		cacheClient.getMainSalesItem();
+		cachedItemManager.getMainSalesItem();
 
 		// when
-		CachedItems result = cacheClient.getMainSalesItem();
+		CachedItems result = cachedItemManager.getMainSalesItem();
 
 		// then
 		Cache.ValueWrapper sales = cacheManager.getCache(CacheType.MAIN_ITEMS.name()).get("sales");
@@ -137,7 +137,7 @@ class CacheClientTest {
 		)).thenReturn(mockPage);
 
 		// when
-		CachedCategoryItems<ItemQueryDto> result = cacheClient.getCategoryItems(
+		CachedCategoryItems<ItemQueryDto> result = cachedItemManager.getCategoryItems(
 			categoryName, keyword, priceFilter, pageDto
 		);
 
@@ -163,10 +163,10 @@ class CacheClientTest {
 			categoryName, keyword, priceFilter, pageDto
 		)).thenReturn(mockPage);
 
-		cacheClient.getCategoryItems(categoryName, keyword, priceFilter, pageDto);
+		cachedItemManager.getCategoryItems(categoryName, keyword, priceFilter, pageDto);
 
 		// when
-		CachedCategoryItems<ItemQueryDto> result = cacheClient.getCategoryItems(
+		CachedCategoryItems<ItemQueryDto> result = cachedItemManager.getCategoryItems(
 			categoryName, keyword, priceFilter, pageDto
 		);
 

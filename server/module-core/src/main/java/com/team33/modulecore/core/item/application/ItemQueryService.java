@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.cache.CacheClient;
+import com.team33.modulecore.cache.CachedItemManager;
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
 import com.team33.modulecore.cache.dto.CachedItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ItemQueryService {
 
-	private final CacheClient cacheClient;
+	private final CachedItemManager cachedItemManager;
 	private final ItemQueryRepository itemQueryRepository;
 
 	public Item findItemById(long itemId) {
@@ -31,13 +31,13 @@ public class ItemQueryService {
 
 	public List<ItemQueryDto> findMainDiscountItems() {
 
-		CachedItems<ItemQueryDto> cachedItems = cacheClient.getMainDiscountItem();
+		CachedItems<ItemQueryDto> cachedItems = cachedItemManager.getMainDiscountItem();
 		return cachedItems.getCachedItems();
 	}
 
 	public List<ItemQueryDto> findMainSaleItems() {
 
-		CachedItems<ItemQueryDto> cachedItems = cacheClient.getMainSalesItem();
+		CachedItems<ItemQueryDto> cachedItems = cachedItemManager.getMainSalesItem();
 		return cachedItems.getCachedItems();
 	}
 
@@ -67,7 +67,7 @@ public class ItemQueryService {
 	) {
 
 		CachedCategoryItems<ItemQueryDto> categoryItems =
-			cacheClient.getCategoryItems(categoryName, keyword, priceFilter, pageDto);
+			cachedItemManager.getCategoryItems(categoryName, keyword, priceFilter, pageDto);
 		return categoryItems.toPage();
 	}
 

@@ -10,7 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		"com.team33.moduleadmin",
 		"com.team33.moduleexternalapi",
 		"com.team33.moduleevent",
-		"com.team33.moduleredis"
+		"com.team33.moduleredis",
+		"com.team33.modulelogging"
 	}
 )
 public class AppApplication {

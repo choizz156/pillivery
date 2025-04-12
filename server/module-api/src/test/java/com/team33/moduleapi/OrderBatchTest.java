@@ -70,7 +70,10 @@ public class OrderBatchTest {
 		Item sample = FixtureMonkeyFactory.get().giveMeBuilder(Item.class)
 			.setNull("id")
 			.setLazy("name", () -> "상품" + itemValue.addAndGet(1))
-			.setLazy("price", () -> 10000 + (itemValue.get() % 5) * 1000)
+			.setLazy("information.price", () -> com.team33.modulecore.core.item.domain.Price.builder()
+				.originPrice(10000 + (itemValue.get() % 5) * 1000)
+				.discountRate(0.0)
+				.build())
 			.setLazy("description", () -> "상품설명" + itemValue.get())
 			.set("categories", new Categories(Set.of(BONE)))
 			.sample();

@@ -18,8 +18,9 @@ public class UserBatchDao extends AbstractBatchDao<User> {
 	@Override
 	protected String getInsertSql() {
 		return "insert into users ("
-				+ "email, displayName, phone, password, city, detailAddress, realName, roles, userStatus, subscriptionCartId, normalCartId, oauthId) "
-				+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ "email, display_name, phone, password, city, detail_address, real_name, "
+			+ "roles, user_status, subscription_cart_id, normal_cart_id, oauth_id) "
+			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	}
 
 	@Override
