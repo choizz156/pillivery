@@ -1,7 +1,6 @@
 package com.team33.moduleapi.aop;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -29,10 +28,5 @@ public class LogAspect {
 	@Before("controllerPointcut()")
 	public void before(JoinPoint joinPoint) {
 		MDC.put(TARGET, joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-	}
-
-	@AfterReturning("exceptionControllerPointcut()")
-	public void exceptionLog(JoinPoint joinPoint) {
-		log.info("exception :: {}", joinPoint.getSignature());
 	}
 }

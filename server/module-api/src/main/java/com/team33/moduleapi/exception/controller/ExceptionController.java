@@ -1,7 +1,5 @@
 package com.team33.moduleapi.exception.controller;
 
-import java.util.Arrays;
-
 import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
@@ -116,18 +114,12 @@ public class ExceptionController {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiErrorResponse runtimeExceptionHandler(RuntimeException e) {
 
-		// LOGGER.error("runtime exception :: {}, stack trace :: {}, {}",
-		// 	e.getLocalizedMessage(),
-		// 	e.getStackTrace()[0].getClassName(),
-		// 	e.getStackTrace()[0]
-		// );
-		Arrays.stream(e.getStackTrace()).forEach(a -> {
-			log.error(a.toString());
-		});
+		LOGGER.error("runtime exception :: {}, stack trace :: {}, {}",
+			e.getLocalizedMessage(),
+			e.getStackTrace()[0].getClassName(),
+			e.getStackTrace()[0]
+		);
 
-		Arrays.stream(e.getStackTrace()).forEach(a -> {
-			LOGGER.error(a.toString());
-		});
 		return ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 	}
 

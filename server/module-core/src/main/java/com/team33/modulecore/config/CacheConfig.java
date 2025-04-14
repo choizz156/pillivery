@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.team33.modulecore.core.cart.dto.CartVO;
+import com.team33.modulecore.core.cart.vo.CartVO;
 import com.team33.modulecore.core.cart.event.CartSavedEvent;
 
 import lombok.extern.slf4j.Slf4j;

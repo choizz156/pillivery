@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
-import com.team33.modulecore.core.cart.application.MemoryCartClient;
+import com.team33.modulecore.core.cart.application.MemoryCartService;
 import com.team33.modulecore.core.common.UserFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class CartRefreshEventHandler {
 
 	private final UserFindHelper userFindHelper;
-	private final MemoryCartClient memoryCartClient;
+	private final MemoryCartService memoryCartService;
 
 	@Async
 	@TransactionalEventListener
@@ -41,7 +41,7 @@ public class CartRefreshEventHandler {
 	}
 
 	private void refreshCart(long cartId, List<Long> orderedItemsId) {
-		memoryCartClient.refreshOrderedItem(CartKeySupplier.from(cartId), orderedItemsId);
+		memoryCartService.refreshOrderedItem(CartKeySupplier.from(cartId), orderedItemsId);
 	}
 
 }

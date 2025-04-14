@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.core.cart.dto.CartVO;
+import com.team33.modulecore.core.cart.vo.CartVO;
 import com.team33.modulecore.core.cart.domain.entity.CartEntity;
 import com.team33.modulecore.core.cart.domain.entity.CartItemEntity;
 import com.team33.modulecore.core.cart.domain.entity.NormalCartEntity;

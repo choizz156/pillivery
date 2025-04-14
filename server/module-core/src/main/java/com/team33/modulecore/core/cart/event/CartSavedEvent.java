@@ -1,6 +1,6 @@
 package com.team33.modulecore.core.cart.event;
 
-import com.team33.modulecore.core.cart.dto.CartVO;
+import com.team33.modulecore.core.cart.vo.CartVO;
 
 import lombok.Getter;
 

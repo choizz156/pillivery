@@ -1,5 +1,6 @@
 package com.team33.modulecore.core.cart.dto;
 
+import com.team33.modulecore.core.cart.vo.ItemVO;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 
 import lombok.Builder;

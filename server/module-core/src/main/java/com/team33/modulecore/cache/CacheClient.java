@@ -13,14 +13,11 @@ public class CacheClient {
 	private final CacheManager cacheManager;
 
 	public Cache getCache(String cacheName) {
-
 		Cache cache = cacheManager.getCache(cacheName);
 
 		if(cache == null) {
 			throw new RuntimeException("Cache not found: " + cacheName);
 		}
-
 		return cache;
 	}
-
 }

@@ -19,9 +19,9 @@ import com.team33.moduleapi.api.cart.mapper.CartResponseMapper;
 import com.team33.moduleapi.api.cart.mapper.CartServiceMapper;
 import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
-import com.team33.modulecore.core.cart.application.MemoryCartClient;
+import com.team33.modulecore.core.cart.application.MemoryCartService;
 import com.team33.modulecore.core.cart.application.NormalCartItemService;
-import com.team33.modulecore.core.cart.dto.NormalCartVO;
+import com.team33.modulecore.core.cart.vo.NormalCartVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,14 +36,14 @@ public class NormalCartController {
 	private final NormalCartItemService normalCartItemService;
 	private final CartServiceMapper cartServiceMapper;
 	private final CartResponseMapper cartResponseMapper;
-	private final MemoryCartClient memoryCartClient;
+	private final MemoryCartService memoryCartService;
 
 	@GetMapping("/{cartId}")
 	public SingleResponseDto<CartResponseDto> getNormalCart(
 		@PathVariable Long cartId
 	) {
-		NormalCartVO normalCart = normalCartItemService.findCart(CartKeySupplier.from(cartId), cartId);
-		CartResponseDto cartResponseDto = cartResponseMapper.cartNormalResponseDto(normalCart);
+		NormalCartVO normalCartVO = normalCartItemService.findCart(CartKeySupplier.from(cartId), cartId);
+		CartResponseDto cartResponseDto = cartResponseMapper.toNormalCartResponseDto(normalCartVO);
 
 		return new SingleResponseDto<>(cartResponseDto);
 	}
@@ -55,7 +55,7 @@ public class NormalCartController {
 		@Min(1) @RequestParam int quantity,
 		@RequestParam Long itemId
 	) {
-		memoryCartClient.addNormalItem(CartKeySupplier.from(cartId), cartServiceMapper.toItemVO(itemId), quantity);
+		memoryCartService.addNormalItem(CartKeySupplier.from(cartId), cartServiceMapper.toItemVO(itemId), quantity);
 
 		return new SingleResponseDto<>(itemId);
 	}
@@ -66,7 +66,7 @@ public class NormalCartController {
 		@PathVariable Long cartId,
 		@RequestParam Long itemId
 	) {
-		memoryCartClient.deleteCartItem(CartKeySupplier.from(cartId), itemId);
+		memoryCartService.deleteCartItem(CartKeySupplier.from(cartId), itemId, NormalCartVO.class);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -76,7 +76,7 @@ public class NormalCartController {
 		@Min(1) @RequestParam int quantity,
 		@RequestParam Long itemId
 	) {
-		memoryCartClient.changeQuantity(CartKeySupplier.from(cartId), itemId, quantity);
+		memoryCartService.changeQuantity(CartKeySupplier.from(cartId), itemId, quantity);
 	}
 }
 

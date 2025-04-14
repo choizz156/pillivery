@@ -16,7 +16,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.team33.modulecore.core.cart.dto.CartPrice;
+import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.common.BaseEntity;
 
 import lombok.Getter;

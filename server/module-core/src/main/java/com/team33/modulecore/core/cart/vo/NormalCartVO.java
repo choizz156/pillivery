@@ -1,6 +1,6 @@
-package com.team33.modulecore.core.cart.dto;
+package com.team33.modulecore.core.cart.vo;
 
-import java.util.List;
+import com.team33.modulecore.core.cart.domain.CartPrice;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,8 +13,18 @@ import lombok.ToString;
 @Getter
 public class NormalCartVO extends CartVO {
 
-	public NormalCartVO(Long id, CartPrice cartPrice, List<CartItemVO> list) {
-		super(id, cartPrice, list);
+	public NormalCartVO(Long id, CartPrice cartPrice) {
+		super(id, cartPrice);
+	}
+
+	@Override
+	public void addCartItems(CartItemVO cartItemVO) {
+		this.getCartItems().add(cartItemVO);
+		cartItemVO.addCart(this);
+
+		ItemVO item = cartItemVO.getItem();
+		int quantity = cartItemVO.getTotalQuantity();
+		super.price = super.price.addPriceInfo(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
 	public void addNormalItem(CartItemVO cartItem) {

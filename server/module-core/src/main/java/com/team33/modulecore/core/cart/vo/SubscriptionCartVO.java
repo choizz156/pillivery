@@ -1,6 +1,6 @@
-package com.team33.modulecore.core.cart.dto;
+package com.team33.modulecore.core.cart.vo;
 
-import java.util.List;
+import com.team33.modulecore.core.cart.domain.CartPrice;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,12 +11,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubscriptionCartVO extends CartVO {
 
-	public SubscriptionCartVO(Long id, CartPrice cartPrice, List<CartItemVO> list) {
-		super(id, cartPrice, list);
+	public SubscriptionCartVO(Long id, CartPrice cartPrice) {
+		super(id, cartPrice);
 	}
 
 	public static SubscriptionCartVO create() {
 		return new SubscriptionCartVO();
+	}
+
+	@Override
+	public void addCartItems(CartItemVO cartItemVO) {
+		this.getCartItems().add(cartItemVO);
+		cartItemVO.addCart(this);
+
+		ItemVO item = cartItemVO.getItem();
+		int quantity = cartItemVO.getTotalQuantity();
+		super.price = super.price.addPriceInfo(item.getRealPrice(), item.getDiscountPrice(), quantity);
 	}
 
 	public void addSubscriptionItem(CartItemVO cartItem) {

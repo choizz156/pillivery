@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.cart.domain.entity.NormalCartEntity;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
-import com.team33.modulecore.core.cart.dto.NormalCartVO;
 import com.team33.modulecore.core.cart.mapper.CartVOMapper;
+import com.team33.modulecore.core.cart.vo.NormalCartVO;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class NormalCartItemService {
 
     private final CartRepository cartRepository;
-    private final MemoryCartClient memoryCartClient;
+    private final MemoryCartService memoryCartService;
 
 	@Transactional(readOnly = true)
 	public NormalCartVO findCart(String key, long cartId) {
@@ -33,7 +33,7 @@ public class NormalCartItemService {
 
     private Optional<NormalCartVO> getCachedCart(String key) {
         try {
-            return Optional.ofNullable(memoryCartClient.getCart(key, NormalCartVO.class));
+            return memoryCartService.getCart(key, NormalCartVO.class);
         } catch (BusinessLogicException e) {
             return Optional.empty();
         }
@@ -42,7 +42,7 @@ public class NormalCartItemService {
     private NormalCartVO getCartFromDatabase(String key, long cartId) {
         NormalCartEntity normalCartEntity = findCartEntity(cartId);
         NormalCartVO normalCartVO = CartVOMapper.toNormalCartVO(normalCartEntity);
-        memoryCartClient.saveCart(key, normalCartVO);
+        memoryCartService.saveCart(key, normalCartVO);
         return normalCartVO;
     }
 

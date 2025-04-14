@@ -3,7 +3,7 @@ package com.team33.moduleapi.api.cart.mapper;
 import org.springframework.stereotype.Component;
 
 import com.team33.moduleapi.api.cart.dto.SubscriptionCartItemPostDto;
-import com.team33.modulecore.core.cart.dto.ItemVO;
+import com.team33.modulecore.core.cart.vo.ItemVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;

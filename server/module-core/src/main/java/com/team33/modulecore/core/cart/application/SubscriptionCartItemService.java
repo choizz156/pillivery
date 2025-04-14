@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.cart.domain.entity.SubscriptionCartEntity;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
-import com.team33.modulecore.core.cart.dto.SubscriptionCartVO;
 import com.team33.modulecore.core.cart.mapper.CartVOMapper;
+import com.team33.modulecore.core.cart.vo.SubscriptionCartVO;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class SubscriptionCartItemService {
 
     private final CartRepository cartRepository;
-    private final MemoryCartClient memoryCartClient;
+    private final MemoryCartService memoryCartService;
 
     @Transactional(readOnly = true)
     public SubscriptionCartVO findCart(String key, long cartId) {
@@ -33,7 +33,7 @@ public class SubscriptionCartItemService {
 
     private Optional<SubscriptionCartVO> getCachedCart(String key) {
         try {
-            return Optional.ofNullable(memoryCartClient.getCart(key, SubscriptionCartVO.class));
+            return memoryCartService.getCart(key, SubscriptionCartVO.class);
         } catch (BusinessLogicException e) {
             return Optional.empty();
         }
@@ -43,7 +43,7 @@ public class SubscriptionCartItemService {
 
 		SubscriptionCartEntity subscriptionCartEntity = findCartEntity(cartId);
         SubscriptionCartVO subscriptionCartVO = CartVOMapper.toSubscriptionCartVO(subscriptionCartEntity);
-        memoryCartClient.saveCart(key, subscriptionCartVO);
+        memoryCartService.saveCart(key, subscriptionCartVO);
 
         return subscriptionCartVO;
     }

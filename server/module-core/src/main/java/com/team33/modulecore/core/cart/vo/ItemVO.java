@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.cart.dto;
+package com.team33.modulecore.core.cart.vo;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

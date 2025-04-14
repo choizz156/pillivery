@@ -1,6 +1,6 @@
 package com.team33.moduleapi.api.item.dto;
 
-import com.team33.modulecore.core.cart.dto.ItemVO;
+import com.team33.modulecore.core.cart.vo.ItemVO;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
 
@@ -67,6 +67,11 @@ public class ItemSimpleResponseDto {
     }
 
     public static ItemSimpleResponseDto of(ItemVO item) {
+
+        if (item == null) {
+            return new ItemSimpleResponseDto();
+        }
+
         return ItemSimpleResponseDto.builder()
             .itemId(item.getId())
             .enterprise(item.getEnterprise())

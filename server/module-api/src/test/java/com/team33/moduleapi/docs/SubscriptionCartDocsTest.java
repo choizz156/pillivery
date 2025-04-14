@@ -22,9 +22,9 @@ import com.team33.moduleapi.api.cart.dto.SubscriptionCartItemPostDto;
 import com.team33.moduleapi.api.cart.mapper.CartServiceMapper;
 import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
-import com.team33.modulecore.core.cart.application.MemoryCartClient;
+import com.team33.modulecore.core.cart.application.MemoryCartService;
 import com.team33.modulecore.core.cart.application.SubscriptionCartItemService;
-import com.team33.modulecore.core.cart.dto.ItemVO;
+import com.team33.modulecore.core.cart.vo.ItemVO;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
@@ -45,7 +45,7 @@ class SubscriptionCartDocsTest extends WebRestDocsSupport {
 	@Autowired
 	private CartServiceMapper cartServiceMapper;
 	@Autowired
-	private MemoryCartClient memoryCartClient;
+	private MemoryCartService memoryCartService;
 	@Autowired
 	private CacheManager cacheManager;
 	private List<Item> items;
@@ -60,7 +60,7 @@ class SubscriptionCartDocsTest extends WebRestDocsSupport {
 		firstItem = cartServiceMapper.toItemVO(1L);
 		subscriptionCartItemService.findCart(KEY, CART_ID);
 		SubscriptionContext subscriptionContext = createSubscriptionContext();
-		memoryCartClient.addSubscriptionItem(KEY, subscriptionContext);
+		memoryCartService.addSubscriptionItem(KEY, subscriptionContext);
 	}
 
 	@Test

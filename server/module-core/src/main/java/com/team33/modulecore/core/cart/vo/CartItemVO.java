@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.cart.dto;
+package com.team33.modulecore.core.cart.vo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;

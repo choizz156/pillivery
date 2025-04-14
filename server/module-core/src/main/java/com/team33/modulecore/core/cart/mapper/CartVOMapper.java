@@ -6,29 +6,24 @@ import java.util.stream.Collectors;
 import com.team33.modulecore.core.cart.domain.entity.CartItemEntity;
 import com.team33.modulecore.core.cart.domain.entity.NormalCartEntity;
 import com.team33.modulecore.core.cart.domain.entity.SubscriptionCartEntity;
-import com.team33.modulecore.core.cart.dto.CartItemVO;
-import com.team33.modulecore.core.cart.dto.ItemVO;
-import com.team33.modulecore.core.cart.dto.NormalCartVO;
-import com.team33.modulecore.core.cart.dto.SubscriptionCartVO;
+import com.team33.modulecore.core.cart.vo.CartItemVO;
+import com.team33.modulecore.core.cart.vo.ItemVO;
+import com.team33.modulecore.core.cart.vo.NormalCartVO;
+import com.team33.modulecore.core.cart.vo.SubscriptionCartVO;
 import com.team33.modulecore.core.item.domain.entity.Item;
 
 public class CartVOMapper {
 
 	public static NormalCartVO toNormalCartVO(NormalCartEntity entity) {
 
-		return new NormalCartVO(
-			entity.getId(),
-			entity.getPrice(),
-			toCartItemVOs(entity.getCartItemEntities())
-		);
+		return new NormalCartVO(entity.getId(), entity.getPrice());
 	}
 
 	public static SubscriptionCartVO toSubscriptionCartVO(SubscriptionCartEntity subscriptionCartEntity) {
 
 		return new SubscriptionCartVO(
 			subscriptionCartEntity.getId(),
-			subscriptionCartEntity.getPrice(),
-			toCartItemVOs(subscriptionCartEntity.getCartItemEntities())
+			subscriptionCartEntity.getPrice()
 		);
 	}
 

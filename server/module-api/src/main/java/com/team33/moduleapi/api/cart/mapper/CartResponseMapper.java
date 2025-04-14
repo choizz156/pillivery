@@ -1,5 +1,6 @@
 package com.team33.moduleapi.api.cart.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,12 +9,13 @@ import org.springframework.stereotype.Component;
 import com.team33.moduleapi.api.cart.dto.CartItemResponseDto;
 import com.team33.moduleapi.api.cart.dto.CartResponseDto;
 import com.team33.moduleapi.api.item.dto.ItemSimpleResponseDto;
-import com.team33.modulecore.core.cart.dto.NormalCartVO;
-import com.team33.modulecore.core.cart.dto.SubscriptionCartVO;
+import com.team33.modulecore.core.cart.vo.NormalCartVO;
+import com.team33.modulecore.core.cart.vo.SubscriptionCartVO;
+
 @Component
 public class CartResponseMapper {
 
-	public CartResponseDto cartNormalResponseDto(NormalCartVO normalCart) {
+	public CartResponseDto toNormalCartResponseDto(NormalCartVO normalCart) {
 
 		return CartResponseDto.builder()
 			.cartId(normalCart.getId())
@@ -26,6 +28,7 @@ public class CartResponseMapper {
 	}
 
 	public CartResponseDto toCartSubscriptionResponseDto(SubscriptionCartVO subscriptionCart) {
+
 		return CartResponseDto.builder()
 			.cartId(subscriptionCart.getId())
 			.totalDiscountPrice(subscriptionCart.getTotalDiscountPrice())
@@ -38,6 +41,10 @@ public class CartResponseMapper {
 	}
 
 	private List<CartItemResponseDto> toNormalCartItemResponse(NormalCartVO normalCart) {
+
+		if (normalCart.getCartItems().isEmpty()) {
+			return new ArrayList<>();
+		}
 		return normalCart.getCartItems().stream()
 			.map(normalCartItem ->
 				CartItemResponseDto.builder()
@@ -49,6 +56,7 @@ public class CartResponseMapper {
 	}
 
 	private List<CartItemResponseDto> toSubscriptionCartItemResponse(SubscriptionCartVO subscriptionCart) {
+
 		return subscriptionCart.getCartItems().stream()
 			.map(subscriptionCartItem ->
 				CartItemResponseDto.builder()

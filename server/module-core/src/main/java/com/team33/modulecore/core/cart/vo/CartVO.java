@@ -1,8 +1,9 @@
-package com.team33.modulecore.core.cart.dto;
+package com.team33.modulecore.core.cart.vo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import com.team33.modulecore.core.cart.domain.CartPrice;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,15 +14,16 @@ import lombok.NoArgsConstructor;
 @Getter
 public abstract class CartVO{
 
-	CartPrice price = new CartPrice(0, 0, 0);
-	List<CartItemVO> cartItems = new ArrayList<>();
 	private Long id;
+	protected CartPrice price = new CartPrice(0, 0, 0);
+	protected List<CartItemVO> cartItems = new ArrayList<>();
 
-	public CartVO(Long id, CartPrice cartPrice, List<CartItemVO> list) {
+	public CartVO(Long id, CartPrice cartPrice) {
 		this.id = id;
 		this.price = cartPrice;
-		this.cartItems = list;
 	}
+
+	public abstract void addCartItems(CartItemVO cartItemVO);
 
 	public void removeCartItem(CartItemVO removedItem) {
 		this.cartItems.remove(removedItem);
@@ -55,9 +57,4 @@ public abstract class CartVO{
 		return this.price.getTotalPrice() - this.price.getTotalDiscountPrice();
 
 	}
-
-	public List<CartItemVO> getCartItems() {
-		return Collections.unmodifiableList(this.cartItems);
-	}
-
 }
