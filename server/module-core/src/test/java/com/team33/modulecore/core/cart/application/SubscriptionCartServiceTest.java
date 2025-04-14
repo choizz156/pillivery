@@ -3,8 +3,6 @@ package com.team33.modulecore.core.cart.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,40 +14,50 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.team33.modulecore.FixtureMonkeyFactory;
+import com.team33.modulecore.cache.CacheClient;
 import com.team33.modulecore.config.CacheConfig;
-import com.team33.modulecore.core.cart.domain.entity.SubscriptionCartEntity;
+import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
-import com.team33.modulecore.core.cart.dto.SubscriptionCartVO;
+import com.team33.modulecore.core.cart.vo.CartItemVO;
+import com.team33.modulecore.core.cart.vo.ItemVO;
+import com.team33.modulecore.core.cart.vo.SubscriptionCartVO;
+import com.team33.modulecore.core.order.domain.SubscriptionInfo;
+import com.team33.modulecore.exception.BusinessLogicException;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")
-@Transactional
 @EnableAutoConfiguration
-@EnableJpaRepositories("com.team33.modulecore.core.cart")
+@EnableJpaRepositories("com.team33.modulecore.core")
 @EntityScan("com.team33.modulecore.core")
-@SpringBootTest(classes = {CacheConfig.class, CacheManager.class, MemoryCartClient.class, CartRepository.class})
+@SpringBootTest(classes = {
+    CacheConfig.class,
+    CacheClient.class,
+    CartCacheManager.class,
+    MemoryCartService.class,
+    CartValidator.class,
+    CartRepository.class,
+    SubscriptionCartItemService.class
+})
 class SubscriptionCartServiceTest {
 
-    private static final String KEY = "mem:cartId : 1";
-    private SubscriptionCartVO subscriptionCart;
-    private SubscriptionCartEntity subscriptionCartEntity;
+    private static final String CACHE_KEY = "mem:cart:1";
 
     @Autowired
     private CartRepository cartRepository;
-
     @Autowired
-    private MemoryCartClient memoryCartClient;
-
+    private MemoryCartService memoryCartClient;
     @Autowired
     private CacheManager cacheManager;
 
+    @Autowired
+    private SubscriptionCartItemService subscriptionCartItemService;
+
+    private SubscriptionCartVO subscriptionCartVO;
+
     @BeforeEach
     void setUp() {
-        subscriptionCartEntity = cartRepository.save(SubscriptionCartEntity.create());
+        subscriptionCartVO = new SubscriptionCartVO(1L, CartPrice.of(0, 0, 0));
+        cacheManager.getCache("CARTS").clear();
     }
 
     @AfterEach
@@ -58,42 +66,63 @@ class SubscriptionCartServiceTest {
         cacheManager.getCache("CARTS").clear();
     }
 
-    @DisplayName("캐시에 장바구니가 없으면 db에서 조회한 후 캐시에 저장한다.")
+    @DisplayName("캐시에 없는 장바구니를 DB에서 조회하여 캐시에 저장한다")
     @Test
-    void 장바구니_조회1() throws Exception {
-        //given
-        SubscriptionCartItemService subscriptionCartItemService =
-            new SubscriptionCartItemService(cartRepository, memoryCartClient);
-        //when
-        subscriptionCartItemService.findCart(KEY, subscriptionCartEntity.getId());
+    void test1() {
+        // when
+        카트_생성();
+        SubscriptionCartVO result = subscriptionCartItemService.findCart(CACHE_KEY, subscriptionCartVO.getId());
 
-        //then
-        assertThat(memoryCartClient.getCart(KEY, SubscriptionCartVO.class)).isNotNull();
+        // then
+        assertThat(result)
+            .isNotNull()
+            .extracting(SubscriptionCartVO::getId)
+            .isEqualTo(subscriptionCartVO.getId());
+
+        assertThat(memoryCartClient.getCart(CACHE_KEY, SubscriptionCartVO.class)).isPresent();
     }
 
-    @DisplayName("캐시에 장바구니가 있으면 조회한 캐시에서 조회한다.")
+    @DisplayName("캐시에 있는 장바구니를 DB 조회없이 반환한다")
     @Test
-    void 장바구니_조회2() throws Exception {
-        //given
-        subscriptionCart = FixtureMonkeyFactory.get().giveMeBuilder(SubscriptionCartVO.class)
-            .set("id", 1L)
-            .set("price", null)
-            .set("cartItems", new ArrayList<>())
-            .sample();
-            
-        memoryCartClient.saveCart(KEY, subscriptionCart);
-
-        CartRepository cartRepository = mock(CartRepository.class);
-        when(cartRepository.findSubscriptionCartById(1L)).thenReturn(null);
-
-        SubscriptionCartItemService subscriptionCartItemService =
-            new SubscriptionCartItemService(cartRepository, memoryCartClient);
+    void test2() {
+        // given
+        CartRepository mockRepository = mock(CartRepository.class);
+        SubscriptionCartItemService serviceWithMock = new SubscriptionCartItemService(mockRepository, memoryCartClient);
+        memoryCartClient.saveCart(CACHE_KEY, subscriptionCartVO);
 
         // when
-        SubscriptionCartVO result = subscriptionCartItemService.findCart(KEY, subscriptionCartEntity.getId());
+        SubscriptionCartVO result = serviceWithMock.findCart(CACHE_KEY, subscriptionCartVO.getId());
 
-        //then
-        assertThat(result).isEqualTo(subscriptionCart);
-        verify(cartRepository, times(0)).findSubscriptionCartById(1L);
+        // then
+        assertThat(result)
+            .isNotNull()
+            .extracting(SubscriptionCartVO::getId)
+            .isEqualTo(subscriptionCartVO.getId());
+
+        verify(mockRepository, never()).findSubscriptionCartById(any());
+    }
+
+    @DisplayName("존재하지 않는 장바구니 조회시 예외를 발생시킨다")
+    @Test
+    void test3() {
+        assertThatThrownBy(() -> subscriptionCartItemService.findCart(CACHE_KEY, 999L))
+            .isInstanceOf(BusinessLogicException.class);
+    }
+
+    private ItemVO createTestItem() {
+        return ItemVO.builder()
+            .id(1L)
+            .productName("Test Item")
+            .originPrice(10000)
+            .discountRate(0.0)
+            .realPrice(10000)
+            .discountPrice(0)
+            .build();
+    }
+
+    private void 카트_생성() {
+        CartItemVO cartItemVO = CartItemVO.of(createTestItem(), 1, SubscriptionInfo.of(true,60));
+        subscriptionCartVO.addCartItems(cartItemVO);
+        memoryCartClient.saveCart(CACHE_KEY, subscriptionCartVO);
     }
 }

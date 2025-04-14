@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -22,7 +23,7 @@ import com.team33.modulecore.core.user.domain.UserStatus;
 import com.team33.modulecore.core.user.domain.entity.User;
 import com.team33.modulecore.core.user.dto.UserServicePostDto;
 
-// @Disabled("로컬에서만 진행되는 테스트")
+@Disabled("로컬에서만 진행되는 테스트")
 @Commit
 @ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

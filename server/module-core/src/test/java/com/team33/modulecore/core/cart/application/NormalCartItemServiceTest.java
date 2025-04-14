@@ -3,8 +3,6 @@ package com.team33.modulecore.core.cart.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,82 +14,119 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.team33.modulecore.FixtureMonkeyFactory;
+import com.team33.modulecore.cache.CacheClient;
 import com.team33.modulecore.config.CacheConfig;
-import com.team33.modulecore.core.cart.domain.entity.NormalCartEntity;
+import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
-import com.team33.modulecore.core.cart.dto.NormalCartVO;
+import com.team33.modulecore.core.cart.vo.CartItemVO;
+import com.team33.modulecore.core.cart.vo.ItemVO;
+import com.team33.modulecore.core.cart.vo.NormalCartVO;
+import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.exception.BusinessLogicException;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @ActiveProfiles("test")
 @EnableAutoConfiguration
-@EnableJpaRepositories("com.team33.modulecore.core.cart")
+@EnableJpaRepositories("com.team33.modulecore.core")
 @EntityScan("com.team33.modulecore.core")
-@Transactional
-@SpringBootTest(classes = {CacheConfig.class, CacheManager.class, MemoryCartClient.class, CartRepository.class})
+@SpringBootTest(classes = {
+	CacheConfig.class,
+	CacheClient.class,
+	CartCacheManager.class,
+	MemoryCartService.class,
+	CartValidator.class,
+	CartRepository.class,
+	NormalCartItemService.class
+})
 class NormalCartItemServiceTest {
 
-    private static final String CART = "cart";
-    private static final String KEY = "mem:cartId : 1";
-    private NormalCartVO normalCart;
-    private NormalCartEntity normalCartEntity;
+	private static final String CACHE_KEY = "mem:cart:1";
 
-    @Autowired
-    private CartRepository cartRepository;
+	@Autowired
+	private CartRepository cartRepository;
+	@Autowired
+	private MemoryCartService memoryCartClient;
+	@Autowired
+	private CacheManager cacheManager;
+	@Autowired
+	private ItemCommandRepository itemCommandRepository;
+	@Autowired
+	private NormalCartItemService normalCartItemService;
 
-    @Autowired
-    private MemoryCartClient memoryCartClient;
+	private NormalCartVO normalCartVO;
+	private ItemVO itemVO;
 
-    @Autowired
-    private CacheManager cacheManager;
+	@BeforeEach
+	void setUp() {
+		itemVO = createTestItem();
+		normalCartVO = new NormalCartVO(1L, CartPrice.of(0,0,0));
 
-    @BeforeEach
-    void setUp() {
-        normalCartEntity = cartRepository.save(NormalCartEntity.create());
-    }
+		cacheManager.getCache("CARTS").clear();
+	}
 
-    @AfterEach
-    void tearDown() {
-        cartRepository.deleteAll();
-        cacheManager.getCache("CARTS").clear();
-    }
+	@AfterEach
+	void tearDown() {
+		cartRepository.deleteAll();
+		cacheManager.getCache("CARTS").clear();
+	}
 
-    @DisplayName("캐시에 장바구니가 없으면 db에서 조회한 후 캐시에 저장한다.")
-    @Test
-    void 장바구니_조회1() throws Exception {
-        //given//when
-        NormalCartItemService normalCartItemService = new NormalCartItemService(cartRepository, memoryCartClient);
-        NormalCartVO result = normalCartItemService.findCart(KEY, normalCartEntity.getId());
+	@DisplayName("캐시에 없는 장바구니를 DB에서 조회하여 캐시에 저장한다")
+	@Test
+	void test1() {
+		// when
+		카트_생성();
+		NormalCartVO result = normalCartItemService.findCart(CACHE_KEY, normalCartVO.getId());
 
-        //then
-        assertThat(memoryCartClient.getCart(KEY,NormalCartVO.class)).isNotNull();
-    }
+		// then
+		assertThat(result)
+			.isNotNull()
+			.extracting(NormalCartVO::getId)
+			.isEqualTo(normalCartVO.getId());
 
-    @DisplayName("캐시에 장바구니가 있으면 조회한 캐시에서 조회한다.")
-    @Test
-    void 장바구니_조회2() throws Exception {
-        //given
-        normalCart = FixtureMonkeyFactory.get().giveMeBuilder(NormalCartVO.class)
-            .set("id", 1L)
-            .set("price", null)
-            .set("cartItems", new ArrayList<>())
-            .sample();
+		assertThat(memoryCartClient.getCart(CACHE_KEY, NormalCartVO.class)).isPresent();
+	}
 
-        memoryCartClient.saveCart(KEY, normalCart);
+	@DisplayName("캐시에 있는 장바구니를 DB 조회없이 반환한다")
+	@Test
+	void test2() {
+		// given
+		CartRepository mockRepository = mock(CartRepository.class);
+		NormalCartItemService serviceWithMock = new NormalCartItemService(mockRepository, memoryCartClient);
+		memoryCartClient.saveCart(CACHE_KEY, normalCartVO);
 
-        CartRepository cartRepository = mock(CartRepository.class);
-        when(cartRepository.findNormalCartById(1L)).thenReturn(null);
+		// when
+		NormalCartVO result = serviceWithMock.findCart(CACHE_KEY, normalCartVO.getId());
 
-        NormalCartItemService normalCartItemService = new NormalCartItemService(cartRepository, memoryCartClient);
+		// then
+		assertThat(result)
+			.isNotNull()
+			.extracting(NormalCartVO::getId)
+			.isEqualTo(normalCartVO.getId());
 
-        // when
-        NormalCartVO result = normalCartItemService.findCart(KEY, normalCartEntity.getId());
+		verify(mockRepository, never()).findNormalCartById(any());
+	}
 
-        //then
-        assertThat(result).isEqualTo(normalCart);
-        verify(cartRepository, times(0)).findNormalCartById(1L);
-    }
+	@DisplayName("존재하지 않는 장바구니 조회시 예외를 발생시킨다")
+	@Test
+	void test3() {
+		assertThatThrownBy(() -> normalCartItemService.findCart(CACHE_KEY, 999L))
+			.isInstanceOf(BusinessLogicException.class);
+	}
+
+	private ItemVO createTestItem() {
+		return ItemVO.builder()
+		    .id(1L)
+		    .productName("Test Item")
+		    .originPrice(10000)
+		    .discountRate(0.0)
+		    .realPrice(10000)
+		    .discountPrice(0)
+		    .build();
+	}
+
+	private void 카트_생성() {
+		CartItemVO cartItemVO = CartItemVO.of(itemVO, 1);
+		normalCartVO.addCartItems(cartItemVO);
+		memoryCartClient.saveCart(CACHE_KEY, normalCartVO);
+	}
 }
