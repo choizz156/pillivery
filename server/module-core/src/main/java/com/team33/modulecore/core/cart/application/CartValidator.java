@@ -28,21 +28,21 @@ public class CartValidator {
 	}
 
 	public void checkDuplication(Long itemId, CartVO cartVO) {
-		List<CartItemVO> cartItems = cartVO.getCartItems();
+		List<CartItemVO> cartItems = List.copyOf(cartVO.getCartItems());
 
 		if (cartItems.isEmpty()) {
 			return;
 		}
 
-		boolean exists = cartItems.stream()
+		cartItems.stream()
 			.filter(Objects::nonNull)
 			.map(CartItemVO::getItem)
 			.filter(Objects::nonNull)
 			.map(ItemVO::getId)
-			.anyMatch(itemId::equals);
-
-		if (exists) {
-			throw new IllegalArgumentException("이미 존재하는 장바구니입니다.");
-		}
+			.filter(itemId::equals)
+			.findAny()
+			.ifPresent(id -> {
+				throw new IllegalArgumentException("이미 존재하는 장바구니입니다.");
+			});
 	}
 }
