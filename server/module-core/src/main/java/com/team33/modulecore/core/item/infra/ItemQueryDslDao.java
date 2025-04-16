@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
@@ -104,7 +105,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			.fetch();
 
 		if (isEmpty(fetch)) {
-			return Page.empty();
+			return Page.empty(Pageable.ofSize(1));
 		}
 
 		JPAQuery<Long> count = queryFactory
@@ -141,7 +142,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			.fetch();
 
 		if (isEmpty(fetch)) {
-			return Page.empty();
+			return Page.empty(Pageable.ofSize(1));
 		}
 
 		JPAQuery<Long> count = queryFactory
@@ -168,7 +169,6 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		ItemPage pageDto
 	) {
 
-		String HINT = " FORCE INDEX (idx_item_real_price)";
 		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
 
@@ -188,7 +188,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			.fetch();
 
 		if (isEmpty(fetch)) {
-			return Page.empty();
+			return Page.empty(Pageable.ofSize(1));
 		}
 
 		JPAQuery<Long> count = queryFactory
@@ -225,7 +225,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			.fetch();
 
 		if (isEmpty(fetch)) {
-			return Page.empty();
+			return Page.empty(Pageable.ofSize(1));
 		}
 
 		JPAQuery<Long> count = queryFactory

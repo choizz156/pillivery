@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.response.MultiResponseDto;
-import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.moduleapi.api.item.dto.ItemDetailResponseDto;
 import com.team33.moduleapi.api.item.dto.ItemMainResponseDto;
 import com.team33.moduleapi.api.item.mapper.ItemQueryServiceMapper;
+import com.team33.moduleapi.response.MultiResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.application.ItemQueryService;
 import com.team33.modulecore.core.item.domain.ItemSortOption;
@@ -49,6 +49,7 @@ public class ItemQueryController {
 	public SingleResponseDto<ItemDetailResponseDto> getItem(
 		@NotNull @PathVariable long itemId
 	) {
+
 		Item item = itemQueryService.findItemById(itemId);
 
 		return new SingleResponseDto<>(ItemDetailResponseDto.of(item));
@@ -63,6 +64,7 @@ public class ItemQueryController {
 		@RequestParam(defaultValue = "8") int size,
 		@RequestParam(defaultValue = "SALES") ItemSortOption sort
 	) {
+
 		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
 		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(page, size, sort);
 
@@ -107,6 +109,7 @@ public class ItemQueryController {
 		@RequestParam(defaultValue = "8") int size,
 		@RequestParam(defaultValue = "SALES") ItemSortOption sort
 	) {
+
 		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
 		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(page, size, sort);
 
