@@ -37,6 +37,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 	@Override
 	public Item findById(long id) {
+
 		Item item = queryFactory
 			.selectFrom(QItem.item)
 			.where(QItem.item.id.eq(id))
@@ -51,6 +52,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 	@Override
 	public List<ItemQueryDto> findItemsWithSalesMain() {
+
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.from(item)
 			.orderBy(item.statistics.sales.desc())
@@ -66,6 +68,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 	@Override
 	public List<ItemQueryDto> findItemsWithDiscountRateMain() {
+
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.from(item)
 			.limit(9)
@@ -85,6 +88,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
+
 		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
 
@@ -120,6 +124,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 	@Override
 	public Page<ItemQueryDto> findItemsOnSale(String keyword, PriceFilter priceFilter, ItemPage pageDto) {
+
 		BooleanExpression discountRateGT0 = discountRateGt();
 		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
@@ -162,6 +167,8 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		PriceFilter priceFilter,
 		ItemPage pageDto
 	) {
+
+		String HINT = " FORCE INDEX (idx_item_real_price)";
 		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
 
@@ -203,6 +210,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 	@Override
 	public Page<ItemQueryDto> findByBrand(String brand, ItemPage pageDto, PriceFilter priceFilter) {
+
 		BooleanExpression keywordContainsEnterprise = keywordContainsEnterprise(brand);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
 
@@ -236,18 +244,22 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	private static BooleanExpression discountRateGt() {
+
 		return item.information.price.discountRate.gt(0D);
 	}
 
 	private boolean isEmpty(List<ItemQueryDto> fetch) {
+
 		return fetch.isEmpty();
 	}
 
 	private BooleanExpression keywordContainsEnterprise(String keyword) {
+
 		return StringUtils.isNullOrEmpty(keyword) ? null : item.information.enterprise.contains(keyword);
 	}
 
 	private BooleanExpression priceBetween(PriceFilter priceFilter) {
+
 		if (priceFilter.isSumZero()) {
 			return null;
 		}
@@ -265,16 +277,19 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	}
 
 	private BooleanExpression productNameContainsKeyword(String keyword) {
+
 		return StringUtils.isNullOrEmpty(keyword)
 			? null
 			: item.information.productName.contains(keyword);
 	}
 
 	private OrderSpecifier<? extends Number> getItemSort(ItemSortOption itemSortOption) {
+
 		return itemSortOption.getSort();
 	}
 
 	private JPAQuery<ItemQueryDto> selectItemQueryDto() {
+
 		return queryFactory
 			.select(
 				new QItemQueryDto(

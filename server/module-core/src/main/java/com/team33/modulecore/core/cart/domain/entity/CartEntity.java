@@ -25,20 +25,21 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "cart")
+@Table(name = "cart", indexes = {
+		@javax.persistence.Index(name = "idx_cart_created_at", columnList = "created_at")
+})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
 public abstract class CartEntity extends BaseEntity {
 
-	@Embedded
-	CartPrice price = new CartPrice(0, 0, 0);
-
-	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-	List<CartItemEntity> cartItemEntities = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_id")
 	private Long id;
+	@Embedded
+	CartPrice price = new CartPrice(0, 0, 0);
+	@OneToMany(mappedBy = "cartEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+	List<CartItemEntity> cartItemEntities = new ArrayList<>();
 
 	public CartEntity(Long id, CartPrice price, List<CartItemEntity> cartItemEntities) {
 		this.id = id;

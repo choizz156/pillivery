@@ -3,6 +3,7 @@ package com.team33.modulecore.core.item.domain;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AccessLevel;
@@ -16,9 +17,11 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Price {
 
-	private int originPrice;   
+	private int originPrice;
+	@Column(name = "real_price")
 	private int realPrice;     
-	private int discountPrice; 
+	private int discountPrice;
+	@Column(name = "discount_rate")
 	private Double discountRate; 
 
 

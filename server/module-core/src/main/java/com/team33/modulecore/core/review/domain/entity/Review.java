@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 import com.team33.modulecore.core.common.BaseEntity;
 import com.team33.modulecore.core.review.domain.ReviewContext;
@@ -21,6 +23,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "review", indexes = {
+		@Index(name = "idx_review_item_id", columnList = "item_id"),
+		@Index(name = "idx_review_created_at", columnList = "created_at")
+})
 @Entity
 public class Review extends BaseEntity {
 
@@ -35,6 +41,7 @@ public class Review extends BaseEntity {
 
 	private double star;
 
+	@Column(name = "item_id")
 	private Long itemId;
 
 	private Long userId;
@@ -44,13 +51,12 @@ public class Review extends BaseEntity {
 
 	@Builder
 	private Review(
-		String content,
-		String displayName,
-		double star,
-		Long userId,
-		Long itemId,
-		ReviewStatus reviewStatus
-	) {
+			String content,
+			String displayName,
+			double star,
+			Long userId,
+			Long itemId,
+			ReviewStatus reviewStatus) {
 		this.content = content;
 		this.displayName = displayName;
 		this.star = star;
@@ -61,13 +67,13 @@ public class Review extends BaseEntity {
 
 	public static Review create(ReviewContext context) {
 		return Review.builder()
-			.content(context.getContent())
-			.star(context.getStar())
-			.itemId(context.getItemId())
-			.userId(context.getUserId())
-			.displayName(context.getDisplayName())
-			.reviewStatus(ReviewStatus.ACTIVE)
-			.build();
+				.content(context.getContent())
+				.star(context.getStar())
+				.itemId(context.getItemId())
+				.userId(context.getUserId())
+				.displayName(context.getDisplayName())
+				.reviewStatus(ReviewStatus.ACTIVE)
+				.build();
 	}
 
 	public Review update(ReviewContext context) {

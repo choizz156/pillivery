@@ -38,7 +38,7 @@ import lombok.NoArgsConstructor;
 @Table(
 	name = "item",
 	indexes = {
-		@Index(name = "idx_product_name", columnList = "product_name"),
+		@Index(name = "idx_item_discount_rate_price", columnList = "discount_rate, real_price"),
 		@Index(name = "idx_enterprise", columnList = "enterprise")
 	}
 )

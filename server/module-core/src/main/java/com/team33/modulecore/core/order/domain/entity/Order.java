@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -34,7 +35,9 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
-@Table(name = "orders")
+@Table(name = "orders", indexes = {
+		@Index(name = "idx_orders_created_at", columnList = "created_at")
+})
 @Entity
 public class Order extends BaseEntity {
 
