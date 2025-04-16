@@ -120,15 +120,15 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 
 	@Override
 	public Page<ItemQueryDto> findItemsOnSale(String keyword, PriceFilter priceFilter, ItemPage pageDto) {
-		BooleanExpression discountRateEqNot0 = discountRateEqNot0();
+		BooleanExpression discountRateGT0 = discountRateGt();
 		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
 
 		List<ItemQueryDto> fetch = selectItemQueryDto()
 			.where(
-				discountRateEqNot0,
-				productNameContainsKeyword,
-				priceBetween
+				discountRateGT0,
+				priceBetween,
+				productNameContainsKeyword
 			)
 			.limit(pageDto.getSize())
 			.offset(pageDto.getOffset())
@@ -143,7 +143,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			.select(item.count())
 			.from(item)
 			.where(
-				discountRateEqNot0,
+				discountRateGT0,
 				productNameContainsKeyword,
 				priceBetween
 			);
@@ -155,10 +155,6 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 		);
 	}
 
-	private static BooleanExpression discountRateEqNot0() {
-		return item.information.price.discountRate.eq(0D).not();
-	}
-
 	@Override
 	public Page<ItemQueryDto> findItemsByCategory(
 		CategoryName categoryName,
@@ -168,7 +164,7 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 	) {
 		BooleanExpression productNameContainsKeyword = productNameContainsKeyword(keyword);
 		BooleanExpression priceBetween = priceBetween(priceFilter);
-		
+
 		String itemCategory = "itemCategory";
 		BooleanExpression categoryNameEq = Expressions.enumPath(CategoryName.class, itemCategory).eq(categoryName);
 
@@ -237,6 +233,10 @@ public class ItemQueryDslDao implements ItemQueryRepository {
 			PageRequest.of(pageDto.getPage() - 1, pageDto.getSize()),
 			count::fetchOne
 		);
+	}
+
+	private static BooleanExpression discountRateGt() {
+		return item.information.price.discountRate.gt(0D);
 	}
 
 	private boolean isEmpty(List<ItemQueryDto> fetch) {
