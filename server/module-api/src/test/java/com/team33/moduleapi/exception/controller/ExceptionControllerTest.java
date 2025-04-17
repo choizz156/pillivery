@@ -3,31 +3,14 @@ package com.team33.moduleapi.exception.controller;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.team33.moduleapi.ApiTest;
 
-import io.restassured.RestAssured;
-
-@ActiveProfiles("test")
 class ExceptionControllerTest extends ApiTest {
-
-	@LocalServerPort
-	private int port;
-
-	@BeforeEach
-	void beforeEach() throws Exception {
-
-		if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
-			RestAssured.port = port;
-		}
-	}
 
 	@DisplayName("MethodArgumentNotValidException 처리 테스트")
 	@Test
