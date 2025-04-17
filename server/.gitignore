@@ -208,7 +208,6 @@ Icon
 # .idea/modules
 # *.iml
 # *.ipr
-resources/application-local.yml
 # CMake
 cmake-build-*/
 
@@ -369,7 +368,7 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,macos,gradle
 
 application-auth.yml
-application-local.yml
+
 application-quartz.yml
 
 
