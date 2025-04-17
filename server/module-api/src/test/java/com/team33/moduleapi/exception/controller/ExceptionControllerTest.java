@@ -50,11 +50,12 @@ class ExceptionControllerTest extends ApiTest {
 			.body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
 			.body("message", anyOf(
 					containsString("constraintTest.id: 1 이상이어야 합니다")),
-					containsString("must be greater than or equal to 1")
+					containsString("constraintTest.id: must be greater than or equal to 1")
 			)
 			.body("customFieldErrors", hasSize(1))
 			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.field",
-				containsString("constraintTest.id"))
+				containsString("constraintTest.id")
+			)
 			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.rejectedValue", nullValue())
 			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.reason", anyOf(
 				containsString("1 이상이어야 합니다"),
