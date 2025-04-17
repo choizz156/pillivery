@@ -20,13 +20,18 @@ public class ProfileController {
     @GetMapping("/profile")
     public String profile() {
         List<String> activeProfiles = List.of(environment.getActiveProfiles());
-        List<String> prod = List.of("", "real1", "real2");
+        List<String> prod = List.of("", "prod1", "prod2");
         String defaultProfile = activeProfiles.isEmpty() ? "local" : activeProfiles.get(0);
 
         LOGGER.info("Profile: {}", defaultProfile);
         return activeProfiles.stream()
-            .filter(prod::contains)
-            .findAny()
-            .orElse(defaultProfile);
+                .filter(prod::contains)
+                .findAny()
+                .orElse(defaultProfile);
+    }
+
+    @GetMapping("/health")
+    public String health() {
+        return "OK";
     }
 }

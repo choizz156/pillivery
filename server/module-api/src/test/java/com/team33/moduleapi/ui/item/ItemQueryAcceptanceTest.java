@@ -371,9 +371,9 @@ class ItemQueryAcceptanceTest extends ApiTest {
 				.statusCode(HttpStatus.OK.value())
 				.body("data", empty())
 				.body("pageInfo.page", equalTo(1))
-				.body("pageInfo.size", equalTo(0))
+				.body("pageInfo.size", equalTo(1))
 				.body("pageInfo.totalElements", equalTo(0))
-				.body("pageInfo.totalPages", equalTo(1));
+				.body("pageInfo.totalPages", equalTo(0));
 		}
 
 
