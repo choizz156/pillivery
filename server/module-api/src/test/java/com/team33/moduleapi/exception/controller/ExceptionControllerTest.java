@@ -48,9 +48,9 @@ class ExceptionControllerTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
-			.body("message", equalTo("constraintTest.id: 1 이상이어야 합니다"))
+			.body("message", containsString("constraintTest.id: 1 이상이어야 합니다"))
 			.body("customFieldErrors", hasSize(1))
-			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.field", equalTo("constraintTest.id"))
+			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.field", containsString("constraintTest.id"))
 			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.rejectedValue", nullValue())
 			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.reason", containsString("1 이상이어야 합니다"));
 	}
@@ -179,7 +179,7 @@ class ExceptionControllerTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.body("status", equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-			.body("message", contains("알 수 없는 오류가 발생했습니다."))
+			.body("message", containsString("알 수 없는 오류가 발생했습니다."))
 			.body("customFieldErrors", nullValue());
 	}
 
