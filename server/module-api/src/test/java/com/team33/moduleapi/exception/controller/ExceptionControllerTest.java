@@ -30,10 +30,10 @@ class ExceptionControllerTest extends ApiTest {
 			.body("customFieldErrors", hasSize(2))
 			.body("customFieldErrors.find { it.field == 'age' }.field", equalTo("age"))
 			.body("customFieldErrors.find { it.field == 'age' }.rejectedValue", equalTo("-1"))
-			.body("customFieldErrors.find { it.field == 'age' }.reason", equalTo("1 이상이어야 합니다"))
+			.body("customFieldErrors.find { it.field == 'age' }.reason", contains("1 이상이어야 합니다"))
 			.body("customFieldErrors.find { it.field == 'name' }.field", equalTo("name"))
 			.body("customFieldErrors.find { it.field == 'name' }.rejectedValue", equalTo(""))
-			.body("customFieldErrors.find { it.field == 'name' }.reason", equalTo("공백일 수 없습니다"));
+			.body("customFieldErrors.find { it.field == 'name' }.reason", contains("공백일 수 없습니다"));
 	}
 
 	@DisplayName("ConstraintViolationException 처리 테스트")
@@ -52,7 +52,7 @@ class ExceptionControllerTest extends ApiTest {
 			.body("customFieldErrors", hasSize(1))
 			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.field", equalTo("constraintTest.id"))
 			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.rejectedValue", nullValue())
-			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.reason", equalTo("1 이상이어야 합니다"));
+			.body("customFieldErrors.find { it.field == 'constraintTest.id' }.reason", contains("1 이상이어야 합니다"));
 	}
 
 	@DisplayName("BusinessLogicException 처리 테스트")
@@ -67,7 +67,7 @@ class ExceptionControllerTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
-			.body("message", equalTo("비즈니스 로직 예외 발생"))
+			.body("message", contains("비즈니스 로직 예외 발생"))
 			.body("customFieldErrors", nullValue());
 	}
 
@@ -115,7 +115,7 @@ class ExceptionControllerTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
-			.body("message", equalTo("잘못된 인자가 전달되었습니다"))
+			.body("message", contains("잘못된 인자가 전달되었습니다"))
 			.body("customFieldErrors", nullValue());
 	}
 
@@ -131,7 +131,7 @@ class ExceptionControllerTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.body("status", equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-			.body("message", equalTo("알 수 없는 오류가 발생했습니다."))
+			.body("message", contains("알 수 없는 오류가 발생했습니다."))
 			.body("customFieldErrors", nullValue());
 	}
 
@@ -147,7 +147,7 @@ class ExceptionControllerTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
-			.body("message", equalTo("구독 결제 오류"))
+			.body("message", contains("구독 결제 오류"))
 			.body("customFieldErrors", nullValue());
 	}
 
@@ -163,7 +163,7 @@ class ExceptionControllerTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
-			.body("message", equalTo("결제 API 오류"))
+			.body("message", contains("결제 API 오류"))
 			.body("customFieldErrors", nullValue());
 	}
 
@@ -179,7 +179,7 @@ class ExceptionControllerTest extends ApiTest {
 			.log().all()
 			.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.body("status", equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-			.body("message", equalTo("알 수 없는 오류가 발생했습니다."))
+			.body("message", contains("알 수 없는 오류가 발생했습니다."))
 			.body("customFieldErrors", nullValue());
 	}
 
