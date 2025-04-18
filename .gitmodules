@@ -1,9 +1,6 @@
-[submodule "server/module-quartz/src/main/resources/module-quartz/src/main/resources/config"]
-	path = server/module-quartz/src/main/resources/module-quartz/src/main/resources/config
+[submodule "module-api/src/main/resources/config"]
+	path = module-api/src/main/resources/config
 	url = https://github.com/choizz156/pillivery-config.git
-[submodule "server/module-quartz/src/main/resources/config"]
-	path = server/module-quartz/src/main/resources/config
-	url = https://github.com/choizz156/pillivery-config.git
-[submodule "server/module-api/src/main/resources/config"]
-	path = server/module-api/src/main/resources/config
+[submodule "module-batch/src/main/resources/config"]
+	path = module-batch/src/main/resources/config
 	url = https://github.com/choizz156/pillivery-config.git
