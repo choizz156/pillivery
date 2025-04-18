@@ -3,12 +3,12 @@ spring:
     activate:
       on-profile: test
   
-#  data:
-#    redis:
-#      port: 6379
-#      host: localhost
-#      repositories:
-#        enabled: false
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      repositories:
+        enabled: false
 
   jpa:
     properties:
@@ -26,14 +26,6 @@ spring:
       username: sa
       password:
       driver-class-name: org.h2.Driver
-
-  quartz:
-    properties:
-      org:
-        quartz:
-          scheduler-name: QRTZ_
-          threadPool:
-            threadCount: 5
 
 
   security:
