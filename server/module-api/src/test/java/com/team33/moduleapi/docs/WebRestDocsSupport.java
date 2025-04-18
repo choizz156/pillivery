@@ -19,31 +19,18 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 
-// @ActiveProfiles("test")
-// @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class WebRestDocsSupport extends ApiTest {
 
-	// @Autowired
-	// protected UserFindHelper userFindHelper;
-	// @Autowired
-	// protected JwtTokenProvider jwtTokenProvider;
-	// @Autowired
-	// protected DataCleaner dataCleaner;
+
 	protected MockMvcRequestSpecification webSpec;
 	protected RequestSpecification spec;
-	// @LocalServerPort
-	// private int port;
+
 
 	@BeforeEach
 	void beforeEach(WebApplicationContext web, RestDocumentationContextProvider restDocumentation,
 		RestDocumentationContextProvider provider) throws Exception {
-
-		// if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
-		// 	RestAssured.port = port;
-		// 	dataCleaner.afterPropertiesSet();
-		// 	SecurityContextHolder.clearContext();
-		// }
 
 		this.webSpec = RestAssuredMockMvc.given()
 			.mockMvc(
@@ -64,16 +51,4 @@ public abstract class WebRestDocsSupport extends ApiTest {
 			.build();
 	}
 
-	// @AfterEach
-	// void tearDown() {
-	//
-	// 	dataCleaner.execute();
-	// 	SecurityContextHolder.clearContext();
-	// }
-	//
-	// protected String getToken() {
-	//
-	// 	User loginUser = userFindHelper.findUser(1L);
-	// 	return "Bearer " + jwtTokenProvider.delegateAccessToken(loginUser);
-	// }
 }

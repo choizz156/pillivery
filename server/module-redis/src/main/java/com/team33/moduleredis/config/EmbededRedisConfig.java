@@ -22,6 +22,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.extern.slf4j.Slf4j;
 import redis.embedded.RedisServer;
+import redis.embedded.core.RedisServerBuilder;
 
 @Slf4j
 @Profile("test || local")
@@ -29,15 +30,14 @@ import redis.embedded.RedisServer;
 public class EmbededRedisConfig {
 
 	private static final String REDISSON_HOST_PREFIX = "redis://";
-	private final int defaultRedisPort = 6379;
 	private final String host = "localhost";
+	private int port;
 	private RedisServer redisServer;
 
 	@Bean
 	public RedissonClient redissonClient() {
-
 		Config config = new Config();
-		config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + host + ":" + defaultRedisPort);
+		config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + host + ":" + port);
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
@@ -46,10 +46,11 @@ public class EmbededRedisConfig {
 		return Redisson.create(config);
 	}
 
+
 	@PostConstruct
 	public void redisServer() {
 		try {
-			int port;
+			int defaultRedisPort = 6380;
 			try {
 				port = isRedisRunning() ? findAvailablePort() : defaultRedisPort;
 			} catch (Exception e) {
@@ -57,8 +58,18 @@ public class EmbededRedisConfig {
 				port = isPortInUse(defaultRedisPort) ? findAvailablePortUsingSocket() : defaultRedisPort;
 			}
 
+
 			try {
-				redisServer = new RedisServer(port);
+				redisServer = new RedisServerBuilder()
+					.port(port)
+					.setting("daemonize no")
+					.setting("appendonly no")
+					.setting("save \"\"")
+					.setting("dbfilename \"\"")
+					.setting("stop-writes-on-bgsave-error no")
+					.build();
+
+
 				redisServer.start();
 				log.info("Embedded Redis started on port {}", port);
 			} catch (Exception e) {
@@ -95,7 +106,7 @@ public class EmbededRedisConfig {
 			}
 		}
 
-		return findAvailablePortUsingSocket(); // Fallback to socket-based check
+		return findAvailablePortUsingSocket();
 	}
 
 	private int findAvailablePortUsingSocket() {
@@ -117,7 +128,7 @@ public class EmbededRedisConfig {
 
 	private boolean isRedisRunning() throws IOException {
 		try {
-			return isRunning(executeGrepProcessCommand(defaultRedisPort));
+			return isRunning(executeGrepProcessCommand(port));
 		} catch (Exception e) {
 			log.warn("Error checking if Redis is running: {}", e.getMessage());
 			return false;
