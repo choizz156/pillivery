@@ -16,4 +16,4 @@ WORKDIR /app
 
 COPY --from=build /app/module-api/build/libs/module-api-boot.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=local", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
