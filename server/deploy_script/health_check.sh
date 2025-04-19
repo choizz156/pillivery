@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$#" -ne 4 ]; then
+if [ "$#" -ne 5 ]; then
     echo "⚠️ 파라미터가 부족합니다. ⚠️"
     echo "=> $0 serverIp containerName healthCheckUrl maxAttempts sleepInterval"
     exit 1
