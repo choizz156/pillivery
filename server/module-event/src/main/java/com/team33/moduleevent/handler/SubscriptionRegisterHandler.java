@@ -30,7 +30,7 @@ public class SubscriptionRegisterHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
-	public static final String HOST = "https://localhost:8080";
+	public static final String HOST = "www.pv-alb.r-e.kr:8080";
 	private static final String URL = HOST + "/api/payments/subscriptionsFirst/";
 
 	private final SubscriptionOrderService subscriptionOrderService;

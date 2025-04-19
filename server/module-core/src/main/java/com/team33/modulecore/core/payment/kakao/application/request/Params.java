@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Params {
 
-	BASE_URL("http://localhost:8080/api/payments/"),
+	BASE_URL("pv-alb.r-e.kr:8080/api/payments/"),
 
 	ONE_TIME_APPROVAL_URL(BASE_URL.value + "approve"),
 	SUBSCRIPTION_APPROVAL_URL(BASE_URL.value + "approve/subscriptionsFirst"),
