@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$#" -ne 4 ]; then
-    echo "⚠️파라미터가 부족합니다.⚠️"
+    echo "⚠️ 파라미터가 부족합니다. ⚠️"
     echo "=> $0 serverIp containerName healthCheckUrl maxAttempts sleepInterval"
     exit 1
 fi
@@ -30,8 +30,7 @@ while [ $attempts -lt $maxAttempts ]; do
 done
 
 if [ "$healthCheckSuccess" == "false" ]; then
-    echo "❌ Health check 실패 : $serverIp. 이전 버전으로 롤백."
-    ./deploy_script/rollback.sh $serverIp $containerName
+    echo "❌ Health check 실패 : $serverIp."
     exit 1
 else
     ssh -o StrictHostKeyChecking=no root@$serverIp "
