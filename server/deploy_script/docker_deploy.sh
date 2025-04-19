@@ -32,6 +32,7 @@ ssh -o StrictHostKeyChecking=no root@$serverIp "
     docker run -d \
          --name $containerName \
          --restart unless-stopped \
+         --network server \
          -p 8080:8080 \
          ${registryUrl}:${imageTag}
 "
