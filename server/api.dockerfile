@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY --chown=gradle:gradle build.gradle settings.gradle gradlew ./
 COPY --chown=gradle:gradle gradle/ ./gradle/
-#COPY --chown=gradle:gradle scripts/ ./scripts/
+COPY --chown=gradle:gradle deploy_script/ ./deploy_script/
 COPY --chown=gradle:gradle . .
 
 RUN ./gradlew clean :module-api:build

@@ -6,7 +6,6 @@ build
 Dockerfile
 docker-compose.yml
 *.md
-*.sh
 *.bat
 *.exe
 *.dll
