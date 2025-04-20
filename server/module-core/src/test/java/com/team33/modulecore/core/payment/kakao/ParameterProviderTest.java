@@ -14,7 +14,6 @@ import org.junit.jupiter.api.TestInstance;
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
-import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ParameterProviderTest {
@@ -52,7 +51,7 @@ class ParameterProviderTest {
 	@Test
 	void 단건_결제_요청() throws Exception {
 		//given
-		ParameterProvider parameterProvider = new ParameterProvider();
+		TestParameterProvider parameterProvider = new TestParameterProvider();
 
 		//when
 		Map<String, Object> oneTimeReqsParams = parameterProvider.getOneTimePaymentRequestParams(order);
@@ -78,7 +77,7 @@ class ParameterProviderTest {
 	@Test
 	void 정기_결제_요청() throws Exception {
 		//given
-		ParameterProvider parameterProvider = new ParameterProvider();
+		TestParameterProvider parameterProvider = new TestParameterProvider();
 
 		//when
 		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionPaymentRequestParams(subscriptionOrder);
@@ -104,7 +103,7 @@ class ParameterProviderTest {
 	@Test
 	void 단건_승인() throws Exception {
 		//given
-		ParameterProvider parameterProvider = new ParameterProvider();
+		TestParameterProvider parameterProvider = new TestParameterProvider();
 
 		//when
 		Map<String, Object> subscriptionReqsParams = parameterProvider.getOneTimePaymentApprovalParams("tid", "pgToken", 1L);
@@ -125,7 +124,7 @@ class ParameterProviderTest {
 	@Test
 	void 정기_결제_최초_승인() throws Exception {
 		//given
-		ParameterProvider parameterProvider = new ParameterProvider();
+		TestParameterProvider parameterProvider = new TestParameterProvider();
 
 		//when
 		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionFirstPaymentApprovalParams("tid",
@@ -149,7 +148,7 @@ class ParameterProviderTest {
 		//given
 
 		subscriptionOrder.addSid("sid");
-		ParameterProvider parameterProvider = new ParameterProvider();
+		TestParameterProvider parameterProvider = new TestParameterProvider();
 
 		//when
 		Map<String, Object> subscriptionReqsParams = parameterProvider.getSubscriptionPaymentApprovalParams(subscriptionOrder);
