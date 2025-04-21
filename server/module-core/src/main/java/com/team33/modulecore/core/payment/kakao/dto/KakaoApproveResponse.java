@@ -1,10 +1,14 @@
 package com.team33.modulecore.core.payment.kakao.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class KakaoApproveResponse {
 
 	private String aid;
@@ -23,6 +27,8 @@ public class KakaoApproveResponse {
 	private int quantity;
 
 	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
 	@Data
 	public static class Amount {
 
