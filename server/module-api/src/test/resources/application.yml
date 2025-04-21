@@ -57,6 +57,12 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+
+
+  jackson:
+    serialization:
+      write-date-keys-as-timestamps: false
+
 jwt:
   secret-key : sdfsdfsdfesdfdf11113456645454534545451
   access-token-expiration-minutes: 30
