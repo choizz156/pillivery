@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.payment;
+package com.team33.moduleapi.api.payment;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.api.payment.PayLookupController;
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;

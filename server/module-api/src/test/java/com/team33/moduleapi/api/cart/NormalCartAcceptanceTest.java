@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.cart;
+package com.team33.moduleapi.api.cart;
 
 import static com.team33.modulecore.cache.CacheType.*;
 import static io.restassured.RestAssured.*;

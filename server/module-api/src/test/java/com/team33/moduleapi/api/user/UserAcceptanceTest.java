@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.user;
+package com.team33.moduleapi.api.user;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -11,17 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.mockuser.UserAccount;
-import com.team33.modulecore.security.dto.LoginDto;
 import com.team33.moduleapi.api.user.dto.UserPatchDto;
 import com.team33.moduleapi.api.user.dto.UserPostDto;
 import com.team33.moduleapi.api.user.dto.UserPostOauthDto;
 import com.team33.moduleapi.api.user.mapper.UserServiceMapper;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.modulecore.core.user.application.UserService;
 import com.team33.modulecore.core.user.domain.Address;
 import com.team33.modulecore.core.user.domain.UserRoles;
 import com.team33.modulecore.core.user.domain.entity.User;
 import com.team33.modulecore.core.user.dto.UserServicePostDto;
+import com.team33.modulecore.security.dto.LoginDto;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

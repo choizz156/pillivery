@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.item;
+package com.team33.moduleapi.api.item;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;

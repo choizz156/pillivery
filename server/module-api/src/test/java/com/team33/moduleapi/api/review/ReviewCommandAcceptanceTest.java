@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.review;
+package com.team33.moduleapi.api.review;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -13,13 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.api.order.dto.OrderPostDto;
 import com.team33.moduleapi.api.order.dto.OrderPostListDto;
 import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
 import com.team33.moduleapi.api.review.dto.ReviewDeleteDto;
 import com.team33.moduleapi.api.review.dto.ReviewPatchDto;
 import com.team33.moduleapi.api.review.dto.ReviewPostDto;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.Image;
 import com.team33.modulecore.core.item.domain.Information;
@@ -29,9 +29,9 @@ import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderItemService;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;

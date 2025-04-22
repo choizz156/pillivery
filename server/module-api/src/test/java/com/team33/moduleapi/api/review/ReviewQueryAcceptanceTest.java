@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.review;
+package com.team33.moduleapi.api.review;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
-import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.moduleapi.api.order.dto.OrderPostDto;
 import com.team33.moduleapi.api.order.dto.OrderPostListDto;
 import com.team33.moduleapi.api.order.mapper.OrderItemMapper;
+import com.team33.moduleapi.mockuser.UserAccount;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.Image;
 import com.team33.modulecore.core.item.domain.Information;
@@ -26,9 +26,9 @@ import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.core.order.application.OrderCreateService;
 import com.team33.modulecore.core.order.application.OrderItemService;
-import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
+import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
@@ -98,7 +98,7 @@ class ReviewQueryAcceptanceTest extends ApiTest {
 			.queryParam("page", 1)
 			.queryParam("sort", "NEWEST")
 			.when()
-			.get("/api/reviews/api/items/1")
+			.get("/api/reviews/items/1")
 			.then()
 			.statusCode(HttpStatus.OK.value())
 			.body("data[0].reviewId", is(1))
@@ -135,7 +135,7 @@ class ReviewQueryAcceptanceTest extends ApiTest {
 			.queryParam("page", 1)
 			.queryParam("sort", "NEWEST")
 			.when()
-			.get("/api/reviews/api/users/1")
+			.get("/api/reviews/users/1")
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
@@ -150,116 +150,6 @@ class ReviewQueryAcceptanceTest extends ApiTest {
 			.body("pageInfo.size", is(8))
 			.body("pageInfo.totalElements", is(3))
 			.body("pageInfo.totalPages", is(1));
-	}
-
-	@Nested
-	@DisplayName("리뷰 정렬 테스트")
-	class ReviewSortTest {
-
-		@DisplayName("오래된 순")
-		@UserAccount({"test", "010-0000-0000"})
-		@Test
-		void 오래된_순() throws Exception {
-
-			//given
-			주문_저장(주문_정보());
-			리뷰_생성(1L, "content1", 5.0);
-			리뷰_생성(2L, "content2", 4.0);
-			리뷰_생성(3L, "content3", 3.0);
-
-			//when
-			given()
-				.log().all()
-				.queryParam("size", 8)
-				.queryParam("page", 1)
-				.queryParam("sort", "OLDEST")
-				.when()
-				.get("/api/reviews/api/users/1")
-				.then()
-				.log().all()
-				.statusCode(HttpStatus.OK.value())
-				.body("data.size()", is(3))
-				.body("data.reviewId", contains(1, 2, 3))
-				.body("data.itemId", contains(1, 2, 3))
-				.body("data.userId", contains(1, 1, 1))
-				.body("data.star", contains(5.0f, 4.0f, 3.0f))
-				.body("data.content", contains("content1", "content2", "content3"))
-				.body("data.reviewStatus", contains("ACTIVE", "ACTIVE", "ACTIVE"))
-				.body("pageInfo.page", is(1))
-				.body("pageInfo.size", is(8))
-				.body("pageInfo.totalElements", is(3))
-				.body("pageInfo.totalPages", is(1));
-		}
-
-		@DisplayName("별점 높은 순")
-		@UserAccount({"test", "010-0000-0000"})
-		@Test
-		void 별점_높은_순() throws Exception {
-
-			//given
-			주문_저장(주문_정보());
-			리뷰_생성(1L, "content1", 4.0);
-			리뷰_생성(2L, "content2", 5.0);
-			리뷰_생성(3L, "content3", 3.0);
-
-			//when
-			given()
-				.log().all()
-				.queryParam("size", 8)
-				.queryParam("page", 1)
-				.queryParam("sort", "STAR_H")
-				.when()
-				.get("/api/reviews/api/users/1")
-				.then()
-				.log().all()
-				.statusCode(HttpStatus.OK.value())
-				.body("data.size()", is(3))
-				.body("data.reviewId", contains(2, 1, 3))
-				.body("data.itemId", contains(2, 1, 3))
-				.body("data.userId", contains(1, 1, 1))
-				.body("data.star", contains(5.0f, 4.0f, 3.0f))
-				.body("data.content", contains("content2", "content1", "content3"))
-				.body("data.reviewStatus", contains("ACTIVE", "ACTIVE", "ACTIVE"))
-				.body("pageInfo.page", is(1))
-				.body("pageInfo.size", is(8))
-				.body("pageInfo.totalElements", is(3))
-				.body("pageInfo.totalPages", is(1));
-		}
-
-		@DisplayName("별점 낮은 순")
-		@UserAccount({"test", "010-0000-0000"})
-		@Test
-		void 별점_낮은_순() throws Exception {
-
-			//given
-			주문_저장(주문_정보());
-			리뷰_생성(1L, "content1", 5.0);
-			리뷰_생성(2L, "content2", 4.0);
-			리뷰_생성(3L, "content3", 3.0);
-
-			//when
-			given()
-				.log().all()
-				.queryParam("size", 8)
-				.queryParam("page", 1)
-				.queryParam("sort", "STAR_L")
-				.when()
-				.get("/api/reviews/api/users/1")
-				.then()
-				.log().all()
-				.statusCode(HttpStatus.OK.value())
-				.body("data.size()", is(3))
-				.body("data.reviewId", contains(3, 2, 1))
-				.body("data.itemId", contains(3, 2, 1))
-				.body("data.userId", contains(1, 1, 1))
-				.body("data.star", contains(3.0f, 4.0f, 5.0f))
-				.body("data.content", contains("content3", "content2", "content1"))
-				.body("data.reviewStatus", contains("ACTIVE", "ACTIVE", "ACTIVE"))
-				.body("pageInfo.page", is(1))
-				.body("pageInfo.size", is(8))
-				.body("pageInfo.totalElements", is(3))
-				.body("pageInfo.totalPages", is(1));
-		}
 	}
 
 	private void 리뷰_생성(long itemId, String content, double star) {
@@ -359,5 +249,115 @@ class ReviewQueryAcceptanceTest extends ApiTest {
 		item.getItemCategory().add(CategoryName.INTESTINE);
 
 		itemCommandRepository.save(item);
+	}
+
+	@Nested
+	@DisplayName("리뷰 정렬 테스트")
+	class ReviewSortTest {
+
+		@DisplayName("오래된 순")
+		@UserAccount({"test", "010-0000-0000"})
+		@Test
+		void 오래된_순() throws Exception {
+
+			//given
+			주문_저장(주문_정보());
+			리뷰_생성(1L, "content1", 5.0);
+			리뷰_생성(2L, "content2", 4.0);
+			리뷰_생성(3L, "content3", 3.0);
+
+			//when
+			given()
+				.log().all()
+				.queryParam("size", 8)
+				.queryParam("page", 1)
+				.queryParam("sort", "OLDEST")
+				.when()
+				.get("/api/reviews/users/1")
+				.then()
+				.log().all()
+				.statusCode(HttpStatus.OK.value())
+				.body("data.size()", is(3))
+				.body("data.reviewId", contains(1, 2, 3))
+				.body("data.itemId", contains(1, 2, 3))
+				.body("data.userId", contains(1, 1, 1))
+				.body("data.star", contains(5.0f, 4.0f, 3.0f))
+				.body("data.content", contains("content1", "content2", "content3"))
+				.body("data.reviewStatus", contains("ACTIVE", "ACTIVE", "ACTIVE"))
+				.body("pageInfo.page", is(1))
+				.body("pageInfo.size", is(8))
+				.body("pageInfo.totalElements", is(3))
+				.body("pageInfo.totalPages", is(1));
+		}
+
+		@DisplayName("별점 높은 순")
+		@UserAccount({"test", "010-0000-0000"})
+		@Test
+		void 별점_높은_순() throws Exception {
+
+			//given
+			주문_저장(주문_정보());
+			리뷰_생성(1L, "content1", 4.0);
+			리뷰_생성(2L, "content2", 5.0);
+			리뷰_생성(3L, "content3", 3.0);
+
+			//when
+			given()
+				.log().all()
+				.queryParam("size", 8)
+				.queryParam("page", 1)
+				.queryParam("sort", "STAR_H")
+				.when()
+				.get("/api/reviews/users/1")
+				.then()
+				.log().all()
+				.statusCode(HttpStatus.OK.value())
+				.body("data.size()", is(3))
+				.body("data.reviewId", contains(2, 1, 3))
+				.body("data.itemId", contains(2, 1, 3))
+				.body("data.userId", contains(1, 1, 1))
+				.body("data.star", contains(5.0f, 4.0f, 3.0f))
+				.body("data.content", contains("content2", "content1", "content3"))
+				.body("data.reviewStatus", contains("ACTIVE", "ACTIVE", "ACTIVE"))
+				.body("pageInfo.page", is(1))
+				.body("pageInfo.size", is(8))
+				.body("pageInfo.totalElements", is(3))
+				.body("pageInfo.totalPages", is(1));
+		}
+
+		@DisplayName("별점 낮은 순")
+		@UserAccount({"test", "010-0000-0000"})
+		@Test
+		void 별점_낮은_순() throws Exception {
+
+			//given
+			주문_저장(주문_정보());
+			리뷰_생성(1L, "content1", 5.0);
+			리뷰_생성(2L, "content2", 4.0);
+			리뷰_생성(3L, "content3", 3.0);
+
+			//when
+			given()
+				.log().all()
+				.queryParam("size", 8)
+				.queryParam("page", 1)
+				.queryParam("sort", "STAR_L")
+				.when()
+				.get("/api/reviews/users/1")
+				.then()
+				.log().all()
+				.statusCode(HttpStatus.OK.value())
+				.body("data.size()", is(3))
+				.body("data.reviewId", contains(3, 2, 1))
+				.body("data.itemId", contains(3, 2, 1))
+				.body("data.userId", contains(1, 1, 1))
+				.body("data.star", contains(3.0f, 4.0f, 5.0f))
+				.body("data.content", contains("content3", "content2", "content1"))
+				.body("data.reviewStatus", contains("ACTIVE", "ACTIVE", "ACTIVE"))
+				.body("pageInfo.page", is(1))
+				.body("pageInfo.size", is(8))
+				.body("pageInfo.totalElements", is(3))
+				.body("pageInfo.totalPages", is(1));
+		}
 	}
 }

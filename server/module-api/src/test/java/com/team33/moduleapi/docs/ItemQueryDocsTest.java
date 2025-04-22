@@ -21,7 +21,6 @@ import com.team33.modulecore.core.item.domain.Price;
 import com.team33.modulecore.core.item.domain.Statistic;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
-
 class ItemQueryDocsTest extends WebRestDocsSupport {
 
     @Autowired

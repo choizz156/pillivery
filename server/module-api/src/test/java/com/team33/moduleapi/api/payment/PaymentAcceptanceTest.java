@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.payment;
+package com.team33.moduleapi.api.payment;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.api.payment.PayController;
 import com.team33.moduleapi.api.payment.mapper.PaymentDataMapper;
 import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
@@ -114,7 +113,7 @@ class PaymentAcceptanceTest extends ApiTest {
                     .statusCode(HttpStatus.CREATED.value())
                     .expect(jsonPath("$.data.tid").value("tid"))
                     .expect(jsonPath("$.data.next_redirect_pc_url").value("url"))
-                    .expect(jsonPath("$.data.createAt").isNotEmpty())
+                    .expect(jsonPath("$.data.createdAt").isNotEmpty())
                     .log().all();
         //@formatter:on
 	}
@@ -140,7 +139,7 @@ class PaymentAcceptanceTest extends ApiTest {
 			.statusCode(HttpStatus.CREATED.value())
 			.expect(jsonPath("$.data.tid").value("tid"))
 			.expect(jsonPath("$.data.next_redirect_pc_url").value("url"))
-			.expect(jsonPath("$.data.createAt").isNotEmpty())
+			.expect(jsonPath("$.data.createdAt").isNotEmpty())
 			.log().all();
 		//@formatter:on
 	}

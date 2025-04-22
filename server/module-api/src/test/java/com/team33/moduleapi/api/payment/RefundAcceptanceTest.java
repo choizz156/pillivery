@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.payment;
+package com.team33.moduleapi.api.payment;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.api.payment.RefundController;
 import com.team33.moduleapi.api.payment.dto.RefundDto;
 import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderStatusService;
