@@ -38,7 +38,7 @@ public class ReviewQueryController {
 		return new SingleResponseDto<>(reviewQueryDto);
 	}
 
-	@GetMapping("/api/items/{itemId}")
+	@GetMapping("/items/{itemId}")
 	public MultiResponseDto<?> getReviewByItemId(
 		@PathVariable long itemId,
 		@RequestParam(defaultValue = "1") int page,
@@ -53,7 +53,7 @@ public class ReviewQueryController {
 		return new MultiResponseDto<>(reviewsPage.getContent(), reviewsPage);
 	}
 
-	@GetMapping("/api/users/{userId}")
+	@GetMapping("/users/{userId}")
 	public MultiResponseDto<ReviewQueryDto> getReviewByUserId(
 		@PathVariable long userId,
 		@RequestParam(defaultValue = "1") int page,

@@ -7,10 +7,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Getter
 public class SingleResponseDto<T> {
-    private final T data;
+    private  T data;
     @JsonProperty("createTime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy‑MM‑dd'T'HH:mm:ssXXX")
     private final ZonedDateTime createTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
