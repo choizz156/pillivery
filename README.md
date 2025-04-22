@@ -1,88 +1,149 @@
-## 1. 제작 기간 및 참여 인원
-- 제작 기간: 2022.11.09 ~ 2022.12.05
+ # Pillivery
+
+Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 결제, 배송받을 수 있는 전문 플랫폼을 목표로 하는 서비스.
+
+> 실제 서비스가 아닌 팀 프로젝트의 일환으로 진행됐으며, 초기 팀 프로젝트 기간 종료 후 현재까지 개인적으로 개선을 진행 중.
+
+## 1. 기간 및 역할
+
+- 팀 프로젝트 기간 : 2022. 11 ~ 2022.12
 - 참여 인원: 7명(FE: 4명, BE: 3명)
+  - BE 3 명 중 서버 핵심 기능 로직 구현 (인증/인가, 결제 연동, 정기 결제).
+
+- **개인 리팩토링 및 성능 개선(~ 현재)**
+  - 실제 서비스 운영 환경을 고려하여 리팩토링을 진행.
+  - 성능, 구조, 인프라 개선에 초점을 둠.
 
 ## 2. 기술 스택
-### Front-end
-  - JavaScript
-  -  React Create React App
-  -  Styled components
-  -  React query
-  -  axios
-  -  'Node.js
-  -  npm
-  -  Redux toolkit
-
 ### Back-end
-- `Java 11`
-- `Spring Sercurity`
-- `Spring boot 2.7.5`
-- `Spring Data JPA`
-- `Spring Rest Docs`
-- `Gradle`
-- `MySQL 8`
-- `JWT 0.11.5`
-- `OAuth 2.0`
-- `Quartz 2.3.2`
+| 카테고리             | 기술 스택                                                    |
+| -------------------- | ------------------------------------------------------------ |
+| **언어 & 빌드 도구** | Java 11, Gradle 7.5.1                                        |
+| **프레임워크**       | Spring Boot 2.7.5, Spring Data JPA/JDBC, Spring Security, Spring Batch, Spring Rest Docs |
+| **인증/인가**        | JWT, OAuth 2.0                                               |
+| **데이터베이스**     | MySQL 8.0                                                    |
+| **캐시**             | Redis (Redisson), Caffeine Cache                             |
+| **인프라**           | NCP, Vultr, Docker, Jenkins, Nginx, Resilience4j             |
+| **모니터링 & 로깅**  | Promtail, Loki, Prometheus, Grafana                          |
+| **테스트**           | JUnit 5, Mockito, WireMock, RestAssured, FixtureMonkey       |
+| **성능 테스트**      | Locust                                                       |
+| **HTTP 클라이언트**  | WebClient, RestTemplate                                      |
+| **기타**             | Quartz, EmbeddedRedis                                        |
 
 ---
+## 3. 팀 프로젝트 기여(2022. 11 ~ 2022.12)
+
+<details>
+<summary><strong> 1) 유저 도메인 Restful API 개발.</strong></summary>
+
+- User 회원가입, 정보 수정 등 API 개발.<br/>  
+- Rest API 디자인 가이드 중 Resources, Http Methods, Status Code 고려.
+</details>
+
+
+<details>
+<summary><strong>2) 인증/인가 시스템 구축: Spring Security와 JWT, OAuth 2.0를 활용.</strong></summary>
+
+#### (1) 회원가입 후 로그인 시 Access Token을 발급
+
+- 인증에 실패할 경우, 예외 처리.
+	
+![security diagram](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
+	
+- **OAuth 로그인** 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 Access Token을 발급.  
+- 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장.  
+- 리소스 서버에서 데이터베이스로의 저장이 실패할 경우, 예외를 던짐.
+	
+![oauth2 sequence](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
+	
+- 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 Access Token이 발급.  
+- 추가 정보를 기입하지 않을 경우에도 토큰이 발급됨.  
+- 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됨.  
+- 추가 정보 기입에 실패할 경우 예외를 던지고 Access Token은 발급되지 않음.
+	
+![추가정보 diagram](https://github.com/choizz156/pillivery/blob/0fb84ed151e7ac9097764497d12ec676d4d81117/image/%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9%20diagram.jpg)
+	
+#### (2) Refresh Token을 활용한 Token 관리
+
+<!-- 여기에 관련된 이미지나 다이어그램이 추가될 수 있습니다 -->
+
+
+</details>
+
+
+
+<details>
+<summary><strong>3) 외부 API 결제 연동: 카카오 페이 외부 API 연동을 통한 결제 기능 개발.</strong></summary>
+
+- `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임.  
+  - 파사드 객체에서 단건 결제인지, 정기 결제인지를 구분하는 역할.  
+- 결제 요청과 결제 승인에 `전략 패턴`을 활용하여 변경이 생겼을 경우 클라이언트 코드의 변경을 최소화.
+
+	![결제 클래스 다이어그램](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)
+	
+- RestTemplate을 이용해 외부 API와 통신.  
+  - 동기 방식을 사용하므로 요청이 많아질 시 응답 지연을 고려.  
+	- Connection Pool 설정, 연결 시간/응답 시간 타임아웃 설정으로 빠른 피드백 제공.  
+	
+- 결제 요청 및 승인이 실패할 경우, 카카오페이 서버에서 지정한 URL로 리다이렉트.  
+- 리다이렉트 후 에러 정보를 클라이언트에게 전달.
+
+
+</details>
+
+
+<details>
+<summary><strong>4) 정기 결제 시스템 구축: Quartz를 사용한 정기 결제 시스템 개발.</strong></summary>
+
+	- 정기 구독 시 **Quartz** 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동.  
+  - **멀티 모듈**을 활용하여 스케쥴링 시스템을 독립적인 모듈로 구성.  
+  - JobKey API와 TriggerKey API를 활용하여 특정 job과 trigger를 조회, 취소, 변경 기능 구현.  
+  - 스케쥴러에서 설정한 스케쥴에 실행되지 않을 시 중복 실행을 방지.
+
+  ⛔️ 만약, job 수행 시 예외가 발생할 경우,
+
+	- 첫 번째 에러: 바로 job 재시도.  
+	- 두 번째 에러: 3일 동안 24시간 간격으로 job 재시도.  
+	- 이후에도 실패 시 job을 취소하고 로그 기록.
+
+![정기결제 시퀀스](https://github.com/choizz156/pillivery/blob/6db8979f27cc751349ffd8bf51600cb30a1c9398/image/%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%B5%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6%20%E1%84%89%E1%85%B5%E1%84%8F%E1%85%AF%E1%86%AB%E1%84%89%E1%85%B3%202.jpg)
+
+
+</details>
+
 ## 3. Git Flow
+
 - 서로가 맡은 기능을 완료한 뒤, dev 브랜치에 merge를 하고 최종적으로 main 브랜치에 merge하는 전략을 사용.
 - 잦은 시행착오를 겪으며 git에 대해 학습.   
 
 
 ## 4. ERD
 
-![erd 수정](https://user-images.githubusercontent.com/106965005/228384360-5a59318c-74c4-4449-9717-f097a6903ee3.png)
+![erd 수정](https://user-images.githubusercontent.com/106965005/228384360-5a59318c-74c4-4449-9717-f097a6903ee3.png)
 
 ---
 ## 5.프로젝트 모듈 구조
-  - api와 domain, quartz-scheduler로가 각각 독립적인 프로젝트로 판단.
+  - 
   - 단일 프로젝트 안에서 api, core, quartz의 모듈 분리.
     - 중복될 수 있는 코드를 방지
-  
 
-![](https://github.com/choizz156/pillivery/blob/904ee15bce3430ef9ef0a4fab8e65b448748f9e2/image/%E1%84%86%E1%85%A9%E1%84%83%E1%85%B2%E1%86%AF%20%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%A5%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%B7.jpg)
+############ 이미지 삽입
 
 ---
 
 ## 6. 내가 만든 기능
-#### 1) User 도메인 CRUD 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/user) 📌[api 모듈](https://github.com/choizz156/pillivery/blob/main/server/module-api/src/main/java/com/team33/moduleapi/controller/user/UserController.java)
 
-- User 도메인 API 개발.
-- Rest API 디자인 가이드 중 Resources, Http Methods, Status Code 고려.
+  - 
 
 
-
-#### 2) Sping Security를 활용한 인증/인가 구현(JWT, OAuth 2.0) 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/global/security)
-- 회원가입 후 로그인 시 Access Token을 발급.</br>
-- refresh token을 활용한 token 관리.</br>
-
-⛔️ 인증에 실패할 경우, 예외 처리.
-  
-![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
-
-- OAuth 로그인 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 Access Token을 발급. 
-- 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장.</br>
-⛔️ 리소스 서버에서 데이터베이스로의 저장이 실패할 경우, 예외를 던짐.
-    
-![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
-
-
-  - 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 Access Token이 발급.
-  - 추가 정보를 기입하지 않을 경우 토큰이 발급.
-  - 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급.</br>
-  ⛔️ 추가 정보 기입에 실패할 경우 예외를 던지고 Access Token은 발급되지 않음.
-    
-![](https://github.com/choizz156/pillivery/blob/0fb84ed151e7ac9097764497d12ec676d4d81117/image/%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9%20diagram.jpg)
----  
+---
 #### 3) 외부 결제 API 연동(카카오 페이) 📌[core 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-core/src/main/java/com/team33/modulecore/domain/payment) 📌[api 모듈](https://github.com/choizz156/pillivery/blob/main/server/module-api/src/main/java/com/team33/moduleapi/controller/payment/PayController.java)
   - `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임.
      - 파사드 객체에서 단건 결제인지, 정기 결제인지를 구분하는 역할.   
   - 결제 요청과 결제 승인에 `전략 패턴`을 활용하여 변경이 생겼을 경우 클라이언트 코드의 변경을 최소화.
 
   ![](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)
-  
+
   - RestTemplate을 이용해 외부 API와 통신했습니다.
     - 동기 방식을 사용하므로 요청이 많아질 시 응답 지연을 고려.
     - Connection Pool을 설정하고, 연결 시간 타임아웃과 응답 시간 타임아웃 설정해 유저들에게 결과를 빠르게 피드백하도록 구현.
@@ -95,18 +156,20 @@
 
 
 ---
-  
+
 #### 4) 정기 구독(결제) 기능 구현 📌[quartz 모듈](https://github.com/choizz156/pilivery/tree/main/server/module-quartz/src/main/java/com/team33/modulequartz/subscription)📌[api 모듈](https://github.com/choizz156/pillivery/blob/main/server/module-api/src/main/java/com/team33/moduleapi/controller/Scheduler/ScheduleController.java)
 - 정기 구독 시 **Quartz** 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동.
     - **멀티 모듈**을 활용하여 스케쥴링 시스템을 독립적인 모듈로 구성.
     - Jobkey API와 TriggerKey API를 활용하여 특정 job과 trigger를 조회, 취소, 변경기능 구현.
     - 스케쥴러에서 설정한 스케쥴에 실행되지 않을 시 중복 실행을 방지.
       
+
 ⛔️ 만약, job 수행 시 예외가 발생할 경우,
   - 첫 번째 에러 : 경우 바로 job 재시도.
   - 두 번째 에러 : 3일 동안 24시간 간격으로 job을 재시도.
   - 그 후에도 예외가 발생한다면 job을 취소하고 로그로 기록.
-      
+    
+
 ![](https://github.com/choizz156/pillivery/blob/6db8979f27cc751349ffd8bf51600cb30a1c9398/image/%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%B5%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6%20%E1%84%89%E1%85%B5%E1%84%8F%E1%85%AF%E1%86%AB%E1%84%89%E1%85%B3%202.jpg)
 
 ---
@@ -132,7 +195,7 @@
     - Junit5를 사용해 단위 테스트를 진행.
     - mokito를 사용해 외부 API에 독립적인 테스트 환경을 마련.
     - @SpringBootTest와 사용하기에 RestAssured가 가독성이 좋다고 생각해 인수 테스트에 RestAssured를 사용.
-  
+
 
 ![image](https://github.com/choizz156/pillivery/assets/106965005/a6e6c7c6-ee01-4e39-af68-9b894f6e39cd)
 
@@ -211,5 +274,3 @@
 ### 👉 기술 회고
 [꼭 JWT를 써야 했을까?](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-JWT%EB%A5%BC-%EA%BC%AD-%EC%8D%A8%EC%95%BC%EB%90%90%EC%9D%84%EA%B9%8C)</br>
 [무엇인가 잘못된 유저 객체 가지고 오기](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80-%EC%9E%98%EB%AA%BB%EB%90%9C-%EA%B2%83-%EA%B0%99%EC%9D%80-User-%EA%B0%9D%EC%B2%B4-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0)</br>
-
-
