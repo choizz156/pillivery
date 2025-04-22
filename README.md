@@ -33,83 +33,85 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
 ---
 ## 3. 팀 프로젝트 기여(2022. 11 ~ 2022.12)
 
-<details>
-<summary><strong> 1) 유저 도메인 Restful API 개발.</strong></summary>
-
-- User 회원가입, 정보 수정 등 API 개발.<br/>  
-- Rest API 디자인 가이드 중 Resources, Http Methods, Status Code 고려.
-</details>
 
 
 <details>
-<summary><strong>2) 인증/인가 시스템 구축: Spring Security와 JWT, OAuth 2.0를 활용.</strong></summary>
+<summary><strong>1) 유저 도메인 Restful API 개발</strong></summary>
 
-#### (1) 회원가입 후 로그인 시 Access Token을 발급
-
-- 인증에 실패할 경우, 예외 처리.
-	
-![security diagram](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
-	
-- **OAuth 로그인** 시 추가 정보(주소, 전화 번호) 기입 창으로 이동하고, 추가 정보 기입이 완료되면 Access Token을 발급.  
-- 리소스 서버에서 받은 리소스는 애플리케이션 서버의 데이터베이스에서 저장.  
-- 리소스 서버에서 데이터베이스로의 저장이 실패할 경우, 예외를 던짐.
-	
-![oauth2 sequence](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
-	
-- 추가 정보 기입을 하면 정보를 애플리케이션 데이터베이스에 저장 후 Access Token이 발급.  
-- 추가 정보를 기입하지 않을 경우에도 토큰이 발급됨.  
-- 추가 정보 기입 후 OAuth 로그인은 바로 토큰이 발급됨.  
-- 추가 정보 기입에 실패할 경우 예외를 던지고 Access Token은 발급되지 않음.
-	
-![추가정보 diagram](https://github.com/choizz156/pillivery/blob/0fb84ed151e7ac9097764497d12ec676d4d81117/image/%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9%20diagram.jpg)
-	
-#### (2) Refresh Token을 활용한 Token 관리
-
-<!-- 여기에 관련된 이미지나 다이어그램이 추가될 수 있습니다 -->
-
-
-</details>
-
-
-
-<details>
-<summary><strong>3) 외부 API 결제 연동: 카카오 페이 외부 API 연동을 통한 결제 기능 개발.</strong></summary>
-
-- `파사드 패턴`을 활용하여 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임.  
-  - 파사드 객체에서 단건 결제인지, 정기 결제인지를 구분하는 역할.  
-- 결제 요청과 결제 승인에 `전략 패턴`을 활용하여 변경이 생겼을 경우 클라이언트 코드의 변경을 최소화.
-
-	![결제 클래스 다이어그램](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)
-	
-- RestTemplate을 이용해 외부 API와 통신.  
-  - 동기 방식을 사용하므로 요청이 많아질 시 응답 지연을 고려.  
-	- Connection Pool 설정, 연결 시간/응답 시간 타임아웃 설정으로 빠른 피드백 제공.  
-	
-- 결제 요청 및 승인이 실패할 경우, 카카오페이 서버에서 지정한 URL로 리다이렉트.  
-- 리다이렉트 후 에러 정보를 클라이언트에게 전달.
-
+- User 회원가입, 정보 수정 등 API 개발  
+- REST API 디자인 가이드:  
+  - Resources 설계  
+  - HTTP Methods 활용  
+  - 적절한 Status Code 반환
 
 </details>
 
 
 <details>
-<summary><strong>4) 정기 결제 시스템 구축: Quartz를 사용한 정기 결제 시스템 개발.</strong></summary>
+<summary><strong>2) 인증/인가 시스템 구축 (Spring Security, JWT, OAuth2.0)</strong></summary>
 
-	- 정기 구독 시 **Quartz** 라이브러리를 이용하여 특정 날짜에 결제가 이루어지도록 결제 API와 연동.  
-  - **멀티 모듈**을 활용하여 스케쥴링 시스템을 독립적인 모듈로 구성.  
-  - JobKey API와 TriggerKey API를 활용하여 특정 job과 trigger를 조회, 취소, 변경 기능 구현.  
-  - 스케쥴러에서 설정한 스케쥴에 실행되지 않을 시 중복 실행을 방지.
+### (1) 로그인 & 토큰 발급
 
-  ⛔️ 만약, job 수행 시 예외가 발생할 경우,
+- 로그인 요청 시 Access Token 발급  
+- 인증 실패 시 예외 처리  
 
-	- 첫 번째 에러: 바로 job 재시도.  
-	- 두 번째 에러: 3일 동안 24시간 간격으로 job 재시도.  
-	- 이후에도 실패 시 job을 취소하고 로그 기록.
+![Security Flow](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/secuirty%20diagram.jpeg)
 
-![정기결제 시퀀스](https://github.com/choizz156/pillivery/blob/6db8979f27cc751349ffd8bf51600cb30a1c9398/image/%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%B5%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6%20%E1%84%89%E1%85%B5%E1%84%8F%E1%85%AF%E1%86%AB%E1%84%89%E1%85%B3%202.jpg)
+### (2) OAuth 로그인
 
+1. OAuth 로그인 시 추가 정보(주소, 전화번호) 입력 화면 이동  
+2. 추가 정보 입력 완료 → Access Token 발급  
+3. 리소스 서버 정보 애플리케이션 DB에 저장  
+4. 저장 실패 시 예외 처리
+
+![OAuth2 Flow](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/oauth2-sequence.jpg)
+
+![추가정보 입력 흐름](https://github.com/choizz156/pillivery/blob/0fb84ed151e7ac9097764497d12ec676d4d81117/image/%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9%20diagram.jpg)
+
+### (3) Refresh Token 관리
+
+<!-- Refresh Token 시퀀스 다이어그램 추가 예정 -->
 
 </details>
+
+
+
+<details>
+<summary><strong>3) 외부 결제 API 연동 (카카오페이)</strong></summary>
+
+- **파사드 패턴**:  
+  - 파사드 클래스에서 단건 결제 요청과 정기 결제 요청, 결제 승인을 서비스 계층에 위임.
+  - 파사드 객체에서 단건 결제인지, 정기 결제인지를 구분하는 역할.
+- **전략 패턴**:  
+  - 결제 방식 변경 시 클라이언트 코드 최소 수정  
+
+![결제 클래스 다이어그램](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%AC%EB%A6%AC%EB%8D%94%EA%B8%B0%EB%8A%A5.jpg)
+
+- RestTemplate 동기 호출  
+  - Connection Pool, 타임아웃 설정 권장  
+- 결제 실패 시 카카오페이 → 지정 URL로 리다이렉트  
+- 리다이렉트 후 에러 정보 클라이언트 전달
+
+</details>
+
+
+
+<details>
+<summary><strong>4) 정기 결제 시스템 구축 (Quartz)</strong></summary>
+
+- Quartz로 스케줄링 모듈 분리 (멀티 모듈)  
+- JobKey/TriggerKey API로 조회·취소·변경 기능 구현  
+- 중복 실행 방지 로직 포함  
+
+⛔ 예외 발생 시 재시도 정책  
+1. 1회차 에러: 즉시 재시도  
+2. 2회차 에러: 3일간 24시간 간격 재시도  
+3. 이후 에러: Job 취소 및 로그 기록  
+
+![Quartz 시퀀스](https://github.com/choizz156/pillivery/blob/6db8979f27cc751349ffd8bf51600cb30a1c9398/image/%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%B5%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6%20%E1%84%89%E1%85%B5%E1%84%8F%E1%85%AF%E1%86%AB%E1%84%89%E1%85%B3%202.jpg)
+
+</details>
+
 
 ## 3. Git Flow
 
