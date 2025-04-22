@@ -1,0 +1,28 @@
+= Profile API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[profile-api]]
+== Profile API
+
+[[profile-get]]
+=== 프로필 조회
+==== HTTP Request
+include::{snippets}/profile/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/profile/http-response.adoc[]
+
+
+[[health-check]]
+=== 헬스 체크
+==== HTTP Request
+include::{snippets}/health/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/health/http-response.adoc[]
+

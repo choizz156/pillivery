@@ -1,5 +1,13 @@
 = Item API
 :doctype: book
+
+== Header
+|===
+| name | 설명
+
+| `Authorization`
+| API를 사용하기 위한 인증 키
+|===
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
@@ -11,20 +19,65 @@
 
 [[item-main]]
 === 메인 페이지 상품 조회
-operation::get-main-items[snippets='http-request,http-response,response-fields']
+==== HTTP Request
+include::{snippets}/get-main-items/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/get-main-items/http-response.adoc[]
+
+
+include::{snippets}/get-main-items/response-fields.adoc[]
 
 [[item-detail]]
 === 상품 상세 조회
-operation::get-item-detail[snippets='http-request,path-parameters,http-response,response-fields']
+==== HTTP Request
+include::{snippets}/get-item-detail/http-request.adoc[]
+
+include::{snippets}/get-item-detail/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/get-item-detail/http-response.adoc[]
+
+include::{snippets}/get-item-detail/response-fields.adoc[]
 
 [[item-discount]]
 === 할인 상품 조회
-operation::get-discount-items[snippets='http-request,request-fields,http-response,response-fields']
+==== HTTP Request
+include::{snippets}/get-discount-items/http-request.adoc[]
+
+
+include::{snippets}/get-discount-items/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/get-discount-items/http-response.adoc[]
+
+
+include::{snippets}/get-discount-items/response-fields.adoc[]
 
 [[item-category]]
 === 카테고리별 상품 조회
-operation::get-category-items[snippets='http-request,request-fields,request-parameters,http-response,response-fields']
+==== HTTP Request
+include::{snippets}/get-category-items/http-request.adoc[]
+
+include::{snippets}/get-category-items/request-fields.adoc[]
+
+==== Request Parameters
+include::{snippets}/get-category-items/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/get-category-items/http-response.adoc[]
+
+
+include::{snippets}/get-category-items/response-fields.adoc[]
 
 [[item-search]]
 === 상품 검색
-operation::search-items[snippets='http-request,request-parameters,http-response,response-fields']
+==== HTTP Request
+include::{snippets}/search-items/http-request.adoc[]
+
+include::{snippets}/search-items/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/search-items/http-response.adoc[]
+
+include::{snippets}/search-items/response-fields.adoc[]

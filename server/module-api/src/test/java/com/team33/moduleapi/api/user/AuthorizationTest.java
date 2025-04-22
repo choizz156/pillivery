@@ -1,4 +1,4 @@
-package com.team33.moduleapi.ui.user;
+package com.team33.moduleapi.api.user;
 
 import static io.restassured.RestAssured.*;
 

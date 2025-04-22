@@ -1,0 +1,88 @@
+= Review API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[review-api]]
+== Review API
+
+[[review-create]]
+=== 리뷰 작성
+==== HTTP Request
+include::{snippets}/review-create/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/review-create/request-headers.adoc[]
+
+include::{snippets}/review-create/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/review-create/http-response.adoc[]
+
+[[review-update]]
+=== 리뷰 수정
+==== HTTP Request
+include::{snippets}/review-update/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/review-update/request-headers.adoc[]
+
+include::{snippets}/review-update/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/review-update/http-response.adoc[]
+
+
+[[review-delete]]
+=== 리뷰 삭제
+==== HTTP Request
+include::{snippets}/review-delete/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/review-delete/request-headers.adoc[]
+
+==== HTTP Response
+include::{snippets}/review-delete/http-response.adoc[]
+
+
+[[review-get]]
+=== 리뷰 상세 조회
+==== HTTP Request
+include::{snippets}/review-get/http-request.adoc[]
+
+
+include::{snippets}/review-get/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/review-get/http-response.adoc[]
+
+
+
+[[review-by-item]]
+=== 상품별 리뷰 목록 조회
+==== HTTP Request
+include::{snippets}/review-by-item/http-request.adoc[]
+
+include::{snippets}/review-by-item/path-parameters.adoc[]
+
+include::{snippets}/review-by-item/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/review-by-item/http-response.adoc[]
+
+
+[[review-by-user]]
+=== 사용자별 리뷰 목록 조회
+==== HTTP Request
+include::{snippets}/review-by-user/http-request.adoc[]
+
+
+include::{snippets}/review-by-user/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/review-by-user/http-response.adoc[]
+
+

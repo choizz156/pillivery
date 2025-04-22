@@ -1,224 +1,128 @@
-[[user-create]]
+= User API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== Header
+|===
+| name | 설명
+
+| `Authorization`
+| API를 사용하기 위한 인증 키
+|===
+
+[[user-api]]
+== User API
+
+[[user-signup]]
 === 회원가입
+==== HTTP Request
+include::{snippets}/user-signup/http-request.adoc[]
 
-[[validation]]
-==== Validation
+==== Request Headers
+include::{snippets}/user-signup/request-headers.adoc[]
+
+include::{snippets}/user-signup/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-signup/http-response.adoc[]
+
+=== Request Parameters
 |===
-| path | description
-
-| email
-| `이메일 형식을 지켜야합니다. ex)test@gmail.com`
-
-| password
-| `특수문자와 숫자를 포함한 8자리 이상이어야 합니다.`
-
-| realName
-| `공백이 있어서는 안됩니다.`
-
-| phone
-| `'010-xxxx-xxxx' 형식이어야 합니다.`
-
-| displayName, city, detailAddress
-| `공백이어서는 안됩니다.`
+| Parameter | Type | Description | Required
+| username | String | 사용자 이름 | true
+| password | String | 비밀번호 | true
+| email | String | 이메일 | true
+| phone | String | 전화번호 | false
 |===
 
-==== 검증 실패 응답 예시
-
-    HTTP/1.1 400 Bad Request
-    {
-        "status": 400,
-        "customFieldErrors": [
-                                {
-                                    "field": "email",
-                                    "rejectedValue": "1234567!",
-                                    "reason": "비밀번호는 숫자+영문자+특수문자 조합으로 8자리 이상이어야 합니다."
-                                }
-                            ]
-    }
-
----
-
-
-==== HTTP Request
-include::{snippets}/user-create/http-request.adoc
-include::{snippets}/user-create/request-felds.adoc
-
-==== HTTP Response
-include::{snippets}/user-create/http-response.adoc
-include::{snippets}/user-create/response-fields.adoc
-
----
-
-=== 회원가입 예외
-[[Exception1]]
-==== 예외
+=== Response Fields
 |===
-| path | description
-
-| email
-| `이메일은 유일해야 합니다.`
-
-| displayName
-| `닉네임은 유일해야 합니다.`
-
-| phone
-| `연락처는 유일해야 합니다.`
-
+| Path | Type | Description
+| `userId` | String | 사용자 ID
+| `accessToken` | String | 접근 토큰
+| `refreshToken` | String | 갱신 토큰
 |===
----
-==== 이메일 중복
+
+[[user-oauth-more-info]]
+=== OAuth 추가정보 입력
 ==== HTTP Request
-include::{snippets}/user-error2-email/http-request.adoc[]
-include::{snippets}/user-error2-email/request-fields.adoc[]
+include::{snippets}/user-oauth-more-info/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/user-oauth-more-info/request-headers.adoc[]
+
+include::{snippets}/user-oauth-more-info/request-fields.adoc[]
 
 ==== HTTP Response
-include::{snippets}/user-error2-email/http-response.adoc[]
-include::{snippets}/user-error2-email/response-fields.adoc[]
+include::{snippets}/user-oauth-more-info/http-response.adoc[]
 
----
-==== 닉네임 중복
-
-==== HTTP Request
-include::{snippets}/user-error1-dn/http-request.adoc[]
-include::{snippets}/user-error1-dn/request-fields.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-error1-dn/http-response.adoc[]
-include::{snippets}/user-error1-dn/response-fields.adoc[]
-
----
-==== 연락처 중복
-==== HTTP Request
-include::{snippets}/user-error3-phone/http-request.adoc[]
-include::{snippets}/user-error3-phone/request-fields.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-error3-phone/http-response.adoc[]
-include::{snippets}/user-error3-phone/response-fields.adoc[]
-
-
----
-
-=== 로그인
-==== HTTP Request
-include::{snippets}/user-login/http-request.adoc[]
-include::{snippets}/user-login/request-fields.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-login/http-response.adoc[]
-
----
-
-=== 로그인 실패
-==== 이메일 오류
-==== HTTP Request
-include::{snippets}/user-login-error-email/http-request.adoc[]
-include::{snippets}/user-login-error-email/request-fields.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-login-error-email/http-response.adoc[]
-include::{snippets}/user-login-error-email/response-fields.adoc[]
-
----
-==== 비밀번호 오류
-==== HTTP Request
-include::{snippets}/user-login-error-pw/http-request.adoc[]
-include::{snippets}/user-login-error-pw/request-fields.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-login-error-pw/http-response.adoc[]
-include::{snippets}/user-login-error-pw/response-fields.adoc[]
-
----
-
-=== 로그아웃
-==== HTTP Request
-include::{snippets}/user-logout/http-request.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-logout/http-response.adoc[]
----
-=== 회원 정보 조회(일반)
-
-==== HTTP Request
-include::{snippets}/user-general/http-request.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-general/http-response.adoc[]
-include::{snippets}/user-general/response-fields.adoc[]
----
-=== 회원 정보 조회(소셜)
-==== HTTP Request
-include::{snippets}/user-social/http-request.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-social/http-response.adoc[]
-include::{snippets}/user-social/response-fields.adoc[]
----
-=== 회원 정보 수정
-==== 수정 불가 정보
+=== Request Fields
 |===
-| path | description
-
-| email
-| `이메일은 수정할 수 없습니다.`
-
-| password(소셜 로그인)
-| `소셜 로그인의 경우 비밀번호는 수정할 수 없습니다.`
-
+| Parameter | Type | Description | Required
+| name | String | 사용자 이름 | true
+| phone | String | 전화번호 | true
+| termsAgreed | Boolean | 약관 동의 여부 | true
 |===
----
+
+=== Response Fields
+|===
+| Path | Type | Description
+| `userId` | String | 사용자 ID 
+| `registrationStatus` | String | 회원가입 상태 (COMPLETED/ADDITIONAL_INFO_REQUIRED)
+| `accessToken` | String | 접근 토큰 (추가정보 입력 완료 시 제공)
+|===
+
+[[user-update]]
+=== 사용자 정보 수정
 ==== HTTP Request
 include::{snippets}/user-update/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/user-update/request-headers.adoc[]
+
+include::{snippets}/user-update/path-parameters.adoc[]
+
 include::{snippets}/user-update/request-fields.adoc[]
 
 ==== HTTP Response
 include::{snippets}/user-update/http-response.adoc[]
-include::{snippets}/user-update/response-fields.adoc[]
----
-[[Exception2]]
-=== 회원 정보 수정 예외
-|===
-| path | description
 
-| displayName
-| `닉네임은 유일해야 합니다.`
-
-| phone
-| `연락처는 유일해야 합니다.`
-|===
----
-==== 닉네임 중복
+[[user-get]]
+=== 사용자 정보 조회
 ==== HTTP Request
-include::{snippets}/user-update-error1-dn/http-request.adoc[]
-include::{snippets}/user-update-error1-dn/request-fields.adoc[]
+include::{snippets}/user-get/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/user-get/request-headers.adoc[]
+
+include::{snippets}/user-get/path-parameters.adoc[]
 
 ==== HTTP Response
-include::{snippets}/user-update-error1-dn/http-response.adoc[]
-include::{snippets}/user-update-error1-dn/response-fields.adoc[]
----
-==== 연락처 중복
+include::{snippets}/user-get/http-response.adoc[]
+
+[[user-logout]]
+=== 로그아웃
 ==== HTTP Request
-include::{snippets}/user-update-error2-phone/http-request.adoc[]
-include::{snippets}/user-update-error2-phone/request-fields.adoc[]
+include::{snippets}/user-logout/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/user-logout/request-headers.adoc[]
 
 ==== HTTP Response
-include::{snippets}/user-update-error2-phone/http-response.adoc[]
-include::{snippets}/user-update-error2-phone/response-fields.adoc[]
----
-=== 소셜 로그인 추가 정보
+include::{snippets}/user-logout/http-response.adoc[]
+
+[[user-delete]]
+=== 회원탈퇴
 ==== HTTP Request
-include::{snippets}/user-more-info/http-request.adoc[]
-include::{snippets}/user-more-info/request-fields.adoc[]
+include::{snippets}/user-delete/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/user-delete/request-headers.adoc[]
+include::{snippets}/user-delete/path-parameters.adoc[]
 
 ==== HTTP Response
-include::{snippets}/user-more-info/http-response.adoc[]
-include::{snippets}/user-more-info/response-fields.adoc[]
----
-=== 회원 탈퇴
-==== HTTP Request
-include::{snippets}/user-withdrawal/http-request.adoc[]
-
-==== HTTP Response
-include::{snippets}/user-withdrawal/http-response.adoc[]
-include::{snippets}/user-withdrawal/response-fields.adoc[]
+include::{snippets}/user-delete/http-response.adoc[]

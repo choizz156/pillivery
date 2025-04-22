@@ -1,9 +1,24 @@
 [[Cart-API]]
 = Cart API
-== 참고
-cart api
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
 
-==== 참고
+== Header
+|===
+| name | 설명
+
+| `Authorization`
+| API를 사용하기 위한 인증 키
+|===
+
+== 참고
+
+
+
 |===
 | id | number
 
@@ -14,152 +29,149 @@ cart api
 |짝수 번호 ex)2,4,6
 |===
 
-.request
+==== HTTP Request
 include::{snippets}/get-normal-cart/http-request.adoc[]
 
-.path-parameters
-include::{snippets}/get-normal-cart/path-parameters.adoc[]
 
-.request-headers
+include::{snippets}/get-normal-cart/path-parameters.adoc[]
+==== Request Headers
 include::{snippets}/get-normal-cart/request-headers.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/get-normal-cart/http-response.adoc[]
 
-.response-fields
 include::{snippets}/get-normal-cart/response-fields.adoc[]
 
 [[Cart-일반상품-추가]]
 === 일반 상품 장바구니 추가
 
-.request
+==== HTTP Request
 include::{snippets}/add-normal-cart-item/http-request.adoc[]
 
-.path-parameters
+
 include::{snippets}/add-normal-cart-item/path-parameters.adoc[]
 
-.request-parameters
+include::{snippets}/add-normal-cart-item/request-headers.adoc[]
 include::{snippets}/add-normal-cart-item/request-parameters.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/add-normal-cart-item/http-response.adoc[]
 
 [[Cart-일반상품-삭제]]
 === 일반 상품 장바구니 삭제
 
-.request
+==== HTTP Request
 include::{snippets}/delete-normal-cart-item/http-request.adoc[]
 
-.path-parameters
+
 include::{snippets}/delete-normal-cart-item/path-parameters.adoc[]
 
-.request-parameters
+
 include::{snippets}/delete-normal-cart-item/request-parameters.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/delete-normal-cart-item/http-response.adoc[]
 
 [[Cart-일반상품-수정]]
 === 일반 상품 장바구니 수정
 
-.request
+==== HTTP Request
 include::{snippets}/update-normal-cart-item/http-request.adoc[]
 
-.path-parameters
+
 include::{snippets}/update-normal-cart-item/path-parameters.adoc[]
 
-.request-parameters
+
 include::{snippets}/update-normal-cart-item/request-parameters.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/update-normal-cart-item/http-response.adoc[]
 
 [[Cart-구독상품-조회]]
 === 구독 상품 장바구니 조회
 
-.request
+==== HTTP Request
 include::{snippets}/get-subscription-cart/http-request.adoc[]
 
-.path-parameters
+
 include::{snippets}/get-subscription-cart/path-parameters.adoc[]
 
-.request-headers
+==== Request Headers
 include::{snippets}/get-subscription-cart/request-headers.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/get-subscription-cart/http-response.adoc[]
 
-.response-fields
+
 include::{snippets}/get-subscription-cart/response-fields.adoc[]
 
 [[Cart-구독상품-추가]]
 === 구독 상품 장바구니 추가
 
-.request
+==== HTTP Request
 include::{snippets}/add-subscription-cart-item/http-request.adoc[]
 
-.path-parameters
+
 include::{snippets}/add-subscription-cart-item/path-parameters.adoc[]
 
-.request-headers
+==== Request Headers
 include::{snippets}/add-subscription-cart-item/request-headers.adoc[]
 
-.request-fields
 include::{snippets}/add-subscription-cart-item/request-fields.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/add-subscription-cart-item/http-response.adoc[]
 
 [[Cart-구독상품-삭제]]
 === 구독 상품 장바구니 삭제
 
-.request
+==== HTTP Request
 include::{snippets}/delete-subscription-cart-item/http-request.adoc[]
 
-.path-parameters
+
 include::{snippets}/delete-subscription-cart-item/path-parameters.adoc[]
 
-.request-headers
+==== Request Headers
 include::{snippets}/delete-subscription-cart-item/request-headers.adoc[]
 
-.request-parameters
+
 include::{snippets}/delete-subscription-cart-item/request-parameters.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/delete-subscription-cart-item/http-response.adoc[]
 
 [[Cart-구독상품-수량-변경]]
 === 구독 상품 장바구니 수량 변경
 
-.request
+==== HTTP Request
 include::{snippets}/update-subscription-cart-quantity/http-request.adoc[]
 
-.path-parameters
+
 include::{snippets}/update-subscription-cart-quantity/path-parameters.adoc[]
 
-.request-headers
+==== Request Headers
 include::{snippets}/update-subscription-cart-quantity/request-headers.adoc[]
 
-.request-parameters
+
 include::{snippets}/update-subscription-cart-quantity/request-parameters.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/update-subscription-cart-quantity/http-response.adoc[]
 
 [[Cart-구독상품-주기-변경]]
 === 구독 상품 장바구니 주기 변경
 
-.request
+==== HTTP Request
 include::{snippets}/update-subscription-cart-period/http-request.adoc[]
 
-.path-parameters
+
 include::{snippets}/update-subscription-cart-period/path-parameters.adoc[]
 
-.request-headers
+==== Request Headers
 include::{snippets}/update-subscription-cart-period/request-headers.adoc[]
 
-.request-parameters
+
 include::{snippets}/update-subscription-cart-period/request-parameters.adoc[]
 
-.response
+==== HTTP Response
 include::{snippets}/update-subscription-cart-period/http-response.adoc[]

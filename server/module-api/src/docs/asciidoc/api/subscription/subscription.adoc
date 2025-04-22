@@ -1,0 +1,82 @@
+= Subscription API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[subscription-api]]
+== Subscription API
+
+[[subscription-first-request]]
+=== 첫 구독 결제 요청
+==== HTTP Request
+include::{snippets}/subscription-first-request/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/subscription-first-request/request-headers.adoc[]
+
+
+include::{snippets}/subscription-first-request/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/subscription-first-request/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/subscription-first-request/response-fields.adoc[]
+
+
+
+[[subscription-first-approve]]
+=== 첫 구독 결제 승인
+==== HTTP Request
+include::{snippets}/subscription-first-approve/http-request.adoc[]
+
+
+include::{snippets}/subscription-first-approve/path-parameters.adoc[]
+
+
+include::{snippets}/subscription-first-approve/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/subscription-first-approve/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/subscription-first-approve/response-fields.adoc[]
+
+[[subscription-approve]]
+=== 정기 구독 결제 승인
+==== HTTP Request
+include::{snippets}/subscription-approve/http-request.adoc[]
+include::{snippets}/subscription-approve/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/subscription-approve/http-response.adoc[]
+
+include::{snippets}/subscription-approve/response-fields.adoc[]
+
+[[subscription-change-period]]
+=== 구독 주기 변경
+==== HTTP Request
+include::{snippets}/update-subscription-cart-period/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/update-subscription-cart-period/request-headers.adoc[]
+
+include::{snippets}/update-subscription-cart-period/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/update-subscription-cart-period/http-response.adoc[]
+
+[[subscription-cancel]]
+=== 구독 취소
+==== HTTP Request
+include::{snippets}/subscription-cancel/http-request.adoc[]
+
+include::{snippets}/subscription-cancel/request-headers.adoc[]
+
+include::{snippets}/subscription-cancel/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/subscription-cancel/http-response.adoc[]

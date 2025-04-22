@@ -17,16 +17,42 @@ endif::[]
 | API를 사용하기 위한 인증 키
 |===
 
-// [[User-API]]
-// == User API
-//
-// include::api/user/user.adoc
+[[User-API]]
+== User API
+
+include::api/user/user.adoc
 
 [[Cart-API]]
 == Cart API
 
 include::api/cart/cart.adoc
 
+[[Order-API]]
+== Order API
+
+include::api/order/order.adoc
+
+[[Payment-API]]
+== Payment API
+
+include::api/payment/payment.adoc
+
 [[Item-API]]
+== Item API
+
 include::api/item/item.adoc
 
+[[Profile-API]]
+== Profile API
+
+include::api/profile/profile.adoc
+
+[[Review-API]]
+== Review API
+
+include::api/review/review.adoc
+
+[[Subscription-API]]
+== Subscription API
+
+include::api/subscription/subscription.adoc

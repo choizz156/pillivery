@@ -1,0 +1,116 @@
+= Payment API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[payment-api]]
+== Payment API
+
+[[payment-request]]
+=== 결제 요청
+==== HTTP Request
+include::{snippets}/payment-request/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/payment-request/request-headers.adoc[]
+
+==== Path Parameters
+include::{snippets}/payment-request/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/payment-request/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/payment-request/response-fields.adoc[]
+
+[[payment-subscription-request]]
+=== 최초 구독 결제 요청
+==== HTTP Request
+include::{snippets}/subscription-first-request/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/subscription-first-request/request-headers.adoc[]
+
+include::{snippets}/subscription-first-request/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/subscription-first-request/http-response.adoc[]
+
+include::{snippets}/subscription-first-request/response-fields.adoc[]
+
+[[payment-approve]]
+=== 결제 승인
+==== HTTP Request
+include::{snippets}/approve-onetime/http-request.adoc[]
+
+include::{snippets}/approve-onetime/path-parameters.adoc[]
+
+include::{snippets}/approve-onetime/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/approve-onetime/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/approve-onetime/response-fields.adoc[]
+
+[[payment-subscription-first-approve]]
+=== 첫 구독 결제 승인
+==== HTTP Request
+include::{snippets}/subscription-first-approve/http-request.adoc[]
+
+include::{snippets}/subscription-first-approve/path-parameters.adoc[]
+
+include::{snippets}/subscription-first-approve/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/subscription-first-approve/http-response.adoc[]
+
+include::{snippets}/subscription-first-approve/response-fields.adoc[]
+
+[[payment-subscription-approve]]
+=== 구독 정기 결제 승인
+==== HTTP Request
+include::{snippets}/subscription-approve/http-request.adoc[]
+
+include::{snippets}/subscription-approve/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/subscription-approve/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/subscription-approve/response-fields.adoc[]
+
+
+[[payment-refund]]
+=== 결제 환불
+==== HTTP Request
+include::{snippets}/refund-request/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/refund-request/request-headers.adoc[]
+
+include::{snippets}/refund-request/path-parameters.adoc[]
+
+include::{snippets}/refund-request/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/refund-request/http-response.adoc[]
+
+include::{snippets}/refund-request/response-fields.adoc[]
+
+[[payment-subscription-cancel]]
+=== 구독 취소
+==== HTTP Request
+include::{snippets}/subscription-cancel/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/subscription-cancel/request-headers.adoc[]
+
+include::{snippets}/subscription-cancel/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/subscription-cancel/http-response.adoc[]
+
