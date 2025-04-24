@@ -41,8 +41,7 @@ public class PayController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/{orderId}")
 	public SingleResponseDto<KaKaoPayNextUrlDto> request(
-		@PathVariable long orderId
-	) {
+			@PathVariable long orderId) {
 
 		KakaoRequestResponse requestResponse = kakaoRequestService.request(orderId);
 		processPaymentData(orderId, requestResponse);
@@ -53,8 +52,7 @@ public class PayController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/subscriptionsFirst/{subscriptionOrderId}")
 	public SingleResponseDto<KaKaoPayNextUrlDto> requestSid(
-		@PathVariable long subscriptionOrderId
-	) {
+			@PathVariable long subscriptionOrderId) {
 
 		KakaoRequestResponse requestResponse = kakaoSubscriptionRequestService.request(subscriptionOrderId);
 		processPaymentData(subscriptionOrderId, requestResponse);
@@ -64,17 +62,21 @@ public class PayController {
 
 	@GetMapping("/approve/{orderId}")
 	public SingleResponseDto<KaKaoApproveResponseDto> approveOneTime(
-		@RequestParam("pg_token") String pgToken,
-		@PathVariable Long orderId
+			@RequestParam("pg_token") String pgToken,
+			@PathVariable Long orderId
 	) {
+
+		//TODO 후에 삭제해야함. 테스트 용도
+		if (pgToken.equals("sample_pg_token_1")) {
+			paymentDataMapper.addData(orderId, "tid_sample_1");
+		}
 
 		PaymentData data = paymentDataMapper.getData(orderId);
 		KakaoApproveRequest approveOneTimeRequest = paymentMapper.toApproveOneTime(
-			data.getTid(), pgToken, data.getTargetId()
-		);
+				data.getTid(), pgToken, data.getTargetId());
 
 		KakaoApproveResponse approve = approveFacade.approveInitially(approveOneTimeRequest);
-		orderStatusService.processOneTimeStatus(orderId);
+		orderStatusService.processOneTimeApprove(orderId);
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
 	}

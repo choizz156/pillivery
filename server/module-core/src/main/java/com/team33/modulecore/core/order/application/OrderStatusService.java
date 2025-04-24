@@ -14,13 +14,14 @@ import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
 import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
+import com.team33.modulecore.core.payment.kakao.application.events.SubscriptionRegisteredEvent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class OrderStatusService {
 
@@ -29,16 +30,31 @@ public class OrderStatusService {
 	private final SubscriptionOrderService subscriptionOrderService;
 	private final CancelSubscriptionService<SubscriptionOrder> kakaoSubsCancelService;
 
-	public void processOneTimeStatus(Long orderId) {
+
+	public void processOneTimeApprove(Long orderId) {
 
 		Order order = orderFindHelper.findOrder(orderId);
+
+		publishSubscriptionOrder(order);
 
 		order.changeOrderStatus(OrderStatus.COMPLETE);
 
 		List<Long> orderedItemsId = getOrderedIds(order);
 
 		applicationContext.publishEvent(new ItemSaleCountedEvent(orderedItemsId));
-		applicationContext.publishEvent(new CartRefreshedEvent(order, orderedItemsId));
+
+		publishCartRefreshEvent(order, orderedItemsId);
+	}
+
+	public void processOneTimeStatus1(Order order) {
+
+		order.changeOrderStatus(OrderStatus.COMPLETE);
+
+		List<Long> orderedItemsId = getOrderedIds(order);
+
+		applicationContext.publishEvent(new ItemSaleCountedEvent(orderedItemsId));
+
+		publishCartRefreshEvent(order, orderedItemsId);
 	}
 
 	public void processCancel(Long orderId) {
@@ -52,6 +68,20 @@ public class OrderStatusService {
 		subscriptionOrder.changeOrderStatus(OrderStatus.SUBSCRIBE_CANCEL);
 
 		kakaoSubsCancelService.cancelSubscription(subscriptionOrder);
+	}
+
+	private void publishCartRefreshEvent(Order order, List<Long> orderedItemsId) {
+
+		if (order.isOrderedAtCart()) {
+			applicationContext.publishEvent(new CartRefreshedEvent(order, orderedItemsId));
+		}
+	}
+
+	private void publishSubscriptionOrder(Order order) {
+
+		if (order.isSubscription()) {
+			applicationContext.publishEvent(new SubscriptionRegisteredEvent(order.getId()));
+		}
 	}
 
 	private List<Long> getOrderedIds(Order order) {

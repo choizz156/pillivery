@@ -2,8 +2,11 @@ package com.team33.modulecore.core.cart.event;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.team33.modulecore.core.cart.application.CartKeySupplier;
@@ -19,21 +22,27 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CartRefreshEventHandler {
 
+	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
+
 	private final UserFindHelper userFindHelper;
 	private final MemoryCartService memoryCartService;
 
 	@Async
-	@TransactionalEventListener
+	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	public void onCartRefreshEvent(CartRefreshedEvent event) {
-		Order order = event.getOrder();
-		User user = userFindHelper.findUser(order.getUserId());
+		try {
+			Order order = event.getOrder();
+			User user = userFindHelper.findUser(order.getUserId());
 
-		if (isSubscriptionInCart(order)) {
-			refreshCart(user.getSubscriptionCartId(), event.getOrderedIds());
-			return;
+			if (isSubscriptionInCart(order)) {
+				refreshCart(user.getSubscriptionCartId(), event.getOrderedIds());
+				return;
+			}
+
+			refreshCart(user.getNormalCartId(), event.getOrderedIds());
+		}catch (Exception ex) {
+			LOGGER.warn("장바구니 정리 중 오류 발생, 무시하고 계속 진행합니다.", ex);
 		}
-
-		refreshCart(user.getNormalCartId(), event.getOrderedIds());
 	}
 
 	private boolean isSubscriptionInCart(Order order) {

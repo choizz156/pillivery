@@ -1,7 +1,5 @@
 package com.team33.modulecore.core.item.application;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +21,6 @@ public class ItemCommandService {
 	private final CachedItemManager cachedItemManager;
 	private final ItemViewBatchDao itemViewBatchDao;
 	private final ItemStarService itemStarService;
-
-	public void addSales(List<Long> orderedItemsId) {
-		orderedItemsId.forEach(itemCommandRepository::incrementSales);
-	}
 
 	public void addReviewId(Long itemId, Long reviewId, double star) {
 		itemCommandRepository
