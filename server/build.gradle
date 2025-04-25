@@ -55,6 +55,10 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-aop'
 
         implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3'
+
+        //actuator
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     }
 
     test {

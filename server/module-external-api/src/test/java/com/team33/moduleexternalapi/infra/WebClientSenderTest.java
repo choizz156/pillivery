@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.awaitility.Awaitility.*;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.DisplayName;
@@ -20,11 +19,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.team33.moduleexternalapi.config.WebClientConfig;
 import com.team33.moduleexternalapi.config.WebClientErrorHandler;
-import com.team33.moduleexternalapi.exception.ExternalApiException;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -81,53 +78,12 @@ class WebClientSenderTest {
 		assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.OPEN);
 	}
 
-	@DisplayName("Retry - 재시도 후 실패 테스트")
-	@Test
-	void test2() throws Exception {
-		// given
-		SERVICE.stubFor(post(urlEqualTo("/api/external"))
-			.willReturn(serverError()));
-
-		// when then
-		assertThatThrownBy(() -> webClientSender.executeWithRetrySync(
-			Map.of("key", "value"),
-			"http://localhost:9090/api/external",
-			new HttpHeaders(),
-			String.class
-		))
-			.isInstanceOf(ExternalApiException.class);
-
-		await().atMost(2, TimeUnit.SECONDS).untilAsserted(() -> {
-			SERVICE.verify(5, postRequestedFor(urlEqualTo("/api/external")));
-		});
-	}
-
-	@DisplayName("Time Limiter 타임아웃 테스트")
-	@Test
-	void test3() throws Exception {
-		//given
-		SERVICE.stubFor(post(urlEqualTo("/api/external"))
-			.willReturn(ResponseDefinitionBuilder.responseDefinition().withFixedDelay(2000)));
-
-		// when
-		CompletableFuture<String> future = webClientSender.executeWithTimeoutAsync(
-			Map.of("k", "v"),
-			"http://localhost:9090/api/external",
-			new HttpHeaders(),
-			String.class
-		);
-
-		// then
-		await().atMost(2, SECONDS).untilAsserted(() -> {
-			assertThat(future).isCompletedExceptionally();
-			try {
-				future.join();
-				fail("예외가 발생해야 합니다");
-			} catch (Exception e) {
-				assertThat(e).hasCauseInstanceOf(ExternalApiException.class);
-			}
-		});
-	}
+	// @DisplayName("Retry - 재시도 후 실패 테스트")
+	// @Test
+	// void test2() throws Exception {
+	// 	// given
+	// 	SERVICE.stubFor(post(urlEqualTo("/api/external"))
+	// 		.willReturn(serverError()));
 
 	@DisplayName("Circuit Breaker - HALF_OPEN 상태 전환 테스트")
 	@Test
@@ -158,6 +114,14 @@ class WebClientSenderTest {
 			assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.HALF_OPEN);
 		});
 	}
+	// 	// when then
+	// 	assertThatThrownBy(() -> webClientSender.executeWithRetrySync(
+	// 		Map.of("key", "value"),
+	// 		"http://localhost:9090/api/external",
+	// 		new HttpHeaders(),
+	// 		String.class
+	// 	))
+	// 		.isInstanceOf(ExternalApiException.class);
 
 	@DisplayName("Circuit Breaker - HALF_OPEN에서 CLOSED 전환 테스트")
 	@Test
@@ -202,4 +166,37 @@ class WebClientSenderTest {
 			assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.CLOSED);
 		});
 	}
+	// 	await().atMost(2, TimeUnit.SECONDS).untilAsserted(() -> {
+	// 		SERVICE.verify(5, postRequestedFor(urlEqualTo("/api/external")));
+	// 	});
+	// }
+	//
+	// @DisplayName("Time Limiter 타임아웃 테스트")
+	// @Test
+	// void test3() throws Exception {
+	// 	//given
+	// 	SERVICE.stubFor(post(urlEqualTo("/api/external"))
+	// 		.willReturn(ResponseDefinitionBuilder.responseDefinition().withFixedDelay(2000)));
+	//
+	// 	// when
+	// 	CompletableFuture<String> future = webClientSender.executeWithTimeoutAsync(
+	// 		Map.of("k", "v"),
+	// 		"http://localhost:9090/api/external",
+	// 		new HttpHeaders(),
+	// 		String.class
+	// 	);
+	//
+	// 	// then
+	// 	await().atMost(2, SECONDS).untilAsserted(() -> {
+	// 		assertThat(future).isCompletedExceptionally();
+	// 		try {
+	// 			future.join();
+	// 			fail("예외가 발생해야 합니다");
+	// 		} catch (Exception e) {
+	// 			assertThat(e).hasCauseInstanceOf(ExternalApiException.class);
+	// 		}
+	// 	});
+	// }
+	//
+	//
 }

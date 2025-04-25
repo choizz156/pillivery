@@ -46,7 +46,7 @@ resilience4j:
 
   retry:
     instances:
-      paymentApiClient:
+      paymentRetryApiClient:
         maxAttempts: 5
         waitDuration: 100ms
         retryExceptions:

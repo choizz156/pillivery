@@ -97,7 +97,7 @@ class OrderServiceTest {
 			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null);
 
 		//when
-		orderService.processOneTimeStatus(order.getId());
+		orderService.processOneTimeApprove(order.getId());
 
 		//then
 		verify(applicationContext, times(1)).publishEvent(any(CartRefreshedEvent.class));
@@ -124,7 +124,7 @@ class OrderServiceTest {
 			new OrderStatusService(applicationContext, new OrderFindHelper(orderCommandRepository, null), null, null);
 
 		//when
-		orderService.processOneTimeStatus(order.getId());
+		orderService.processOneTimeApprove(order.getId());
 
 		//then
 		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.COMPLETE);

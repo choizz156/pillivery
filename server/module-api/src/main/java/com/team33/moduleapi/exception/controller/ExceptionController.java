@@ -81,7 +81,6 @@ public class ExceptionController {
 	@ExceptionHandler(DataSaveException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiErrorResponse dataSaveExceptionHandler(DataSaveException e) {
-
 		LOGGER.info("DataSaveException => {}", e.getMessage());
 		return ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 	}
@@ -114,10 +113,14 @@ public class ExceptionController {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiErrorResponse runtimeExceptionHandler(RuntimeException e) {
 
-		LOGGER.error("runtime exception :: {}, stack trace :: {}, {}",
-			e.getLocalizedMessage(),
-			e.getStackTrace()[0].getClassName(),
-			e.getStackTrace()[0]
+
+		StackTraceElement top = e.getStackTrace()[0];
+		LOGGER.error("Exception at {}.{}({}:{}): {}",
+			top.getClassName(),
+			top.getMethodName(),
+			top.getFileName(),
+			top.getLineNumber(),
+			e.getMessage()
 		);
 
 		return ApiErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");

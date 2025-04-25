@@ -22,17 +22,17 @@ spring:
       port: 6380
 
   datasource:
-    main:
-      username: admin
-      password: 1234
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://192.168.0.6:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
-
 #    main:
-#      username: root
+#      username: admin
 #      password: 1234
 #      driver-class-name: com.mysql.cj.jdbc.Driver
-#      jdbc-url: jdbc:mysql://localhost:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
+#      jdbc-url: jdbc:mysql://192.168.0.6:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
+
+    main:
+      username: root
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
 #    main:
 #      jdbc-url: jdbc:h2:mem:testdb
 #      username: sa
@@ -71,11 +71,15 @@ spring:
 management:
   server:
     port: 8080
+  health:
+    circuitbreakers:
+      enabled: true
+
   endpoint:
     shutdown:
       enabled: true
     health:
-      show-components: always
+      show-details: always
     metrics:
       enabled: true
     prometheus:
@@ -86,8 +90,73 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, metrics, prometheus, caches
+        include: health, info, metrics, prometheus, caches, resilience4j.circuitbreakers
 
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 40
+        minimumNumberOfCalls: 20
+        failureRateThreshold: 75 # 재시도 횟수도 포함하기 때문에 더 넉넉하게 잡아야됨.
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - com.team33.moduleexternalapi.exception.ExternalApiException
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - java.net.ConnectException
+          - io.netty.handler.timeout.ReadTimeoutException
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+
+    instances:
+      paymentApiClient:
+        base-config: default
+
+
+  timelimiter:
+    instances:
+      paymentApiClient:
+        timeoutDuration: 5s
+        cancelRunningFuture: true
+
+  retry:
+    instances:
+      paymentRetryApiClient:
+        maxAttempts: 3
+        waitDuration: 500ms
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - io.netty.handler.timeout.ReadTimeoutException
+          - java.net.ConnectException
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - com.team33.moduleexternalapi.exception.ExternalApiException
+        ignoreExceptions:
+          - com.team33.moduleexternalapi.exception.PaymentApiException
+
+      paymentLookUpClient:
+        maxAttempts: 5
+        waitDuration: 1000ms
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - java.net.ConnectException
+        ignoreExceptions:
+          - com.team33.moduleexternalapi.exception.PaymentApiException
 
 jwt:
   secret-key: sdfsdfsdfesdfdf11113456645454534545451
@@ -97,10 +166,13 @@ jwt:
 logging:
   config: classpath:logback-local.xml
 
+
   level:
     org:
       hibernate:
         SQL: DEBUG
+#    io.github.resilience4j.circuitbreaker: DEBUG
+
 
 
 
