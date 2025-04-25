@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -27,8 +26,7 @@ public class CartRefreshEventHandler {
 	private final UserFindHelper userFindHelper;
 	private final MemoryCartService memoryCartService;
 
-	@Async
-	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void onCartRefreshEvent(CartRefreshedEvent event) {
 		try {
 			Order order = event.getOrder();

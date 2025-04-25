@@ -41,7 +41,6 @@ public class PayController {
 			@PathVariable long orderId) {
 
 		KakaoRequestResponse requestResponse = kakaoPaymentFacade.request(orderId);
-		System.out.println(requestResponse);
 
 		processPaymentData(orderId, requestResponse);
 
