@@ -9,6 +9,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.application.SubscriptionOrderService;
@@ -39,6 +41,7 @@ public class SubscriptionRegisterHandler {
 
 	@Async
 	@DistributedLock(key = "'subscription:registered:' + #event.orderId")
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@EventListener
 	public void onEventSet(SubscriptionRegisteredEvent event) {
 
