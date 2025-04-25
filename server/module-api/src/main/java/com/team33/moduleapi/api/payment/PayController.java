@@ -64,11 +64,6 @@ public class PayController {
 			@PathVariable Long orderId
 	) {
 
-		//TODO 후에 삭제해야함. 테스트 용도
-		if (pgToken.equals("sample_pg_token_1")) {
-			paymentDataMapper.addData(orderId, "tid_sample_1");
-		}
-
 		PaymentData data = paymentDataMapper.getData(orderId);
 		KakaoApproveRequest approveOneTimeRequest = paymentMapper.toApproveOneTime(
 				data.getTid(), pgToken, data.getTargetId());

@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
-import com.team33.modulecore.exception.DataSaveException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +32,6 @@ public class OrderPaymentCodeService {
 			order.addTid(tid);
 		} catch (DataAccessException e) {
 			log.error("orderId = {} :: lost tid = {}", orderId, tid);
-			throw new DataSaveException(e.getMessage());
 		}
 	}
 
@@ -44,7 +42,6 @@ public class OrderPaymentCodeService {
 				subscriptionOrder.addSid(sid);
 			} catch (DataAccessException e) {
 				log.error("subscriptionOrderId = {} :: lost sid = {}", subscriptionOrder.getId(), sid);
-				throw new DataSaveException(e.getMessage());
 			}
 		});
 	}
