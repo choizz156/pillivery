@@ -1,18 +1,21 @@
 package com.team33.modulecore.security.application;
 
-
-import com.team33.modulecore.security.infra.JwtTokenProvider;
-import com.team33.modulecore.security.repository.RefreshTokenRepository;
-import com.team33.modulecore.exception.BusinessLogicException;
-import com.team33.modulecore.exception.ExceptionCode;
-import com.team33.modulecore.core.user.domain.entity.User;
-import com.team33.modulecore.core.user.domain.repository.UserRepository;
 import java.util.Optional;
+
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.core.user.domain.repository.UserRepository;
+import com.team33.modulecore.exception.BusinessLogicException;
+import com.team33.modulecore.exception.ExceptionCode;
+import com.team33.modulecore.security.domain.RefreshTokenRepository;
+import com.team33.modulecore.security.infra.JwtTokenProvider;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,7 +42,7 @@ public class ResponseTokenService {
         response.setHeader("Authorization", "Bearer " + token);
     }
 
-    public Optional<String> checkToken(final String email) {
+    public String checkToken(final String email) {
         return refreshTokenRepository.get(email);
     }
 

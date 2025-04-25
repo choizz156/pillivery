@@ -1,16 +1,18 @@
-package com.team33.modulecore.security.infra.handler;
+package com.team33.modulecore.security.application.handler;
 
-
-import com.team33.modulecore.security.domain.UserDetailsEntity;
-import com.team33.modulecore.security.application.ResponseTokenService;
-import com.team33.modulecore.core.user.domain.entity.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.security.application.ResponseTokenService;
+import com.team33.modulecore.security.domain.UserDetailsEntity;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j

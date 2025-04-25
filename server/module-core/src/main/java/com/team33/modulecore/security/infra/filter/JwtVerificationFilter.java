@@ -74,7 +74,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private boolean isDelegatePossible(final HttpServletRequest request, final String refreshJws) {
         var subject = (String) verifyJws(request, refreshJws).get("sub");
         var refreshToken = responseTokenService.checkToken(subject);
-        if (refreshToken.isPresent()) {
+
+        if (!refreshToken.isBlank()) {
             request.setAttribute("refresh", subject);
             return true;
         }

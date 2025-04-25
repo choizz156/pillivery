@@ -27,10 +27,6 @@ dependencies {
     //password-seucirty
     implementation 'org.springframework.security:spring-security-crypto'
 
-    //expiringMap
-    implementation 'net.jodah:expiringmap:0.5.11'
-
-    //cache
     implementation 'com.github.ben-manes.caffeine:guava:3.2.0'
 
     //fixuture-monkey

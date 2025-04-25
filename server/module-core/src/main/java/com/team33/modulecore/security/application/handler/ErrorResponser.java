@@ -1,4 +1,4 @@
-package com.team33.modulecore.security.infra.handler;
+package com.team33.modulecore.security.application.handler;
 
 import java.io.IOException;
 

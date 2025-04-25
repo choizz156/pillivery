@@ -13,13 +13,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulecore.security.application.LogoutService;
 import com.team33.modulecore.security.application.ResponseTokenService;
+import com.team33.modulecore.security.application.handler.ErrorResponser;
+import com.team33.modulecore.security.application.handler.UserAccessDeniedHandler;
+import com.team33.modulecore.security.application.handler.UserAuthFailureHandler;
+import com.team33.modulecore.security.application.handler.UserAuthenticationEntryPoint;
+import com.team33.modulecore.security.application.handler.UserOAuthSuccessHandler;
+import com.team33.modulecore.security.domain.RefreshTokenRepository;
 import com.team33.modulecore.security.infra.JwtTokenProvider;
-import com.team33.modulecore.security.infra.handler.ErrorResponser;
-import com.team33.modulecore.security.infra.handler.UserAccessDeniedHandler;
-import com.team33.modulecore.security.infra.handler.UserAuthFailureHandler;
-import com.team33.modulecore.security.infra.handler.UserAuthenticationEntryPoint;
-import com.team33.modulecore.security.infra.handler.UserOAuthSuccessHandler;
-import com.team33.modulecore.security.repository.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 
