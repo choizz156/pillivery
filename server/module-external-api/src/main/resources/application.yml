@@ -1,6 +1,7 @@
 spring:
-  profiles:
-    active: circuit-breaker
+  config:
+    activate:
+      on-profile: local
 
 resilience4j:
   circuitbreaker:
@@ -9,15 +10,13 @@ resilience4j:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
+        failureRateThreshold: 90
         minimumNumberOfCalls: 5
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
         recordExceptions:
+          - org.springframework.web.reactive.function.client.WebClientRequestException
           - org.springframework.web.client.HttpServerErrorException
-          - org.springframework.web.client.ResourceAccessException
-          - java.io.IOException
           - java.util.concurrent.TimeoutException
           - java.net.ConnectException
 
@@ -31,7 +30,7 @@ resilience4j:
     instances:
       paymentApiClient:
         maxAttempts: 3
-        waitDuration: 1000ms
+        waitDuration: 2000ms
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
         retryExceptions:
@@ -39,6 +38,7 @@ resilience4j:
           - org.springframework.web.client.ResourceAccessException
           - java.io.IOException
           - java.util.concurrent.TimeoutException
+          - io.netty.handler.timeout.ReadTimeoutException
           - java.net.ConnectException
         ignoreExceptions:
           - com.team33.moduleexternalapi.exception.PaymentApiException

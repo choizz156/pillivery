@@ -45,14 +45,14 @@ spring:
         registration:
           google:
             client-id: 606086322984-lusr30r8j649fjrc12ta8sagdq6nh57s.apps.googleusercontent.com
-            client-secret: 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
+            client-secret: sdfsdfsdfsdfsd
             scope:
               - email
               - profile
 
           kakao:
             client-id: bf330f4d3abf90b27373ed901544a58b
-            client-secret: CaYT5uTksrMHIXPt8fM2EnFm9ISq0k7i
+            client-secret: sdfsdfsdfsdfsd
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             scope:
               - profile_nickname
