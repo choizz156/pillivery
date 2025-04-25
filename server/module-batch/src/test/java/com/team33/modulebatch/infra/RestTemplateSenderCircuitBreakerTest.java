@@ -40,7 +40,7 @@ class RestTemplateSenderCircuitBreakerTest {
 	@RegisterExtension
 	static WireMockExtension SERVICE = WireMockExtension.newInstance()
 		.options(WireMockConfiguration.wireMockConfig()
-			.port(9090))
+			.port(9898))
 		.build();
 
 	@Autowired
@@ -62,7 +62,7 @@ class RestTemplateSenderCircuitBreakerTest {
 			try {
 				restTemplateSender.sendToPost(
 					"1",
-					"http://localhost:9090/api/external",
+					"http://localhost:9898/api/external",
 					new HttpHeaders(),
 					String.class
 				);
@@ -82,7 +82,7 @@ class RestTemplateSenderCircuitBreakerTest {
 			.willReturn(serverError()));
 
 		assertThatThrownBy(
-			() -> restTemplateSender.executeWithRetry("1", "http://localhost:9090/api/external", new HttpHeaders(),
+			() -> restTemplateSender.executeWithRetry("1", "http://localhost:9898/api/external", new HttpHeaders(),
 				String.class))
 			.isInstanceOf(SubscriptionFailException.class);
 
@@ -105,7 +105,7 @@ class RestTemplateSenderCircuitBreakerTest {
 			try {
 				restTemplateSender.sendToPost(
 					"1",
-					"http://localhost:9090/api/external",
+					"http://localhost:9898/api/external",
 					new HttpHeaders(),
 					String.class
 				);
@@ -137,7 +137,7 @@ class RestTemplateSenderCircuitBreakerTest {
 			try {
 				restTemplateSender.sendToPost(
 					"1",
-					"http://localhost:9090/api/external",
+					"http://localhost:9898/api/external",
 					new HttpHeaders(),
 					String.class
 				);
@@ -156,7 +156,7 @@ class RestTemplateSenderCircuitBreakerTest {
 
 		restTemplateSender.sendToPost(
 			"1",
-			"http://localhost:9090/api/external",
+			"http://localhost:9898/api/external",
 			new HttpHeaders(),
 			String.class
 		);

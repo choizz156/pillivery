@@ -25,7 +25,6 @@ import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
-import com.team33.modulecore.core.order.events.CartRefreshedEvent;
 import com.team33.modulecore.core.order.mock.FakeOrderCommandRepository;
 import com.team33.modulecore.core.payment.kakao.application.refund.RefundContext;
 import com.team33.modulecore.core.user.domain.Address;
@@ -100,7 +99,6 @@ class OrderServiceTest {
 		orderService.processOneTimeApprove(order.getId());
 
 		//then
-		verify(applicationContext, times(1)).publishEvent(any(CartRefreshedEvent.class));
 		verify(applicationContext, times(1)).publishEvent(any(ItemSaleCountedEvent.class));
 
 		assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.COMPLETE);

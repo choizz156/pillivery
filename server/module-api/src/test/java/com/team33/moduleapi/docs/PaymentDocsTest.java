@@ -28,8 +28,6 @@ import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.payment.kakao.application.KakaoPaymentFacade;
-import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestService;
-import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubscriptionRequestService;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
@@ -40,8 +38,6 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 @ExtendWith({ RestDocumentationExtension.class, MockitoExtension.class })
 public class PaymentDocsTest {
 
-	@Mock
-	private KakaoRequestService kakaoRequestService;
 
 	@Mock
 	private KakaoPaymentFacade kakaoPaymentFacade;
@@ -55,8 +51,6 @@ public class PaymentDocsTest {
 	@Mock
 	private OrderStatusService orderStatusService;
 
-	@Mock
-	private KakaoSubscriptionRequestService kakaoSubscriptionRequestService;
 
 	@Mock
 	private OrderPaymentCodeService paymentCodeService;
@@ -129,7 +123,7 @@ public class PaymentDocsTest {
 				.set("next_redirect_pc_url", "http://subscription.url")
 				.sample();
 
-		given(kakaoPaymentFacade.request(anyLong())).willReturn(response);
+		given(kakaoPaymentFacade.requestSubscription(anyLong())).willReturn(response);
 
 		RestAssuredMockMvc
 				.given()
