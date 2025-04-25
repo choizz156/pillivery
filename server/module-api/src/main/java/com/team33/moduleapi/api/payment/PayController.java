@@ -17,8 +17,7 @@ import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.moduleapi.response.SingleResponseDto;
 import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
-import com.team33.modulecore.core.payment.domain.request.RequestService;
-import com.team33.modulecore.core.payment.kakao.application.approve.KakaoApproveFacade;
+import com.team33.modulecore.core.payment.kakao.application.KakaoPaymentFacade;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
@@ -30,20 +29,20 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class PayController {
 
-	private final KakaoApproveFacade approveFacade;
+	private final KakaoPaymentFacade kakaoPaymentFacade;
 	private final PaymentMapper paymentMapper;
 	private final PaymentDataMapper paymentDataMapper;
 	private final OrderStatusService orderStatusService;
 	private final OrderPaymentCodeService orderPaymentCodeService;
-	private final RequestService<KakaoRequestResponse, Long> kakaoRequestService;
-	private final RequestService<KakaoRequestResponse, Long> kakaoSubscriptionRequestService;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/{orderId}")
 	public SingleResponseDto<KaKaoPayNextUrlDto> request(
 			@PathVariable long orderId) {
 
-		KakaoRequestResponse requestResponse = kakaoRequestService.request(orderId);
+		KakaoRequestResponse requestResponse = kakaoPaymentFacade.request(orderId);
+		System.out.println(requestResponse);
+
 		processPaymentData(orderId, requestResponse);
 
 		return new SingleResponseDto<>(KaKaoPayNextUrlDto.from(requestResponse));
@@ -54,7 +53,7 @@ public class PayController {
 	public SingleResponseDto<KaKaoPayNextUrlDto> requestSid(
 			@PathVariable long subscriptionOrderId) {
 
-		KakaoRequestResponse requestResponse = kakaoSubscriptionRequestService.request(subscriptionOrderId);
+		KakaoRequestResponse requestResponse = kakaoPaymentFacade.requestSubscription(subscriptionOrderId);
 		processPaymentData(subscriptionOrderId, requestResponse);
 
 		return new SingleResponseDto<>(KaKaoPayNextUrlDto.from(requestResponse));
@@ -75,7 +74,7 @@ public class PayController {
 		KakaoApproveRequest approveOneTimeRequest = paymentMapper.toApproveOneTime(
 				data.getTid(), pgToken, data.getTargetId());
 
-		KakaoApproveResponse approve = approveFacade.approveInitially(approveOneTimeRequest);
+		KakaoApproveResponse approve = kakaoPaymentFacade.approveInitially(approveOneTimeRequest);
 		orderStatusService.processOneTimeApprove(orderId);
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approve));
@@ -90,7 +89,7 @@ public class PayController {
 		KakaoApproveRequest approveSidRequest = paymentMapper.toApproveSubscribe(data.getTid(), pgToken,
 				data.getTargetId());
 
-		KakaoApproveResponse approveResponse = approveFacade.approveSid(approveSidRequest);
+		KakaoApproveResponse approveResponse = kakaoPaymentFacade.approveSid(approveSidRequest);
 		orderPaymentCodeService.addSid(subscriptionOrderId, approveResponse.getSid());
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(approveResponse));
@@ -100,7 +99,7 @@ public class PayController {
 	public SingleResponseDto<KaKaoApproveResponseDto> subscription(
 			@PathVariable Long subscriptionOrderId) {
 
-		KakaoApproveResponse kaKaoApiApproveResponse = approveFacade.approveSubscription(subscriptionOrderId);
+		KakaoApproveResponse kaKaoApiApproveResponse = kakaoPaymentFacade.approveSubscription(subscriptionOrderId);
 
 		return new SingleResponseDto<>(KaKaoApproveResponseDto.from(kaKaoApiApproveResponse));
 	}
