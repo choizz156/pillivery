@@ -52,7 +52,7 @@ class KaKaoApproveTemplateTest {
 
 		when(kakaoApproveClient.send(
 			eq(params),
-			eq("https://open-api.kakaopay.com/online/v1/payment/approve"))
+			eq("https://accommodate-boating-losses-attribute.trycloudflare.com/online/v1/payment/approve"))
 		)
 			.thenReturn(approveResponse);
 
@@ -63,7 +63,7 @@ class KaKaoApproveTemplateTest {
 		verify(kakaoApproveTemplate, times(1)).getApproveParams(request);
 		verify(kakaoApproveClient, times(1)).send(
 			eq(params),
-			eq("https://open-api.kakaopay.com/online/v1/payment/approve")
+			eq("https://accommodate-boating-losses-attribute.trycloudflare.com/online/v1/payment/approve")
 		);
 		assertThat(response).isEqualTo(approveResponse);
 	}
