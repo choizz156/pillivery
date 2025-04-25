@@ -1,4 +1,4 @@
-package com.team33.modulecore.core.payment.kakao.application.approve;
+package com.team33.modulecore.core.payment.kakao.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -6,42 +6,43 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 
-import com.team33.modulecore.core.common.OrderFindHelper;
 import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.domain.approve.OneTimeApproveService;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
-import com.team33.modulecore.core.payment.kakao.application.events.SubscriptionRegisteredEvent;
+import com.team33.modulecore.core.payment.domain.request.RequestService;
+import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestService;
+import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubscriptionRequestService;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
+import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 
-class KakaoApproveFacadeTest {
+class KakaoPaymentFacadeTest {
 
 	private SubscriptionApproveService<KakaoApproveResponse, SubscriptionOrder> kakaoSubsApproveService;
 	private OneTimeApproveService<KakaoApproveResponse> kakaoOneTimeApproveService;
-	private OrderFindHelper orderFindHelper;
 	private SubscriptionOrderService subscriptionOrderService;
 	private ApplicationEventPublisher eventPublisher;
-	private KakaoApproveFacade kakaoApproveFacade;
+	private RequestService<KakaoRequestResponse, Long> kakaoRequestService;
+	private RequestService<KakaoRequestResponse, Long> kakaoSubscriptionRequestService;
+	private KakaoPaymentFacade kakaoPaymentFacade;
 
 	@BeforeEach
 	void setUp() {
 		kakaoSubsApproveService = mock(SubscriptionApproveService.class);
 		kakaoOneTimeApproveService = mock(OneTimeApproveService.class);
-		orderFindHelper = mock(OrderFindHelper.class);
 		subscriptionOrderService = mock(SubscriptionOrderService.class);
-		eventPublisher = mock(ApplicationEventPublisher.class);
-
-		kakaoApproveFacade = new KakaoApproveFacade(
+		kakaoRequestService = mock(KakaoRequestService.class);
+		kakaoSubscriptionRequestService = mock(KakaoSubscriptionRequestService.class);
+		kakaoPaymentFacade = new KakaoPaymentFacade(
 			kakaoSubsApproveService,
 			kakaoOneTimeApproveService,
-			orderFindHelper,
 			subscriptionOrderService,
-			eventPublisher
+			kakaoRequestService,
+			kakaoSubscriptionRequestService
 		);
 	}
 
@@ -54,24 +55,16 @@ class KakaoApproveFacadeTest {
 		Order order = mock(Order.class);
 		KakaoApproveResponse approveResponse = new KakaoApproveResponse();
 
-		when(orderFindHelper.findOrder(orderId)).thenReturn(order);
 		when(order.isSubscription()).thenReturn(true);
 		when(order.getId()).thenReturn(orderId);
 		when(kakaoOneTimeApproveService.approveOneTime(request)).thenReturn(approveResponse);
 
-		ArgumentCaptor<SubscriptionRegisteredEvent> eventCaptor =
-			ArgumentCaptor.forClass(SubscriptionRegisteredEvent.class);
 
 		// when
-		KakaoApproveResponse response = kakaoApproveFacade.approveInitially(request);
+		KakaoApproveResponse response = kakaoPaymentFacade.approveInitially(request);
 
 		// then
-		verify(eventPublisher, times(1)).publishEvent(eventCaptor.capture());
-		assertThat(eventCaptor.getValue().getOrderId()).isEqualTo(1L);
 		assertThat(response).isEqualTo(approveResponse);
-
-		SubscriptionRegisteredEvent event = eventCaptor.getValue();
-		assertThat(event.getOrderId()).isEqualTo(orderId);
 	}
 
 	@Test
@@ -86,7 +79,7 @@ class KakaoApproveFacadeTest {
 		when(kakaoSubsApproveService.approveSubscribe(subscriptionOrder)).thenReturn(expectedResponse);
 
 		// when
-		KakaoApproveResponse response = kakaoApproveFacade.approveSubscription(subscriptionOrderId);
+		KakaoApproveResponse response = kakaoPaymentFacade.approveSubscription(subscriptionOrderId);
 
 		// then
 		verify(subscriptionOrderService, times(1)).findById(subscriptionOrderId);
@@ -105,7 +98,7 @@ class KakaoApproveFacadeTest {
 		when(kakaoSubsApproveService.approveInitially(request)).thenReturn(expectedResponse);
 
 		// when
-		KakaoApproveResponse response = kakaoApproveFacade.approveSid(request);
+		KakaoApproveResponse response = kakaoPaymentFacade.approveSid(request);
 
 		// then
 		verify(kakaoSubsApproveService, times(1)).approveInitially(request);

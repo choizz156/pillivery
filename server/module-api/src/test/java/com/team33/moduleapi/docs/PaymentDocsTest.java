@@ -27,7 +27,7 @@ import com.team33.moduleapi.api.payment.mapper.PaymentDataMapper;
 import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
-import com.team33.modulecore.core.payment.kakao.application.approve.KakaoApproveFacade;
+import com.team33.modulecore.core.payment.kakao.application.KakaoPaymentFacade;
 import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestService;
 import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubscriptionRequestService;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
@@ -44,7 +44,7 @@ public class PaymentDocsTest {
 	private KakaoRequestService kakaoRequestService;
 
 	@Mock
-	private KakaoApproveFacade approveFacade;
+	private KakaoPaymentFacade kakaoPaymentFacade;
 
 	@Mock
 	private PaymentMapper paymentMapper;
@@ -67,13 +67,12 @@ public class PaymentDocsTest {
 	void setUp(RestDocumentationContextProvider restDocumentation) {
 
 		PayController payController = new PayController(
-			approveFacade,
+			kakaoPaymentFacade,
 			paymentMapper,
 			paymentDataMapper,
 			orderStatusService,
-			paymentCodeService,
-			kakaoRequestService,
-			kakaoSubscriptionRequestService);
+			paymentCodeService
+		);
 		
 		mockMvc = MockMvcBuilders.standaloneSetup(payController)
 			.apply(documentationConfiguration(restDocumentation)
@@ -95,7 +94,7 @@ public class PaymentDocsTest {
 				.set("next_redirect_pc_url", "http://test.url")
 				.sample();
 
-		given(kakaoRequestService.request(anyLong())).willReturn(response);
+		given(kakaoPaymentFacade.request(anyLong())).willReturn(response);
 
 		doNothing().when(paymentDataMapper).addData(anyLong(), anyString());
 		doNothing().when(paymentCodeService).addTid(anyLong(), anyString());
@@ -130,7 +129,7 @@ public class PaymentDocsTest {
 				.set("next_redirect_pc_url", "http://subscription.url")
 				.sample();
 
-		given(kakaoSubscriptionRequestService.request(anyLong())).willReturn(response);
+		given(kakaoPaymentFacade.request(anyLong())).willReturn(response);
 
 		RestAssuredMockMvc
 				.given()
@@ -172,7 +171,7 @@ public class PaymentDocsTest {
 				.amount(KakaoApproveResponse.Amount.builder().total(10000).vat(0).discount(0).tax_free(0).build())
 				.build();
 
-		when(approveFacade.approveInitially(any(KakaoApproveRequest.class))).thenReturn(kakaoApproveResponse);
+		when(kakaoPaymentFacade.approveInitially(any(KakaoApproveRequest.class))).thenReturn(kakaoApproveResponse);
 
 		RestAssuredMockMvc
 				.given()
@@ -233,7 +232,7 @@ public class PaymentDocsTest {
 				.amount(KakaoApproveResponse.Amount.builder().total(10000).vat(0).discount(0).tax_free(0).build())
 				.build();
 
-		when(approveFacade.approveSid(any(KakaoApproveRequest.class))).thenReturn(kakaoApproveResponse);
+		when(kakaoPaymentFacade.approveSid(any(KakaoApproveRequest.class))).thenReturn(kakaoApproveResponse);
 		doNothing().when(paymentCodeService).addSid(anyLong(), anyString());
 
 		RestAssuredMockMvc
@@ -288,7 +287,7 @@ public class PaymentDocsTest {
 				.payload("test_payload")
 				.amount(KakaoApproveResponse.Amount.builder().total(10000).vat(0).discount(0).tax_free(0).build())
 				.build();
-		given(approveFacade.approveSubscription(anyLong())).willReturn(kakaoApproveResponse);
+		given(kakaoPaymentFacade.approveSubscription(anyLong())).willReturn(kakaoApproveResponse);
 
 		RestAssuredMockMvc
 				.when()

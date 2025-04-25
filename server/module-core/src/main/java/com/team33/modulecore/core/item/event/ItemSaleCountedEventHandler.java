@@ -16,9 +16,11 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.team33.modulecore.core.item.domain.repository.ItemSalesBatchDao;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Getter
 @EnableScheduling
 @Service
 public class ItemSaleCountedEventHandler {
@@ -26,7 +28,6 @@ public class ItemSaleCountedEventHandler {
 	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private final ItemSalesBatchDao itemSalesBatchDao;
-
 	private final ConcurrentHashMap<Long, Long> saleCounts = new ConcurrentHashMap<>();
 
 	@Async

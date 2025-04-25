@@ -23,9 +23,8 @@ import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
-import com.team33.modulecore.core.payment.kakao.application.approve.KakaoApproveFacade;
+import com.team33.modulecore.core.payment.kakao.application.KakaoPaymentFacade;
 import com.team33.modulecore.core.payment.kakao.application.request.KakaoRequestService;
-import com.team33.modulecore.core.payment.kakao.application.request.KakaoSubscriptionRequestService;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
@@ -37,9 +36,8 @@ import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PaymentAcceptanceTest extends ApiTest {
 
-	private KakaoApproveFacade approveFacade;
+	private KakaoPaymentFacade approveFacade;
 	private KakaoRequestService kakaoRequestService;
-	private KakaoSubscriptionRequestService kakaoSubscriptionRequestService;
 	private MockMvcRequestSpecification given;
 
 	@Autowired
@@ -61,8 +59,7 @@ class PaymentAcceptanceTest extends ApiTest {
 	void beforeAll() {
 
 		kakaoRequestService = mock(KakaoRequestService.class);
-		kakaoSubscriptionRequestService = mock(KakaoSubscriptionRequestService.class);
-		approveFacade = mock(KakaoApproveFacade.class);
+		approveFacade = mock(KakaoPaymentFacade.class);
 
 		given = RestAssuredMockMvc.given()
 			.mockMvc(
@@ -72,9 +69,7 @@ class PaymentAcceptanceTest extends ApiTest {
 						paymentMapper,
 						paymentDataMapper,
 						orderStatusService,
-						paymentCodeService,
-						kakaoRequestService,
-						kakaoSubscriptionRequestService
+						paymentCodeService
 					)
 				).build()
 			).log().all();
@@ -103,7 +98,7 @@ class PaymentAcceptanceTest extends ApiTest {
 			.set("next_redirect_pc_url", "url")
 			.sample();
 
-		given(kakaoRequestService.request(anyLong())).willReturn(sample);
+		given(approveFacade.request(anyLong())).willReturn(sample);
 
 		//@formatter:off
             given
@@ -129,7 +124,7 @@ class PaymentAcceptanceTest extends ApiTest {
 			.set("next_redirect_pc_url", "url")
 			.sample();
 
-		given(kakaoRequestService.request(anyLong())).willReturn(sample);
+		given(approveFacade.request(anyLong())).willReturn(sample);
 
 		//@formatter:off
 		given

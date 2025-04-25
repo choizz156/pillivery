@@ -34,9 +34,4 @@ public class FakeItemCommandRepository implements ItemCommandRepository {
 			items.add(save(entity));
 		}
 	}
-
-	@Override
-	public void incrementSales(Long itemId) {
-	}
-
 }
