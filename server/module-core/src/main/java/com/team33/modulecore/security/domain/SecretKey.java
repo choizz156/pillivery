@@ -1,13 +1,15 @@
-package com.team33.modulecore.security.infra;
+package com.team33.modulecore.security.domain;
+
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Component
 public class SecretKey {

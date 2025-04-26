@@ -23,7 +23,6 @@ public class LogoutRedisDao {
 	}
 
 	public boolean exists(String token) {
-
 		RBucket<String> bucket = redissonClient.getBucket(KEY_PREFIX + token);
 		return bucket.isExists();
 	}

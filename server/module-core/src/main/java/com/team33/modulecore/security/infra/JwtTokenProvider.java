@@ -1,46 +1,48 @@
 package com.team33.modulecore.security.infra;
 
-
-import com.team33.modulecore.core.user.domain.entity.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.team33.modulecore.core.user.domain.entity.User;
+import com.team33.modulecore.security.domain.SecretKey;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
 
+    private final SecretKey secretKey;
     @Getter
     @Value("${jwt.access-token-expiration-minutes}")
     private int accessTokenExpirationMinutes;
-
     @Getter
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenExpirationMinutes;
 
-    private final SecretKey secretKey;
-
     public String createAccessToken(
         Map<String, Object> claims,
-        String subject,
+        String email,
         Date expiration,
         Key key
     ) {
         return Jwts.builder()
             .setClaims(claims)
-            .setSubject(subject)
+            .setSubject(email)
             .setExpiration(expiration)
             .setIssuedAt(Calendar.getInstance().getTime())
             .signWith(key)
@@ -48,12 +50,12 @@ public class JwtTokenProvider {
     }
 
     public String createRefreshToken(
-        String subject,
+        String email,
         Date expiration,
         Key key
     ) {
         return Jwts.builder()
-            .setSubject(subject)
+            .setSubject(email)
             .setExpiration(expiration)
             .setIssuedAt(Calendar.getInstance().getTime())
             .signWith(key)
@@ -83,11 +85,11 @@ public class JwtTokenProvider {
         claims.put("username", user.getEmail());
         claims.put("roles", user.getRoles().name());
 
-        String subject = user.getEmail();
+        String email = user.getEmail();
         Date expiration = getExpiration(accessTokenExpirationMinutes);
         Key key = secretKey.getSecretKey();
 
-        return createAccessToken(claims, subject, expiration, key);
+        return createAccessToken(claims, email, expiration, key);
     }
 
     public String delegateRefreshToken(User user) {

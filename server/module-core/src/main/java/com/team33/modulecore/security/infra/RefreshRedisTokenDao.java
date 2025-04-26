@@ -16,20 +16,30 @@ import lombok.RequiredArgsConstructor;
 @Repository
 public class RefreshRedisTokenDao implements RefreshTokenRepository {
 
-    private static final long EXPIRE_TIME = 7;
-    private static final String KEY_PREFIX = "refresh_token:";
+	private static final long EXPIRE_TIME = 7;
+	private static final String KEY_PREFIX = "refresh_token:";
 
-    private final RedissonClient redissonClient;
+	private final RedissonClient redissonClient;
 
-    public void save(String email, String refreshToken) {
-        RBucket<String> bucket = redissonClient.getBucket(KEY_PREFIX + email);
-        bucket.set(refreshToken, EXPIRE_TIME, TimeUnit.DAYS);
-    }
+	public void save(String email, String refreshToken) {
 
-    public String get(String email) {
-        RBucket<String> bucket = redissonClient.getBucket(KEY_PREFIX + email);
+		RBucket<String> bucket = redissonClient.getBucket(KEY_PREFIX + email);
+		bucket.set(refreshToken, EXPIRE_TIME, TimeUnit.DAYS);
+	}
 
-        return Optional.ofNullable(bucket.get())
-            .orElseThrow(() -> new AuthorizationServiceException(email + "조회된 리프레시 토큰 없음."));
-    }
+	public String get(String email) {
+
+		RBucket<String> bucket = redissonClient.getBucket(KEY_PREFIX + email);
+
+		return Optional.ofNullable(bucket.get())
+			.orElseThrow(() -> new AuthorizationServiceException(email + "조회된 리프레시 토큰 없음."));
+	}
+
+	@Override
+	public void delete(String email) {
+		RBucket<String> bucket = redissonClient.getBucket(KEY_PREFIX + email);
+		if (bucket.isExists()) {
+			bucket.delete();
+		}
+	}
 }
