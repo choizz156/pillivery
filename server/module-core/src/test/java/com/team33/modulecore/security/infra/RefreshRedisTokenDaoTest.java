@@ -59,7 +59,7 @@ class RefreshRedisTokenDaoTest {
 		assertThat(result).isEqualTo(refreshToken);
 	}
 
-	@DisplayName("리프레시 토큰이 존재하지 ")
+	@DisplayName("리프레시 토큰이 존재하지 않을 때 예외 발생")
 	@Test
 	void test3() {
 		// given
@@ -69,6 +69,36 @@ class RefreshRedisTokenDaoTest {
 
 		// when & then
 		assertThatThrownBy(() -> refreshRedisTokenDao.get(email))
-			.isInstanceOf(AuthorizationServiceException.class);
+				.isInstanceOf(AuthorizationServiceException.class);
+	}
+
+	@DisplayName("리프레시 토큰 삭제 - 토큰이 존재하는 경우")
+	@Test
+	void test4() {
+		// given
+		String email = "test@example.com";
+		when(redissonClient.getBucket("refresh_token:" + email)).thenReturn(bucket);
+		when(bucket.isExists()).thenReturn(true);
+
+		// when
+		refreshRedisTokenDao.delete(email);
+
+		// then
+		verify(bucket, times(1)).delete();
+	}
+
+	@DisplayName("리프레시 토큰 삭제")
+	@Test
+	void test5() {
+		// given
+		String email = "test@example.com";
+		when(redissonClient.getBucket("refresh_token:" + email)).thenReturn(bucket);
+		when(bucket.isExists()).thenReturn(false);
+
+		// when
+		refreshRedisTokenDao.delete(email);
+
+		// then
+		verify(bucket, never()).delete();
 	}
 }
