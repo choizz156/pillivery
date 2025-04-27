@@ -41,6 +41,7 @@ public class PaymentStepConfig {
 	private static final int CHUNK_SIZE = 20;
 	private static final int RETRY_LIMIT = 3;
 	private static final int SKIP_LIMIT = 10;
+
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 

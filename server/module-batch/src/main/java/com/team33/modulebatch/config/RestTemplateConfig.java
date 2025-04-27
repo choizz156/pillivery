@@ -21,7 +21,7 @@ public class RestTemplateConfig {
     @Bean
     public RestTemplate restTemplate(HttpComponentsClientHttpRequestFactory factory) {
         RestTemplate restTemplate = new RestTemplate(factory);
-        // restTemplate.setErrorHandler(new RestTemplateErrorHandler(objectMapper));
+        restTemplate.setErrorHandler(new RestTemplateErrorHandler(objectMapper));
         restTemplate.setRequestFactory(new BufferingClientHttpRequestFactory(factory));
 
         return restTemplate;
