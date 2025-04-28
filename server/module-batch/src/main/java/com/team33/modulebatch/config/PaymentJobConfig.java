@@ -18,7 +18,7 @@ public class PaymentJobConfig {
 	private final Step paymentJobStep;
 
 	@Bean
-	public Job PaymentJob(){
+	public Job paymentJob(){
 		return jobBuilderFactory.get("paymentJob")
 			.listener(new PaymentJobListener())
 			.start(paymentJobStep)

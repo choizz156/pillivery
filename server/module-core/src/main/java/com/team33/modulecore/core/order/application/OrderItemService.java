@@ -32,7 +32,6 @@ public class OrderItemService {
 	}
 
 	private Item findItem(long id) {
-
 		return itemFindHelper.findItem(id);
 	}
 

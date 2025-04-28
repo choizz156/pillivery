@@ -23,10 +23,11 @@ public class KakaoApproveClient implements PaymentClient<KakaoApiApproveResponse
 
 	@Override
 	public KakaoApiApproveResponse send(Map<String, Object> params, String url) {
+
 		return approve(params, url);
 	}
 
-	private KakaoApiApproveResponse approve(Map<String, Object> params, String url)  {
+	private KakaoApiApproveResponse approve(Map<String, Object> params, String url) {
 
 		try {
 			return webClientSender.sendToPostSync(

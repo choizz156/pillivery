@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.team33.modulebatch.exception.SubscriptionFailException;
 import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class PaymentApiDispatcher {
 		.expireAfterWrite(Duration.ofHours(12L))
 		.build();
 
-	public void dispatch(List<? extends SubscriptionOrderVO> list) throws SubscriptionFailException {
+	public void dispatch(List<? extends SubscriptionOrderVO> list){
 
 		List<SubscriptionOrderVO> orderList = filterProcessedOrders(list);
 

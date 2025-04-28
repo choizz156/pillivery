@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@DisallowConcurrentExecution
 @Component
 public class PaymentScheduleJob extends QuartzJobBean {
 

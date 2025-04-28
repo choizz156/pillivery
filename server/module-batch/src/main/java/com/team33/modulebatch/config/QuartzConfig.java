@@ -19,7 +19,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Profile("batch")
+@Profile("!test")
 @Configuration
 public class QuartzConfig {
 
@@ -53,7 +53,7 @@ public class QuartzConfig {
 
 	private Properties quartzProperties() {
 		PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
-		propertiesFactoryBean.setLocation(new ClassPathResource("config/application-quartz.yml"));
+		propertiesFactoryBean.setLocation(new ClassPathResource("application-local.yml"));
 		Properties properties = null;
 		try {
 			propertiesFactoryBean.afterPropertiesSet();

@@ -16,6 +16,7 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +33,6 @@ import com.team33.modulebatch.listener.PaymentStepExecutionListener;
 import com.team33.modulebatch.step.PaymentItemProcessor;
 import com.team33.modulebatch.step.PaymentWriter;
 import com.team33.modulebatch.step.SubscriptionOrderVO;
-import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 
 @Configuration
 public class PaymentStepConfig {
@@ -45,6 +45,7 @@ public class PaymentStepConfig {
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
+	@Qualifier("mainDataSource")
 	@Autowired
 	private DataSource dataSource;
 
@@ -59,9 +60,6 @@ public class PaymentStepConfig {
 
 	@Autowired
 	private PaymentApiDispatcher paymentApiDispatcher;
-
-	@Autowired
-	private SubscriptionOrderService subscriptionOrderService;
 
 	@Bean
 	public Step paymentJobStep() throws Exception {
@@ -97,7 +95,7 @@ public class PaymentStepConfig {
 
 	@Bean
 	public ItemWriter<SubscriptionOrderVO> itemWriter() {
-		paymentWriter.initialize(paymentApiDispatcher, subscriptionOrderService);	
+		paymentWriter.initialize(paymentApiDispatcher);
 		return paymentWriter;
 	}
 

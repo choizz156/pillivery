@@ -2,7 +2,6 @@ package com.team33.modulecore.core.payment.kakao.application;
 
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.domain.approve.OneTimeApproveService;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
@@ -20,7 +19,6 @@ public class KakaoPaymentFacade{
 
 	private final SubscriptionApproveService<KakaoApproveResponse, SubscriptionOrder> kakaoSubsApproveService;
 	private final OneTimeApproveService<KakaoApproveResponse> kakaoOneTimeApproveService;
-	private final SubscriptionOrderService subscriptionOrderService;
 	private final RequestService<KakaoRequestResponse, Long> kakaoRequestService;
 	private final RequestService<KakaoRequestResponse, Long> kakaoSubscriptionRequestService;
 
@@ -28,9 +26,7 @@ public class KakaoPaymentFacade{
 		return kakaoOneTimeApproveService.approveOneTime(approveRequest);
 	}
 
-	public KakaoApproveResponse approveSubscription(Long subscriptionOrderId) {
-
-		SubscriptionOrder subscriptionOrder = subscriptionOrderService.findById(subscriptionOrderId);
+	public KakaoApproveResponse approveSubscription(SubscriptionOrder subscriptionOrder) {
 		return kakaoSubsApproveService.approveSubscribe(subscriptionOrder);
 	}
 
@@ -45,6 +41,5 @@ public class KakaoPaymentFacade{
 	public KakaoRequestResponse requestSubscription(Long subscriptionOrderId) {
 		return kakaoSubscriptionRequestService.request(subscriptionOrderId);
 	}
-
 }
 

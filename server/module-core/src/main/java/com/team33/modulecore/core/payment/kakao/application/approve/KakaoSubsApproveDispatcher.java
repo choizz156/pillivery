@@ -21,6 +21,7 @@ public class KakaoSubsApproveDispatcher
 
 	@Override
 	public KakaoApiApproveResponse approveSubscription(SubscriptionOrder subscriptionOrder) {
+
 		var subscriptionApproveParams = parameterProvider.getSubscriptionPaymentApprovalParams(subscriptionOrder);
 
 		return kakaoApproveClient.send(subscriptionApproveParams, KAKAO_SUBSCRIPTION_URL);

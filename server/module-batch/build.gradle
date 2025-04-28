@@ -19,7 +19,6 @@ dependencies {
     implementation 'com.google.guava:guava:33.2.1-jre'
 
     //security
-    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
 
     //cache
@@ -45,6 +44,9 @@ dependencies {
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.14'
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-javax-validation:1.0.14'
     testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.14'
+
+    //mysql
+    implementation 'mysql:mysql-connector-java'
 
 }
 

@@ -23,13 +23,9 @@ public class RestTemplateSender {
 
 	private final RestTemplate restTemplate;
 
+	@Retry(name = "paymentRetryApiClient")
 	@CircuitBreaker(name = "internalPaymentApiClient", fallbackMethod = "internalApiFallback")
 	public <T> void sendToPost(String subscriptionOrderId, String url, HttpHeaders headers, Class<T> responseClass) {
-		executeWithRetry(subscriptionOrderId, url, headers, responseClass);
-	}
-
-	@Retry(name = "internalPaymentRetry", fallbackMethod = "retryFallback")
-	public <T> void executeWithRetry(String subscriptionOrderId, String url, HttpHeaders headers, Class<T> responseClass) {
 
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<T> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
@@ -37,7 +33,7 @@ public class RestTemplateSender {
 		LOGGER.info("내부 API 호출 성공: {}, response: {}", url, exchange.getBody());
 	}
 
-	public <T> void internalApiFallback(
+	private <T> void internalApiFallback(
 		String subscriptionOrderId,
 		String url,
 		HttpHeaders headers,
@@ -47,19 +43,6 @@ public class RestTemplateSender {
 
 		LOGGER.error(
 			" app 서버 통신 에러 -> Circuit Breaker 작동  - URI: {}, fail-susbscriptionOrderId: {}, Headers: {}, 오류: {}",
-			url,
-			subscriptionOrderId,
-			headers,
-			throwable.getMessage());
-
-		throw new SubscriptionFailException(throwable.getMessage(), Long.parseLong(subscriptionOrderId));
-	}
-
-	public <T> void retryFallback(String subscriptionOrderId, String url, HttpHeaders headers, Class<T> responseClass,
-		Throwable throwable) {
-
-		LOGGER.error(
-			" retry 실패  - URI: {}, fail-susbscriptionOrderId: {}, Headers: {}, 오류: {}",
 			url,
 			subscriptionOrderId,
 			headers,

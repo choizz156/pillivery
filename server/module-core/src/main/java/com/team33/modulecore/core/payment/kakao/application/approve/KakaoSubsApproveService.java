@@ -3,16 +3,17 @@ package com.team33.modulecore.core.payment.kakao.application.approve;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.SubscriptionFailedEvent;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoResponseMapper;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
+import com.team33.moduleexternalapi.exception.SubscriptionPaymentException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,11 +40,15 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 	@Override
 	public KakaoApproveResponse approveSubscribe(SubscriptionOrder subscriptionOrder) {
 
-		KakaoApiApproveResponse response = subscriptionApprove.approveSubscription(subscriptionOrder);
+		KakaoApiApproveResponse response;
 
-		applicationEventPublisher.publishEvent(new PaymentDateUpdatedEvent(subscriptionOrder.getId()));
-		applicationEventPublisher.publishEvent(new ItemSaleCountedEvent(subscriptionOrder.getItemId()));
+		try {
+			response = subscriptionApprove.approveSubscription(subscriptionOrder);
 
+		} catch (SubscriptionPaymentException e) {
+			applicationEventPublisher.publishEvent(new SubscriptionFailedEvent(subscriptionOrder.getId()));
+			throw e;
+		}
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreApproveResponse(response);
 	}
 }
