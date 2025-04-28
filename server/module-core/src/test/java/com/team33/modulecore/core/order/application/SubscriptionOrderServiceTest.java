@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,13 +17,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
+import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
 import com.team33.modulecore.core.order.domain.OrderCommonInfo;
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
+import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
 
@@ -31,6 +35,9 @@ class SubscriptionOrderServiceTest {
 
 	@Mock
 	private SubscriptionOrderRepository subscriptionOrderRepository;
+
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@InjectMocks
 	private SubscriptionOrderService subscriptionOrderService;
@@ -207,7 +214,7 @@ class SubscriptionOrderServiceTest {
 			.thenReturn(Optional.of(mockSubscriptionOrder));
 
 		// when
-		subscriptionOrderService.updateOrderStatus(subscriptionOrderId);
+		subscriptionOrderService.updateOrderStatusToFail(subscriptionOrderId);
 
 		// then
 		verify(subscriptionOrderRepository, times(1)).findById(subscriptionOrderId);
@@ -222,10 +229,26 @@ class SubscriptionOrderServiceTest {
 			.thenReturn(Optional.empty());
 
 		// when & then
-		assertThatThrownBy(() -> subscriptionOrderService.updateOrderStatus(subscriptionOrderId))
+		assertThatThrownBy(() -> subscriptionOrderService.updateOrderStatusToFail(subscriptionOrderId))
 			.isInstanceOf(BusinessLogicException.class)
 			.hasMessageContaining(ExceptionCode.ORDER_NOT_FOUND.getMessage());
 		verify(subscriptionOrderRepository, times(1)).findById(subscriptionOrderId);
 		verify(mockSubscriptionOrder, never()).changeOrderStatus(any(OrderStatus.class));
+	}
+
+	@DisplayName("구독 주문 승인 이벤트를 발행한다")
+	@Test
+	void test14() {
+		// given
+		when(mockSubscriptionOrder.getItemId()).thenReturn(Collections.singletonList(1L));
+		when(mockSubscriptionOrder.getId()).thenReturn(subscriptionOrderId);
+		// when
+		subscriptionOrderService.publishSubscriptionApproveEvent(mockSubscriptionOrder);
+
+		// then
+		verify(applicationEventPublisher, times(1))
+				.publishEvent(any(PaymentDateUpdatedEvent.class));
+		verify(applicationEventPublisher, times(1))
+				.publishEvent(any(ItemSaleCountedEvent.class));
 	}
 }

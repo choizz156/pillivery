@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.ApplicationEventPublisher;
 
 import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 import com.team33.modulecore.core.order.domain.entity.Order;
@@ -25,7 +24,6 @@ class KakaoPaymentFacadeTest {
 	private SubscriptionApproveService<KakaoApproveResponse, SubscriptionOrder> kakaoSubsApproveService;
 	private OneTimeApproveService<KakaoApproveResponse> kakaoOneTimeApproveService;
 	private SubscriptionOrderService subscriptionOrderService;
-	private ApplicationEventPublisher eventPublisher;
 	private RequestService<KakaoRequestResponse, Long> kakaoRequestService;
 	private RequestService<KakaoRequestResponse, Long> kakaoSubscriptionRequestService;
 	private KakaoPaymentFacade kakaoPaymentFacade;
@@ -40,7 +38,6 @@ class KakaoPaymentFacadeTest {
 		kakaoPaymentFacade = new KakaoPaymentFacade(
 			kakaoSubsApproveService,
 			kakaoOneTimeApproveService,
-			subscriptionOrderService,
 			kakaoRequestService,
 			kakaoSubscriptionRequestService
 		);
@@ -79,10 +76,9 @@ class KakaoPaymentFacadeTest {
 		when(kakaoSubsApproveService.approveSubscribe(subscriptionOrder)).thenReturn(expectedResponse);
 
 		// when
-		KakaoApproveResponse response = kakaoPaymentFacade.approveSubscription(subscriptionOrderId);
+		KakaoApproveResponse response = kakaoPaymentFacade.approveSubscription(subscriptionOrder);
 
 		// then
-		verify(subscriptionOrderService, times(1)).findById(subscriptionOrderId);
 		verify(kakaoSubsApproveService, times(1)).approveSubscribe(subscriptionOrder);
 		assertThat(response).isEqualTo(expectedResponse);
 	}

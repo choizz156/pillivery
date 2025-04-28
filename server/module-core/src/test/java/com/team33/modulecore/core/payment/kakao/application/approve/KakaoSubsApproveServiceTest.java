@@ -3,20 +3,22 @@ package com.team33.modulecore.core.payment.kakao.application.approve;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 
-import com.team33.modulecore.core.item.event.ItemSaleCountedEvent;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.kakao.application.events.PaymentDateUpdatedEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.SubscriptionFailedEvent;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
-import java.util.List;
+import com.team33.moduleexternalapi.exception.SubscriptionPaymentException;
 
 class KakaoSubsApproveServiceTest {
 
@@ -88,18 +90,31 @@ class KakaoSubsApproveServiceTest {
 		// when
 		KakaoApproveResponse response = kakaoSubsApproveService.approveSubscribe(subscriptionOrder);
 
-		ArgumentCaptor<Object> eventCaptor = ArgumentCaptor.forClass(Object.class);
-
 		// then
 		verify(subscriptionApprove, times(1)).approveSubscription(subscriptionOrder);
-		verify(applicationEventPublisher, times(2)).publishEvent(eventCaptor.capture());
-
-		List<Object> capturedEvents = eventCaptor.getAllValues();
-
-		assertThat(capturedEvents).hasSize(2);
-		assertThat(capturedEvents.get(0)).isInstanceOf(PaymentDateUpdatedEvent.class);
-		assertThat(capturedEvents.get(1)).isInstanceOf(ItemSaleCountedEvent.class);
-
-		assertThat(response).isNotNull();
 	}
+
+	@Test
+	@DisplayName("정기 구독 결제 승인 실패시 이벤트를 발행하고 예외를 던진다.")
+	void test3() {
+		// given
+		SubscriptionOrder subscriptionOrder = mock(SubscriptionOrder.class);
+		long subscriptionOrderId = 1L;
+		when(subscriptionOrder.getId()).thenReturn(subscriptionOrderId);
+
+		SubscriptionPaymentException expectedException = new SubscriptionPaymentException("결제 실패");
+		when(subscriptionApprove.approveSubscription(subscriptionOrder)).thenThrow(expectedException);
+
+		ArgumentCaptor<SubscriptionFailedEvent> eventCaptor = ArgumentCaptor.forClass(SubscriptionFailedEvent.class);
+
+		// when & then
+		assertThatThrownBy(() -> kakaoSubsApproveService.approveSubscribe(subscriptionOrder))
+				.isInstanceOf(SubscriptionPaymentException.class)
+				.hasMessage("결제 실패");
+
+		verify(applicationEventPublisher, times(1)).publishEvent(eventCaptor.capture());
+		SubscriptionFailedEvent capturedEvent = eventCaptor.getValue();
+		assertThat(capturedEvent.getSubscriptionOrderId()).isEqualTo(subscriptionOrderId);
+	}
+
 }
