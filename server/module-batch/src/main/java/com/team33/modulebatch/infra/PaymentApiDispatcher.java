@@ -33,7 +33,7 @@ public class PaymentApiDispatcher {
 
 		orderList.forEach(order -> {
 			send(order.getSubscriptionOrderId());
-			idempotencyCache.put(order.getIdempotencyKey(), "finished");
+			idempotencyCache.put(order.getIdempotencyKey(), "item write -> api process");
 		});
 	}
 

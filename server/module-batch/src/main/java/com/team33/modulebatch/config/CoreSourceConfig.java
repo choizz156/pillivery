@@ -23,7 +23,11 @@ import lombok.RequiredArgsConstructor;
 @EnableJpaRepositories(
 	entityManagerFactoryRef = "mainEntityManager",
 	transactionManagerRef = "mainTransactionManager",
-	basePackages = {"com.team33.modulebatch"}
+	basePackages = {
+		"com.team33.modulecore.core.order.domain",
+		"com.team33.modulecore.core.item.domain",
+		"com.team33.modulebatch",
+	}
 )
 @Configuration
 public class CoreSourceConfig {
@@ -32,6 +36,7 @@ public class CoreSourceConfig {
 
 	@Bean(name = "mainTransactionManager")
 	public PlatformTransactionManager mainTransactionManager() {
+
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
 		jpaTransactionManager.setEntityManagerFactory(mainEntityManager().getObject());
 		return jpaTransactionManager;
@@ -39,9 +44,13 @@ public class CoreSourceConfig {
 
 	@Bean
 	public LocalContainerEntityManagerFactoryBean mainEntityManager() {
+
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(mainDataSource());
-		em.setPackagesToScan("com.team33.modulebatch");
+		em.setPackagesToScan(
+			"com.team33.modulecore.core.order.domain",
+			"com.team33.modulecore.core.item.domain",
+			"com.team33.modulebatch");
 		em.setJpaProperties(getJpaProperties());
 
 		HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
@@ -51,17 +60,19 @@ public class CoreSourceConfig {
 		return em;
 	}
 
-
 	@Bean(name = "mainDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource.core")
 	public DataSource mainDataSource() {
+
 		return DataSourceBuilder.create().build();
 	}
 
 	private Properties getJpaProperties() {
+
 		Properties properties = new Properties();
 		properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.properties.hibernate.hbm2ddl.auto"));
-		properties.put("hibernate.physical_naming_strategy", env.getProperty("spring.jpa.properties.hibernate.physical_naming_strategy"));
+		properties.put("hibernate.physical_naming_strategy",
+			env.getProperty("spring.jpa.properties.hibernate.physical_naming_strategy"));
 		properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
 		// properties.put("hibernate.show_sql", env.getProperty("spring.jpa.properties.hibernate.show_sql"));
 		properties.put("hibernate.format_sql", env.getProperty("spring.jpa.properties.hibernate.format_sql"));

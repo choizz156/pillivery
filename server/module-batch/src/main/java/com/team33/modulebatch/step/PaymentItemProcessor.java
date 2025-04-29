@@ -1,5 +1,7 @@
 package com.team33.modulebatch.step;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Component
 public class PaymentItemProcessor implements ItemProcessor<SubscriptionOrderVO, SubscriptionOrderVO> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private Long jobId;
 

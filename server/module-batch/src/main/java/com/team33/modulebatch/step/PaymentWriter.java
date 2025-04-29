@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
+import com.team33.modulebatch.exception.SubscriptionFailException;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class PaymentWriter implements ItemWriter<SubscriptionOrderVO> {
 	@Override
 	public void write(List<? extends SubscriptionOrderVO> list) {
 
+		LOGGER.info("List size() = {}", list.size());
 		if (list.isEmpty()) {
 			return;
 		}
@@ -31,13 +33,15 @@ public class PaymentWriter implements ItemWriter<SubscriptionOrderVO> {
 		try {
 			paymentApiDispatcher.dispatch(list);
 			LOGGER.info("Payment processed successfully for {} orders", list.size());
+		} catch (SubscriptionFailException e) {
+			LOGGER.error("Payment processing failed for order ID: {}, message: {}", e.getSubscriptionOrderId(), e.getMessage());
 		} catch (Exception e) {
-			LOGGER.info("Payment processed failed for {} orders, message = {}", list.size(), e.getMessage());
+			LOGGER.error("Payment processing failed for {} orders, message: {}", list.size(), e.getMessage());
 		}
 	}
 
-
 	public void initialize(PaymentApiDispatcher paymentApiDispatcher) {
+
 		this.paymentApiDispatcher = paymentApiDispatcher;
 	}
 }

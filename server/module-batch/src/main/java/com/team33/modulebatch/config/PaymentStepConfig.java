@@ -1,11 +1,16 @@
 package com.team33.modulebatch.config;
 
-import java.util.Collections;
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -20,7 +25,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.web.client.HttpServerErrorException;
@@ -36,6 +40,8 @@ import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 @Configuration
 public class PaymentStepConfig {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private static final long BACK_OFF_PERIOD = 3000L;
 	private static final int CHUNK_SIZE = 20;
@@ -75,7 +81,6 @@ public class PaymentStepConfig {
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
 			.skip(BatchApiException.class)
-			.skip(DataAccessException.class)
 			.retryLimit(RETRY_LIMIT)
 			.retry(HttpServerErrorException.class)
 			.backOffPolicy(backOffPolicy)
@@ -89,12 +94,15 @@ public class PaymentStepConfig {
 	public ItemProcessor<SubscriptionOrderVO, SubscriptionOrderVO> itemProcessor(
 		@Value("#{jobParameters['jobId']}") Long jobId
 	) {
+		LOGGER.info("ItemProcessor");
 		paymentItemProcessor.initialize(jobId);
 		return paymentItemProcessor;
 	}
 
 	@Bean
 	public ItemWriter<SubscriptionOrderVO> itemWriter() {
+		LOGGER.info("ItemWriter");
+
 		paymentWriter.initialize(paymentApiDispatcher);
 		return paymentWriter;
 	}
@@ -103,6 +111,8 @@ public class PaymentStepConfig {
 	@StepScope
 	public ItemReader<SubscriptionOrderVO> itemReader(@Value("#{jobParameters['paymentDate']}") Date paymentDate)
 		throws Exception {
+		LOGGER.info("item reader");
+		LOGGER.warn("paymentDate = {}", paymentDate);
 
 		JdbcPagingItemReader<SubscriptionOrderVO> reader = new JdbcPagingItemReader<>();
 
@@ -113,14 +123,24 @@ public class PaymentStepConfig {
 		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
 
 		queryProvider.setSelectClause(
-			"subscription_order_id as subscriptionOrderId, subscription as subscription, next_payment_date as nextPaymentDate"
+			"subscription_order_id as  subscription_order_id, subscription as subscription, next_payment_date as next_payment_date"
 		);
 		queryProvider.setFromClause("from subscription_order so");
-		queryProvider.setWhereClause("where so.subscription = true and so.next_payment_date = :paymentDate");
+		queryProvider.setWhereClause(
+			"where so.subscription = true and so.next_payment_date >= :startDate and so.next_payment_date < :endDate"
+		);
+
+		LocalDate localDate = paymentDate.toLocalDate();
+		LocalDateTime startOfDay = localDate.atStartOfDay();
+		LocalDateTime endOfDay = localDate.plusDays(1).atStartOfDay();
 
 		queryProvider.setSortKeys(Map.of("subscription_order_id", Order.ASCENDING));
 
-		reader.setParameterValues(Collections.singletonMap("paymentDate", paymentDate));
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startDate", Timestamp.valueOf(startOfDay));
+		paramMap.put("endDate", Timestamp.valueOf(endOfDay));
+
+		reader.setParameterValues(paramMap);
 		reader.setQueryProvider(queryProvider);
 		reader.afterPropertiesSet();
 

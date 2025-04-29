@@ -42,7 +42,7 @@ public class RestTemplateSender {
 	) {
 
 		LOGGER.error(
-			" app 서버 통신 에러 -> Circuit Breaker 작동  - URI: {}, fail-susbscriptionOrderId: {}, Headers: {}, 오류: {}",
+			" app 서버 통신 에러 - URI: {}, fail-susbscriptionOrderId: {}, Headers: {}, 오류: {}",
 			url,
 			subscriptionOrderId,
 			headers,

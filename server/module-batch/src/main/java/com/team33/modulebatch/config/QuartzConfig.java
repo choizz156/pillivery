@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
-import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.autoconfigure.quartz.SchedulerFactoryBeanCustomizer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -38,7 +37,6 @@ public class QuartzConfig {
 
 	@Bean
 	@Qualifier("schedulerDataSource")
-	@QuartzDataSource
 	@ConfigurationProperties(prefix = "spring.quartz.properties.org.quartz.datasource.qrtz")
 	public DataSource schedulerDataSource() {
 		return DataSourceBuilder.create().build();

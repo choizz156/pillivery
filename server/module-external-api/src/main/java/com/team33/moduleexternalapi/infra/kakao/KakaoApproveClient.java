@@ -23,7 +23,6 @@ public class KakaoApproveClient implements PaymentClient<KakaoApiApproveResponse
 
 	@Override
 	public KakaoApiApproveResponse send(Map<String, Object> params, String url) {
-
 		return approve(params, url);
 	}
 

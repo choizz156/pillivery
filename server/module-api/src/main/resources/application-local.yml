@@ -28,11 +28,10 @@ spring:
 #      driver-class-name: com.mysql.cj.jdbc.Driver
 #      jdbc-url: jdbc:mysql://192.168.0.6:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
 
-    main:
       username: root
       password: 1234
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
+      url: jdbc:mysql://localhost:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
 #    main:
 #      jdbc-url: jdbc:h2:mem:testdb
 #      username: sa

@@ -9,6 +9,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
+import org.springframework.batch.item.database.support.DefaultDataFieldMaxValueIncrementerFactory;
 import org.springframework.batch.support.DatabaseType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -59,6 +60,7 @@ public class CustomBatchConfigurer extends DefaultBatchConfigurer {
 		factory.setDataSource(batchDataSource);
 		factory.setTransactionManager(platformTransactionManager);
 		factory.setDatabaseType(DatabaseType.MYSQL.getProductName());
+		factory.setIncrementerFactory(new DefaultDataFieldMaxValueIncrementerFactory(batchDataSource));
 
 		factory.afterPropertiesSet();
 		return factory.getObject();
