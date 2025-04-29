@@ -35,6 +35,7 @@ import io.restassured.RestAssured;
 	SubscriptionOrderService.class,
 	SubscriptionOrderRepository.class,
 	DataCleaner.class,
+	TestDataSourceConfig.class
 }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SpringBatchTest
 @EnableAutoConfiguration
@@ -44,25 +45,18 @@ import io.restassured.RestAssured;
 @ActiveProfiles("test")
 public abstract class BatchApiTest {
 
+	@LocalServerPort
+	private int port;
 	@Autowired
 	protected StepBuilderFactory stepBuilderFactory;
 	@Autowired
 	protected JobRepository jobRepository;
 	@Autowired
-	protected PaymentApiDispatcher paymentApiDispatcher;
-	@Autowired
 	protected PaymentItemProcessor paymentItemProcessor;
 	@MockBean
 	protected RestTemplateSender restTemplateSender;
 	@Autowired
-	protected PaymentWriter paymentWriter;
-	@MockBean
-	protected SubscriptionOrderService subscriptionOrderService;
-	@Autowired
 	protected DataCleaner dataCleaner;
-
-	@LocalServerPort
-	private int port;
 
 	@BeforeEach
 	void beforeEach() throws Exception {

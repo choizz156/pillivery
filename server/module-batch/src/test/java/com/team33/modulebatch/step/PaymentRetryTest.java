@@ -46,7 +46,7 @@ class PaymentRetryTest extends BatchApiTest {
 
 		doThrow(new BatchApiException("test exception 1"))
 			.doThrow(new BatchApiException("test exception 2"))
-			.doNothing() //이것도 try한거임.
+			.doNothing() //이것도 try.
 			.when(testItemWriter).write(anyList());
 
 		JobExecution jobExecution = jobRepository.createJobExecution("testJob", new JobParameters());
@@ -94,7 +94,7 @@ class PaymentRetryTest extends BatchApiTest {
 		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
 		backOffPolicy.setBackOffPeriod(0L);
 
-		step = stepBuilderFactory.get("paymentJobStep")
+		step = stepBuilderFactory.get("testStep")
 			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(testItemReader)
 			.writer(testItemWriter)

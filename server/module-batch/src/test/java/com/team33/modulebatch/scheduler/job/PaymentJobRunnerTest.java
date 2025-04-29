@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.HashMap;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,14 +40,14 @@ class PaymentJobRunnerTest {
         JobDetail mockJobDetail = mock(JobDetail.class);
         Trigger mockTrigger = mock(Trigger.class);
 
-        when(jobDetailService.buildJobDetail(eq(PaymentScheduleJob.class), any())).thenReturn(mockJobDetail);
+        when(jobDetailService.buildJobDetail(eq(PaymentScheduleJob.class))).thenReturn(mockJobDetail);
         when(triggerService.now()).thenReturn(mockTrigger);
 
         // when
         paymentJobRunner.run();
 
         // then
-        verify(jobDetailService).buildJobDetail(eq(PaymentScheduleJob.class), any());
+        verify(jobDetailService).buildJobDetail(eq(PaymentScheduleJob.class));
         verify(triggerService).now();
         verify(scheduler).scheduleJob(mockJobDetail, mockTrigger);
     }
@@ -61,7 +59,7 @@ class PaymentJobRunnerTest {
         JobDetail mockJobDetail = mock(JobDetail.class);
         Trigger mockTrigger = mock(Trigger.class);
 
-        when(jobDetailService.buildJobDetail(eq(PaymentScheduleJob.class), any())).thenReturn(mockJobDetail);
+        when(jobDetailService.buildJobDetail(eq(PaymentScheduleJob.class))).thenReturn(mockJobDetail);
         when(triggerService.now()).thenReturn(mockTrigger);
         doThrow(new SchedulerException("Test exception")).when(scheduler).scheduleJob(any(), any());
 

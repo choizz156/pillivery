@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.team33.modulebatch.exception.SubscriptionFailException;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulecore.core.order.application.SubscriptionOrderService;
 
@@ -24,7 +23,7 @@ class PaymentWriterTest {
 		paymentApiDispatcher = mock(PaymentApiDispatcher.class);
 		subscriptionOrderService = mock(SubscriptionOrderService.class);
 
-		paymentWriter = new PaymentWriter(paymentApiDispatcher, subscriptionOrderService);
+		paymentWriter = new PaymentWriter(paymentApiDispatcher);
 	}
 
 	@DisplayName("OrderVO 리스트를 받으면 write 메서드가 수행된다.")
@@ -47,7 +46,7 @@ class PaymentWriterTest {
 	void test2() throws Exception {
 		// given 
 		PaymentApiDispatcher mockDispatcher = mock(PaymentApiDispatcher.class);
-		PaymentWriter paymentWriter = new PaymentWriter(paymentApiDispatcher, subscriptionOrderService);
+		PaymentWriter paymentWriter = new PaymentWriter(paymentApiDispatcher);
 
 		List<SubscriptionOrderVO> emptyList = List.of();
 
@@ -57,26 +56,4 @@ class PaymentWriterTest {
 		// then
 		verifyNoInteractions(mockDispatcher);
 	}
-
-
-	@DisplayName("결제 실패 시 주문 상태를 업데이트한다")
-	@Test
-	void test3() throws Exception {
-		// given
-		PaymentApiDispatcher mockDispatcher = mock(PaymentApiDispatcher.class);
-		SubscriptionOrderService mockService = mock(SubscriptionOrderService.class);
-		PaymentWriter paymentWriter = new PaymentWriter(mockDispatcher, mockService);
-
-		List<SubscriptionOrderVO> orders = List.of(new SubscriptionOrderVO());
-		SubscriptionFailException testException = new SubscriptionFailException("결제 실패", 999L);
-
-		doThrow(testException).when(mockDispatcher).dispatch(orders);
-
-		// when
-		paymentWriter.write(orders);
-
-		// then
-		verify(mockService).updateOrderStatus(999L);
-	}
-
 }

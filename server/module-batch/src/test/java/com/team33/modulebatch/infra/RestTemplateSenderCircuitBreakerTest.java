@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.team33.modulebatch.config.RestTemplateConfig;
-import com.team33.modulebatch.exception.SubscriptionFailException;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -72,23 +71,6 @@ class RestTemplateSenderCircuitBreakerTest {
 
 		assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.OPEN);
 
-	}
-
-	@DisplayName("retry 테스트")
-	@Test
-	void test2() throws Exception {
-
-		SERVICE.stubFor(post(urlEqualTo("/api/external"))
-			.willReturn(serverError()));
-
-		assertThatThrownBy(
-			() -> restTemplateSender.executeWithRetry("1", "http://localhost:9898/api/external", new HttpHeaders(),
-				String.class))
-			.isInstanceOf(SubscriptionFailException.class);
-
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-			SERVICE.verify(3, postRequestedFor(urlEqualTo("/api/external")));
-		});
 	}
 
 	@DisplayName("circuit breaker half open 테스트")

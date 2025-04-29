@@ -21,16 +21,14 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.test.MetaDataInstanceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.team33.modulebatch.BatchApiTest;
-import com.team33.modulebatch.FixtureMonkeyFactory;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
 
 class PaymentStepConfigTest extends BatchApiTest {
 
-	private static final FixtureMonkey FIXTURE_MONKEY = FixtureMonkeyFactory.get();
 	private static final ZonedDateTime REQUEST_DATE = ZonedDateTime.now();
 
 	@Autowired
@@ -39,7 +37,9 @@ class PaymentStepConfigTest extends BatchApiTest {
 	@Autowired
 	private ItemWriter<SubscriptionOrderVO> itemWriter;
 
+
 	@Autowired
+	@Qualifier("mainDataSource")
 	private DataSource dataSource;
 
 	@Autowired

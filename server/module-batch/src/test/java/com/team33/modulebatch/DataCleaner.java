@@ -33,55 +33,51 @@ public class DataCleaner implements InitializingBean {
 		Set<EntityType<?>> entities = em.getMetamodel().getEntities();
 
 		tableNames = entities.stream()
-			.filter(e -> isEntity(e) && hasTableAnnotation(e))
-			.map(e -> {
-				String name = e.getJavaType().getAnnotation(Table.class).name();
-				return name.isBlank()
-					? CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName())
-					: name;
-			})
-			.collect(Collectors.toList());
+				.filter(e -> isEntity(e) && hasTableAnnotation(e))
+				.map(e -> {
+					String name = e.getJavaType().getAnnotation(Table.class).name();
+					return name.isBlank()
+							? CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName())
+							: name;
+				})
+				.collect(Collectors.toList());
 
 		List<String> onlyEntity = entities.stream()
-			.filter(e -> isEntity(e) && !hasTableAnnotation(e))
-			.map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, e.getName()))
-			.collect(Collectors.toList());
+				.filter(e -> isEntity(e) && !hasTableAnnotation(e))
+				.map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, e.getName()))
+				.collect(Collectors.toList());
 
 		tableNames.addAll(onlyEntity);
 
+		tableNames.addAll(List.of(
+				"BATCH_JOB_INSTANCE",
+				"BATCH_JOB_EXECUTION",
+				"BATCH_JOB_EXECUTION_PARAMS",
+				"BATCH_STEP_EXECUTION",
+				"BATCH_STEP_EXECUTION_CONTEXT",
+				"BATCH_JOB_EXECUTION_CONTEXT"));
+
 		collectionTableNames = entities.stream()
-			.flatMap(e -> Arrays.stream(e.getJavaType().getDeclaredFields()))
-			.filter(field -> field.getAnnotation(CollectionTable.class) != null)
-			.map(field -> field.getAnnotation(CollectionTable.class).name())
-			.collect(Collectors.toList());
+				.flatMap(e -> Arrays.stream(e.getJavaType().getDeclaredFields()))
+				.filter(field -> field.getAnnotation(CollectionTable.class) != null)
+				.map(field -> field.getAnnotation(CollectionTable.class).name())
+				.collect(Collectors.toList());
 	}
 
 	@Transactional
 	public void execute() {
-		em.flush();
 		em.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
-		for (String tableName : tableNames) {
-			em.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+		tableNames.forEach(
+				table -> em.createNativeQuery("TRUNCATE TABLE " + table + " RESTART IDENTITY").executeUpdate());
 
-			if (tableName.endsWith("s")) {
-				setColumn(tableName, tableName.substring(0, tableName.length() - 1));
-			} else {
-				setColumn(tableName, tableName);
-			}
-		}
+		collectionTableNames.forEach(
+				table -> em.createNativeQuery("TRUNCATE TABLE " + table + " RESTART IDENTITY").executeUpdate());
 
-		collectionTableNames.stream()
-			.map(tableName -> "TRUNCATE TABLE " + tableName)
-			.forEach(sql -> em.createNativeQuery(sql).executeUpdate());
-
+		em.createNativeQuery("TRUNCATE TABLE subscription_order RESTART IDENTITY").executeUpdate();
 		em.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
 	}
 
-	private void setColumn(String tableName, String idName) {
-		em.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN " + idName + "_id" + " RESTART WITH 1")
-			.executeUpdate();
-	}
 
 	private boolean isEntity(EntityType<?> e) {
 
