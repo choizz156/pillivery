@@ -30,11 +30,12 @@ ssh -o StrictHostKeyChecking=no root@$serverIp "
 
     echo "컨테이너 배포 시작"
     docker run -d \
-         --name $containerName \
-         --restart unless-stopped \
-         --network server \
-         -p 8080:8080 \
-         ${registryUrl}:${imageTag}
+      --name $containerName \
+      --restart unless-stopped \
+      --network server \
+      -p 8080:8080 \
+      -v app-logs:/root/logs \  # ← 추가: 로그 볼륨 마운트
+      ${registryUrl}:${imageTag}
 "
 
 echo "✅ 배포 완료: $serverIp"
