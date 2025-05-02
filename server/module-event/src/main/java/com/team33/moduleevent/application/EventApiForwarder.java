@@ -42,8 +42,7 @@ public class EventApiForwarder {
 		);
 	}
 
-	// @Scheduled(cron = "0 0 * * * *")
-	@Scheduled(cron = "*/5 * * * * *")
+	@Scheduled(cron = "0 0 * * * *")
 	public void fetchAndForwardEvents() {
 
 		List<ApiEvent> apiEvents = fetchReadyEvents();
