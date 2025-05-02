@@ -4,6 +4,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class EventApiForwarder {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private final EventRepository eventsRepository;
 	private final EventDispatcher eventDispatcher;
@@ -38,7 +42,8 @@ public class EventApiForwarder {
 		);
 	}
 
-	@Scheduled(cron = "0 0 * * * *")
+	// @Scheduled(cron = "0 0 * * * *")
+	@Scheduled(cron = "*/5 * * * * *")
 	public void fetchAndForwardEvents() {
 
 		List<ApiEvent> apiEvents = fetchReadyEvents();
@@ -51,7 +56,19 @@ public class EventApiForwarder {
 	@DistributedLock(key = "'event:fetchReadyEvents'")
 	public List<ApiEvent> fetchReadyEvents() {
 
-		return eventsRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
+		try {
+			return eventsRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
+		} catch (Exception e) {
+			StackTraceElement top = e.getStackTrace()[0];
+			LOGGER.error("Exception at {}.{}({}:{}): {}",
+				top.getClassName(),
+				top.getMethodName(),
+				top.getFileName(),
+				top.getLineNumber(),
+				e.getMessage()
+			);
+			throw e;
+		}
 	}
 
 	private void registerEventWithDispatcher(ApiEvent apiEvent) {

@@ -30,7 +30,7 @@ public class RestTemplateConfig {
     @Bean
     HttpClient httpClient() {
         return HttpClientBuilder.create()
-            .setMaxConnTotal(100)
+            .setMaxConnTotal(30)
             .setMaxConnPerRoute(5)
             .build();
     }
