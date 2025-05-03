@@ -39,7 +39,7 @@ public class ItemSaleCountedEventHandler {
 		});
 	}
 
-	@Scheduled(fixedDelay = 60000L)
+	@Scheduled(cron = "0 0/30 * * * *")
 	@Transactional
 	public void increaseItemSale() {
 
