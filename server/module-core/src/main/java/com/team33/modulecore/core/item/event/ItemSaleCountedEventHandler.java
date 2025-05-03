@@ -34,9 +34,7 @@ public class ItemSaleCountedEventHandler {
 	@TransactionalEventListener
 	public void onItemSaleCounted(ItemSaleCountedEvent event) {
 
-		event.getItemId().forEach(itemId -> {
-			saleCounts.merge(itemId, 1L, Long::sum);
-		});
+		event.getItemId().forEach(itemId -> saleCounts.merge(itemId, 1L, Long::sum));
 	}
 
 	@Scheduled(cron = "0 0/30 * * * *")

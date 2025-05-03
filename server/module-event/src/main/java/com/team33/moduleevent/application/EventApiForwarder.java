@@ -42,7 +42,8 @@ public class EventApiForwarder {
 		);
 	}
 
-	@Scheduled(cron = "0 0 * * * *")
+	// @Scheduled(cron = "0 0 * * * *")
+	@Scheduled(cron = "0/3 * * * * *")
 	public void fetchAndForwardEvents() {
 
 		List<ApiEvent> apiEvents = fetchReadyEvents();
@@ -58,14 +59,16 @@ public class EventApiForwarder {
 		try {
 			return eventsRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
 		} catch (Exception e) {
-			StackTraceElement top = e.getStackTrace()[0];
-			LOGGER.error("Exception at {}.{}({}:{}): {}",
-				top.getClassName(),
-				top.getMethodName(),
-				top.getFileName(),
-				top.getLineNumber(),
-				e.getMessage()
+			Throwable rootCause = e;
+			while (rootCause.getCause() != null) {
+				rootCause = rootCause.getCause();
+			}
+
+			LOGGER.error("Caused by: {}: {}",
+				rootCause.getClass().getSimpleName(),
+				rootCause.getMessage()
 			);
+
 			throw e;
 		}
 	}
