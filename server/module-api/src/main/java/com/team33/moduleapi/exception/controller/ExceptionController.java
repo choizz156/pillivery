@@ -112,7 +112,15 @@ public class ExceptionController {
 	@ExceptionHandler(RuntimeException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiErrorResponse runtimeExceptionHandler(RuntimeException e) {
+		Throwable rootCause = e;
+		while (rootCause.getCause() != null) {
+			rootCause = rootCause.getCause();
+		}
 
+		LOGGER.error("Caused by: {}: {}",
+			rootCause.getClass().getSimpleName(),
+			rootCause.getMessage()
+		);
 
 		StackTraceElement top = e.getStackTrace()[0];
 		LOGGER.error("Exception at {}.{}({}:{}): {}",
