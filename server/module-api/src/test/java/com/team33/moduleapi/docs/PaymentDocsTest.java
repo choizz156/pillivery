@@ -27,6 +27,8 @@ import com.team33.moduleapi.api.payment.mapper.PaymentDataMapper;
 import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
 import com.team33.modulecore.core.order.application.OrderPaymentCodeService;
 import com.team33.modulecore.core.order.application.OrderStatusService;
+import com.team33.modulecore.core.order.application.SubscriptionOrderService;
+import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.kakao.application.KakaoPaymentFacade;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
@@ -51,11 +53,11 @@ public class PaymentDocsTest {
 	@Mock
 	private OrderStatusService orderStatusService;
 
+	@Mock
+	private SubscriptionOrderService subscriptionOrderService;
 
 	@Mock
 	private OrderPaymentCodeService paymentCodeService;
-
-	private MockMvc mockMvc;
 
 	@BeforeEach
 	void setUp(RestDocumentationContextProvider restDocumentation) {
@@ -65,10 +67,11 @@ public class PaymentDocsTest {
 			paymentMapper,
 			paymentDataMapper,
 			orderStatusService,
-			paymentCodeService
+			paymentCodeService,
+			subscriptionOrderService
 		);
-		
-		mockMvc = MockMvcBuilders.standaloneSetup(payController)
+
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(payController)
 			.apply(documentationConfiguration(restDocumentation)
 				.operationPreprocessors()
 				.withResponseDefaults(prettyPrint())
@@ -281,8 +284,14 @@ public class PaymentDocsTest {
 				.payload("test_payload")
 				.amount(KakaoApproveResponse.Amount.builder().total(10000).vat(0).discount(0).tax_free(0).build())
 				.build();
-		given(kakaoPaymentFacade.approveSubscription(anyLong())).willReturn(kakaoApproveResponse);
 
+		when(subscriptionOrderService.findById(anyLong())).thenReturn(SubscriptionOrder.builder().build());
+		given(kakaoPaymentFacade.approveSubscription(any(SubscriptionOrder.class))).willReturn(kakaoApproveResponse);
+
+
+
+
+		//then
 		RestAssuredMockMvc
 				.when()
 				.post("/api/payments/approve/subscriptions/{subscriptionOrderId}", 3L)
