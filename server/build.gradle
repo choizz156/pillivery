@@ -96,7 +96,10 @@ project(':module-api') {
 }
 
 project(':module-batch') {
-    bootJar { enabled = true }
+    bootJar {
+        enabled = true
+        archiveFileName = "${project.name}-boot.jar"
+    }
     jar { enabled = true }
 
     dependencies {
