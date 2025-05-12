@@ -152,8 +152,10 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
 - **review**: 상품에 대한 사용자 평가, 별점, 리뷰 내용  
 - **Category**: 상품 분류 체계 관리.  
 - **api_event/fail_event** : 이벤트 등록 및 실패 이벤트 관리.  
+
+#### 논리적 ERD
   
-// 논리적 erd 이미지 추가
+![논리적 erd](<image/논리적 erd.png>)
   
 ---  
   
@@ -229,7 +231,7 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
 - Bastion 호스트를 통한 프라이빗 서버 배포.
 - 빌드 시 테스트(CI), 배포 후 헬스 체크(CD).  
 - Slack을 통한 배포 알람 설정.
-- Stage 종류
+- Jenkins PipeLine Stage 종류
   <details>
   <summary>Check out</summary>
   
@@ -414,7 +416,7 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
   
 //이미지 추가
   
-⚠️ 단일 장애 지점을 고려하여, Cloud와 Grafana를 이용한 Application Load Balancer, Redis, MySQL 모니터링.
+#### ⚠️ 단일 장애 지점을 고려하여, Cloud와 Grafana를 이용한 Application Load Balancer, Redis, MySQL 모니터링.
 
   
 ---  
