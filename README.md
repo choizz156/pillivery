@@ -225,29 +225,185 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
   
 #### (3) Jenkins, Docker, Container Registry → 무중단 CI/CD 구성(Rolling).  
 
-- Jenkins에 business, batch 두 개의 파이프라인 구성.  
-- Bastion 호스트를 통한 프라이빗 서버 배포.  
-- Slack을 통한 배포 알람 설정.  
-- Stage 종류  
-	<details>
-	<summary>Check out</summary>
-	</details>
-	<details>
-	<summary>Git 정보 및 환경 설정</summary>
-	</details>
-	<details>
-	<summary>Docker 이미지 빌드</summary>
-	</details>
-	<details>
-	<summary>Docker 이미지 Container Registry에 푸시</summary>
-	</details>
-	<details>
-	<summary>배포 -> 서버 내에서 스크립트 사용</summary>
-	</details>
-	<details>
-	<summary>Slack 알람 (빌드 성공 or 실패)</summary>
-  //이미지 추가
-	</details>
+- Jenkins에 business, batch 두 개의 파이프라인 설정.  
+- Bastion 호스트를 통한 프라이빗 서버 배포.
+- 빌드 시 테스트(CI), 배포 후 헬스 체크(CD).  
+- Slack을 통한 배포 알람 설정.
+- Stage 종류
+  <details>
+  <summary>Check out</summary>
+  
+  ```groovy
+  stage('Checkout') {
+      steps {
+          checkout([
+              $class: 'GitSCM',
+              branches: [[name: 'main']],
+              extensions: [[
+                  $class: 'SubmoduleOption',
+                  disableSubmodules: false,
+                  parentCredentials: true,
+                  recursiveSubmodules: true
+              ]],
+              userRemoteConfigs: [[
+                  url: 'https://github.com/choizz156/pillivery.git',
+                  credentialsId: 'github_token'
+              ]]
+          ])
+      }
+  }
+  ```
+  </details>
+  
+  <details>
+  <summary>Git 정보 및 환경 설정</summary>
+  
+  ```groovy
+  stage('Set Git Info & Environment') {
+      steps {
+          script {
+              env.GIT_HASH = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+              echo "${env.GIT_HASH}"
+              env.GIT_AUTHOR = sh(returnStdout: true, script: 'git log -1 --pretty=format:%an').trim()
+              echo "${env.GIT_AUTHOR}"
+              env.GIT_COMMIT_MSG = sh(returnStdout: true, script: 'git log -1 --pretty=format:%s').trim()
+              echo "${env.GIT_COMMIT_MSG}"
+              env.GIT_BRANCH = 'main'
+              env.IMAGE_TAG = "${env.GIT_HASH}-${BUILD_NUMBER}"
+              echo "${env.IMAGE_TAG}"
+              env.DEPLOY_ENVIRONMENT = env.GIT_BRANCH == 'main' ? '프로덕션' : (env.GIT_BRANCH == 'develop' ? '개발' : "스테이징 (${env.GIT_BRANCH})")
+              echo "${env.DEPLOY_ENVIRONMENT}"
+          }
+      }
+  }
+  ```
+  </details>
+  
+  <details>
+  <summary>Docker 이미지 빌드(CI)</summary>
+  
+  ```groovy
+  stage('Build Docker Image') {
+      steps {
+          script {
+              sh "docker build -t ${VULTR_REGISTRY_URL}:${env.IMAGE_TAG} -f server/api.dockerfile server/"
+          }
+      }
+  }
+  ```
+  </details>
+  
+  <details>
+  <summary>Docker 이미지 Container Registry에 푸시</summary>
+  
+  ```groovy
+  stage('Push Docker Image') {
+      steps {
+          script {
+              withCredentials([usernamePassword(credentialsId: "${VULTR_CREDENTIALS_ID}", passwordVariable: 'VULTR_PASSWORD', usernameVariable: 'VULTR_USERNAME')]) {
+                  sh "docker login ${env.VULTR_REGISTRY} -u ${VULTR_USERNAME} -p \"${VULTR_PASSWORD}\""
+                  sh "docker push ${env.VULTR_REGISTRY_URL}:${env.IMAGE_TAG}"
+              }
+          }
+      }
+  }
+  ```
+  </details>
+  
+  <details>
+  <summary>배포 -> 서버 내에서 스크립트 사용, 헬스 체크(CD)</summary>
+  
+  ```groovy
+  def deployViaBastion(serverIp, containerName, healthCheckUrl) {
+      withCredentials([usernamePassword(credentialsId: "${VULTR_CREDENTIALS_ID}", passwordVariable: 'VULTR_PASSWORD', usernameVariable: 'VULTR_USERNAME')]) {
+          sshagent(['deploy_ssh_key']) {
+              // bastion 호스트에 먼저 접속
+              sh """
+                  # bastion 호스트에 배포 스크립트 복사
+                  scp -o StrictHostKeyChecking=no ./server/deploy_script/docker_deploy.sh ./server/deploy_script/health_check.sh root@${params.BASTION_HOST}:/tmp/
+                  
+                  # bastion 호스트에서 프라이빗 서버로 접속하여 배포 진행
+                  ssh -o StrictHostKeyChecking=no root@${params.BASTION_HOST} << EOF
+                      # 원격 서버 Docker 로그인
+                      ssh -o StrictHostKeyChecking=no root@${serverIp} "docker login ${env.VULTR_REGISTRY} -u ${VULTR_USERNAME} -p \\"${VULTR_PASSWORD}\\""
+                      
+                      # 배포 스크립트 복사 및 실행
+                      scp -o StrictHostKeyChecking=no /tmp/docker_deploy.sh root@${serverIp}:/tmp/
+                      ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/docker_deploy.sh && /tmp/docker_deploy.sh localhost ${containerName} ${env.VULTR_REGISTRY_URL} ${env.IMAGE_TAG}"
+                      
+                      # 헬스 체크 스크립트 복사 및 실행
+                      scp -o StrictHostKeyChecking=no /tmp/health_check.sh root@${serverIp}:/tmp/
+                      ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/health_check.sh && /tmp/health_check.sh localhost ${containerName} ${healthCheckUrl} 40 5"
+  EOF
+              """
+          }
+      }
+  }
+  ```
+  </details>
+  
+  <details>
+  <summary>Slack 알람 (빌드 성공 or 실패)</summary>
+  
+  ```groovy
+  post {
+      success {
+          script {
+              def durationMillis = System.currentTimeMillis() - env.START_TIME.toLong()
+              def durationMinutes = durationMillis / 60000.0
+              def formattedDuration = String.format("%.1f", durationMinutes)
+              
+              slackSend(
+                  channel: "${params.SLACK_CHANNEL}",
+                  tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                  color: "good",
+                  message: """
+  *🚀 배포 성공: ${env.JOB_NAME} [#${env.BUILD_NUMBER}]*
+                  
+  *환경:* ${env.DEPLOY_ENVIRONMENT}
+  *소요 시간:* ${formattedDuration}분
+  *브랜치:* ${env.GIT_BRANCH}
+  *커밋:* `${env.GIT_HASH}`
+  *작성자:* ${env.GIT_AUTHOR}
+  *이미지:* `${VULTR_REGISTRY_URL}:${env.IMAGE_TAG}`
+  *커밋 메시지:* ${env.GIT_COMMIT_MSG}
+  
+  <${env.BUILD_URL}|빌드 상세 보기>
+  
+  배포 완료: ${new Date().format('yyyy-MM-dd HH:mm:ss', TimeZone.getTimeZone('Asia/Seoul'))}
+                  """
+              )
+          }
+      }
+      
+      failure {
+          script {
+              def failedStage = env.STAGE_NAME ?: "알 수 없음"
+              def logExcerpt = "로그 가져오기 실패"
+              try {
+                  logExcerpt = sh(script: "curl -s '${env.BUILD_URL}consoleText' | tail -n 10 || echo '로그 가져오기 실패'", returnStdout: true).trim()
+              } catch (e) {}
+              
+              slackSend(
+                  channel: "${params.SLACK_CHANNEL}",
+                  tokenCredentialId: "${SLACK_CREDENTIALS_ID}",
+                  color: "danger",
+                  message: """
+  *❌ 배포 실패: ${env.JOB_NAME} [#${env.BUILD_NUMBER}]*
+                  
+  *실패 단계:* ${failedStage}
+  *브랜치:* ${env.GIT_BRANCH}
+  
+  <${env.BUILD_URL}console|빌드 로그 보기>
+  
+  실패 시간: ${new Date().format('yyyy-MM-dd HH:mm:ss', TimeZone.getTimeZone('Asia/Seoul'))}
+                  """
+              )
+          }
+      }
+  }
+  ```
+  </details>
 	
   
 
@@ -334,3 +490,6 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
   
 [꼭 JWT를 써야 했을까?](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-JWT%EB%A5%BC-%EA%BC%AD-%EC%8D%A8%EC%95%BC%EB%90%90%EC%9D%84%EA%B9%8C)</br>  
 [무엇인가 잘못된 유저 객체 가지고 오기](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80-%EC%9E%98%EB%AA%BB%EB%90%9C-%EA%B2%83-%EA%B0%99%EC%9D%80-User-%EA%B0%9D%EC%B2%B4-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0)</br>
+
+
+
