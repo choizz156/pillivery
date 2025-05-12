@@ -155,7 +155,7 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
 
 #### 논리적 ERD
   
-![논리적 erd](<image/논리적 erd.png>)
+![논리적 erd](https://github.com/choizz156/pillivery/blob/fda4797842035845bf5d4dbc4aa32b9b5e7ae9e6/image/%E1%84%82%E1%85%A9%E1%86%AB%E1%84%85%E1%85%B5%E1%84%8C%E1%85%A5%E1%86%A8%20erd.png)
   
 ---  
   
