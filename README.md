@@ -84,7 +84,7 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
 - **전략 패턴**:  
   - 결제 방식 변경 시 클라이언트 코드 최소 수정  
   
-![결제 클래스 다이어그램](https://github.com/choizz156/pillivery/blob/5484b755fba956a825bdcba2867269f198e035d2/image/%EA%B2%B0%EC%A0%9C%ED%81%AC%EB%A6%AC%EB%8D%94%EA%B8%B0%EB%8A%A5.jpg)  
+![결제 클래스 다이어그램](https://github.com/choizz156/pillivery/blob/6becdab1dc8817e7e4425f42be778e85b6c1a92e/image/%EA%B2%B0%EC%A0%9C%ED%81%B4%EB%9E%98%EC%8A%A4%20%EB%8B%A4%EC%96%B4%EA%B7%B8%EB%9E%A8.jpg)  
   
 - RestTemplate 동기 호출  
   - Connection Pool, 타임아웃 설정 권장  
