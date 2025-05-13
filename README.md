@@ -329,11 +329,11 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
                       
                       # 배포 스크립트 복사 및 실행
                       scp -o StrictHostKeyChecking=no /tmp/docker_deploy.sh root@${serverIp}:/tmp/
-                      ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/docker_deploy.sh && /tmp/docker_deploy.sh localhost ${containerName} ${env.VULTR_REGISTRY_URL} ${env.IMAGE_TAG}"
+                      ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/docker_deploy.sh && /tmp/docker_deploy.sh ${serverIp} ${containerName} ${env.VULTR_REGISTRY_URL} ${env.IMAGE_TAG}"
                       
                       # 헬스 체크 스크립트 복사 및 실행
                       scp -o StrictHostKeyChecking=no /tmp/health_check.sh root@${serverIp}:/tmp/
-                      ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/health_check.sh && /tmp/health_check.sh localhost ${containerName} ${healthCheckUrl} 40 5"
+                      ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/health_check.sh && /tmp/health_check.sh ${serverIp} ${containerName} ${healthCheckUrl} 40 5"
   EOF
               """
           }
