@@ -157,7 +157,7 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
   
 > Client → EC2 → RDS의 단순 3-tier → 확장성과 운영 효율성을 고려한 아키텍처로 개선.  
 
-//이미지 추가
+![아케택쳐](https://github.com/choizz156/pillivery/blob/5d60e935f2e10eccda9f9f00ec5c590df81b1f1d/image/%E1%84%8B%E1%85%A1%E1%84%8F%E1%85%B5%E1%84%90%E1%85%A6%E1%86%A8%E1%84%8E%E1%85%A7%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%8D%E1%85%A1%20%E1%84%8E%E1%85%AC%E1%84%8C%E1%85%A9%E1%86%BC.png)
   
 #### (1)  Docker를 통한 배포로, 인프라 환경 일관성 확보.  
   
@@ -225,6 +225,10 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
 - Bastion 호스트를 통한 프라이빗 서버 배포.
 - 빌드 시 테스트(CI), 배포 후 헬스 체크(CD).  
 - Slack을 통한 배포 알람 설정.
+
+  ![배포실패](https://github.com/choizz156/pillivery/blob/d81d6e21d28f3c49f8ced4785cd3af652440d87e/image/%E1%84%87%E1%85%A2%E1%84%91%E1%85%A9%20%E1%84%89%E1%85%B5%E1%86%AF%E1%84%91%E1%85%A6%20slack%20message.png)
+  ![배포성공](https://github.com/choizz156/pillivery/blob/d81d6e21d28f3c49f8ced4785cd3af652440d87e/image/%E1%84%87%E1%85%A2%E1%84%91%E1%85%A9%20%E1%84%89%E1%85%A5%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%20slack%20%E1%84%86%E1%85%A6%E1%84%89%E1%85%B5%E1%84%8C%E1%85%B5.png)
+
 - Jenkins PipeLine Stage 종류
   <details>
   <summary>Check out</summary>
