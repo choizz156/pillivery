@@ -7,7 +7,6 @@
 :sectlinks:
 
 [[subscription-api]]
-== Subscription API
 
 [[subscription-first-request]]
 === 첫 구독 결제 요청

@@ -7,7 +7,7 @@
 :sectlinks:
 
 [[payment-api]]
-== Payment API
+
 
 [[payment-request]]
 === 결제 요청

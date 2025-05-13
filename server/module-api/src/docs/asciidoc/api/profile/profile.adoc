@@ -7,7 +7,7 @@
 :sectlinks:
 
 [[profile-api]]
-== Profile API
+
 
 [[profile-get]]
 === 프로필 조회

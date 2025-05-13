@@ -9,50 +9,34 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 
-== Header
-|===
-| name | 설명
+include::api/user/user.adoc[]
 
-| `Authorization`
-| API를 사용하기 위한 인증 키
-|===
-
-[[User-API]]
-== User API
-
-include::api/user/user.adoc
-
-[[Cart-API]]
-== Cart API
-
-include::api/cart/cart.adoc
+include::api/cart/cart.adoc[]
 
 [[Order-API]]
-== Order API
 
-include::api/order/order.adoc
+include::api/order/order.adoc[]
 
 [[Payment-API]]
-== Payment API
 
-include::api/payment/payment.adoc
+
+include::api/payment/payment.adoc[]
 
 [[Item-API]]
-== Item API
 
-include::api/item/item.adoc
+
+include::api/item/item.adoc[]
 
 [[Profile-API]]
-== Profile API
 
-include::api/profile/profile.adoc
+
+include::api/profile/profile.adoc[]
 
 [[Review-API]]
-== Review API
 
-include::api/review/review.adoc
+
+include::api/review/review.adoc[]
 
 [[Subscription-API]]
-== Subscription API
 
-include::api/subscription/subscription.adoc
+include::api/subscription/subscription.adoc[]

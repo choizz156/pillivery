@@ -7,7 +7,7 @@
 :sectlinks:
 
 [[review-api]]
-== Review API
+
 
 [[review-create]]
 === 리뷰 작성

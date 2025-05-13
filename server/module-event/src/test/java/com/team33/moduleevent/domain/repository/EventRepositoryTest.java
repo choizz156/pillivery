@@ -1,11 +1,12 @@
 package com.team33.moduleevent.domain.repository;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ import com.team33.moduleevent.domain.entity.ApiEvent;
 @ActiveProfiles("test")
 @EnableAutoConfiguration
 @ContextConfiguration(classes = {
-	EventRepository.class
+	EventRepository.class,
+	ApiEvent.class
 })
 @EnableJpaRepositories(basePackages = "com.team33.moduleevent")
 @EntityScan(basePackages = "com.team33.moduleevent")
@@ -61,7 +63,7 @@ class EventRepositoryTest {
 		List<ApiEvent> list = eventRepository.findTop20ByStatusOrderByCreatedAt(EventStatus.READY);
 
 		//then
-		Assertions.assertThat(list).hasSize(10)
+		assertThat(list).hasSize(10)
 			.isSortedAccordingTo(Comparator.comparing(ApiEvent::getCreatedAt));
 
 	}

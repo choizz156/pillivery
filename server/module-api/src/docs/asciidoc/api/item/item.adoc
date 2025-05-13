@@ -1,7 +1,7 @@
 = Item API
 :doctype: book
 
-== Header
+=== Header
 |===
 | name | 설명
 
@@ -15,7 +15,7 @@
 :sectlinks:
 
 [[item-api]]
-== Item API
+
 
 [[item-main]]
 === 메인 페이지 상품 조회

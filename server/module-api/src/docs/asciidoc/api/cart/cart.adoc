@@ -7,7 +7,7 @@
 :toclevels: 2
 :sectlinks:
 
-== Header
+=== Header
 |===
 | name | 설명
 
@@ -15,10 +15,7 @@
 | API를 사용하기 위한 인증 키
 |===
 
-== 참고
-
-
-
+=== 참고
 |===
 | id | number
 
