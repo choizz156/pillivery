@@ -314,35 +314,166 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
   
   <details>
   <summary>배포 -> 서버 내에서 스크립트 사용, 헬스 체크(CD)</summary>
-  
+
+  >
+  > <details>
+  >   <summary><strong>docker_deploy.sh - 무중단 배포 스크립트</strong></summary>
+  >
+  >   ```bash
+  >   #!/bin/bash
+  >   if [ "$#" -ne 4 ]; then
+  >       echo "⚠️파라미터가 부족합니다.⚠️"
+  >       echo "=> $0 serverIp containerName registryUrl imageTag"
+  >       exit 1
+  >   fi
+  >
+  >   serverIp=$1
+  >   containerName=$2
+  >   registryUrl=$3
+  >   imageTag=$4
+  >
+  >   echo "배포 과정 시작: $serverIp..."
+  >
+  >   ssh -o StrictHostKeyChecking=no root@$serverIp "
+  >       if docker ps -q --filter name=$containerName; then
+  >           docker rm -f ${containerName}-backup || true
+  >               echo '기존 백업 컨테이너 삭제'
+  >           docker rename $containerName ${containerName}-backup
+  >               echo '백업 컨테이너 설정'
+  >           docker stop ${containerName}-backup || true
+  >               echo  '기존 컨테이너 종료'
+  >       fi
+  >   "
+  >
+  >   echo "새로운 컨테이너 배포"
+  >   ssh -o StrictHostKeyChecking=no root@$serverIp "
+  >       docker pull ${registryUrl}:${imageTag}
+  >       echo '컨테이너 배포 시작'
+  >       docker run -d \
+  >         --name $containerName \
+  >         --restart unless-stopped \
+  >         --network server \
+  >         -p 8080:8080 \
+  >         -v app-logs:/root/logs \
+  >         ${registryUrl}:${imageTag}
+  >   "
+  >
+  >   echo "✅ 배포 완료: $serverIp"
+  >   ```
+  > </details>
+  >
+  > <details>
+  >   <summary><strong>health_check.sh - 헬스 체크 및 롤백 트리거</strong></summary>
+  >
+  >   ```bash
+  >   #!/bin/bash
+  >
+  >   if [ "$#" -ne 5 ]; then
+  >       echo "⚠️ 파라미터가 부족합니다. ⚠️"
+  >       echo "=> $0 serverIp containerName healthCheckUrl maxAttempts sleepInterval"
+  >       exit 1
+  >   fi
+  >
+  >   serverIp=$1
+  >   containerName=$2
+  >   healthCheckUrl=$3
+  >   maxAttempts=$4
+  >   sleepInterval=$5
+  >
+  >   attempts=0
+  >   healthCheckSuccess=false
+  >
+  >   while [ $attempts -lt $maxAttempts ]; do
+  >       httpCode=$(ssh -o StrictHostKeyChecking=no root@$serverIp "curl -s -o /dev/null -w \"%{http_code}\" $healthCheckUrl")
+  >       echo "Health check 횟수 $((attempts + 1)). HTTP Status: $httpCode"
+  >
+  >       if [ "$httpCode" == "200" ]; then
+  >           echo "✅ CD 완료 $serverIp."
+  >           healthCheckSuccess=true
+  >           break
+  >       fi
+  >
+  >       attempts=$((attempts + 1))
+  >       sleep $sleepInterval
+  >   done
+  >
+  >   if [ "$healthCheckSuccess" == "false" ]; then
+  >       echo "❌ Health check 실패 : $serverIp."
+  >       exit 1
+  >   else
+  >       ssh -o StrictHostKeyChecking=no root@$serverIp "
+  >           docker rm -f ${containerName}-backup || true
+  >       "
+  >       echo "✅ 배포 성공 : $serverIp"
+  >   fi
+  >   ```
+  > </details>
+  >
+  > <details>
+  >   <summary><strong>rollback.sh - 롤백 스크립트</strong></summary>
+  >
+  >   ```bash
+  >   #!/bin/bash
+  >
+  >   if [ $# -ne 2 ]; then
+  >       echo "⚠️파라미터가 부족합니다.⚠️"
+  >       echo "=> $0 serverIp containerName"
+  >       exit 1
+  >   fi
+  >
+  >   serverIp=$1
+  >   containerName=$2
+  >
+  >   echo "새롭게 배포하려던 컨테이너 정지 및 삭제 on $serverIp..."
+  >   ssh -o StrictHostKeyChecking=no root@$serverIp "
+  >       docker stop $containerName || true
+  >       docker rm -f $containerName || true
+  >   "
+  >
+  >   backupExists=$(ssh -o StrictHostKeyChecking=no root@$serverIp "docker ps -a --filter name=${containerName}-backup -q")
+  >
+  >   if [ -n "$backupExists" ]; then
+  >       echo "백업 컨테이너 재시작 on $serverIp..."
+  >       ssh -o StrictHostKeyChecking=no root@$serverIp "
+  >           docker rename ${containerName}-backup $containerName
+  >           docker start $containerName
+  >       "
+  >       echo "✅ 롤백 성공 on $serverIp"
+  >   else
+  >       echo "❌ 롤백 가능한 컨테이너 존재하지 않음. on $serverIp."
+  >       exit 1
+  >   fi
+  >   ```
+  > </details>
   ```groovy
   def deployViaBastion(serverIp, containerName, healthCheckUrl) {
-      withCredentials([usernamePassword(credentialsId: "${VULTR_CREDENTIALS_ID}", passwordVariable: 'VULTR_PASSWORD', usernameVariable: 'VULTR_USERNAME')]) {
-          sshagent(['deploy_ssh_key']) {
-              // bastion 호스트에 먼저 접속
-              sh """
-                  # bastion 호스트에 배포 스크립트 복사
-                  scp -o StrictHostKeyChecking=no ./server/deploy_script/docker_deploy.sh ./server/deploy_script/health_check.sh root@${params.BASTION_HOST}:/tmp/
-                  
-                  # bastion 호스트에서 프라이빗 서버로 접속하여 배포 진행
-                  ssh -o StrictHostKeyChecking=no root@${params.BASTION_HOST} << EOF
-                      # 원격 서버 Docker 로그인
-                      ssh -o StrictHostKeyChecking=no root@${serverIp} "docker login ${env.VULTR_REGISTRY} -u ${VULTR_USERNAME} -p \\"${VULTR_PASSWORD}\\""
-                      
-                      # 배포 스크립트 복사 및 실행
-                      scp -o StrictHostKeyChecking=no /tmp/docker_deploy.sh root@${serverIp}:/tmp/
-                      ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/docker_deploy.sh && /tmp/docker_deploy.sh ${serverIp} ${containerName} ${env.VULTR_REGISTRY_URL} ${env.IMAGE_TAG}"
-                      
-                      # 헬스 체크 스크립트 복사 및 실행
-                      scp -o StrictHostKeyChecking=no /tmp/health_check.sh root@${serverIp}:/tmp/
-                      ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/health_check.sh && /tmp/health_check.sh ${serverIp} ${containerName} ${healthCheckUrl} 40 5"
-  EOF
-              """
-          }
-      }
-  }
+    withCredentials([usernamePassword(credentialsId: "${VULTR_CREDENTIALS_ID}", passwordVariable: 'VULTR_PASSWORD', usernameVariable: 'VULTR_USERNAME')]) {
+        sshagent(['deploy_ssh_key']) {
+            // bastion 호스트에 먼저 접속
+            sh """
+                # bastion 호스트에 배포 스크립트 복사
+                scp -o StrictHostKeyChecking=no ./server/deploy_script/docker_deploy.sh ./server/deploy_script/health_check.sh root@${params.BASTION_HOST}:/tmp/
+                
+                # bastion 호스트에서 프라이빗 서버로 접속하여 배포 진행
+                ssh -o StrictHostKeyChecking=no root@${params.BASTION_HOST} << EOF
+                    # 원격 서버 Docker 로그인
+                    ssh -o StrictHostKeyChecking=no root@${serverIp} "docker login ${env.VULTR_REGISTRY} -u ${VULTR_USERNAME} -p \\"${VULTR_PASSWORD}\\""
+                    
+                    # 배포 스크립트 복사 및 실행
+                    scp -o StrictHostKeyChecking=no /tmp/docker_deploy.sh root@${serverIp}:/tmp/
+                    ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/docker_deploy.sh && /tmp/docker_deploy.sh ${serverIp} ${containerName} ${env.VULTR_REGISTRY_URL} ${env.IMAGE_TAG}"
+                    
+                    # 헬스 체크 스크립트 복사 및 실행
+                    scp -o StrictHostKeyChecking=no /tmp/health_check.sh root@${serverIp}:/tmp/
+                    ssh -o StrictHostKeyChecking=no root@${serverIp} "chmod +x /tmp/health_check.sh && /tmp/health_check.sh ${serverIp} ${containerName} ${healthCheckUrl} 40 5"
+						EOF
+            """
+        }
+    }
+	}
   ```
-  </details>
+	</details>
+
   
   <details>
   <summary>Slack 알람 (빌드 성공 or 실패)</summary>
