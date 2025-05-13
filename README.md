@@ -144,7 +144,7 @@ Pillivery는 건강기능식품을 온라인으로 주문하고 정기적으로 
 - **orders/order_item**: 주문 정보, 배송 정보, 주문 상품 목록 관리  
 - **subscription_order**: 구독 주문 관리  
 - **review**: 상품에 대한 사용자 평가, 별점, 리뷰 내용  
-- **Category**: 상품 분류 체계 관리.  
+- **category**: 상품 분류 체계 관리.  
 - **api_event/fail_event** : 이벤트 등록 및 실패 이벤트 관리.  
 
 #### 논리적 ERD
