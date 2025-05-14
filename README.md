@@ -218,8 +218,10 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
   </details>  
   
 #### (2) Promtail, Loki, Promethues, Grafana → 로깅 및 관제 시스템 도입.  
-  
-// 이미지 추가
+- grafana  
+	![](https://github.com/choizz156/pillivery/blob/e6ec666b987f73bbc08630745c34cd89602bd77d/image/grafana.png)
+- loki
+	![](https://github.com/choizz156/pillivery/blob/e6ec666b987f73bbc08630745c34cd89602bd77d/image/loki.png)
   
 #### (3) Jenkins, Docker, Container Registry → 무중단 CI/CD 구성(Rolling).  
 
@@ -545,10 +547,8 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
   
 - Error log 1분 간 10개, Warn log 5분간 20개, CPU 50% 이상 시 알람 설정.  
   
-//이미지 추가
+![에러알람](https://github.com/choizz156/pillivery/blob/e6ec666b987f73bbc08630745c34cd89602bd77d/image/slack%20error%20%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%85%E1%85%A1%E1%86%B7.png)
   
-
-
   
 ---  
   
