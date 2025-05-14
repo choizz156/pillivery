@@ -1,6 +1,7 @@
 # Pillivery (지속적 개발 및 개선: 2022 - 현재) 
 
 > 실제 서비스가 아닌 팀 프로젝트의 일환으로 진행
+
 Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫폼으로, 초기 팀 프로젝트 이후 개인적으로 실제 서비스 수준의 아키텍처와 성능을 목표로 지속 개선 중인 프로젝트.  
 
   
@@ -158,7 +159,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 ### ⚙️ 인프라 아키텍처 개선  
   
 > Client → EC2 → RDS의 단순 3-tier → 확장성과 운영 효율성을 고려한 아키텍처로 개선.  
-#### ⚠️ 단일 장애 지점을 고려하여, Cloud 서비스와 Grafana를 이용한 Application Load Balancer, Redis, MySQL 모니터링.
+#### ⚠️ 단일 장애 지점을 고려하여, Cloud 서비스와 Grafana를 이용한 Application Load Balancer, MySQL 모니터링.
 ![아케택쳐](https://github.com/choizz156/pillivery/blob/5d60e935f2e10eccda9f9f00ec5c590df81b1f1d/image/%E1%84%8B%E1%85%A1%E1%84%8F%E1%85%B5%E1%84%90%E1%85%A6%E1%86%A8%E1%84%8E%E1%85%A7%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%8D%E1%85%A1%20%E1%84%8E%E1%85%AC%E1%84%8C%E1%85%A9%E1%86%BC.png)
   
 #### (1)  Docker를 통한 배포로, 인프라 환경 일관성 확보.  
