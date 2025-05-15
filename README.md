@@ -946,6 +946,76 @@ $$\frac{174}{25777} \times 100  ≈ 0.6\%$$
 
 <img src="https://github.com/choizz156/pillivery/blob/2cbde14fba519a83cc57bda3dfa1dd64763a57a4/image/circuitbraekertest.png?raw=true">
 
+### (9) Load/Stress 테스트
+
+- Load 테스트를 통한 error 해결 및 성능 개선.
+- Stress 테스트를 통한 서버 한계점 파악.
+- 빈번한 API 요청 및 외부 API 관련 로직 테스트.
+
+#### 테스트 환경
+
+- Locust 사용
+- vcpu 2, memory 2G
+- Load 테스트 약 10분 이상, Stress 테스트 20분 이상.
+- Mock Item 4만개, Mock Order 10만개.
+
+#### 👥 VUser 추정
+
+- 타 사이트 MAU를 참고하여 DAU 추정
+    - DAU/MAU = 0.3이라고 가정 => DAU ≈ 150,000.
+- 1인당 API 요청 수 : 5개
+- 총 요청 수 / 1일 : 150,000 x 5 = 750,000
+- 초당 평균 요청 수(RPS) : 750,000 / 86,400(s) ≈ 8.68
+- 최대 집중률 : 10배라고 가정
+- 최대 RPS : 8.68 x 10 ≈ 86.8
+- 응답 시간 목표: 약 0.2초
+
+> - T = (시나리오 상 요청 수 * 목표 응답 시간) + ⍺(예상 지연 시간) → (1 * 0.2) + 0 = **0.2**<br/>
+> - 목표 최대 RPS = (VUser * 요청 수) / 목표 응답 시간(T)<br/>
+> - VUser = (최대 RPS x 목표 응답 시간 ) / api 요청 수
+    → 최대 RPS × 응답시간 = 86.8 × 0.2 = 17.36 ≈ **18**<br/>
+    > => VUser 값을 18로 두고 테스트하여 요청 시간이 0.2초를 유지한다면 대상 시스템은 86.8의 처리량을 보장한다고 가정할 수 있음.
+
+> ⚠️ 학습 목적 상 추정된 VUser 18은 너무 적다고 판단하여 그 이상의 수로 테스트를 수행함.
+
+#### 📌 카테고리 별 아이템 테스트
+
+> - 1 ~ 10 페이지 조회(1 ~ 5 페이지는 캐싱).
+> - VUser 30으로 설정
+
+#### Load Test
+
+- 캐싱 평균 응답 시간: 10-20ms
+- 캐싱되지 않은 요청 평균 응답 시간: 200-800ms
+
+  <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/itemcatetgoryloadtest.png?raw=true" width="70%">
+
+#### Stress Test
+
+- 캐싱된 데이터들 제외하고 VUser 300부터 대기 중인 커넥션 풀이 증가하며 응답 시간 급격하게 증가.
+
+  <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/itemcategorystresstest.png?raw=true" width="70%">
+
+#### 📌 결제 승인 테스트
+
+> - 자체로 만든 Mock Server 사용.
+> - 지연 시간 약 2초 적용.
+> - Circuit Breaker, Retry 적용
+
+#### Load Test
+
+- 평균 응답 시간: 약 2초.
+
+  <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/paymentApproveLoadTest.png?raw=true" width="70%">
+
+#### Stress Test
+
+- VUser 300부터 Circuit Breaker 발동.
+
+  <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/paymentApproveStressTest.png?raw=true" width="70%">
+
+
+
   
 ---  
 
