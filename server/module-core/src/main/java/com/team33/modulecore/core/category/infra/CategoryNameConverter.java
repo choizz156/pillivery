@@ -5,10 +5,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 import com.team33.modulecore.core.category.domain.Categories;
 import com.team33.modulecore.core.category.domain.CategoryName;
 
+@Converter
 public class CategoryNameConverter implements AttributeConverter<Categories, String> {
 
     @Override

@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service
 public class DistributedLockService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
@@ -29,9 +29,13 @@ public class DistributedLockService {
 
 		try {
 			return lock.tryLock(tryLockTime, leaseTime, TimeUnit.SECONDS);
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			LOGGER.warn("redis error", e);
-			throw new RedisException("분산 락 관련 에러", e);
+			Thread.currentThread().interrupt();
+			return false;
+		} catch (Exception e) {
+			LOGGER.error("Redisson 락 획득 중 오류", e);
+			throw new RedisException("Redisson 락 획득 실패", e);
 		}
 	}
 
@@ -40,7 +44,16 @@ public class DistributedLockService {
 		String key = LOCK_PREFIX + lockKey;
 		RLock lock = redissonClient.getLock(key);
 
-		if(lock.isHeldByCurrentThread()) {
+		try {
+			unlock(lock);
+		} catch (Exception e) {
+			LOGGER.warn("redis error", e);
+		}
+	}
+
+	private void unlock(RLock lock) {
+
+		if (lock.isHeldByCurrentThread()) {
 			lock.unlock();
 		}
 	}
