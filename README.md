@@ -128,7 +128,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
 ### 🗄️ 모듈 구조(싱글 -> 멀티)
 
-- 관심사 분리를 통한 코드의 유지/보수 향상 및 확장성 고려.
+- 관심사 분리를 통한 코드의 유지, 보수 향상 및 확장성 고려.
 - 모듈 간 결합도 최소화 및 단방향 의존성.
 
 #### 모듈 종류
@@ -151,14 +151,24 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
 #### 주요 엔티티
 
-- **users**: 사용자 계정 정보(계정, 개인정보, 연락처)와 장바구니 연결 관리
-- **item**: 상품 정보, 가격, 이미지, 카테고리 분류 및 상품 상세 정보
-- **cart/cart_item**: 사용자 장바구니 및 담긴 상품 관리, 가격 계산
-- **orders/order_item**: 주문 정보, 배송 정보, 주문 상품 목록 관리
-- **subscription_order**: 구독 주문 관리
-- **review**: 상품에 대한 사용자 평가, 별점, 리뷰 내용
-- **category**: 상품 분류 체계 관리.
+- **users**: 사용자 계정 정보(계정, 개인정보, 연락처)와 장바구니 연결 관리.
+- **item**: 상품 정보, 가격, 이미지, 카테고리 분류 및 상품 상세 정보.
+- **item_category**: 아이템이 가진 카테고리 종류. 
+- **cart/cart_item**: 사용자 장바구니 및 담긴 상품 관리, 가격 계산.
+- **orders/order_item**: 주문 정보, 배송 정보, 주문 상품 목록 관리.
+- **subscription_order**: 구독 주문 관리.
+- **review**: 상품에 대한 사용자 평가, 별점, 리뷰 내용.
+- **category**: 아이템 성분 분류.
 - **api_event/fail_event** : 이벤트 등록 및 실패 이벤트 관리.
+- 그 외 Batch, Quartz 관련 스키마.
+
+> 도메인 특성 상 카테고리 변경 가능성이 매우 적다는 판단 하에 AttributeConverter를 사용하여 한 컬럼에 다중 카테고리 속성 저장.
+>- category 테이블과 연관관계 제거 -> category 테이블과 join 하지 않음.
+>- @ElementCollection을 이용한 item_category 생성.
+> 
+>   <img src="https://github.com/choizz156/pillivery/blob/2b1b02b0a65209c081186284c4d7a4c59d979679/image/%E1%84%8F%E1%85%A1%E1%84%90%E1%85%A6%E1%84%80%E1%85%A9%E1%84%85%E1%85%B5%20%E1%84%8B%E1%85%A7%E1%84%85%E1%85%A5%E1%84%80%E1%85%A2%20%E1%84%90%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%87%E1%85%B3%E1%86%AF.png?raw=true" width="30%">
+
+
 
 #### 논리적 ERD
 
@@ -182,14 +192,14 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
 #### (2) 로드밸런서(ALB) 적용
 
-- 로드밸런스 서브넷만 포트 개방(443/80) → Nginx/WAS는 Private 서브넷에 격리.
+- 로드밸런스 서브넷만 포트 개방(443/80) → Nginx/WAS는 Private Subnet에 격리.
 - 현재 가장 적은 수의 연결(요청)을 처리 중인 서버에 트래픽을 전달.
 - SSL/TLS Offloding으로 암호화 오버헤드 제거.
 - 헬스 체크로 Nginx 장애 시 트래픽 전달 중단하여 장애 전파 방지.
 
 #### (3) Nginx 적용
 
-- 특정 경로(/api/carts)에 Sticky Session 적용.
+- 특정 경로(/carts)에 Sticky Session 적용.
   <details>  
   <summary>carts 경로 sticky session 설정</summary>  
 
@@ -811,7 +821,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
   ```
   <details>
-  <summary>run_batch.sh</summary>
+  <summary>vm on 스크립트</summary>
 
   ```bash
   #!/bin/bash
