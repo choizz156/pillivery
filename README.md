@@ -199,7 +199,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
 #### (3) Nginx 적용
 
-- 특정 경로(/carts)에 Sticky Session 적용.
+- 장바구니 경로에 Sticky Session 적용.
   <details>  
   <summary>carts 경로 sticky session 설정</summary>  
 
