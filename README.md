@@ -922,6 +922,29 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 - 메모리 사용량(12KB)을 최소화하면서도 오차(0.82)가 적 고유 방문자 수 집계 가능.
 - 약간의 오차 허용 범위 내에서 정확성보다 처리 성능을 고려.
 
+### (8) Circuit Breaker 패턴 적용
+- 외부 API 통신과 Batch 서버와 App 서버 간 통신에 Circuit Breaker 패턴을 적용.
+- 장애 발생 시 일정 비율 이상의 실패가 감지되면 서킷을 열어(Open) 호출을 차단함으로써, 안정적인 처리량 유지 및 빠른 실패 응답(fast-fail)을 통해 장애 전파를 조기 차단.
+  - Retry 횟수 3번을 포함하여, 실패율이 75% 이상일 경우 open 상태가 됨.
+  - open 상태에서 10초 대기 후 half-open 상태로 자동 전환 → 10번의 시도 후 임계값 아래라면 다시 close 전환.
+- 외부 API 통신에 **독립된 커넥션 풀을 구성**하여, 특정 서비스 장애 시 타 서비스로의 영향 최소화.
+
+#### Circuit Braeker 성능 테스트(VUser 100)
+- 임의 Mock Server로 통신 실패 확률 20%로 설정.
+- Retry 3번 중 성공 횟수 4005개, 재시도 3번 모두 실패한 횟수 174개 → 재시도 실패율 4.16%
+  
+$$\frac{174}{4179} \times 100  ≈ 4.16\%$$
+
+-  총 25,777개의 시도하여 실패 개수 174개(재시도 횟수 포함) → 실패율 0.6%
+
+$$\frac{174}{25777} \times 100  ≈ 0.6\%$$
+
+#### Circuit Braeker 기능 테스트(VUser 100)
+- 기능 테스트를 위해 mock server 실패율은 일정 시간 후 75%까지 오르도록 설정.
+- open 임계값은 50%로 설정.
+- open과 half-open을 반복하고 open 상태일 경우, fast-fail로 빠른 응답시간(거의 0ms)을 보임.
+
+<img src="https://github.com/choizz156/pillivery/blob/2cbde14fba519a83cc57bda3dfa1dd64763a57a4/image/circuitbraekertest.png?raw=true">
 
   
 ---  
