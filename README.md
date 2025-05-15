@@ -868,7 +868,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
 - Error log 1분 간 10개, Warn log 5분간 20개, CPU 50% 이상 시 알람 설정.
 
-<img src="https://github.com/choizz156/pillivery/blob/e6ec666b987f73bbc08630745c34cd89602bd77d/image/slack%20error%20%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%85%E1%85%A1%E1%86%B7.png?raw=true" width="50%">
+<img src="https://github.com/choizz156/pillivery/blob/e6ec666b987f73bbc08630745c34cd89602bd77d/image/slack%20error%20%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%85%E1%85%A1%E1%86%B7.png?raw=true" width="30%">
 
 ### ⚙️ 도메인 개선 및 리팩토링
 
