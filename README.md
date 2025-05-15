@@ -257,8 +257,8 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
       ```
   </details>
  
-#### (5)  Docker를 통한 배포로, 인프라 환경 일관성 확보.
-
+#### (5) Docker를 통한 배포
+- 인프라 환경의 일관성 확보.
 - **멀티 스테이지 빌드** : Gradle 빌드 환경에서 애플리케이션을 빌드한 후 경량화된 JRE 환경에서만 실행하여 컨테이너 이미지 크기 최적화.
   <details>  
   <summary><strong>api.dockerfile</strong></summary>  
@@ -324,7 +324,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
   <img src="https://github.com/choizz156/pillivery/blob/e6ec666b987f73bbc08630745c34cd89602bd77d/image/loki.png?raw=true" width="70%">
 
 #### (7) Jenkins, Docker, Container Registry → 무중단 CI/CD 구성(Rolling).
-
+- 배포 시간 단축.
 - Jenkins에 business, batch 두 개의 파이프라인 설정.
 - Bastion 호스트를 통한 프라이빗 서버 배포.
 - 빌드 시 테스트(CI), 배포 후 헬스 체크(CD).
