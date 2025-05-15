@@ -940,7 +940,7 @@ $$\frac{174}{4179} \times 100  ≈ 4.16\%$$
 $$\frac{174}{25777} \times 100  ≈ 0.6\%$$
 
 ##### 📌 Circuit Breaker 기능 테스트(VUser 100)
-- 기능 테스트를 위해 mock server 실패율은 일정 시간 후 75%까지 오르도록 설정.
+- 기능 테스트를 위해 mock server 실패율은 일정 시간 후 75%까지 오르도록 설정, 지연 시간 5초.
 - open 임계값은 50%로 설정.
 - open과 half-open을 반복하고 open 상태일 경우, fast-fail로 빠른 응답시간(거의 0ms)을 보임.
 
