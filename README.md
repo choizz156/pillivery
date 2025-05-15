@@ -166,7 +166,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 >- category 테이블과 연관관계 제거 -> category 테이블과 join 하지 않음.
 >- @ElementCollection을 이용한 item_category 생성.
 > 
->   <img src="https://github.com/choizz156/pillivery/blob/2b1b02b0a65209c081186284c4d7a4c59d979679/image/%E1%84%8F%E1%85%A1%E1%84%90%E1%85%A6%E1%84%80%E1%85%A9%E1%84%85%E1%85%B5%20%E1%84%8B%E1%85%A7%E1%84%85%E1%85%A5%E1%84%80%E1%85%A2%20%E1%84%90%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%87%E1%85%B3%E1%86%AF.png?raw=true" width="30%">
+>   <img src="https://github.com/choizz156/pillivery/blob/2b1b02b0a65209c081186284c4d7a4c59d979679/image/%E1%84%8F%E1%85%A1%E1%84%90%E1%85%A6%E1%84%80%E1%85%A9%E1%84%85%E1%85%B5%20%E1%84%8B%E1%85%A7%E1%84%85%E1%85%A5%E1%84%80%E1%85%A2%20%E1%84%90%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%87%E1%85%B3%E1%86%AF.png?raw=true" width="20%">
 
 
 
@@ -639,9 +639,11 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
   </details>
 	
-  <img src="https://github.com/choizz156/pillivery/blob/d81d6e21d28f3c49f8ced4785cd3af652440d87e/image/%E1%84%87%E1%85%A2%E1%84%91%E1%85%A9%20%E1%84%89%E1%85%B5%E1%86%AF%E1%84%91%E1%85%A6%20slack%20message.png?raw=true" width="40%">
-
-<img src="https://github.com/choizz156/pillivery/blob/d81d6e21d28f3c49f8ced4785cd3af652440d87e/image/%E1%84%87%E1%85%A2%E1%84%91%E1%85%A9%20%E1%84%89%E1%85%A5%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%20slack%20%E1%84%86%E1%85%A6%E1%84%89%E1%85%B5%E1%84%8C%E1%85%B5.png?raw=true" width="40%">
+	
+<div style="display: flex; gap: 10px;">
+  <img src="https://github.com/choizz156/pillivery/blob/d81d6e21d28f3c49f8ced4785cd3af652440d87e/image/%E1%84%87%E1%85%A2%E1%84%91%E1%85%A9%20%E1%84%89%E1%85%B5%E1%86%AF%E1%84%91%E1%85%A6%20slack%20message.png?raw=true" width="35%">
+  <img src="https://github.com/choizz156/pillivery/blob/d81d6e21d28f3c49f8ced4785cd3af652440d87e/image/%E1%84%87%E1%85%A2%E1%84%91%E1%85%A9%20%E1%84%89%E1%85%A5%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC%20slack%20%E1%84%86%E1%85%A6%E1%84%89%E1%85%B5%E1%84%8C%E1%85%B5.png?raw=true" width="45%">
+</div>
 
 #### (8) Lamda, NCP API를 통한 Batch Server 실행
 
