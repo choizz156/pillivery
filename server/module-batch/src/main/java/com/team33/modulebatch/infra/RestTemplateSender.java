@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.team33.modulebatch.exception.SubscriptionFailException;
+import com.team33.modulebatch.exception.SubscriptionPaymentFailException;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -48,6 +48,6 @@ public class RestTemplateSender {
 			headers,
 			throwable.getMessage());
 
-		throw new SubscriptionFailException(throwable.getMessage(), Long.parseLong(subscriptionOrderId));
+		throw new SubscriptionPaymentFailException(throwable.getMessage(), Long.parseLong(subscriptionOrderId));
 	}
 }

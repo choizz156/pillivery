@@ -14,7 +14,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.modulebatch.exception.BatchApiException;
+import com.team33.modulebatch.exception.ClientPaymentException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,7 +48,7 @@ public class RestTemplateErrorHandler extends DefaultResponseErrorHandler {
 
 		methodResultMessage = getMessage(response, responseBody, methodResultMessage);
 
-		throw new BatchApiException(methodResultMessage);
+		throw new ClientPaymentException(methodResultMessage);
 	}
 
 	private String getMessage(ClientHttpResponse response, String responseBody, String methodResultMessage) {

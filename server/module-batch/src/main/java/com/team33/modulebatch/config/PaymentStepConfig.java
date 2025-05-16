@@ -30,7 +30,7 @@ import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.web.client.HttpServerErrorException;
 
 import com.team33.modulebatch.domain.ErrorItemRepository;
-import com.team33.modulebatch.exception.BatchApiException;
+import com.team33.modulebatch.exception.ClientPaymentException;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
 import com.team33.modulebatch.listener.PaymentStepExecutionListener;
@@ -80,7 +80,7 @@ public class PaymentStepConfig {
 			.writer(itemWriter())
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
-			.skip(BatchApiException.class)
+			.skip(ClientPaymentException.class)
 			.retryLimit(RETRY_LIMIT)
 			.retry(HttpServerErrorException.class)
 			.backOffPolicy(backOffPolicy)
