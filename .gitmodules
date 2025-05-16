@@ -1,6 +1,8 @@
 [submodule "server/module-api/src/main/resources/config"]
 	path = server/module-api/src/main/resources/config
 	url = https://github.com/choizz156/pillivery-config.git
+	branch = main
 [submodule "server/module-batch/src/main/resources/config"]
 	path = server/module-batch/src/main/resources/config
 	url = https://github.com/choizz156/pillivery-config.git
+	branch = batch
