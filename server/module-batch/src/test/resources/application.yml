@@ -76,7 +76,7 @@ resilience4j:
           - java.net.ConnectException
           - java.net.SocketTimeoutException
         ignoreExceptions:
-          - com.team33.modulebatch.exception.BatchApiException
+          - com.team33.modulebatch.exception.ClientPaymentException
 
 
 logging:
