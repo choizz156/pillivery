@@ -1,4 +1,4 @@
-package com.team33.modulebatch.config;
+package com.team33.modulebatch.config.step;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -90,7 +90,6 @@ public class PaymentStepConfig {
 	}
 
 	@Bean
-	@StepScope
 	public ItemProcessor<SubscriptionOrderVO, SubscriptionOrderVO> itemProcessor(
 		@Value("#{jobParameters['jobId']}") Long jobId
 	) {

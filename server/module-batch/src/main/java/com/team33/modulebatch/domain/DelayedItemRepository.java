@@ -11,4 +11,5 @@ public interface DelayedItemRepository extends JpaRepository<DelayedItem, Long> 
 
 	List<DelayedItem> findByDelayedPaymentDateAndRetryCount(LocalDate date, int retryCount);
 
+	boolean existsDelayedItemBySubscriptionOrderIdAndStatus(long subscriptionOrderId, ErrorStatus status);
 }

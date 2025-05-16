@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Profile("!test")
 @EnableJpaRepositories(
-	entityManagerFactoryRef = "mainEntityManager",
+	entityManagerFactoryRef = "mainEntityManagerFactory",
 	transactionManagerRef = "mainTransactionManager",
 	basePackages = {
 		"com.team33.modulecore.core.order.domain",
@@ -38,12 +38,12 @@ public class CoreSourceConfig {
 	public PlatformTransactionManager mainTransactionManager() {
 
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-		jpaTransactionManager.setEntityManagerFactory(mainEntityManager().getObject());
+		jpaTransactionManager.setEntityManagerFactory(mainEntityManagerFactory().getObject());
 		return jpaTransactionManager;
 	}
 
 	@Bean
-	public LocalContainerEntityManagerFactoryBean mainEntityManager() {
+	public LocalContainerEntityManagerFactoryBean mainEntityManagerFactory() {
 
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(mainDataSource());

@@ -16,7 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.team33.modulebatch.config.PaymentJobConfig;
-import com.team33.modulebatch.config.PaymentStepConfig;
+import com.team33.modulebatch.config.step.PaymentStepConfig;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.infra.RestTemplateSender;
 import com.team33.modulebatch.step.PaymentItemProcessor;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulebatch.domain.DelayedItemRepository;
+import com.team33.modulebatch.domain.ErrorStatus;
 import com.team33.modulebatch.domain.entity.DelayedItem;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,11 @@ public class DelayedSubscriptionManager {
 	private final DelayedItemRepository delayedItemRepository;
 
 	public void add(long subscriptionOrderId, String responseBody) {
+
+		boolean exists = delayedItemRepository.existsDelayedItemBySubscriptionOrderIdAndStatus(subscriptionOrderId, ErrorStatus.DELAYED);
+		if(exists) {
+			return;
+		}
 
 		String errorMessage = getMessage(responseBody);
 		LOGGER.info("Adding delayed subscription response: {}, id = {}", errorMessage, subscriptionOrderId);

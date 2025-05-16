@@ -16,11 +16,19 @@ public class PaymentJobConfig {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final Step paymentJobStep;
+	private final Step PaymentRetryStep;
 
 	@Bean
 	public Job paymentJob(){
 		return jobBuilderFactory.get("paymentJob")
 			.listener(new PaymentJobListener())
+			.start(paymentJobStep)
+			.build();
+	}
+
+	@Bean
+	public Job retryJob(){
+		return jobBuilderFactory.get("paymentRetryStep")
 			.start(paymentJobStep)
 			.build();
 	}

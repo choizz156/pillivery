@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.team33.modulebatch.domain.ErrorStatus;
 
@@ -37,6 +38,9 @@ public class DelayedItem {
 
 	private String reason;
 
+	@Transient
+	private String idempotencyKey;
+
 	@Enumerated(EnumType.STRING)
 	private ErrorStatus status;
 
@@ -59,6 +63,7 @@ public class DelayedItem {
 	}
 
 	public static DelayedItem of(long subscriptionOrderId, String reason) {
+
 		return DelayedItem.builder()
 			.subscriptionOrderId(subscriptionOrderId)
 			.retryCount(0L)
@@ -66,6 +71,18 @@ public class DelayedItem {
 			.reason(reason)
 			.delayedPaymentDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
 			.build();
+	}
+
+	public void setIdempotencyKey(String idempotencyKey) {
+		this.idempotencyKey = idempotencyKey;
+	}
+
+	public void updateStatus(ErrorStatus status) {
+		this.status = status;
+	}
+
+	public void addRetryCount(long count) {
+		this.retryCount = count;
 	}
 }
 

@@ -18,6 +18,7 @@ public class PaymentItemProcessor implements ItemProcessor<SubscriptionOrderVO, 
 	@Override
 	public SubscriptionOrderVO process(SubscriptionOrderVO subscriptionOrderVO) {
 		if (jobId == null) {
+			LOGGER.warn("jobId is null");
 			throw new IllegalStateException("JobId가 설정돼있어야 합니다.");
 		}
 

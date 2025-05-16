@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.team33.modulebatch.exception.ClientPaymentException;
 import com.team33.modulebatch.exception.SubscriptionPaymentFailException;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -31,12 +32,18 @@ public class RestTemplateSender {
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
+		checkClientError(subscriptionOrderId, responseEntity);
+
+		LOGGER.info("내부 API 호출 성공: {}, response: {}", url, responseEntity.getBody());
+	}
+
+	private void checkClientError(long subscriptionOrderId, ResponseEntity<String> responseEntity) {
+
 		if (responseEntity.getStatusCode().is4xxClientError()) {
 			String body = responseEntity.getBody();
 			delayedSubscriptionManager.add(subscriptionOrderId, body);
+			throw new ClientPaymentException(body);
 		}
-
-		LOGGER.info("내부 API 호출 성공: {}, response: {}", url, responseEntity.getBody());
 	}
 
 	private void internalApiFallback(
