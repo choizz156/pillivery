@@ -906,8 +906,6 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
 <img src="https://github.com/choizz156/pillivery/blob/17b2c6646322f4e4d3648c5ccdebfce76acd3c04/image/sid%20flow.png?raw=true" width="70%">
 
-
-
 #### (6) 다중 서버에서 이벤트 구독 로직에 분산 락(Distributed Lock) 적용
 
 - Redisson의 RedLock을 활용하여 다중 서버 환경에서 비동기 이벤트 등록 로직의 동기화 문제 해결.
@@ -923,23 +921,30 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 - 약간의 오차 허용 범위 내에서 정확성보다 처리 성능을 고려.
 
 #### (8) Circuit Breaker 패턴 적용
-- 외부 API 통신과 Batch 서버와 App 서버 간 통신에 Circuit Breaker 패턴을 적용.
+
+- 외부 API 통신(결제 승인)과 Batch 서버와 App 서버 간 통신(정기 결제 승인)에 Circuit Breaker 패턴을 적용.
 - 장애 발생 시 일정 비율 이상의 실패가 감지되면 서킷을 열어(Open) 호출을 차단함으로써, 안정적인 처리량 유지 및 빠른 실패 응답(fast-fail)을 통해 장애 전파를 조기 차단.
   - Retry 횟수 3번을 포함하여, 실패율이 75% 이상일 경우 open 상태가 됨.
   - open 상태에서 10초 대기 후 half-open 상태로 자동 전환 → 10번의 시도 후 임계값 아래라면 다시 close 전환.
 - 외부 API 통신에 **독립된 커넥션 풀을 구성**하여, 특정 서비스 장애 시 타 서비스로의 영향 최소화.
 
 ##### 📌 Circuit Breaker 성능 테스트(VUser 100)
+
 - 임의 Mock Server로 통신 실패 확률 20%로 설정.
 - Retry 3번 중 성공 횟수 4005개, 재시도 3번 모두 실패한 횟수 174개 → 재시도 실패율 4.16%
-  
-$$\frac{174}{4179} \times 100  ≈ 4.16\%$$
 
--  총 25,777개의 시도하여 실패 개수 174개(재시도 횟수 포함) → 실패율 0.6%
+$$
+\frac{174}{4179} \times 100  ≈ 4.16\%
+$$
 
-$$\frac{174}{25777} \times 100  ≈ 0.6\%$$
+- 총 25,777개의 시도하여 실패 개수 174개(재시도 횟수 포함) → 실패율 0.6%
+
+$$
+\frac{174}{25777} \times 100  ≈ 0.6\%
+$$
 
 ##### 📌 Circuit Breaker 기능 테스트(VUser 100)
+
 - 기능 테스트를 위해 mock server 실패율은 일정 시간 후 75%까지 오르도록 설정, 지연 시간 5초.
 - open 임계값은 50%로 설정.
 - open과 half-open을 반복하고 open 상태일 경우, fast-fail로 빠른 응답시간(거의 0ms)을 보임.
@@ -952,7 +957,7 @@ $$\frac{174}{25777} \times 100  ≈ 0.6\%$$
 - Stress 테스트를 통한 서버 한계점 파악.
 - 빈번한 API 요청 및 외부 API 관련 로직 테스트.
 
-#### 테스트 환경
+#### ♻️ 테스트 환경
 
 - Locust 사용
 - vcpu 2, memory 2G
@@ -961,8 +966,8 @@ $$\frac{174}{25777} \times 100  ≈ 0.6\%$$
 
 #### 👥 VUser 추정
 
-- 타 사이트 MAU를 참고하여 DAU 추정
-    - DAU/MAU = 0.3이라고 가정 => DAU ≈ 150,000.
+- 타 사이트 MAU(500,000)를 참고하여 DAU 추정
+  - DAU/MAU = 0.3이라고 가정 => DAU ≈ 150,000.
 - 1인당 API 요청 수 : 5개
 - 총 요청 수 / 1일 : 150,000 x 5 = 750,000
 - 초당 평균 요청 수(RPS) : 750,000 / 86,400(s) ≈ 8.68
@@ -973,8 +978,8 @@ $$\frac{174}{25777} \times 100  ≈ 0.6\%$$
 > - T = (시나리오 상 요청 수 * 목표 응답 시간) + ⍺(예상 지연 시간) → (1 * 0.2) + 0 = **0.2**<br/>
 > - 목표 최대 RPS = (VUser * 요청 수) / 목표 응답 시간(T)<br/>
 > - VUser = (최대 RPS x 목표 응답 시간 ) / api 요청 수
-    → 최대 RPS × 응답시간 = 86.8 × 0.2 = 17.36 ≈ **18**<br/>
-    > => VUser 값을 18로 두고 테스트하여 요청 시간이 0.2초를 유지한다면 대상 시스템은 86.8의 처리량을 보장한다고 가정할 수 있음.
+>   → 최대 RPS × 응답시간 = 86.8 × 0.2 = 17.36 ≈ **18**<br/>
+>   > => VUser 값을 18로 두고 테스트하여 요청 시간이 0.2초를 유지한다면 대상 시스템은 86.8의 처리량을 보장한다고 가정할 수 있음.
 
 > ⚠️ 학습 목적 상 추정된 VUser 18은 너무 적다고 판단하여 그 이상의 수로 테스트를 수행함.
 
@@ -983,14 +988,14 @@ $$\frac{174}{25777} \times 100  ≈ 0.6\%$$
 > - 1 ~ 10 페이지 조회(1 ~ 5 페이지는 캐싱).
 > - VUser 30으로 설정
 
-#### Load Test
+##### 📈 Load Test
 
 - 캐싱 평균 응답 시간: 10-20ms
 - 캐싱되지 않은 요청 평균 응답 시간: 200-800ms
 
   <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/itemcatetgoryloadtest.png?raw=true" width="70%">
 
-#### Stress Test
+##### 📈 Stress Test
 
 - 캐싱된 데이터들 제외하고 VUser 300부터 대기 중인 커넥션 풀이 증가하며 응답 시간 급격하게 증가.
 
@@ -1001,18 +1006,36 @@ $$\frac{174}{25777} \times 100  ≈ 0.6\%$$
 > - 자체로 만든 Mock Server 사용.
 > - 지연 시간 약 2초 적용.
 > - Circuit Breaker, Retry 적용
+> - VUser 100으로 설정.
 
-#### Load Test
+##### 📈 Load Test
 
 - 평균 응답 시간: 약 2초.
 
   <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/paymentApproveLoadTest.png?raw=true" width="70%">
 
-#### Stress Test
+##### 📈 Stress Test
 
-- VUser 300부터 Circuit Breaker 발동.
+- VUser 300부터 Circuit Breaker 발동 확인.
 
   <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/paymentApproveStressTest.png?raw=true" width="70%">
+
+
+### (10) 확장 가능성을 고려한 결제 시스템 설계
+
+
+### (11) 테스트 코드 작성(Test Coverage 85%)
+
+- FixtureMonkey 라이브러리를 사용하여 모의 객체 생성.
+- 도메인 테스트, 통합 테스트에 Junit5, Mockito, Fake 객체 사용().
+- 가독성을 고려하여, E2E 테스트에 RestAssured 사용.
+- //다시 클래스들 있으니까 테스트 코드 짜야됨
+
+### (12) Spring Rest Docs API 문서 작성
+
+- 테스트 기반 문서화로 신뢰성 확보.
+- 프로덕션 코드에 문서 작성을 위한 코드 침투 방지.
+
 
 
 
