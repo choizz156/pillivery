@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.modulebatch.exception.ClientPaymentException;
+import com.team33.modulebatch.domain.DelayedItemRepository;
+import com.team33.modulebatch.domain.entity.DelayedItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,29 +15,34 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class DelayedSubscriptionManager {
 
-	private final Logger LOGGER = LoggerFactory.getLogger("fileLog");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
+	private static final String EXTRAS = "extras";
+	private static final String METHOD_RESULT_MESSAGE = "method_result_message";
 
 	private final ObjectMapper objectMapper;
+	private final DelayedItemRepository delayedItemRepository;
 
 	public void add(long subscriptionOrderId, String responseBody) {
 
-		LOGGER.info("Adding delayed subscription response: {}, id = {}", responseBody, subscriptionOrderId);
-		String methodResultMessage = "알 수 없는 에러가 발생했습니다.";
-		methodResultMessage = getMessage(responseBody, methodResultMessage);
-		throw new ClientPaymentException(methodResultMessage);
+		String errorMessage = getMessage(responseBody);
+		LOGGER.info("Adding delayed subscription response: {}, id = {}", errorMessage, subscriptionOrderId);
+
+		DelayedItem delayedItem = DelayedItem.of(subscriptionOrderId, errorMessage);
+		delayedItemRepository.save(delayedItem);
 	}
 
-	private String getMessage(String responseBody, String methodResultMessage) {
+	private String getMessage(String responseBody) {
 
+		String message = null;
 		try {
 			JsonNode rootNode = objectMapper.readTree(responseBody);
-			if (rootNode.get("extras").has("method_result_message")) {
-				methodResultMessage = rootNode.get("extras").get("method_result_message").asText();
+			if (rootNode.get(EXTRAS).has(METHOD_RESULT_MESSAGE)) {
+				message = rootNode.get(EXTRAS).get(METHOD_RESULT_MESSAGE).asText();
 			}
 		} catch (Exception e) {
 			LOGGER.warn("응답 본문을 파싱할 수 없습니다: message = {},  e = {}", responseBody, e.getMessage());
-			return methodResultMessage;
+			message = "클라이언트 오류 발생";
 		}
-		return methodResultMessage;
+		return message;
 	}
 }
