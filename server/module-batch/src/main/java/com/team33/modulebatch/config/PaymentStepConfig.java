@@ -43,7 +43,7 @@ public class PaymentStepConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
-	private static final long BACK_OFF_PERIOD = 3000L;
+	private static final long BACK_OFF_PERIOD = 3_600_000L;
 	private static final int CHUNK_SIZE = 20;
 	private static final int RETRY_LIMIT = 3;
 	private static final int SKIP_LIMIT = 10;

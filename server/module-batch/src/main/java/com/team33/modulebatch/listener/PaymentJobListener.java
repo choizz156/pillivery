@@ -21,12 +21,15 @@ public class PaymentJobListener implements JobExecutionListener {
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
-		if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
+
+		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 			LOGGER.info("Job Completed ::: jobExecution Id = {}, date = {}, status = {}",
 				jobExecution.getJobId(),
 				jobExecution.getJobParameters().getDate("paymentDate"),
 				jobExecution.getStatus()
 			);
+
+			LOGGER.info("batch app exit");
 			System.exit(0);
 		}
 
