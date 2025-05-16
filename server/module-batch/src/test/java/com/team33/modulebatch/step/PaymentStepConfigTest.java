@@ -105,7 +105,7 @@ class PaymentStepConfigTest extends BatchApiTest {
 		itemWriter.write(list);
 
 		// then
-		verify(restTemplateSender, times(20)).sendToPost(anyString(), anyString(), eq(null), eq(String.class));
+		verify(restTemplateSender, times(20)).sendToPost(anyString(), anyString(), eq(null));
 	}
 
 	@DisplayName("item processor가 작동하여 멱등 키를 추가한다.")

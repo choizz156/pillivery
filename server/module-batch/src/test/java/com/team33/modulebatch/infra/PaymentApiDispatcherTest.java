@@ -43,8 +43,7 @@ class PaymentApiDispatcherTest {
 
 		//then
 		ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
-		verify(mockRestTemplateSender, times(1)).sendToPost(anyString(), urlCaptor.capture(), eq(null),
-			eq(String.class));
+		verify(mockRestTemplateSender, times(1)).sendToPost(anyString(), urlCaptor.capture(), eq(null));
 	}
 
 	@DisplayName("list의 요소의 개수가 여러 개일 경우 그 수 만큼 요청을 보낸다.")
@@ -65,8 +64,7 @@ class PaymentApiDispatcherTest {
 		paymentApiDispatcher.dispatch(List.of(mockOrderVO1, mockOrderVO2));
 
 		ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
-		verify(mockRestTemplateSender, times(2)).sendToPost(anyString(), urlCaptor.capture(), eq(null),
-			eq(String.class));
+		verify(mockRestTemplateSender, times(2)).sendToPost(anyString(), urlCaptor.capture(), eq(null));
 	}
 
     @DisplayName("이미 처리된 주문은 다시 처리하지 않는다")
@@ -85,7 +83,7 @@ class PaymentApiDispatcherTest {
         paymentApiDispatcher.dispatch(List.of(mockOrderVO)); 
 
         // then
-        verify(mockRestTemplateSender, times(1)).sendToPost(anyString(), anyString(), eq(null), eq(String.class));
+        verify(mockRestTemplateSender, times(1)).sendToPost(anyString(), anyString(), eq(null));
     }
 
     @DisplayName("여러 주문 중 처리되지 않은 주문만 처리한다")
@@ -108,6 +106,6 @@ class PaymentApiDispatcherTest {
 
         // then
         ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
-        verify(mockRestTemplateSender, times(2)).sendToPost(anyString(), urlCaptor.capture(), eq(null), eq(String.class));
+        verify(mockRestTemplateSender, times(2)).sendToPost(anyString(), urlCaptor.capture(), eq(null));
     }
 }

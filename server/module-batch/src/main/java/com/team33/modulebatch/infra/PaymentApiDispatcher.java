@@ -54,8 +54,7 @@ public class PaymentApiDispatcher {
 		restTemplateSender.sendToPost(
 			"",
 			URL + subscriptionOrderId,
-			null,
-			String.class
+			null
 		);
 	}
 }

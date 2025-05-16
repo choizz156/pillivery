@@ -62,8 +62,7 @@ class RestTemplateSenderCircuitBreakerTest {
 				restTemplateSender.sendToPost(
 					"1",
 					"http://localhost:9898/api/external",
-					new HttpHeaders(),
-					String.class
+					new HttpHeaders()
 				);
 			} catch (Exception ignored) {
 			}
@@ -88,8 +87,7 @@ class RestTemplateSenderCircuitBreakerTest {
 				restTemplateSender.sendToPost(
 					"1",
 					"http://localhost:9898/api/external",
-					new HttpHeaders(),
-					String.class
+					new HttpHeaders()
 				);
 			} catch (Exception ignored) {
 			}
@@ -120,8 +118,7 @@ class RestTemplateSenderCircuitBreakerTest {
 				restTemplateSender.sendToPost(
 					"1",
 					"http://localhost:9898/api/external",
-					new HttpHeaders(),
-					String.class
+					new HttpHeaders()
 				);
 			} catch (Exception ignored) {
 			}
@@ -139,8 +136,7 @@ class RestTemplateSenderCircuitBreakerTest {
 		restTemplateSender.sendToPost(
 			"1",
 			"http://localhost:9898/api/external",
-			new HttpHeaders(),
-			String.class
+			new HttpHeaders()
 		);
 
 		// then - CLOSED 상태 확인

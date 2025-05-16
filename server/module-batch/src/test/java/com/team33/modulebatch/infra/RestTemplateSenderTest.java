@@ -79,8 +79,7 @@ class RestTemplateSenderTest {
 			.isThrownBy(() -> restTemplateSender.sendToPost(
 				subscriptionOrderId,
 				url,
-				new HttpHeaders(),
-				String.class
+				new HttpHeaders()
 			));
 	}
 
