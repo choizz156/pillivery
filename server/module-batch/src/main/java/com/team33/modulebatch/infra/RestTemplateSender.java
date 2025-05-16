@@ -22,23 +22,25 @@ public class RestTemplateSender {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private final RestTemplate restTemplate;
+	private final DelayedSubscriptionManager delayedSubscriptionManager;
 
 	@Retry(name = "paymentRetryApiClient")
 	@CircuitBreaker(name = "internalPaymentApiClient", fallbackMethod = "internalApiFallback")
-	public void sendToPost(String subscriptionOrderId, String url, HttpHeaders headers) {
+	public void sendToPost(long subscriptionOrderId, String url, HttpHeaders headers) {
 
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
 		if (responseEntity.getStatusCode().is4xxClientError()) {
-
+			String body = responseEntity.getBody();
+			delayedSubscriptionManager.add(subscriptionOrderId, body);
 		}
 
 		LOGGER.info("내부 API 호출 성공: {}, response: {}", url, responseEntity.getBody());
 	}
 
 	private void internalApiFallback(
-		String subscriptionOrderId,
+		long subscriptionOrderId,
 		String url,
 		HttpHeaders headers,
 		Throwable throwable
@@ -51,6 +53,6 @@ public class RestTemplateSender {
 			headers,
 			throwable.getMessage());
 
-		throw new SubscriptionPaymentFailException(throwable.getMessage(), Long.parseLong(subscriptionOrderId));
+		throw new SubscriptionPaymentFailException(throwable.getMessage(), subscriptionOrderId);
 	}
 }

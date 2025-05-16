@@ -52,7 +52,7 @@ public class PaymentApiDispatcher {
 	private void send(long subscriptionOrderId) {
 
 		restTemplateSender.sendToPost(
-			"",
+			subscriptionOrderId,
 			URL + subscriptionOrderId,
 			null
 		);
