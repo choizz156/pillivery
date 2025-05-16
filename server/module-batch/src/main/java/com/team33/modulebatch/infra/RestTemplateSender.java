@@ -25,19 +25,22 @@ public class RestTemplateSender {
 
 	@Retry(name = "paymentRetryApiClient")
 	@CircuitBreaker(name = "internalPaymentApiClient", fallbackMethod = "internalApiFallback")
-	public <T> void sendToPost(String subscriptionOrderId, String url, HttpHeaders headers, Class<T> responseClass) {
+	public void sendToPost(String subscriptionOrderId, String url, HttpHeaders headers) {
 
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<T> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, responseClass);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
-		LOGGER.info("내부 API 호출 성공: {}, response: {}", url, exchange.getBody());
+		if (responseEntity.getStatusCode().is4xxClientError()) {
+
+		}
+
+		LOGGER.info("내부 API 호출 성공: {}, response: {}", url, responseEntity.getBody());
 	}
 
-	private <T> void internalApiFallback(
+	private void internalApiFallback(
 		String subscriptionOrderId,
 		String url,
 		HttpHeaders headers,
-		Class<T> responseClass,
 		Throwable throwable
 	) {
 
