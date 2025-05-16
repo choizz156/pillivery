@@ -25,7 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
 
 import com.team33.modulebatch.BatchApiTest;
-import com.team33.modulebatch.exception.BatchApiException;
+import com.team33.modulebatch.exception.ClientPaymentException;
 import com.team33.modulebatch.listener.ItemSkipListener;
 
 class PaymentItemWriterSkipTest extends BatchApiTest {
@@ -76,7 +76,7 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 		//then
 		verify(itemSkipListener).onSkipInWrite(
 			argThat(item -> (item.getSubscriptionOrderId().equals(2L))),
-			any(BatchApiException.class)
+			any(ClientPaymentException.class)
 		);
 
 		assertThat(jobExecution.getStepExecutions().iterator().next().getSkipCount()).isEqualTo(1);
@@ -109,12 +109,12 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 		//then
 		verify(itemSkipListener, times(1)).onSkipInWrite(
 			argThat(item -> item.getSubscriptionOrderId() == 2L),
-			any(BatchApiException.class)
+			any(ClientPaymentException.class)
 		);
 
 		verify(itemSkipListener, never()).onSkipInWrite(
 			argThat(item -> item.getSubscriptionOrderId() == 3L),
-			any(BatchApiException.class)
+			any(ClientPaymentException.class)
 		);
 
 		assertThat(exception).isInstanceOf(SkipLimitExceededException.class);
@@ -131,7 +131,7 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 			.writer(testItemWriter)
 			.faultTolerant()
 			.skipLimit(SKIP_LIMIT)
-			.skip(BatchApiException.class)
+			.skip(ClientPaymentException.class)
 			.skip(DataAccessException.class)
 			.listener(itemSkipListener)
 			.build();
@@ -144,7 +144,7 @@ class PaymentItemWriterSkipTest extends BatchApiTest {
 		testItemWriter = items -> {
 			for (SubscriptionOrderVO item : items) {
 				if (errorIds.contains(item.getSubscriptionOrderId())) {
-					throw new BatchApiException("Payment API error");
+					throw new ClientPaymentException("Payment API error");
 				}
 			}
 		};

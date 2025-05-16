@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
-import com.team33.modulebatch.exception.SubscriptionFailException;
+import com.team33.modulebatch.exception.SubscriptionPaymentFailException;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ public class PaymentWriter implements ItemWriter<SubscriptionOrderVO> {
 		try {
 			paymentApiDispatcher.dispatch(list);
 			LOGGER.info("Payment processed successfully for {} orders", list.size());
-		} catch (SubscriptionFailException e) {
+		} catch (SubscriptionPaymentFailException e) {
 			LOGGER.error("Payment processing failed for order ID: {}, message: {}", e.getSubscriptionOrderId(), e.getMessage());
 		} catch (Exception e) {
 			LOGGER.error("Payment processing failed for {} orders, message: {}", list.size(), e.getMessage());

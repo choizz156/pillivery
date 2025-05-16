@@ -19,7 +19,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.HttpServerErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.modulebatch.exception.BatchApiException;
+import com.team33.modulebatch.exception.ClientPaymentException;
 
 @ExtendWith(MockitoExtension.class)
 class RestTemplateErrorHandlerTest {
@@ -69,7 +69,7 @@ class RestTemplateErrorHandlerTest {
 
         // when & then
         assertThatThrownBy(() -> errorHandler.handleError(response))
-            .isInstanceOf(BatchApiException.class)
+            .isInstanceOf(ClientPaymentException.class)
             .hasMessage("잘못된 요청입니다");
     }
 
@@ -84,7 +84,7 @@ class RestTemplateErrorHandlerTest {
 
         // when & then
         assertThatThrownBy(() -> errorHandler.handleError(response))
-            .isInstanceOf(BatchApiException.class)
+            .isInstanceOf(ClientPaymentException.class)
             .hasMessage("알 수 없는 에러가 발생했습니다.");
     }
 
@@ -101,7 +101,7 @@ class RestTemplateErrorHandlerTest {
 
         // when & then
         assertThatThrownBy(() -> errorHandler.handleError(response))
-            .isInstanceOf(BatchApiException.class)
+            .isInstanceOf(ClientPaymentException.class)
             .hasMessage("알 수 없는 에러가 발생했습니다.");
     }
 }

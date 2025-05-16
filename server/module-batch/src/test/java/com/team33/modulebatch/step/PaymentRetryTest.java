@@ -17,7 +17,7 @@ import org.springframework.retry.ExhaustedRetryException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
 import com.team33.modulebatch.BatchApiTest;
-import com.team33.modulebatch.exception.BatchApiException;
+import com.team33.modulebatch.exception.ClientPaymentException;
 import com.team33.modulebatch.listener.ItemSkipListener;
 
 class PaymentRetryTest extends BatchApiTest {
@@ -44,8 +44,8 @@ class PaymentRetryTest extends BatchApiTest {
 		SubscriptionOrderVO order = new SubscriptionOrderVO();
 		when(testItemReader.read()).thenReturn(order, (SubscriptionOrderVO)null);
 
-		doThrow(new BatchApiException("test exception 1"))
-			.doThrow(new BatchApiException("test exception 2"))
+		doThrow(new ClientPaymentException("test exception 1"))
+			.doThrow(new ClientPaymentException("test exception 2"))
 			.doNothing() //이것도 try.
 			.when(testItemWriter).write(anyList());
 
@@ -69,7 +69,7 @@ class PaymentRetryTest extends BatchApiTest {
 		SubscriptionOrderVO order = new SubscriptionOrderVO();
 		when(testItemReader.read()).thenReturn(order, (SubscriptionOrderVO)null);
 
-		doThrow(new BatchApiException("test exception 1"))
+		doThrow(new ClientPaymentException("test exception 1"))
 			.when(testItemWriter).write(anyList());
 
 		JobExecution jobExecution = jobRepository.createJobExecution("testJob", new JobParameters());
@@ -100,7 +100,7 @@ class PaymentRetryTest extends BatchApiTest {
 			.writer(testItemWriter)
 			.faultTolerant()
 			.retryLimit(RETRY_LIMIT)
-			.retry(BatchApiException.class)
+			.retry(ClientPaymentException.class)
 			.backOffPolicy(backOffPolicy)
 			.listener(itemSkipListener)
 			.build();
