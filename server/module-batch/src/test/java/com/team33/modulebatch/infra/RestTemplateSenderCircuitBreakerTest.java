@@ -29,7 +29,8 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 		RestTemplateSender.class,
 		RestTemplateConfig.class,
 		ObjectMapper.class,
-		CircuitBreakerRegistry.class
+		CircuitBreakerRegistry.class,
+		DelayedSubscriptionManager.class
 	},
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
@@ -60,7 +61,7 @@ class RestTemplateSenderCircuitBreakerTest {
 		for (int i = 0; i < 10; i++) {
 			try {
 				restTemplateSender.sendToPost(
-					"1",
+					1,
 					"http://localhost:9898/api/external",
 					new HttpHeaders()
 				);
@@ -85,7 +86,7 @@ class RestTemplateSenderCircuitBreakerTest {
 		for (int i = 0; i < 10; i++) {
 			try {
 				restTemplateSender.sendToPost(
-					"1",
+					1,
 					"http://localhost:9898/api/external",
 					new HttpHeaders()
 				);
@@ -116,7 +117,7 @@ class RestTemplateSenderCircuitBreakerTest {
 		for (int i = 0; i < 10; i++) {
 			try {
 				restTemplateSender.sendToPost(
-					"1",
+					1,
 					"http://localhost:9898/api/external",
 					new HttpHeaders()
 				);
@@ -134,7 +135,7 @@ class RestTemplateSenderCircuitBreakerTest {
 			.willReturn(ok()));
 
 		restTemplateSender.sendToPost(
-			"1",
+			1,
 			"http://localhost:9898/api/external",
 			new HttpHeaders()
 		);

@@ -28,6 +28,7 @@ import com.team33.modulebatch.config.RestTemplateErrorHandler;
 	RestTemplateErrorHandler.class,
 	RestTemplateConfig.class,
 	ObjectMapper.class,
+	DelayedSubscriptionManager.class
 })
 class RestTemplateSenderTest {
 
@@ -77,7 +78,7 @@ class RestTemplateSenderTest {
 		// when, then
 		assertThatNoException()
 			.isThrownBy(() -> restTemplateSender.sendToPost(
-				subscriptionOrderId,
+				Long.parseLong(subscriptionOrderId),
 				url,
 				new HttpHeaders()
 			));
