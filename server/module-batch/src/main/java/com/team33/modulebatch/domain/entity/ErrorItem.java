@@ -57,7 +57,7 @@ public class ErrorItem {
 		this.status = status;
 	}
 
-	public static ErrorItem of(SubscriptionOrderVO subscriptionOrderVO) {
+	public static ErrorItem byServerError(SubscriptionOrderVO subscriptionOrderVO) {
 		return ErrorItem.builder()
 			.subscriptionOrderId(subscriptionOrderVO.getSubscriptionOrderId())
 			.idempotentKey(subscriptionOrderVO.getIdempotencyKey())
@@ -66,5 +66,4 @@ public class ErrorItem {
 			.status(ErrorStatus.ERROR)
 			.build();
 	}
-
 }

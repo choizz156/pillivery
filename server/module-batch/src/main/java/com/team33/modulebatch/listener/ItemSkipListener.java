@@ -29,7 +29,7 @@ public class ItemSkipListener implements SkipListener<SubscriptionOrderVO, Subsc
 			throwable.getMessage()
 		);
 
-		ErrorItem entity = ErrorItem.of(subscriptionOrderVO);
+		ErrorItem entity = ErrorItem.byServerError(subscriptionOrderVO);
 		errorItemRepository.save(entity);
 	}
 
