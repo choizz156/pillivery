@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.team33.modulebatch.config.RestTemplateConfig;
+import com.team33.modulebatch.domain.DelayedItemRepository;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -30,10 +33,13 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 		RestTemplateConfig.class,
 		ObjectMapper.class,
 		CircuitBreakerRegistry.class,
-		DelayedSubscriptionManager.class
+		DelayedSubscriptionManager.class,
+		DelayedItemRepository.class,
 	},
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
+@EnableJpaRepositories(basePackages = "com.team33.modulebatch.domain")
+@EntityScan("com.team33.modulebatch.domain")
 @ActiveProfiles("test")
 class RestTemplateSenderCircuitBreakerTest {
 
@@ -102,7 +108,6 @@ class RestTemplateSenderCircuitBreakerTest {
 			assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.HALF_OPEN);
 		});
 	}
-
 
 	@DisplayName("circuit breaker half open에서 close로 전환 테스트")
 	@Test

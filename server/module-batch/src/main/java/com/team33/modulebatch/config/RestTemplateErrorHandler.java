@@ -33,7 +33,5 @@ public class RestTemplateErrorHandler extends DefaultResponseErrorHandler {
 				StandardCharsets.UTF_8
 			);
 		}
-
-
 	}
 }

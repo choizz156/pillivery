@@ -13,13 +13,16 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulebatch.config.RestTemplateConfig;
 import com.team33.modulebatch.config.RestTemplateErrorHandler;
+import com.team33.modulebatch.domain.DelayedItemRepository;
 
 @ActiveProfiles("test")
 @EnableAutoConfiguration
@@ -28,8 +31,11 @@ import com.team33.modulebatch.config.RestTemplateErrorHandler;
 	RestTemplateErrorHandler.class,
 	RestTemplateConfig.class,
 	ObjectMapper.class,
-	DelayedSubscriptionManager.class
+	DelayedSubscriptionManager.class,
+	DelayedItemRepository.class
 })
+@EnableJpaRepositories(basePackages = "com.team33.modulebatch.domain")
+@EntityScan("com.team33.modulebatch.domain")
 class RestTemplateSenderTest {
 
 	private static final String HOST = "localhost";
