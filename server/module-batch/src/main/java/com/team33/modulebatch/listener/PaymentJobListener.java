@@ -2,6 +2,7 @@ package com.team33.modulebatch.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 
@@ -20,7 +21,16 @@ public class PaymentJobListener implements JobExecutionListener {
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
-		LOGGER.info("finish Job ::: jobExecution Id = {}, date = {}, status = {}",
+		if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
+			LOGGER.info("Job Completed ::: jobExecution Id = {}, date = {}, status = {}",
+				jobExecution.getJobId(),
+				jobExecution.getJobParameters().getDate("paymentDate"),
+				jobExecution.getStatus()
+			);
+			System.exit(0);
+		}
+
+		LOGGER.error("Job is not Completed ::: jobExecution Id = {}, date = {}, status = {}",
 			jobExecution.getJobId(),
 			jobExecution.getJobParameters().getDate("paymentDate"),
 			jobExecution.getStatus()
