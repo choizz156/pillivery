@@ -32,8 +32,13 @@ public class RetryItemProcessor implements ItemProcessor<DelayedItem, DelayedIte
 	public DelayedItem process(DelayedItem delayedItem) throws Exception {
 
 		String idempotencyKey =
-			jobId + "_" + delayedItem.getSubscriptionOrderId() + "_" + delayedItem.getDelayedPaymentDate() + "_"
-				+ delayedItem.getRetryCount();
+			jobId + "_"
+				+ delayedItem.getSubscriptionOrderId()
+				+ "_"
+				+ delayedItem.getDelayedPaymentDate()
+				+ "_"
+				+ delayedItem.getRetryCount() + "_"
+				+ "RT";
 
 		checkAlreadyTry(idempotencyKey);
 		delayedItem.setIdempotencyKey(idempotencyKey);
@@ -52,16 +57,18 @@ public class RetryItemProcessor implements ItemProcessor<DelayedItem, DelayedIte
 	}
 
 	private void checkAlreadyTry(String key) {
-		if(idempotencyCache.getIfPresent(key) != null){
+
+		if (idempotencyCache.getIfPresent(key) != null) {
 			throw new IllegalArgumentException("이미 시도된 아이템입니다.");
 		}
 	}
 
 	private void send(long subscriptionOrderId) {
-			restTemplateSender.sendToPost(
-				subscriptionOrderId,
-				URL + subscriptionOrderId,
-				null
-			);
+
+		restTemplateSender.sendToPost(
+			subscriptionOrderId,
+			URL + subscriptionOrderId,
+			null
+		);
 	}
 }

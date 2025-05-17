@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import com.team33.modulebatch.domain.DelayedItemRepository;
 import com.team33.modulebatch.domain.ErrorStatus;
 import com.team33.modulebatch.domain.entity.DelayedItem;
+import com.team33.modulebatch.listener.RetryStepListener;
 import com.team33.modulebatch.step.RetryItemProcessor;
 
 @Configuration
@@ -40,24 +41,24 @@ public class RetryStepConfig1 {
 	private DelayedItemRepository delayedItemRepository;
 
 	@Bean
-	public Step PaymentRetryStep() {
+	public Step PaymentRetry1Step() {
 
-		return stepBuilderFactory.get("paymentRetryStep")
+		return stepBuilderFactory.get("paymentRetry1Step")
 			.<DelayedItem, DelayedItem>chunk(CHUNK_SIZE)
-			.reader(delayedItemReader(null))
+			.reader(delayedItemReader())
 			.processor(delayedItemProcessor(null))
 			.writer(delayedItemItemWriter())
+			.listener(new RetryStepListener())
 			.faultTolerant()
 			.build();
 	}
 
 	@Bean
 	@StepScope
-	public JpaPagingItemReader<DelayedItem> delayedItemReader(
-		@Value("#{jobParameters['retryDay']}") Long retryDay) {
-
-		LocalDate targetDate = LocalDate.now().minusDays(retryDay);
-		int expectedRetryCount = retryDay.intValue() - 1;
+	public JpaPagingItemReader<DelayedItem> delayedItemReader() {
+		int retryCount = 1;
+		LocalDate targetDate = LocalDate.now().minusDays(retryCount);
+		int expectedRetryCount = 0;
 
 		return new JpaPagingItemReaderBuilder<DelayedItem>()
 			.name("delayedItemReader")

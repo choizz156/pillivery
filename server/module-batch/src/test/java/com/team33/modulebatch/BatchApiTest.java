@@ -15,7 +15,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.team33.modulebatch.config.PaymentJobConfig;
+import com.team33.modulebatch.config.job.PaymentJobConfig;
 import com.team33.modulebatch.config.step.PaymentStepConfig;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.infra.RestTemplateSender;

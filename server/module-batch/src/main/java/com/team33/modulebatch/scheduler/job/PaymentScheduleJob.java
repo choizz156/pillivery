@@ -53,7 +53,7 @@ public class PaymentScheduleJob extends QuartzJobBean {
 				| JobRestartException
 				| JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
-			throw new RuntimeException(e);
+			LOGGER.error("job Payment execution failed", e);
 		}
 	}
 }
