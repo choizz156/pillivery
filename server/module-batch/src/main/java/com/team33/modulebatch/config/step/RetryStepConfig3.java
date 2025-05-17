@@ -23,7 +23,7 @@ import com.team33.modulebatch.domain.entity.DelayedItem;
 import com.team33.modulebatch.step.RetryItemProcessor;
 
 @Configuration
-public class RetryStepConfig {
+public class RetryStepConfig3 {
 
 	private final static int CHUNK_SIZE = 20;
 
@@ -94,15 +94,6 @@ public class RetryStepConfig {
 				}
 			);
 	}
-	// @Scheduled(cron = "0 0 0 * * *")
-	// public void dailyRetry() throws Exception {
-	// 	for (Long day : List.of(1L, 3L, 5L)) {
-	// 		JobParameters params = new JobParametersBuilder()
-	// 			.addLong("retryDay", day)
-	// 			.addDate("runDate", new Date())
-	// 			.toJobParameters();
-	// 		jobLauncher.run(paymentJob, params);
-	// 	}
-	// }
+
 }
 
