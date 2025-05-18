@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class PaymentApiDispatcher {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	private static final String HOST = "www.pv-alb.r-e.kr:8080";
 	private static final String URL = HOST + "/api/payments/approve/subscriptions/";

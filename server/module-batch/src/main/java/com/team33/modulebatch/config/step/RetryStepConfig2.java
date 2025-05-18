@@ -9,8 +9,8 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,17 +45,16 @@ public class RetryStepConfig2 {
 
 		return stepBuilderFactory.get("paymentRetry2Step")
 			.<DelayedItem, DelayedItem>chunk(CHUNK_SIZE)
-			.reader(delayedItemReader())
-			.processor(delayedItemProcessor(null))
-			.writer(delayedItemItemWriter())
+			.reader(delayedItemReader2())
+			.processor(delayedItemProcessor2(null))
+			.writer(delayedItemWriter2())
 			.listener(new RetryStepListener())
 			.faultTolerant()
 			.build();
 	}
 
 	@Bean
-	@StepScope
-	public JpaPagingItemReader<DelayedItem> delayedItemReader() {
+	public ItemReader<DelayedItem> delayedItemReader2() {
 
 		int retryCount = 3;
 		LocalDate targetDate = LocalDate.now().minusDays(retryCount);
@@ -76,7 +75,8 @@ public class RetryStepConfig2 {
 	}
 
 	@Bean
-	public ItemProcessor<DelayedItem, DelayedItem> delayedItemProcessor(
+	@StepScope
+	public ItemProcessor<DelayedItem, DelayedItem> delayedItemProcessor2(
 		@Value("#{jobParameters['jobId']}") Long jobId
 	) {
 
@@ -85,7 +85,7 @@ public class RetryStepConfig2 {
 	}
 
 	@Bean
-	public ItemWriter<DelayedItem> delayedItemItemWriter() {
+	public ItemWriter<DelayedItem> delayedItemWriter2() {
 
 		return items -> items.stream()
 			.filter(item -> item.getStatus() == ErrorStatus.DELAYED)

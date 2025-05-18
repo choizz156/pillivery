@@ -9,8 +9,8 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,15 +47,14 @@ public class RetryStepConfig1 {
 			.<DelayedItem, DelayedItem>chunk(CHUNK_SIZE)
 			.reader(delayedItemReader())
 			.processor(delayedItemProcessor(null))
-			.writer(delayedItemItemWriter())
+			.writer(delayedItemWriter())
 			.listener(new RetryStepListener())
 			.faultTolerant()
 			.build();
 	}
 
 	@Bean
-	@StepScope
-	public JpaPagingItemReader<DelayedItem> delayedItemReader() {
+	public ItemReader<DelayedItem> delayedItemReader() {
 		int retryCount = 1;
 		LocalDate targetDate = LocalDate.now().minusDays(retryCount);
 		int expectedRetryCount = 0;
@@ -75,6 +74,7 @@ public class RetryStepConfig1 {
 	}
 
 	@Bean
+	@StepScope
 	public ItemProcessor<DelayedItem, DelayedItem> delayedItemProcessor(
 		@Value("#{jobParameters['jobId']}") Long jobId
 	) {
@@ -84,7 +84,7 @@ public class RetryStepConfig1 {
 	}
 
 	@Bean
-	public ItemWriter<DelayedItem> delayedItemItemWriter() {
+	public ItemWriter<DelayedItem> delayedItemWriter() {
 
 		return items -> items.stream()
 			.filter(item -> item.getStatus() == ErrorStatus.DELAYED)

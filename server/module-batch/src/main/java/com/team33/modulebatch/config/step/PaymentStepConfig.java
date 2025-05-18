@@ -90,6 +90,7 @@ public class PaymentStepConfig {
 	}
 
 	@Bean
+	@StepScope
 	public ItemProcessor<SubscriptionOrderVO, SubscriptionOrderVO> itemProcessor(
 		@Value("#{jobParameters['jobId']}") Long jobId
 	) {

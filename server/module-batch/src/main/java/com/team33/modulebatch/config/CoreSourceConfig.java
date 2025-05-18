@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,11 @@ import lombok.RequiredArgsConstructor;
 		"com.team33.modulebatch",
 	}
 )
+@EntityScan(basePackages = {
+	"com.team33.modulebatch.domain",
+	"com.team33.modulecore.core.order.domain",
+	"com.team33.modulecore.core.item.domain"
+})
 @Configuration
 public class CoreSourceConfig {
 

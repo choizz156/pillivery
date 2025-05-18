@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -71,8 +72,8 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 		//then
 		testStep();
 
-		JobExecution jobExecution = jobRepository.createJobExecution("testJob", new JobParameters());
-		StepExecution stepExecution = jobExecution.createStepExecution("paymentJobStep");
+		JobExecution jobExecution = jobRepository.createJobExecution("testJob", new JobParametersBuilder().addLong("jobId", 1L).toJobParameters());
+		StepExecution stepExecution = jobExecution.createStepExecution("testStep");
 		jobRepository.add(stepExecution);
 
 		when(testItemReader.read())
@@ -100,7 +101,7 @@ class PaymentItemReaderSkipTest extends BatchApiTest {
 	}
 
 	private void testStep() {
-		step = stepBuilderFactory.get("paymentJobStep")
+		step = stepBuilderFactory.get("testStep")
 			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)
 			.reader(testItemReader)
 			.writer(testItemWriter)

@@ -30,11 +30,4 @@ public class PaymentJobConfig {
 			.next(PaymentRetry3Step)
 			.build();
 	}
-
-	@Bean
-	public Job retryJob(){
-		return jobBuilderFactory.get("paymentRetryStep")
-			.start(paymentJobStep)
-			.build();
-	}
 }

@@ -16,6 +16,7 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.skip.SkipLimitExceededException;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -28,11 +29,16 @@ import com.team33.modulebatch.BatchApiTest;
 import com.team33.modulebatch.exception.ClientPaymentException;
 import com.team33.modulebatch.listener.ItemSkipListener;
 
+
 class PaymentItemWriterSkipTest extends BatchApiTest {
 
 	private static final int CHUNK_SIZE = 1;
 	private static final LocalDate NOW = LocalDate.now();
 	private static final int SKIP_LIMIT = 1;
+
+	@Autowired
+	private JobRepository jobRepository;
+
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
