@@ -1158,6 +1158,12 @@ List<CartItemVO> cartItems = List.copyOf(cartVO.getCartItems());
 
 </details>
 
+---
+
+### 📖 추후 개선 예정 사항
+- DB master-slave 설정을 통해 DB 부하 감소 및 성능 개선.
+- CQRS 패턴 적용하여 조회 최적화 적용.
+- 비동기 처리를 위한 메시지 브로커(Kafka, RabbitMQ ..) 적용을 통한 유연성과 확장성 확보. 
   
 
 
