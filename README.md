@@ -38,7 +38,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 | **기타**         | Quartz, EmbeddedRedis                                                                    |
 
   
----  
+
 
 ## 3. 팀 프로젝트 기여(2022. 11 ~ 2022.12)
 
@@ -126,6 +126,8 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
 <img src="https://github.com/choizz156/pillivery/blob/5b45c347151655a3ec30ca560c40ee508806e0a7/image/%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A1%E1%84%80%E1%85%A2%E1%84%89%E1%85%A5%E1%86%AB.png?raw=true" width="70%">
 
+---
+
 ### 🗄️ 모듈 구조(싱글 -> 멀티)
 
 - 관심사 분리를 통한 코드의 유지, 보수 향상 및 확장성 고려.
@@ -146,6 +148,8 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 #### 모듈 의존성(단방향)
 
   <img src="https://github.com/choizz156/pillivery/blob/5b45c347151655a3ec30ca560c40ee508806e0a7/image/%E1%84%86%E1%85%A9%E1%84%83%E1%85%B2%E1%86%AF%E1%84%8B%E1%85%B4%E1%84%8C%E1%85%A9%E1%86%AB%E1%84%83%E1%85%A9%20333.png?raw=true" width="70%">
+
+---
 
 ### 💽 ERD
 
@@ -872,6 +876,8 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 
 <img src="https://github.com/choizz156/pillivery/blob/e6ec666b987f73bbc08630745c34cd89602bd77d/image/slack%20error%20%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%85%E1%85%A1%E1%86%B7.png?raw=true" width="30%">
 
+---
+
 ### ⚙️ 도메인 개선 및 리팩토링
 
 #### (1) 불필요한 JPA 양방향 관계 제거
@@ -919,6 +925,11 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
 - 아이템 조회 시, IP 중복 조회를 효율적으로 방지하기 위해 Redis의 HyperLogLog 자료구조 적용.
 - 메모리 사용량(12KB)을 최소화하면서도 오차(0.82)가 적은 고유 방문자 수 집계 가능.
 - 약간의 오차 허용 범위 내에서 정확성보다 처리 성능을 고려.
+
+#### (8) 장바구니 추가/삭제 로직을 DB 통신에서 로컬 캐시 기반으로 변경
+- 일정 시간 후 DB에 저장하는 이벤트 발행.
+- 장바구니 관련 통신일 경우, Sticky Session을 적용.
+- 높은 VUser 상황(1000 이상)에서도 응답 시간 1초 이내 응답 → DB 부하 감소.
 
 #### (8) Circuit Breaker 패턴 적용
 
@@ -971,6 +982,8 @@ $$
 - 테스트 기반 문서화로 신뢰성 확보.
 - 프로덕션 코드에 문서 작성을 위한 코드 침투 방지.
   <img src="https://github.com/choizz156/pillivery/blob/ba02fc54340612667146ec1141134da6c70ff2ea/image/api%20%E1%84%86%E1%85%AE%E1%86%AB%E1%84%89%E1%85%A5.png?raw=true" width="70%">
+
+---
 
 ### ‼️Load/Stress 테스트
 
@@ -1040,80 +1053,111 @@ $$
 - VUser 300부터 Circuit Breaker 발동 확인.
 
   <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/paymentApproveStressTest.png?raw=true" width="70%">
-  
----  
-
-### 📌 트러블 슈팅 및 개선
-
-<details>  
-<summary>1. @Schduled를 문제를 해결한 Quartz</summary>  
-<div markdown="1">  
-
-#### (1) **트러블 및 트러블의 원인**
-
-- Spring의 @Scheduled을 이용하여 스케쥴링을 시도했지만, 몇 가지 문제가 있었습니다.
-
-#### a. 구독 주기 변경 문제
-
-- 유저가 구독 주기 변경 시, 첫 정기 결제일을 기준으로 주기를 변경해야 했습니다.
-- @Scheduled를 사용하여 런타임 환경에서 구독 주기를 변경하려면, 기존 스케쥴을 null로 변경 후 변경 시점을 기준으로 새로운 스케쥴을 다시 할당해야 했습니다.
-- 이렇게 되면, 첫 정기 결제일을 기준으로 구독 주기 변경이 불가능했습니다.
-
-#### b. 특정 스케쥴러 조회 문제
-
-- 만약 유저가 본인의 정기 구독 주기를 변경하거나 구독을 취소한다면, 애플리케이션에서 그 유저에 할당된 스케쥴러를 조회 후 처리해야합니다.
-- @Scheduled 사용 시 특정 스케쥴러를 조회하는 방법이 없었습니다.
-
-#### (2) **해결 방법**
-
-- Spring Batch를 학습하기엔 주어진 시간에 비해 학습 비용이 크다고 생각하여 Quartz를 선택했습니다.
-- `Quartz`의 Trigger API 사용함으로써 런타임 환경에서 첫 정기 구독일을 기준으로 구독 주기를 변경시킬 수 있었습니다.
-- `Quartz` JobKey API를 사용함으로써 특정 스케쥴러 조회가 가능했습니다.
-
-> [정기 배송 구현에 scheduler 사용](https://velog.io/@choizz/%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EC%97%90%EC%84%9C-%EC%A0%95%EA%B8%B0-%EB%B0%B0%EC%86%A1-%EA%B5%AC%ED%98%84%EC%97%90-Scheduler-%EC%82%AC%EC%9A%A9)</br> [정기 배송 구현에 quartz 사용](https://velog.io/@choizz/%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EC%97%90%EC%84%9C-%EC%A0%95%EA%B8%B0-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84-Quartz.-v2)</br>
-
-</div>  
-</details>  
 
 
-<details>  
-<summary>2. Jpa에서 동일한 엔티티 참조 에러</summary>  
-<div markdown="1">  
+---
+
+### ⚡️성능 개선 및 문제 해결
+
+> ⚠️ Load Test 상황에서 문제 발생.
+<details>
+<summary> 1. 아이템 조회 API 낮은 응답 속도 인덱싱을 통해 해결 </summary>
 
 #### (1) **문제 상황**
 
-- Quartz를 사용하여 정기 결제 Job을 구현할 때, 첫 번째 정기 결제 때 사용된 order 객체의 정보들을 그대로 복사해서 다음 정기 결제 때 사용해야 했습니다.
-- 처음에 첫 결제 때 사용한 order 엔티티를 가지고 와서 그대로 사용하려 했지만 에러가 발생했습니다.
-    - `(org.hibernate.HibernateException: Found shared references to a collection)`
+- 아이템 카테고리 별 조회 시 응답 속도 늦음.
 
 #### (2) **문제의 원인**
 
-- `swallow copy`를 함으로써 원본 엔티티와 복사한 엔티티가 **Heap에서 동일한 주솟값**을 참조했습니다.
-- 하지만, 하이버네이트에서 이미 영속화된 엔티티와 동일한 주솟값을 가지는 엔티티를 또 다시 영속화할 수 없었습니다.
+- 실행계획 분석 결과 가격 조건절에서 Full Scan으로 데이터를 조회.
+
+```
+...
+ -> Filter: (i.real_price between 1000 and 50000)  (cost=0.277 rows=0.5) (actual time=0.00543..0.00546 rows=0.444 loops=9771)
+...
+```
 
 #### (3) **해결 방법**
 
-- order 엔티티에 deep copy를 위한 생성자를 추가하여 `deep copy` 했습니다.
+- SQL 조건절에 해당하는 가격 조회에 인덱스 생성.
 
-#### (4) **알게된 점**
+```
+...
+-> Index range scan on i using idx_item_real_price over (1000 <= real_price <= 50000), with index condition: (i.real_price between 1000 and 50000)  (cost=9226 rows=19334) (actual time=0.0367..48.9 rows=17593 loops=1)
+...
+```
 
-- Java에서 copy에 관한 개념에 대해 학습했습니다.
-- JPA에서 동일한 엔티티는 영속화 할 수 없다는 것을 알게 됐습니다.
+#### (4) **결과**
 
-> [deep copy와 swallow copy](https://velog.io/@choizz/Java에서-deep-copy와-swallow-copy#swallow-copy얕은-복사)</br>
+- 응답속도 개선 : 750ms -> **28.5ms** (약 96% 개선)
 
-</div>  
-</details>  
+</details>
+
+<details>
+<summary> 2. 아이템 조회 시 DB 부하 및 응답 속도 개선에 로컬 캐싱 도입 </summary>
+
+#### (1) **문제 상황**
+
+- 아이템 조회 시 DB 부하.
+
+#### (2) **문제의 원인**
+
+- 모든 아이템을 조회할 때마다 DB와 통신.
+
+#### (3) **해결 방법**
+
+- 빈번히 조회되는 아이템(카테고리, 세일)에 **로컬 캐싱 도입(Caffeine Cache)**(1 ~ 5페이지까지).
+
+#### (4) **결과**
+
+- 응답속도 개선 : 1,117ms -> **39.8ms**(약 95% 개선)
+
+</details>
+
+<details>
+<summary> 3. 장바구니 아이템 추가 시 동시성 문제(ConcurrentModificationException)를 방어적 복사로 해결 </summary>
+
+#### (1) **문제 상황**
+
+- 장바구니 아이템 추가 시, 아이템 중복 확인 로직에서(ConcurrentModificationException) 예외 발생.
+
+#### (2) **문제의 원인**
+
+- List에서 item 조회 stream 처리 중, 다른 스레드가 List를 수정한 것으로 추정.
+
+```java
+List<CartItemVO> cartItems = List.copyOf(cartVO.getCartItems());
+```
+
+#### (3) **해결 방법**
+
+- List를 **방어적 복사** 후 stream 처리.
+
+#### (4) **결과**
+
+- 데이터 정합성 확보.
+
+</details>
+
+<details>
+<summary> 4. 결제 승인 요청 시 DB 커넥션 풀 request time out error 해결  </summary>
+
+#### (1) **문제 상황**
+
+- 결제 승인 요청 시, DB 커넥션 풀 request time out error 발생.
+
+#### (2) **문제의 원인**
+
+- 외부 API 통신 로직과 서버 트랜잭션이 같은 로직에 포함돼 있어, 서버의 커넥션들이 외부 API 대기 시간에 영향을 받음(외부 API 처리 시간 2초로 가정).
+- 판매량 증가 로직을 비동기 수행 시, 새로운 트랜잭션이 필요하게 됨.
+
+#### (3) **해결 방법**
+
+- 외부 API 통신 로직과 **트랜잭션 로직 분리**.
+- 아이템 판매량 증가 쿼리 배치 처리.
+
+</details>
 
   
----  
-
-## 7. 회고
-
-### 👉 기술 회고
-
-[꼭 JWT를 써야 했을까?](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-JWT%EB%A5%BC-%EA%BC%AD-%EC%8D%A8%EC%95%BC%EB%90%90%EC%9D%84%EA%B9%8C)</br>  
-[무엇인가 잘못된 유저 객체 가지고 오기](https://velog.io/@choizz/%ED%9A%8C%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80-%EC%9E%98%EB%AA%BB%EB%90%9C-%EA%B2%83-%EA%B0%99%EC%9D%80-User-%EA%B0%9D%EC%B2%B4-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0)</br>
-
 
 
