@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
-import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
+import com.team33.modulecore.core.payment.domain.cancel.SubscriptionCancelService;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoSubsCancelService implements CancelSubscriptionService<SubscriptionOrder> {
+public class KakaoSubsCancelService implements SubscriptionCancelService<SubscriptionOrder> {
 
 	private final static String CANCEL_URL = "https://open-api.kakaopay.com/online/v1/payment/manage/subscription/inactive";
 

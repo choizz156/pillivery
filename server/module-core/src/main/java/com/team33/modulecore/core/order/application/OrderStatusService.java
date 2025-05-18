@@ -13,7 +13,7 @@ import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.events.CartRefreshedEvent;
-import com.team33.modulecore.core.payment.domain.cancel.CancelSubscriptionService;
+import com.team33.modulecore.core.payment.domain.cancel.SubscriptionCancelService;
 import com.team33.modulecore.core.payment.kakao.application.events.SubscriptionRegisteredEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class OrderStatusService {
 	private final ApplicationContext applicationContext;
 	private final OrderFindHelper orderFindHelper;
 	private final SubscriptionOrderService subscriptionOrderService;
-	private final CancelSubscriptionService<SubscriptionOrder> kakaoSubsCancelService;
+	private final SubscriptionCancelService<SubscriptionOrder> kakaoSubsCancelService;
 
 
 	public void processOneTimeApprove(Long orderId) {
