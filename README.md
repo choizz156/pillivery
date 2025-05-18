@@ -1038,8 +1038,7 @@ $$
 
 - 테스트 기반 문서화로 신뢰성 확보.
 - 프로덕션 코드에 문서 작성을 위한 코드 침투 방지.
-
-
+<img src="https://github.com/choizz156/pillivery/blob/ba02fc54340612667146ec1141134da6c70ff2ea/image/api%20%E1%84%86%E1%85%AE%E1%86%AB%E1%84%89%E1%85%A5.png?raw=true" width="70%">
 
 
   
