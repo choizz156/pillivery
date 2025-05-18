@@ -98,7 +98,7 @@ class PaymentAcceptanceTest extends ApiTest {
 		given = RestAssuredMockMvc.given()
 			.mockMvc(
 				standaloneSetup(
-					new PayController(
+					new KakaoPayController(
 						approveFacade,
 						paymentMapper,
 						paymentDataMapper,

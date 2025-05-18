@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.team33.moduleapi.FixtureMonkeyFactory;
-import com.team33.moduleapi.api.payment.PayController;
+import com.team33.moduleapi.api.payment.KakaoPayController;
 import com.team33.moduleapi.api.payment.mapper.PaymentData;
 import com.team33.moduleapi.api.payment.mapper.PaymentDataMapper;
 import com.team33.moduleapi.api.payment.mapper.PaymentMapper;
@@ -62,7 +62,7 @@ public class PaymentDocsTest {
 	@BeforeEach
 	void setUp(RestDocumentationContextProvider restDocumentation) {
 
-		PayController payController = new PayController(
+		KakaoPayController kakaoPayController = new KakaoPayController(
 			kakaoPaymentFacade,
 			paymentMapper,
 			paymentDataMapper,
@@ -71,7 +71,7 @@ public class PaymentDocsTest {
 			subscriptionOrderService
 		);
 
-		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(payController)
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(kakaoPayController)
 			.apply(documentationConfiguration(restDocumentation)
 				.operationPreprocessors()
 				.withResponseDefaults(prettyPrint())

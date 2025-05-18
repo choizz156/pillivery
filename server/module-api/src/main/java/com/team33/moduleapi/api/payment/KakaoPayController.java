@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/payments")
 @RestController
-public class PayController {
+public class KakaoPayController {
 
 	private final KakaoPaymentFacade kakaoPaymentFacade;
 	private final PaymentMapper paymentMapper;
