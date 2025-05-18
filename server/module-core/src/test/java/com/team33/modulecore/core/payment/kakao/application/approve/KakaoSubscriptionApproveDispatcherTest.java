@@ -10,7 +10,7 @@ import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 
-class KakaoSubsApproveDispatcherTest {
+class KakaoSubscriptionApproveDispatcherTest {
 
 	@DisplayName("정기 결제 시 승인 요청을 보낼 수 있다.")
 	@Test
@@ -19,14 +19,14 @@ class KakaoSubsApproveDispatcherTest {
 		SubscriptionOrder subscriptionOrder = FixtureMonkeyFactory.get().giveMeOne(SubscriptionOrder.class);
 
 		ParameterProvider parameterProvider = new ParameterProvider();
-		KakaoSubsApproveDispatcher kakaoSubsApproveDispatcher =
-			new KakaoSubsApproveDispatcher(
+		KakaoSubscriptionApproveDispatcher kakaoSubscriptionApproveDispatcher =
+			new KakaoSubscriptionApproveDispatcher(
 				(params, url) -> new KakaoApiApproveResponse(),
 				parameterProvider
 			);
 
 		//when
-		KakaoApiApproveResponse kaKaoApiApproveResponse = kakaoSubsApproveDispatcher.approveSubscription(subscriptionOrder);
+		KakaoApiApproveResponse kaKaoApiApproveResponse = kakaoSubscriptionApproveDispatcher.approveSubscription(subscriptionOrder);
 
 		//then
 		assertThat(kaKaoApiApproveResponse).isNotNull();

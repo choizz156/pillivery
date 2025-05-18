@@ -20,12 +20,12 @@ import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.exception.SubscriptionPaymentException;
 
-class KakaoSubsApproveServiceTest {
+class KakaoSubscriptionApproveServiceTest {
 
 	private ApplicationEventPublisher applicationEventPublisher;
 	private KakaoFirstSubsApproveDispatcher kakaoFirstSubsApproveDispatcher;
 	private SubscriptionApprove<KakaoApiApproveResponse, SubscriptionOrder> subscriptionApprove;
-	private KakaoSubsApproveService kakaoSubsApproveService;
+	private KakaoSubscriptionApproveService kakaoSubscriptionApproveService;
 
 	@BeforeEach
 	void setUp() {
@@ -34,7 +34,7 @@ class KakaoSubsApproveServiceTest {
 		kakaoFirstSubsApproveDispatcher = mock(KakaoFirstSubsApproveDispatcher.class);
 		subscriptionApprove = mock(SubscriptionApprove.class);
 
-		kakaoSubsApproveService = new KakaoSubsApproveService(
+		kakaoSubscriptionApproveService = new KakaoSubscriptionApproveService(
 				applicationEventPublisher,
 				kakaoFirstSubsApproveDispatcher,
 				subscriptionApprove);
@@ -58,7 +58,7 @@ class KakaoSubsApproveServiceTest {
 		ArgumentCaptor<PaymentDateUpdatedEvent> eventCaptor = ArgumentCaptor.forClass(PaymentDateUpdatedEvent.class);
 
 		// when
-		KakaoApproveResponse response = kakaoSubsApproveService.approveInitially(request);
+		KakaoApproveResponse response = kakaoSubscriptionApproveService.approveInitially(request);
 
 		// then
 		assertThat(response).isNotNull();
@@ -88,7 +88,7 @@ class KakaoSubsApproveServiceTest {
 		when(subscriptionApprove.approveSubscription(subscriptionOrder)).thenReturn(apiResponse);
 
 		// when
-		KakaoApproveResponse response = kakaoSubsApproveService.approveSubscribe(subscriptionOrder);
+		KakaoApproveResponse response = kakaoSubscriptionApproveService.approveSubscription(subscriptionOrder);
 
 		// then
 		verify(subscriptionApprove, times(1)).approveSubscription(subscriptionOrder);
@@ -108,7 +108,7 @@ class KakaoSubsApproveServiceTest {
 		ArgumentCaptor<SubscriptionFailedEvent> eventCaptor = ArgumentCaptor.forClass(SubscriptionFailedEvent.class);
 
 		// when & then
-		assertThatThrownBy(() -> kakaoSubsApproveService.approveSubscribe(subscriptionOrder))
+		assertThatThrownBy(() -> kakaoSubscriptionApproveService.approveSubscription(subscriptionOrder))
 				.isInstanceOf(SubscriptionPaymentException.class)
 				.hasMessage("결제 실패");
 

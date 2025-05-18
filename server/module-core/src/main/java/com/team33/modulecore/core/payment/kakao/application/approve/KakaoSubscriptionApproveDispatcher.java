@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class KakaoSubsApproveDispatcher
+public class KakaoSubscriptionApproveDispatcher
 	implements SubscriptionApprove<KakaoApiApproveResponse, SubscriptionOrder> {
 
 	private static final String KAKAO_SUBSCRIPTION_URL = "https://open-api.kakaopay.com/online/v11/payment/subscription";

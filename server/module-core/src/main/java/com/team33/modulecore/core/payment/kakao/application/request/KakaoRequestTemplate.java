@@ -10,14 +10,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class KakaoRequestTemplate<T> {
 
-	private static final String READY_URL = "https://open-api.kakaopay.com/online/v1/payment/ready";
+	private static final String KAKAO_READY_URL = "https://open-api.kakaopay.com/online/v1/payment/ready";
 	private final PaymentClient<KakaoApiRequestResponse> kakaoRequestClient;
 
 	public KakaoApiRequestResponse request(T requestObject) {
 
 		Map<String, Object> requestParams = getRequestParams(requestObject);
 
-		return kakaoRequestClient.send(requestParams, READY_URL);
+		return kakaoRequestClient.send(requestParams, KAKAO_READY_URL);
 	}
 
 	public abstract Map<String, Object> getRequestParams(T requestObject);

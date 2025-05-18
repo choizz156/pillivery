@@ -6,7 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubscriptionCanceledEvent;
 import com.team33.moduleevent.domain.EventStatus;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
@@ -25,7 +25,7 @@ public class SubscriptionCanceledEventHandler {
 
 	@EventListener
 	@DistributedLock(key = "'subscription:canceled:' + #apiEvent.cancelParam")
-	public void onEventSet(KakaoSubsCanceledEvent apiEvent) {
+	public void onEventSet(KakaoSubscriptionCanceledEvent apiEvent) {
 
 		if (isPresentDuplicatedEvent(apiEvent)) {
 			LOGGER.info("중복 이벤트 발생 = {}", apiEvent.getCancelParam());
@@ -43,7 +43,7 @@ public class SubscriptionCanceledEventHandler {
 		eventsRepository.save(refund);
 	}
 
-	private boolean isPresentDuplicatedEvent(KakaoSubsCanceledEvent apiEvent) {
+	private boolean isPresentDuplicatedEvent(KakaoSubscriptionCanceledEvent apiEvent) {
 
 		return eventsRepository
 			.findByTypeAndParameters(EventType.SUBSCRIPTION_CANCELED, apiEvent.getCancelParam())

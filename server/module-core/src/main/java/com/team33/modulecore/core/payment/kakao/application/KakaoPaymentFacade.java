@@ -7,7 +7,6 @@ import com.team33.modulecore.core.payment.domain.approve.OneTimeApproveService;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
 import com.team33.modulecore.core.payment.domain.request.RequestService;
 import com.team33.modulecore.core.payment.dto.ApproveRequest;
-import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveRequest;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoRequestResponse;
 
@@ -22,12 +21,12 @@ public class KakaoPaymentFacade{
 	private final RequestService<KakaoRequestResponse, Long> kakaoRequestService;
 	private final RequestService<KakaoRequestResponse, Long> kakaoSubscriptionRequestService;
 
-	public KakaoApproveResponse approveInitially(KakaoApproveRequest approveRequest) {
+	public KakaoApproveResponse approveInitially(ApproveRequest approveRequest) {
 		return kakaoOneTimeApproveService.approveOneTime(approveRequest);
 	}
 
 	public KakaoApproveResponse approveSubscription(SubscriptionOrder subscriptionOrder) {
-		return kakaoSubsApproveService.approveSubscribe(subscriptionOrder);
+		return kakaoSubsApproveService.approveSubscription(subscriptionOrder);
 	}
 
 	public KakaoApproveResponse approveSid(ApproveRequest approveRequest) {

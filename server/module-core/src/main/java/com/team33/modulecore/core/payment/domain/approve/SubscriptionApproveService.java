@@ -6,5 +6,5 @@ public interface SubscriptionApproveService<T, R> {
 
 	T approveInitially(ApproveRequest approveRequest);
 
-	T approveSubscribe(R approveRequest);
+	T approveSubscription(R approveRequest);
 }

@@ -16,14 +16,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class KakaoSubscriptionRequestService implements RequestService<KakaoRequestResponse, Long> {
 
-	private final Request<KakaoApiRequestResponse, SubscriptionOrder> kakaoSubsRequestDispatcher;
+	private final Request<KakaoApiRequestResponse, SubscriptionOrder> kakaoSubscriptionRequestDispatcher;
 	private final SubscriptionOrderService subscriptionOrderService;
 
 	@Override
 	public KakaoRequestResponse request(Long subscriptionOrderId) {
 
 		SubscriptionOrder subscriptionOrder = subscriptionOrderService.findById(subscriptionOrderId);
-		KakaoApiRequestResponse response = kakaoSubsRequestDispatcher.request(subscriptionOrder);
+		KakaoApiRequestResponse response = kakaoSubscriptionRequestDispatcher.request(subscriptionOrder);
 
 		return KakaoResponseMapper.INSTANCE.toKakaoCoreRequestResponse(response);
 	}

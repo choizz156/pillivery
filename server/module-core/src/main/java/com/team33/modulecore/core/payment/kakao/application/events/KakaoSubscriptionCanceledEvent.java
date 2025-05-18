@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class KakaoSubsCanceledEvent {
+public class KakaoSubscriptionCanceledEvent {
 
 	private final String cancelParam;
 	private final String cancelUrl;

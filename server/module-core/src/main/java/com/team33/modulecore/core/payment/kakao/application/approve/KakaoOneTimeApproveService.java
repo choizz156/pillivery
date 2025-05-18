@@ -19,8 +19,9 @@ public class KakaoOneTimeApproveService implements OneTimeApproveService<KakaoAp
 	private final OneTimeApprove<KakaoApiApproveResponse, KakaoApproveRequest> oneTimeApprove;
 
 	@Override
-	public KakaoApproveResponse approveOneTime( ApproveRequest approveRequest) {
-		KakaoApproveRequest request = (KakaoApproveRequest) approveRequest;
+	public KakaoApproveResponse approveOneTime(ApproveRequest approveRequest) {
+
+		KakaoApproveRequest request = (KakaoApproveRequest)approveRequest;
 
 		KakaoApiApproveResponse response = oneTimeApprove.approveOneTime(request);
 

@@ -11,17 +11,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class KaKaoApproveTemplate {
 
-	    // "https://open-api.kakaopay.com/online/v1/payment/approve"
-
-	private static final String KAKAO_APPROVE_URL = "https://accommodate-boating-losses-attribute.trycloudflare.com/online/v1/payment/approve";
+	private static final String KAKAO_APPROVE_URL = "https://open-api.kakaopay.com/online/v1/payment/approve";
 
 	private final PaymentClient<KakaoApiApproveResponse> kakaoApproveClient;
-
-	public abstract Map<String, Object> getApproveParams(ApproveRequest approveRequest);
 
 	public KakaoApiApproveResponse approve(ApproveRequest approveRequest) {
 		Map<String, Object> approveParams = getApproveParams(approveRequest);
 
 		return kakaoApproveClient.send(approveParams, KAKAO_APPROVE_URL);
 	}
+
+	public abstract Map<String, Object> getApproveParams(ApproveRequest approveRequest);
 }

@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoSubsApproveService implements SubscriptionApproveService<KakaoApproveResponse, SubscriptionOrder> {
+public class KakaoSubscriptionApproveService implements SubscriptionApproveService<KakaoApproveResponse, SubscriptionOrder> {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final KakaoFirstSubsApproveDispatcher kakaoFirstSubsApproveDispatcher;
-	private final SubscriptionApprove<KakaoApiApproveResponse, SubscriptionOrder> subscriptionApprove;
+	private final SubscriptionApprove<KakaoApiApproveResponse, SubscriptionOrder> kakaoSubscriptionApproveDispatcher;
 
 	@Override
 	public KakaoApproveResponse approveInitially(ApproveRequest approveRequest) {
@@ -38,12 +38,12 @@ public class KakaoSubsApproveService implements SubscriptionApproveService<Kakao
 	}
 
 	@Override
-	public KakaoApproveResponse approveSubscribe(SubscriptionOrder subscriptionOrder) {
+	public KakaoApproveResponse approveSubscription(SubscriptionOrder subscriptionOrder) {
 
 		KakaoApiApproveResponse response;
 
 		try {
-			response = subscriptionApprove.approveSubscription(subscriptionOrder);
+			response = kakaoSubscriptionApproveDispatcher.approveSubscription(subscriptionOrder);
 
 		} catch (SubscriptionPaymentException e) {
 			applicationEventPublisher.publishEvent(new SubscriptionFailedEvent(subscriptionOrder.getId()));

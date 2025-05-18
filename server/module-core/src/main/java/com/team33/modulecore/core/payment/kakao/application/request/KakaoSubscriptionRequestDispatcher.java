@@ -11,13 +11,13 @@ import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
 @Service
-public class KakaoSubsRequestDispatcher
+public class KakaoSubscriptionRequestDispatcher
 	extends KakaoRequestTemplate<SubscriptionOrder>
 	implements Request<KakaoApiRequestResponse, SubscriptionOrder> {
 
 	private final ParameterProvider parameterProvider;
 
-	public KakaoSubsRequestDispatcher(
+	public KakaoSubscriptionRequestDispatcher(
 		PaymentClient<KakaoApiRequestResponse> KakaoRequestClient,
 		ParameterProvider parameterProvider
 	) {

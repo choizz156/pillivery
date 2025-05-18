@@ -10,14 +10,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.domain.cancel.SubscriptionCancelService;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubscriptionCanceledEvent;
 import com.team33.moduleexternalapi.exception.PaymentApiException;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class KakaoSubsCancelService implements SubscriptionCancelService<SubscriptionOrder> {
+public class KakaoSubscriptionCancelService implements SubscriptionCancelService<SubscriptionOrder> {
 
 	private final static String CANCEL_URL = "https://open-api.kakaopay.com/online/v1/payment/manage/subscription/inactive";
 
@@ -31,7 +31,7 @@ public class KakaoSubsCancelService implements SubscriptionCancelService<Subscri
 		String sid = checkSidNull(subscriptionOrder);
 		String params = mapToString(parameterProvider.getSubsCancelParams(sid));
 
-		applicationEventPublisher.publishEvent(new KakaoSubsCanceledEvent(params, CANCEL_URL));
+		applicationEventPublisher.publishEvent(new KakaoSubscriptionCanceledEvent(params, CANCEL_URL));
 	}
 
 	private String checkSidNull(SubscriptionOrder subscriptionOrder) {

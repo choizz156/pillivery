@@ -15,10 +15,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
-import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubscriptionCanceledEvent;
 import com.team33.modulecore.core.payment.kakao.application.request.Params;
 
-class KakaoSubsCancelServiceTest {
+class KakaoSubscriptionCancelServiceTest {
 
 	@Test
 	@DisplayName("구독 주문으로 구독 취소 요청을 생성할 수 있다")
@@ -40,23 +40,24 @@ class KakaoSubsCancelServiceTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String params = objectMapper.writeValueAsString(cancelParams);
 
-		KakaoSubsCancelService kakaoSubsCancelService = new KakaoSubsCancelService(
+		KakaoSubscriptionCancelService kakaoSubscriptionCancelService = new KakaoSubscriptionCancelService(
 			applicationEventPublisher,
 			parameterProvider,
 			objectMapper
 		);
 
-		ArgumentCaptor<KakaoSubsCanceledEvent> eventCaptor = ArgumentCaptor.forClass(KakaoSubsCanceledEvent.class);
+		ArgumentCaptor<KakaoSubscriptionCanceledEvent> eventCaptor = ArgumentCaptor.forClass(
+			KakaoSubscriptionCanceledEvent.class);
 
 		// when
-		kakaoSubsCancelService.cancelSubscription(subscriptionOrder);
+		kakaoSubscriptionCancelService.cancelSubscription(subscriptionOrder);
 
 		// then
 		verify(subscriptionOrder, times(1)).getSid();
 		verify(parameterProvider, times(1)).getSubsCancelParams(sid);
 		verify(applicationEventPublisher, times(1)).publishEvent(eventCaptor.capture());
 
-		KakaoSubsCanceledEvent capturedEvent = eventCaptor.getValue();
+		KakaoSubscriptionCanceledEvent capturedEvent = eventCaptor.getValue();
 		assertThat(capturedEvent.getCancelParam()).isEqualTo(params);
 		assertThat(capturedEvent.getCancelUrl()).isEqualTo(
 			"https://open-api.kakaopay.com/online/v1/payment/manage/subscription/inactive"

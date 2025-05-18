@@ -14,7 +14,7 @@ import com.team33.modulecore.core.payment.kakao.application.ParameterProvider;
 import com.team33.moduleexternalapi.application.PaymentClient;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiRequestResponse;
 
-class KakaoSubsRequestDispatcherTest {
+class KakaoSubscriptionRequestDispatcherTest {
 
 	@Test
 	@DisplayName("구독 주문 정보로 결제 요청을 생성할 수 있다")
@@ -22,7 +22,7 @@ class KakaoSubsRequestDispatcherTest {
 		// given
 		PaymentClient<KakaoApiRequestResponse> kakaoRequestClient = mock(PaymentClient.class);
 		var parameterProvider = mock(ParameterProvider.class);
-		var kakaoSubsRequestDispatcher = new KakaoSubsRequestDispatcher(kakaoRequestClient, parameterProvider);
+		var kakaoSubsRequestDispatcher = new KakaoSubscriptionRequestDispatcher(kakaoRequestClient, parameterProvider);
 		var subscriptionOrder = mock(SubscriptionOrder.class);
 
 		Map<String, Object> requestParams = new HashMap<>();

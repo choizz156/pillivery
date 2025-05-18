@@ -20,7 +20,7 @@ import com.team33.moduleapi.exception.controller.ExceptionController;
 import com.team33.modulecore.core.order.application.OrderStatusService;
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.order.domain.repository.SubscriptionOrderRepository;
-import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubscriptionCanceledEvent;
 import com.team33.moduleevent.handler.SubscriptionCanceledEventHandler;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -105,12 +105,12 @@ class SubscriptionCancelAcceptanceTest extends ApiTest {
 	@Test
 	void 정기_결제_취소_이벤트_발행() throws Exception {
 		//given
-		KakaoSubsCanceledEvent kakaoSubsCanceledEvent = new KakaoSubsCanceledEvent("sid", "url");
+		KakaoSubscriptionCanceledEvent kakaoSubscriptionCanceledEvent = new KakaoSubscriptionCanceledEvent("sid", "url");
 
 		//when
-		applicationEventPublisher.publishEvent(kakaoSubsCanceledEvent);
+		applicationEventPublisher.publishEvent(kakaoSubscriptionCanceledEvent);
 
 		//then
-		verify(subscriptionEventHandler, times(1)).onEventSet(kakaoSubsCanceledEvent);
+		verify(subscriptionEventHandler, times(1)).onEventSet(kakaoSubscriptionCanceledEvent);
 	}
 }

@@ -73,13 +73,13 @@ class KakaoPaymentFacadeTest {
 		KakaoApproveResponse expectedResponse = new KakaoApproveResponse();
 
 		when(subscriptionOrderService.findById(subscriptionOrderId)).thenReturn(subscriptionOrder);
-		when(kakaoSubsApproveService.approveSubscribe(subscriptionOrder)).thenReturn(expectedResponse);
+		when(kakaoSubsApproveService.approveSubscription(subscriptionOrder)).thenReturn(expectedResponse);
 
 		// when
 		KakaoApproveResponse response = kakaoPaymentFacade.approveSubscription(subscriptionOrder);
 
 		// then
-		verify(kakaoSubsApproveService, times(1)).approveSubscribe(subscriptionOrder);
+		verify(kakaoSubsApproveService, times(1)).approveSubscription(subscriptionOrder);
 		assertThat(response).isEqualTo(expectedResponse);
 	}
 

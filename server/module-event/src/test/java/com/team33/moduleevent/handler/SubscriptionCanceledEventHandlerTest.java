@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubsCanceledEvent;
+import com.team33.modulecore.core.payment.kakao.application.events.KakaoSubscriptionCanceledEvent;
 import com.team33.moduleevent.domain.EventType;
 import com.team33.moduleevent.domain.entity.ApiEvent;
 import com.team33.moduleevent.domain.repository.EventRepository;
@@ -33,7 +33,7 @@ class SubscriptionCanceledEventHandlerTest {
         // given
         String cancelParam = "param";
         String cancelUrl = "url";
-        KakaoSubsCanceledEvent event = new KakaoSubsCanceledEvent(cancelParam, cancelUrl);
+        KakaoSubscriptionCanceledEvent event = new KakaoSubscriptionCanceledEvent(cancelParam, cancelUrl);
         
         when(eventRepository.findByTypeAndParameters(EventType.SUBSCRIPTION_CANCELED, cancelParam))
             .thenReturn(Optional.empty());
@@ -54,7 +54,7 @@ class SubscriptionCanceledEventHandlerTest {
         
         String cancelParam = "test-param";
         String cancelUrl = "test-url";
-        KakaoSubsCanceledEvent event = new KakaoSubsCanceledEvent(cancelParam, cancelUrl);
+        KakaoSubscriptionCanceledEvent event = new KakaoSubscriptionCanceledEvent(cancelParam, cancelUrl);
 
 		ApiEvent testEvent = ApiEvent.builder().url("url").build();
 		when(eventRepository.findByTypeAndParameters(EventType.SUBSCRIPTION_CANCELED, cancelParam))
