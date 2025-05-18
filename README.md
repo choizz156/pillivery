@@ -1032,7 +1032,7 @@ $$
 - FixtureMonkey 라이브러리를 사용하여 모의 객체 생성.
 - 도메인 테스트, 통합 테스트에 Junit5, Mockito, Fake 객체 사용.
 - 가독성을 고려하여, E2E 테스트에 RestAssured 사용.
-  <img src="https://github.com/choizz156/pillivery/blob/e5a7a7d3acf5b2134403d729b8371083aebb6a5e/image/test_code.png?raw=true" width="70%">
+  ![]("https://github.com/choizz156/pillivery/blob/e5a7a7d3acf5b2134403d729b8371083aebb6a5e/image/test_code.png)
 
 ### (12) Spring Rest Docs API 문서 작성
 
