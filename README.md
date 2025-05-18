@@ -951,7 +951,28 @@ $$
 
 <img src="https://github.com/choizz156/pillivery/blob/2cbde14fba519a83cc57bda3dfa1dd64763a57a4/image/circuitbraekertest.png?raw=true">
 
-### (9) Load/Stress 테스트
+
+
+#### (9) 확장 가능성을 고려한 결제 시스템 설계
+- PG사 확장을 고려한 인터페이스 설계.
+- 멱등성이 있는 로직(결제 조회)에 외부 API 비동기 통신 도입으로 응답 속도 상승.
+  <img src="https://github.com/choizz156/pillivery/blob/9157523f361269e27b1002ad1b88b1298370dbc4/image/%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6.drawio.png?raw=true" width="70%">
+
+
+#### (10) 테스트 코드 작성(Test Coverage 85%)
+
+- FixtureMonkey 라이브러리를 사용하여 모의 객체 생성.
+- 도메인 테스트, 통합 테스트에 Junit5, Mockito, Fake 객체 사용.
+- 가독성을 고려하여, E2E 테스트에 RestAssured 사용.
+  ![]("https://github.com/choizz156/pillivery/blob/e5a7a7d3acf5b2134403d729b8371083aebb6a5e/image/test_code.png)
+
+#### (11) Spring Rest Docs API 문서 작성
+
+- 테스트 기반 문서화로 신뢰성 확보.
+- 프로덕션 코드에 문서 작성을 위한 코드 침투 방지.
+  <img src="https://github.com/choizz156/pillivery/blob/ba02fc54340612667146ec1141134da6c70ff2ea/image/api%20%E1%84%86%E1%85%AE%E1%86%AB%E1%84%89%E1%85%A5.png?raw=true" width="70%">
+
+### ‼️Load/Stress 테스트
 
 - Load 테스트를 통한 error 해결 및 성능 개선.
 - Stress 테스트를 통한 서버 한계점 파악.
@@ -978,7 +999,7 @@ $$
 > - T = (시나리오 상 요청 수 * 목표 응답 시간) + ⍺(예상 지연 시간) → (1 * 0.2) + 0 = **0.2**<br/>
 > - 목표 최대 RPS = (VUser * 요청 수) / 목표 응답 시간(T)<br/>
 > - VUser = (최대 RPS x 목표 응답 시간 ) / api 요청 수
->   →  (86.8 × 0.2) / 1 = 17.36 ≈ **18**<br/>
+    >   →  (86.8 × 0.2) / 1 = 17.36 ≈ **18**<br/>
     => VUser 값을 18로 두고 테스트하여 요청 시간이 0.2초를 유지한다면 대상 시스템은 86.8의 처리량을 보장한다고 가정할 수 있음.
 
 > ⚠️ 학습 목적 상 추정된 VUser 18은 너무 적다고 판단하여 그 이상의 수로 테스트를 수행함.
@@ -1019,28 +1040,6 @@ $$
 - VUser 300부터 Circuit Breaker 발동 확인.
 
   <img src="https://github.com/choizz156/pillivery/blob/522a581e3c9bce295c6229aac2444068a0795fce/image/paymentApproveStressTest.png?raw=true" width="70%">
-
-
-### (10) 확장 가능성을 고려한 결제 시스템 설계
-- PG사 확장을 고려한 인터페이스 설계.
-- 멱등성이 있는 로직(결제 조회)에 외부 API 비동기 통신 도입으로 응답 속도 상승.
-  <img src="https://github.com/choizz156/pillivery/blob/9157523f361269e27b1002ad1b88b1298370dbc4/image/%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6.drawio.png?raw=true" width="70%">
-
-
-### (11) 테스트 코드 작성(Test Coverage 85%)
-
-- FixtureMonkey 라이브러리를 사용하여 모의 객체 생성.
-- 도메인 테스트, 통합 테스트에 Junit5, Mockito, Fake 객체 사용.
-- 가독성을 고려하여, E2E 테스트에 RestAssured 사용.
-  ![]("https://github.com/choizz156/pillivery/blob/e5a7a7d3acf5b2134403d729b8371083aebb6a5e/image/test_code.png)
-
-### (12) Spring Rest Docs API 문서 작성
-
-- 테스트 기반 문서화로 신뢰성 확보.
-- 프로덕션 코드에 문서 작성을 위한 코드 침투 방지.
-<img src="https://github.com/choizz156/pillivery/blob/ba02fc54340612667146ec1141134da6c70ff2ea/image/api%20%E1%84%86%E1%85%AE%E1%86%AB%E1%84%89%E1%85%A5.png?raw=true" width="70%">
-
-
   
 ---  
 
