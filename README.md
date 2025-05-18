@@ -978,8 +978,8 @@ $$
 > - T = (시나리오 상 요청 수 * 목표 응답 시간) + ⍺(예상 지연 시간) → (1 * 0.2) + 0 = **0.2**<br/>
 > - 목표 최대 RPS = (VUser * 요청 수) / 목표 응답 시간(T)<br/>
 > - VUser = (최대 RPS x 목표 응답 시간 ) / api 요청 수
->   → 최대 RPS × 응답시간 = 86.8 × 0.2 = 17.36 ≈ **18**<br/>
->   > => VUser 값을 18로 두고 테스트하여 요청 시간이 0.2초를 유지한다면 대상 시스템은 86.8의 처리량을 보장한다고 가정할 수 있음.
+>   →  (86.8 × 0.2) / 1 = 17.36 ≈ **18**<br/>
+    => VUser 값을 18로 두고 테스트하여 요청 시간이 0.2초를 유지한다면 대상 시스템은 86.8의 처리량을 보장한다고 가정할 수 있음.
 
 > ⚠️ 학습 목적 상 추정된 VUser 18은 너무 적다고 판단하여 그 이상의 수로 테스트를 수행함.
 
@@ -1022,14 +1022,17 @@ $$
 
 
 ### (10) 확장 가능성을 고려한 결제 시스템 설계
+- PG사 확장을 고려한 인터페이스 설계.
+- 멱등성이 있는 로직(결제 조회)에 외부 API 비동기 통신 도입으로 응답 속도 상승.
+  <img src="https://github.com/choizz156/pillivery/blob/9157523f361269e27b1002ad1b88b1298370dbc4/image/%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6.drawio.png?raw=true" width="70%">
 
 
 ### (11) 테스트 코드 작성(Test Coverage 85%)
 
 - FixtureMonkey 라이브러리를 사용하여 모의 객체 생성.
-- 도메인 테스트, 통합 테스트에 Junit5, Mockito, Fake 객체 사용().
+- 도메인 테스트, 통합 테스트에 Junit5, Mockito, Fake 객체 사용.
 - 가독성을 고려하여, E2E 테스트에 RestAssured 사용.
-- //다시 클래스들 있으니까 테스트 코드 짜야됨
+  <img src="https://github.com/choizz156/pillivery/blob/e5a7a7d3acf5b2134403d729b8371083aebb6a5e/image/test_code.png?raw=true" width="70%">
 
 ### (12) Spring Rest Docs API 문서 작성
 
