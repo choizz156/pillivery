@@ -1,5 +1,8 @@
 package com.team33.modulebatch.infra;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,7 +36,11 @@ public class DelayedSubscriptionManager {
 		String errorMessage = getMessage(responseBody);
 		LOGGER.info("Adding delayed subscription response: {}, id = {}", errorMessage, subscriptionOrderId);
 
-		DelayedItem delayedItem = DelayedItem.of(subscriptionOrderId, errorMessage);
+		DelayedItem delayedItem = DelayedItem.of(
+			subscriptionOrderId,
+			errorMessage,
+			LocalDate.now(ZoneId.of("Asia/Seoul"))
+		);
 		delayedItemRepository.save(delayedItem);
 	}
 

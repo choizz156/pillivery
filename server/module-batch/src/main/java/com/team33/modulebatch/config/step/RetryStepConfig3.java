@@ -13,6 +13,7 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,8 @@ public class RetryStepConfig3 {
 	private final static int CHUNK_SIZE = 20;
 
 	@Autowired
-	private EntityManagerFactory mainEntityManagerFactory;
+	@Qualifier("mainEntityManagerFactory")
+	private EntityManagerFactory entityManagerFactory;
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
@@ -53,17 +55,17 @@ public class RetryStepConfig3 {
 			.build();
 	}
 
-	@Bean
+	@Bean(name = "delayedItemReader3")
 	public ItemReader<DelayedItem> delayedItemReader3() {
-		int retryCount = 5;
+		long retryCount = 5;
 		LocalDate targetDate = LocalDate.now().minusDays(retryCount);
-		int expectedRetryCount = retryCount - 1;
+		long expectedRetryCount = retryCount - 3;
 
 		return new JpaPagingItemReaderBuilder<DelayedItem>()
-			.name("delayedItemReader")
-			.entityManagerFactory(mainEntityManagerFactory)
+			.name("delayedItemReader3")
+			.entityManagerFactory(entityManagerFactory)
 			.queryString("SELECT d FROM DelayedItem d " +
-				"WHERE d.delayedPaymentDate = :date " +
+				"WHERE d.originalPaymentDate = :date " +
 				"AND d.retryCount = :count")
 			.parameterValues(Map.of(
 				"date", targetDate,
@@ -73,7 +75,7 @@ public class RetryStepConfig3 {
 			.build();
 	}
 
-	@Bean
+	@Bean(name = "delayedItemProcessor3")
 	@StepScope
 	public ItemProcessor<DelayedItem, DelayedItem> delayedItemProcessor3(
 		@Value("#{jobParameters['jobId']}") Long jobId
@@ -83,14 +85,15 @@ public class RetryStepConfig3 {
 		return retryItemProcessor;
 	}
 
-	@Bean
+	@Bean(name = "delayedItemWriter3")
 	public ItemWriter<DelayedItem> delayedItemWriter3() {
 
-		return items -> items.stream()
-			.filter(item -> item.getStatus() == ErrorStatus.DELAYED)
+		return items -> items
 			.forEach(
 				delayedItem -> {
-					delayedItem.updateStatus(ErrorStatus.CANCELLED);
+					if (delayedItem.getStatus() == ErrorStatus.DELAYED) {
+						delayedItem.updateStatus(ErrorStatus.CANCELLED);
+					}
 					delayedItemRepository.save(delayedItem);
 				}
 			);

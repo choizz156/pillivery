@@ -48,7 +48,7 @@ public class CoreSourceConfig {
 		return jpaTransactionManager;
 	}
 
-	@Bean
+	@Bean(name = "mainEntityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean mainEntityManagerFactory() {
 
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();

@@ -1,6 +1,7 @@
 package com.team33.modulebatch.config.step;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
@@ -13,6 +14,7 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +31,8 @@ public class RetryStepConfig1 {
 	private final static int CHUNK_SIZE = 20;
 
 	@Autowired
-	private EntityManagerFactory mainEntityManagerFactory;
+	@Qualifier("mainEntityManagerFactory")
+	private EntityManagerFactory entityManagerFactory;
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
@@ -53,17 +56,18 @@ public class RetryStepConfig1 {
 			.build();
 	}
 
-	@Bean
+	@Bean(name = "delayedItemReader")
 	public ItemReader<DelayedItem> delayedItemReader() {
-		int retryCount = 1;
-		LocalDate targetDate = LocalDate.now().minusDays(retryCount);
-		int expectedRetryCount = 0;
+
+		long retryCount = 1L;
+		LocalDate targetDate = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(retryCount);
+		long expectedRetryCount = 0L;
 
 		return new JpaPagingItemReaderBuilder<DelayedItem>()
 			.name("delayedItemReader")
-			.entityManagerFactory(mainEntityManagerFactory)
+			.entityManagerFactory(entityManagerFactory)
 			.queryString("SELECT d FROM DelayedItem d " +
-				"WHERE d.delayedPaymentDate = :date " +
+				"WHERE d.originalPaymentDate = :date " +
 				"AND d.retryCount = :count")
 			.parameterValues(Map.of(
 				"date", targetDate,
@@ -73,7 +77,7 @@ public class RetryStepConfig1 {
 			.build();
 	}
 
-	@Bean
+	@Bean(name = "delayedItemProcessor")
 	@StepScope
 	public ItemProcessor<DelayedItem, DelayedItem> delayedItemProcessor(
 		@Value("#{jobParameters['jobId']}") Long jobId
@@ -83,14 +87,15 @@ public class RetryStepConfig1 {
 		return retryItemProcessor;
 	}
 
-	@Bean
+	@Bean(name = "delayedItemWriter")
 	public ItemWriter<DelayedItem> delayedItemWriter() {
 
-		return items -> items.stream()
-			.filter(item -> item.getStatus() == ErrorStatus.DELAYED)
+		return items -> items
 			.forEach(
 				delayedItem -> {
-					delayedItem.addRetryCount(delayedItem.getRetryCount() + 1);
+					if (delayedItem.getStatus() == ErrorStatus.DELAYED) {
+						delayedItem.addRetryCount(delayedItem.getRetryCount() + 1);
+					}
 					delayedItemRepository.save(delayedItem);
 				}
 			);

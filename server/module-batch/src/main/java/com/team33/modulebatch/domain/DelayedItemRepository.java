@@ -9,7 +9,7 @@ import com.team33.modulebatch.domain.entity.DelayedItem;
 
 public interface DelayedItemRepository extends JpaRepository<DelayedItem, Long> {
 
-	List<DelayedItem> findByDelayedPaymentDateAndRetryCount(LocalDate date, int retryCount);
+	List<DelayedItem> findByOriginalPaymentDateAndRetryCount(LocalDate date, Long retryCount);
 
 	boolean existsDelayedItemBySubscriptionOrderIdAndStatus(long subscriptionOrderId, ErrorStatus status);
 }

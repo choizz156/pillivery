@@ -1,7 +1,6 @@
 package com.team33.modulebatch.domain.entity;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +33,7 @@ public class DelayedItem {
 
 	private Long retryCount;
 
-	private LocalDate delayedPaymentDate;
+	private LocalDate originalPaymentDate;
 
 	private String reason;
 
@@ -49,7 +48,7 @@ public class DelayedItem {
 		Long id,
 		Long subscriptionOrderId,
 		Long retryCount,
-		LocalDate delayedPaymentDate,
+		LocalDate originalPaymentDate,
 		String reason,
 		ErrorStatus status
 	) {
@@ -57,19 +56,19 @@ public class DelayedItem {
 		this.id = id;
 		this.subscriptionOrderId = subscriptionOrderId;
 		this.retryCount = retryCount;
-		this.delayedPaymentDate = delayedPaymentDate;
+		this.originalPaymentDate = originalPaymentDate;
 		this.reason = reason;
 		this.status = status;
 	}
 
-	public static DelayedItem of(long subscriptionOrderId, String reason) {
+	public static DelayedItem of(long subscriptionOrderId, String reason, LocalDate now) {
 
 		return DelayedItem.builder()
 			.subscriptionOrderId(subscriptionOrderId)
 			.retryCount(0L)
 			.status(ErrorStatus.DELAYED)
 			.reason(reason)
-			.delayedPaymentDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
+			.originalPaymentDate(now)
 			.build();
 	}
 
