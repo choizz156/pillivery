@@ -19,10 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
 
-import com.team33.modulebatch.BatchApiTest;
+import com.team33.modulebatch.BatchTest;
 import com.team33.modulebatch.listener.ItemSkipListener;
 
-class PaymentItemReaderSkipTest extends BatchApiTest {
+class PaymentItemReaderSkipTest extends BatchTest {
 
 	private static final int CHUNK_SIZE = 1;
 	private static final int SKIP_LIMIT = 1;

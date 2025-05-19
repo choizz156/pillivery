@@ -40,10 +40,11 @@ import io.restassured.RestAssured;
 @SpringBootTest(classes = TestDataSourceConfig.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SpringBatchTest
 @ActiveProfiles("test")
-public abstract class BatchApiTest {
+public abstract class BatchTest {
 
 	@LocalServerPort
 	private int port;
+
 	@Autowired
 	protected StepBuilderFactory stepBuilderFactory;
 	@Autowired

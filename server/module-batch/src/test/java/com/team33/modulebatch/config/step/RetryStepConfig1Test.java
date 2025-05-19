@@ -1,33 +1,36 @@
-package com.team33.modulebatch.step;
+package com.team33.modulebatch.config.step;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.sql.Date;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.scope.context.StepSynchronizationManager;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.test.MetaDataInstanceFactory;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.team33.modulebatch.BatchApiTest;
+import com.team33.modulebatch.BatchTest;
 import com.team33.modulebatch.domain.DelayedItemRepository;
+import com.team33.modulebatch.domain.ErrorStatus;
 import com.team33.modulebatch.domain.entity.DelayedItem;
+import com.team33.modulebatch.step.RetryItemProcessor;
 
-class RetryStepConfigTest extends BatchApiTest {
-
-	private static final ZonedDateTime REQUEST_DATE = ZonedDateTime.now();
+@DisplayName("첫 번재 결제 재시도")
+class RetryStepConfig1Test extends BatchTest {
 
 	@Autowired
 	private DelayedItemRepository delayedItemRepository;
+
+	@Autowired
+	private RetryItemProcessor retryItemProcessor;
 
 	@Autowired
 	@Qualifier("delayedItemReader")
@@ -37,39 +40,105 @@ class RetryStepConfigTest extends BatchApiTest {
 	@Qualifier("delayedItemWriter")
 	private ItemWriter<DelayedItem> delayedItemWriter;
 
-
 	@BeforeEach
 	void setUpEach() throws Exception {
+
 		insertTestData();
 	}
 
-
-	@DisplayName("item reader가 작동한다. (총 개수 100개, 읽어올 아이템 20개)")
+	@DisplayName("item reader가 작동한다. (읽어올 아이템 20개)")
 	@Test
 	void test1() throws Exception {
-		Date date = Date.valueOf(REQUEST_DATE.toLocalDate());
-		JobParameters jobParameters = new JobParametersBuilder()
-			.addDate("paymentDate", date)
-			.toJobParameters();
 
-		StepExecution stepExecution = MetaDataInstanceFactory.createStepExecution(jobParameters);
-		StepSynchronizationManager.register(stepExecution);
+		JpaPagingItemReader<DelayedItem> reader = (JpaPagingItemReader<DelayedItem>)delayedItemReader;
+
+		reader.afterPropertiesSet();
+		reader.open(new ExecutionContext());
 
 		int count = 0;
-		while (delayedItemReader.read() != null) {
+		while (reader.read() != null) {
 			count++;
 		}
 
-		assertThat(count).isEqualTo(100);
+		reader.close();
+
+		assertThat(count).isEqualTo(20);
+	}
+
+	@DisplayName("읽어 온 아이템을 외부 api와 통신할 수 있다.")
+	@Test
+	void test2() throws Exception {
+
+		retryItemProcessor.initialize(1L);
+
+		JpaPagingItemReader<DelayedItem> reader = (JpaPagingItemReader<DelayedItem>)delayedItemReader;
+
+		reader.afterPropertiesSet();
+		reader.open(new ExecutionContext());
+
+		DelayedItem delayedItem;
+		var list = new ArrayList<DelayedItem>(20);
+		while ((delayedItem = reader.read()) != null) {
+			list.add(retryItemProcessor.process(delayedItem));
+		}
+
+		reader.close();
+
+		assertThat(list).hasSize(20)
+			.extracting("idempotencyKey")
+			.isNotNull()
+			.doesNotHaveDuplicates();
+
+	}
+
+	@DisplayName("api와 통신 처리 결과를 db에 저장할 수 있다.")
+	@Test
+	void test3() throws Exception {
+		//given
+		LocalDate now = LocalDate.now();
+
+		DelayedItem delayedItem = DelayedItem.builder()
+			.subscriptionOrderId(1L)
+			.status(ErrorStatus.DELAYED)
+			.originalPaymentDate(now)
+			.retryCount(0L)
+			.build();
+
+		DelayedItem solvedItem = DelayedItem.builder()
+			.subscriptionOrderId(2L)
+			.retryCount(0L)
+			.originalPaymentDate(now)
+			.status(ErrorStatus.SOLVED)
+			.build();
+
+		List<DelayedItem> list = List.of(delayedItem, solvedItem);
+
+		//when
+		delayedItemWriter.write(list);
+
+		//then
+		List<DelayedItem> result = delayedItemRepository.findByOriginalPaymentDateAndRetryCount(now, 1L);
+		assertThat(result).hasSize(1);
+		boolean exist = delayedItemRepository.existsDelayedItemBySubscriptionOrderIdAndStatus(2L, ErrorStatus.SOLVED);
+		assertThat(exist).isTrue();
 	}
 
 	private void insertTestData() {
 
-		for (long i = 1; i <= 100; i++) {
-			DelayedItem delayedItem = DelayedItem.of(i, "test");
+		for (long i = 1; i <= 20; i++) {
+			LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1);
+			DelayedItem delayedItem = DelayedItem.of(i, "test", now);
 			delayedItemRepository.save(delayedItem);
 		}
 	}
+	// private void testStep() {
+	// 	this.step = stepBuilderFactory.get("testStep")
+	// 		.<DelayedItem, DelayedItem>chunk(20)
+	// 		.reader(delayedItemReader)
+	// 		.writer(delayedItemWriter)
+	// 		.faultTolerant()
+	// 		.build();
+	// }
 	// @DisplayName("item writer가 작동하여 서버에 요청을 보낸다.(20개)")
 	// @Test
 	// void test2() throws Exception {

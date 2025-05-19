@@ -25,12 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
 
-import com.team33.modulebatch.BatchApiTest;
+import com.team33.modulebatch.BatchTest;
 import com.team33.modulebatch.exception.ClientPaymentException;
 import com.team33.modulebatch.listener.ItemSkipListener;
 
 
-class PaymentItemWriterSkipTest extends BatchApiTest {
+class PaymentItemWriterSkipTest extends BatchTest {
 
 	private static final int CHUNK_SIZE = 1;
 	private static final LocalDate NOW = LocalDate.now();

@@ -1,4 +1,4 @@
-package com.team33.modulebatch.step;
+package com.team33.modulebatch.config.step;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.team33.modulebatch.BatchApiTest;
+import com.team33.modulebatch.BatchTest;
+import com.team33.modulebatch.step.SubscriptionOrderVO;
 
-
-class PaymentStepConfigTest extends BatchApiTest {
+class PaymentStepConfigTest extends BatchTest {
 
 	private static final ZonedDateTime REQUEST_DATE = ZonedDateTime.now();
 

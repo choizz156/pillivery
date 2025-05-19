@@ -16,11 +16,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.retry.ExhaustedRetryException;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 
-import com.team33.modulebatch.BatchApiTest;
+import com.team33.modulebatch.BatchTest;
 import com.team33.modulebatch.exception.ClientPaymentException;
 import com.team33.modulebatch.listener.ItemSkipListener;
 
-class PaymentRetryTest extends BatchApiTest {
+class PaymentRetryTest extends BatchTest {
 
 	private static final int CHUNK_SIZE = 1;
 	private static final int RETRY_LIMIT = 3;
