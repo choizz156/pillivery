@@ -1015,6 +1015,12 @@ API 문서를 작성
 
 ![]("https://github.com/choizz156/pillivery/blob/e5a7a7d3acf5b2134403d729b8371083aebb6a5e/image/test_code.png)
 
+#### 5.2 Logback과 MDC를 사용한 로깅
+Logback과 MDC를 통해 멀티 스레드 환경에서 로깅 추적을 용이하게함.
+- AOP를 사용하여 로깅.
+- Nginx 로깅과 동기화.
+- 로그 내용 파일 저장 및 Promtail을 통한 Grafana Loki에 전송.
+
 
 ---
 
