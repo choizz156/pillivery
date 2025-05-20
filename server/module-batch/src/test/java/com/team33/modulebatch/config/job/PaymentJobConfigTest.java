@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,6 +29,7 @@ import com.team33.modulebatch.domain.DelayedItemRepository;
 import com.team33.modulebatch.domain.entity.DelayedItem;
 import com.team33.modulebatch.infra.RestTemplateSender;
 
+@Disabled("시스템 종료 로직 포함으로 로컬 테스트 진행")
 @ExtendWith(MockitoExtension.class)
 class PaymentJobConfigTest extends BatchTest {
 
