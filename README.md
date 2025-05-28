@@ -210,7 +210,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
        upstream app_sticky {
         	server <app 서버 1 ip>:8080;
         	server <app 서버 2 ip>:8080;
-        	sticky name=srv_id expires=1h domain=pilliveryㅔpath=/api/carts;
+        	sticky name=srv_id expires=1h domain=pillivery path=/api/carts;
         	keepalive 10;
     	}
       
