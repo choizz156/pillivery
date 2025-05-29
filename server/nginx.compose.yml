@@ -1,0 +1,18 @@
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # 로컬에서 Nginx 설정 파일을 컨테이너로 마운트
+      - ./cache:/tmp/nginx  # 캐시 디렉토리를 로컬에 마운트하여 유지
+    ports:
+      - "80:80"
+
+    networks:
+      - server
+
+networks:
+  server:

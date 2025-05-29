@@ -68,8 +68,8 @@ spring:
             user-name-attribute: id
 
 management:
-  server:
-    port: 8080
+#  server:
+#    port: 8080
   health:
     circuitbreakers:
       enabled: true
