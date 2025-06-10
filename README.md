@@ -204,7 +204,7 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
   <details>  
   <summary>carts 경로 sticky session 설정</summary>  
 
-      ```bash
+  ```bash
       # ... 생략
 
        upstream app_sticky {
@@ -229,14 +229,14 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
       }
       
       #... 생략
-      ```
+  ```
   </details>
 
 - 정기 결제 승인 경로 ip 제한
   <details>  
   <summary>정기 결제 승인 경로 ip 제한 설정</summary>  
 
-      ```bash
+  ```bash
       # ... 생략
 
       location ^~ /api/payments/apporve/subscription/ {
@@ -256,7 +256,23 @@ Pillivery는 건강기능식품 온라인 주문 및 정기 결제/배송 플랫
       #... 생략   
       
       
-      ```
+  ```
+  </details>
+
+- Json 응답 압축 적용
+  <details>  
+  <summary>정기 결제 승인 경로 ip 제한 설정</summary>  
+
+  ```bash
+  
+       gzip on; ## http 블록 수준에서 gzip 압축 활성화
+    	gzip_comp_level 9;
+    	gzip_vary on;
+    	gzip_types text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/			javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype;
+    	proxy_buffering on;
+      
+      
+   ```
   </details>
 
 #### 1.4 Lamda, NCP API를 통한 Batch Server 실행
