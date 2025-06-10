@@ -3,7 +3,7 @@ package com.team33.modulecore.core.item.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team33.modulecore.cache.CachedItemManager;
+import com.team33.modulecore.cache.ItemCacheManager;
 import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
 import com.team33.modulecore.core.item.domain.repository.ItemViewBatchDao;
 import com.team33.modulecore.core.review.domain.entity.Review;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class ItemCommandService {
 
 	private final ItemCommandRepository itemCommandRepository;
-	private final CachedItemManager cachedItemManager;
+	private final ItemCacheManager itemCacheManager;
 	private final ItemViewBatchDao itemViewBatchDao;
 	private final ItemStarService itemStarService;
 

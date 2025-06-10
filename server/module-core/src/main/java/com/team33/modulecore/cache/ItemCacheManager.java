@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class CachedItemManager {
+public class ItemCacheManager {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
@@ -28,6 +28,7 @@ public class CachedItemManager {
 
 	@Cacheable(value = "MAIN_ITEMS", key = "'discount'")
 	public CachedItems<ItemQueryDto> getMainDiscountItem() {
+
 		LOGGER.info("[Cache miss] mainItems - discount");
 		List<ItemQueryDto> mainItem = itemQueryRepository.findItemsWithDiscountRateMain();
 		return CachedItems.of(mainItem);
@@ -35,6 +36,7 @@ public class CachedItemManager {
 
 	@Cacheable(value = "MAIN_ITEMS", key = "'sales'")
 	public CachedItems<ItemQueryDto> getMainSalesItem() {
+
 		LOGGER.info("[Cache miss] mainItems - sales");
 		List<ItemQueryDto> mainItem = itemQueryRepository.findItemsWithSalesMain();
 		return CachedItems.of(mainItem);
@@ -55,5 +57,35 @@ public class CachedItemManager {
 			itemPage);
 
 		return new CachedCategoryItems<>(items);
+	}
+
+	public CachedCategoryItems<ItemQueryDto> loadCategoryItems(Object keyObject) {
+
+		String key = (String)keyObject;
+		String[] parts = key.split("-");
+		String categoryName = parts[0];
+		int itemPage = Integer.parseInt(parts[1]);
+
+		Page<ItemQueryDto> itemsByCategory = itemQueryRepository.findItemsByCategory(
+			CategoryName.valueOf(categoryName),
+			null,
+			null,
+			ItemPage.builder().page(itemPage).build()
+		);
+
+		return new CachedCategoryItems<>(itemsByCategory);
+	}
+
+	public CachedItems<ItemQueryDto> mainCategoryItems(Object keyObject) {
+
+		String key = (String)keyObject;
+
+		if (key.equals("sales")) {
+			List<ItemQueryDto> itemsWithSalesMain = itemQueryRepository.findItemsWithSalesMain();
+			return CachedItems.of(itemsWithSalesMain);
+		}
+
+		List<ItemQueryDto> itemsWithDiscountRateMain = itemQueryRepository.findItemsWithDiscountRateMain();
+		return CachedItems.of(itemsWithDiscountRateMain);
 	}
 }
