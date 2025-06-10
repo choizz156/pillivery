@@ -13,8 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.team33.modulecore.core.cart.vo.CartVO;
+import com.team33.modulecore.cache.CategoryItemsExpiry;
 import com.team33.modulecore.core.cart.event.CartSavedEvent;
+import com.team33.modulecore.core.cart.vo.CartVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,21 +34,22 @@ public class CacheConfig {
 
 		cacheManager.registerCustomCache(MAIN_ITEMS.name(), Caffeine.newBuilder()
 			.initialCapacity(10)
-			.maximumSize(100)
+			.maximumSize(10)
 			.expireAfterWrite(7, TimeUnit.DAYS)
 			.recordStats()
 			.build());
 
+
 		cacheManager.registerCustomCache(CATEGORY_ITEMS.name(), Caffeine.newBuilder()
 			.initialCapacity(50)
 			.maximumSize(100)
-			.expireAfterWrite(3, TimeUnit.DAYS)
+			.expireAfter(new CategoryItemsExpiry())
 			.recordStats()
 			.build());
 
 		cacheManager.registerCustomCache(CARTS.name(), Caffeine.newBuilder()
 			.initialCapacity(100)
-			.maximumSize(1000)
+			.maximumSize(10000)
 			.expireAfterWrite(4, TimeUnit.HOURS)
 			.removalListener((key, value, cause) -> {
 				if (cause.wasEvicted()) {
