@@ -8,30 +8,46 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.team33.modulecore.cache.CacheClient;
+import com.team33.modulecore.cache.ItemCacheLoader;
+import com.team33.modulecore.cache.ItemCacheManager;
 import com.team33.modulecore.config.CacheConfig;
+import com.team33.modulecore.config.QueryDslConfig;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
 import com.team33.modulecore.core.cart.dto.SubscriptionContext;
 import com.team33.modulecore.core.cart.vo.CartItemVO;
 import com.team33.modulecore.core.cart.vo.ItemVO;
 import com.team33.modulecore.core.cart.vo.NormalCartVO;
 import com.team33.modulecore.core.cart.vo.SubscriptionCartVO;
+import com.team33.modulecore.core.item.infra.ItemQueryDslDao;
 import com.team33.modulecore.core.order.domain.SubscriptionInfo;
 import com.team33.modulecore.exception.BusinessLogicException;
 
+@ActiveProfiles("test")
+@EnableAutoConfiguration
+@EnableJpaRepositories("com.team33.modulecore.core")
+@EntityScan("com.team33.modulecore.core")
 @SpringBootTest(classes = {
 	CacheConfig.class,
 	CacheClient.class,
 	CartCacheManager.class,
 	MemoryCartService.class,
 	CartValidator.class,
-	CartRepository.class
+	CartRepository.class,
+	NormalCartItemService.class,
+	SubscriptionCartItemService.class,
+	QueryDslConfig.class,
+	ItemQueryDslDao.class,
+	ItemCacheManager.class,
+	ItemCacheLoader.class
 })
-@ActiveProfiles("test")
 class MemoryCartServiceTest {
 
 	private static final String CACHE_KEY = "mem:cart:1";
@@ -190,6 +206,7 @@ class MemoryCartServiceTest {
 	    // then
 	    SubscriptionCartVO result = cartCacheManager.getCart(CACHE_KEY, SubscriptionCartVO.class)
 	        .orElseThrow();
+
 	    assertThat(result.getCartItems())
 	        .hasSize(1)
 	        .first()

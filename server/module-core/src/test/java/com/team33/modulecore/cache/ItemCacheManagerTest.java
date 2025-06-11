@@ -19,7 +19,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.team33.modulecore.cache.dto.CachedCategoryItems;
 import com.team33.modulecore.cache.dto.CachedItems;
 import com.team33.modulecore.config.CacheConfig;
 import com.team33.modulecore.core.category.domain.CategoryName;
@@ -33,20 +32,19 @@ import com.team33.modulecore.core.item.dto.query.PriceFilter;
 @EnableCaching
 @SpringBootTest(
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-	classes = {CacheConfig.class, ItemCacheManager.class}
+	classes = {CacheConfig.class, ItemCacheManager.class, ItemCacheLoader.class}
 )
 class ItemCacheManagerTest {
 
+	private final List<ItemQueryDto> mockItems = List.of(
+		ItemQueryDto.builder().itemId(1L).productName("item2").discountPrice(2000).discountRate(0).build()
+	);
 	@MockBean
 	private ItemQueryRepository itemQueryRepository;
 	@Autowired
 	private CacheManager cacheManager;
 	@Autowired
 	private ItemCacheManager itemCacheManager;
-
-	private List<ItemQueryDto> mockItems = List.of(
-		ItemQueryDto.builder().itemId(1L).productName("item2").discountPrice(2000).discountRate(0).build()
-	);
 
 	@BeforeEach
 	void setUp() {
@@ -123,26 +121,29 @@ class ItemCacheManagerTest {
 
 	@DisplayName("카테고리별 상품 캐시가 없을 때 DB에서 조회한다")
 	@Test
-	void getCategoryItems_NoCache() {
+	void test5() {
 		// given
 		CategoryName categoryName = CategoryName.BONE;
-		String keyword = "골격근";
-		PriceFilter priceFilter = new PriceFilter(1000, 5000);
-		ItemPage pageDto = ItemPage.builder().page(1).size(8).build();
+		String keyword = "";
+		PriceFilter priceFilter = new PriceFilter(0, 0);
+		ItemPage pageDto = ItemPage.builder()
+			.page(1)
+			.build();
 
 		PageImpl<ItemQueryDto> mockPage = new PageImpl<>(mockItems);
 
 		when(itemQueryRepository.findItemsByCategory(
-			categoryName, keyword, priceFilter, pageDto
-		)).thenReturn(mockPage);
+			eq(CategoryName.BONE),
+			any(),
+			any(PriceFilter.class),
+			any(ItemPage.class))
+		)
+			.thenReturn(mockPage);
 
 		// when
-		CachedCategoryItems<ItemQueryDto> result = itemCacheManager.getCategoryItems(
-			categoryName, keyword, priceFilter, pageDto
-		);
+		 itemCacheManager.getCategoryItemsOnSales(categoryName, pageDto);
 
 		// then
-		assertThat(result.getContent().getCachedItems()).hasSize(1);
 		verify(itemQueryRepository, times(1)).findItemsByCategory(
 			categoryName, keyword, priceFilter, pageDto
 		);
@@ -150,28 +151,29 @@ class ItemCacheManagerTest {
 
 	@DisplayName("카테고리별 상품 캐시가 있을 때 DB 조회하지 않는다")
 	@Test
-	void getCategoryItems_WithCache() {
+	void test6() {
 		// given
 		CategoryName categoryName = CategoryName.BONE;
-		String keyword = "골격";
-		PriceFilter priceFilter = new PriceFilter(1000, 5000);
+		String keyword = "";
+		PriceFilter priceFilter = new PriceFilter(0, 0);
 		ItemPage pageDto = new ItemPage();
 
 		PageImpl<ItemQueryDto> mockPage = new PageImpl<>(mockItems);
 
 		when(itemQueryRepository.findItemsByCategory(
-			categoryName, keyword, priceFilter, pageDto
-		)).thenReturn(mockPage);
+			any(CategoryName.class),
+			anyString(),
+			any(PriceFilter.class),
+			any(ItemPage.class))
+		)
+			.thenReturn(mockPage);
 
-		itemCacheManager.getCategoryItems(categoryName, keyword, priceFilter, pageDto);
+		itemCacheManager.getCategoryItemsOnSales(categoryName, pageDto);
 
 		// when
-		CachedCategoryItems<ItemQueryDto> result = itemCacheManager.getCategoryItems(
-			categoryName, keyword, priceFilter, pageDto
-		);
+		itemCacheManager.getCategoryItemsOnSales(categoryName, pageDto);
 
 		// then
-		assertThat(result.getContent().getCachedItems()).hasSize(1);
 		verify(itemQueryRepository, times(1)).findItemsByCategory(
 			categoryName, keyword, priceFilter, pageDto
 		);

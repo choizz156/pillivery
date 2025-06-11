@@ -11,8 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import com.team33.modulecore.cache.CacheStrategyFactory;
 import com.team33.modulecore.cache.ItemCacheManager;
-import com.team33.modulecore.cache.dto.CachedCategoryItems;
 import com.team33.modulecore.cache.dto.CachedItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
 import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
@@ -28,9 +28,10 @@ class ItemQueryServiceTest {
 
 	@BeforeEach
 	void setUp() {
+
 		itemQueryRepository = mock(ItemQueryRepository.class);
 		itemCacheManager = mock(ItemCacheManager.class);
-		itemQueryService = new ItemQueryService(itemCacheManager, itemQueryRepository);
+		itemQueryService = new ItemQueryService(itemCacheManager, itemQueryRepository, new CacheStrategyFactory(itemCacheManager));
 	}
 
 	@DisplayName("할인 중인 메인 아이템들을 조회할 수 있다.")
@@ -90,47 +91,38 @@ class ItemQueryServiceTest {
 		verify(itemQueryRepository, times(1)).findItemsOnSale(anyString(), any(PriceFilter.class), any(ItemPage.class));
 	}
 
-	@DisplayName("카테고리에 맞는 아이템을 조회할 수 있다.")
+	@DisplayName("브랜드에 맞는 아이템을 조회할 수 있다.")
 	@Test
 	void 아이템_조회5() throws Exception {
 		//given
-		when(itemQueryRepository.findByBrand(anyString(), any(ItemPage.class), any(PriceFilter.class))).thenReturn(
-			null);
+		when(itemQueryRepository.findByBrand(anyString(), any(ItemPage.class), any(PriceFilter.class)))
+			.thenReturn(null);
 
 		//when
-		itemQueryService.findByBrand("test", new ItemPage(), new PriceFilter());
+		itemQueryService.findByBrand("test", new PriceFilter(), new ItemPage());
 
 		//then
 		verify(itemQueryRepository, times(1)).findByBrand(anyString(), any(ItemPage.class), any(PriceFilter.class));
 	}
 
-	@DisplayName("브랜드에 맞는 아이템을 조회할 수 있다.")
+	@DisplayName("카테고리에 맞는 아이템을 조회할 수 있다.")
 	@Test
 	void 아이템_조회6() throws Exception {
 		//given
 		Page<ItemQueryDto> page = PageableExecutionUtils.getPage(
-			List.of(),
+			List.of(ItemQueryDto.builder().build()),
 			PageRequest.of(0, 8),
 			() -> 100
 		);
 
-		when(itemCacheManager.getCategoryItems(
-			any(CategoryName.class),
-			anyString(),
-			any(PriceFilter.class),
-			any(ItemPage.class))
-		)
-			.thenReturn(new CachedCategoryItems<ItemQueryDto>(page));
+		when(itemQueryRepository.findItemsByCategory(any(), anyString(), any(), any())).thenReturn(page);
 
 		//when
 		itemQueryService.findByCategory(CategoryName.EYE, "test", new PriceFilter(), new ItemPage());
 
 		//then
-		verify(itemCacheManager, times(1)).getCategoryItems(
-			any(CategoryName.class),
-			anyString(),
-			any(PriceFilter.class),
-			any(ItemPage.class)
+		verify(itemQueryRepository, times(1)).findItemsByCategory(
+			any(), anyString(), any(), any()
 		);
 	}
 }

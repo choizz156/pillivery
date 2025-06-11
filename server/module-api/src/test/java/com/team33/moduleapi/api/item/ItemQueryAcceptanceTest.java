@@ -126,15 +126,13 @@ class ItemQueryAcceptanceTest extends ApiTest {
 		아이템_저장("16종혼합유산균 디에스1", 11000, 10.0, CategoryName.EYE, "(주)씨티씨바이오");
 		아이템_저장("16종혼합유산균 디에스2", 12000, 9.0, CategoryName.ETC, "(주)씨티씨바이오");
 
-		ItemPageRequestDto pageDto = new ItemPageRequestDto();
-		pageDto.setPage(1);
-		pageDto.setSize(10);
+		cacheManager.getCacheNames().forEach(name -> cacheManager.getCache(name).clear());
 
 		//when then
 		given()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(pageDto)
 			.queryParam("categoryName", "EYE")
+			.queryParam("page", 1)
 			.log().all()
 			.when()
 			.get("/api/items/categories")

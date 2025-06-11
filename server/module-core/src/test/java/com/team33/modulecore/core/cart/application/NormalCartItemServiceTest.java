@@ -16,13 +16,16 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.team33.modulecore.cache.CacheClient;
+import com.team33.modulecore.cache.ItemCacheLoader;
+import com.team33.modulecore.cache.ItemCacheManager;
 import com.team33.modulecore.config.CacheConfig;
+import com.team33.modulecore.config.QueryDslConfig;
 import com.team33.modulecore.core.cart.domain.CartPrice;
 import com.team33.modulecore.core.cart.domain.repository.CartRepository;
 import com.team33.modulecore.core.cart.vo.CartItemVO;
 import com.team33.modulecore.core.cart.vo.ItemVO;
 import com.team33.modulecore.core.cart.vo.NormalCartVO;
-import com.team33.modulecore.core.item.domain.repository.ItemCommandRepository;
+import com.team33.modulecore.core.item.infra.ItemQueryDslDao;
 import com.team33.modulecore.exception.BusinessLogicException;
 
 @ActiveProfiles("test")
@@ -36,7 +39,11 @@ import com.team33.modulecore.exception.BusinessLogicException;
 	MemoryCartService.class,
 	CartValidator.class,
 	CartRepository.class,
-	NormalCartItemService.class
+	NormalCartItemService.class,
+	QueryDslConfig.class,
+	ItemQueryDslDao.class,
+	ItemCacheManager.class,
+	ItemCacheLoader.class
 })
 class NormalCartItemServiceTest {
 
@@ -49,9 +56,10 @@ class NormalCartItemServiceTest {
 	@Autowired
 	private CacheManager cacheManager;
 	@Autowired
-	private ItemCommandRepository itemCommandRepository;
-	@Autowired
 	private NormalCartItemService normalCartItemService;
+
+
+
 
 	private NormalCartVO normalCartVO;
 	private ItemVO itemVO;
