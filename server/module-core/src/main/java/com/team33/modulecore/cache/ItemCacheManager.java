@@ -1,20 +1,15 @@
 package com.team33.modulecore.cache;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
 import com.team33.modulecore.cache.dto.CachedItems;
 import com.team33.modulecore.core.category.domain.CategoryName;
-import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.item.dto.query.ItemPage;
 import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
-import com.team33.modulecore.core.item.dto.query.PriceFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,68 +19,35 @@ public class ItemCacheManager {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
-	private final ItemQueryRepository itemQueryRepository;
-
 	@Cacheable(value = "MAIN_ITEMS", key = "'discount'")
 	public CachedItems<ItemQueryDto> getMainDiscountItem() {
 
-		LOGGER.info("[Cache miss] mainItems - discount");
-		List<ItemQueryDto> mainItem = itemQueryRepository.findItemsWithDiscountRateMain();
-		return CachedItems.of(mainItem);
+		LOGGER.debug("Get main discount item");
+		return new CachedItems<>();
 	}
 
 	@Cacheable(value = "MAIN_ITEMS", key = "'sales'")
 	public CachedItems<ItemQueryDto> getMainSalesItem() {
 
-		LOGGER.info("[Cache miss] mainItems - sales");
-		List<ItemQueryDto> mainItem = itemQueryRepository.findItemsWithSalesMain();
-		return CachedItems.of(mainItem);
+		LOGGER.debug("Get main sales item");
+		return new CachedItems<>();
 	}
 
-	@Cacheable(value = "CATEGORY_ITEMS", key = "#categoryName.name() + '-' + #itemPage.page", condition = "#itemPage.page <= 5")
-	public CachedCategoryItems<ItemQueryDto> getCategoryItems(
+	@Cacheable(value = "CATEGORY_ITEMS", key = "#categoryName.name() + '-' + #itemPage.page+ '-' + 'SALES'", condition = "#itemPage.page <= 5")
+	public CachedCategoryItems<ItemQueryDto> getCategoryItemsOnSales(
 		CategoryName categoryName,
-		String keyword,
-		PriceFilter priceFilter,
-		ItemPage itemPage) {
+		ItemPage itemPage
+	) {
 
-		LOGGER.info("[Cache miss] Category: " + categoryName.name());
-		Page<ItemQueryDto> items = itemQueryRepository.findItemsByCategory(
-			categoryName,
-			keyword,
-			priceFilter,
-			itemPage);
-
-		return new CachedCategoryItems<>(items);
+		throw new IllegalStateException();
 	}
 
-	public CachedCategoryItems<ItemQueryDto> loadCategoryItems(Object keyObject) {
+	@Cacheable(value = "CATEGORY_ITEMS", key = "#categoryName.name() + '-' + #itemPage.page+ '-' + 'DISCOUNT_RATE_L'", condition = "#itemPage.page <= 5")
+	public CachedCategoryItems<ItemQueryDto> getCategoryItemsOnDiscount(
+		CategoryName categoryName,
+		ItemPage itemPage
+	) {
 
-		String key = (String)keyObject;
-		String[] parts = key.split("-");
-		String categoryName = parts[0];
-		int itemPage = Integer.parseInt(parts[1]);
-
-		Page<ItemQueryDto> itemsByCategory = itemQueryRepository.findItemsByCategory(
-			CategoryName.valueOf(categoryName),
-			null,
-			null,
-			ItemPage.builder().page(itemPage).build()
-		);
-
-		return new CachedCategoryItems<>(itemsByCategory);
-	}
-
-	public CachedItems<ItemQueryDto> mainCategoryItems(Object keyObject) {
-
-		String key = (String)keyObject;
-
-		if (key.equals("sales")) {
-			List<ItemQueryDto> itemsWithSalesMain = itemQueryRepository.findItemsWithSalesMain();
-			return CachedItems.of(itemsWithSalesMain);
-		}
-
-		List<ItemQueryDto> itemsWithDiscountRateMain = itemQueryRepository.findItemsWithDiscountRateMain();
-		return CachedItems.of(itemsWithDiscountRateMain);
+		throw new IllegalStateException();
 	}
 }

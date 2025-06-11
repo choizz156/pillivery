@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.team33.modulecore.cache.CacheStrategyFactory;
 import com.team33.modulecore.cache.ItemCacheManager;
 import com.team33.modulecore.cache.dto.CachedCategoryItems;
 import com.team33.modulecore.cache.dto.CachedItems;
@@ -23,6 +24,7 @@ public class ItemQueryService {
 
 	private final ItemCacheManager itemCacheManager;
 	private final ItemQueryRepository itemQueryRepository;
+	private final CacheStrategyFactory cacheStrategyFactory;
 
 	public Item findItemById(long itemId) {
 
@@ -63,17 +65,39 @@ public class ItemQueryService {
 		CategoryName categoryName,
 		String keyword,
 		PriceFilter priceFilter,
-		ItemPage pageDto
+		ItemPage itemPage
 	) {
 
-		CachedCategoryItems<ItemQueryDto> categoryItems =
-			itemCacheManager.getCategoryItems(categoryName, keyword, priceFilter, pageDto);
+		if (!canUseCache(keyword, priceFilter)) {
+			return getItemsFromDB(categoryName, keyword, priceFilter, itemPage);
+		}
 
-		return categoryItems.toPage();
+		return cacheStrategyFactory.getCacheStrategy(itemPage.getSortOption())
+			.map(strategy -> strategy.getCachedItems(categoryName, itemPage))
+			.orElseGet(() -> getItemsFromDB(categoryName, keyword, priceFilter, itemPage));
+
 	}
 
-	public Page<ItemQueryDto> findByBrand(String brand, ItemPage searchDto, PriceFilter priceFilter) {
+	public Page<ItemQueryDto> findByBrand(String brand, PriceFilter priceFilter, ItemPage itemPage) {
 
-		return itemQueryRepository.findByBrand(brand, searchDto, priceFilter);
+		return itemQueryRepository.findByBrand(brand, itemPage, priceFilter);
+	}
+
+	private boolean canUseCache(String keyword, PriceFilter priceFilter) {
+
+		return priceFilter.isSumZero() && keyword.isEmpty();
+	}
+
+	private Page<ItemQueryDto> getItemsFromDB(CategoryName categoryName, String keyword, PriceFilter priceFilter,
+		ItemPage itemPage) {
+
+		Page<ItemQueryDto> itemsByCategoryPage = itemQueryRepository.findItemsByCategory(
+			categoryName,
+			keyword,
+			priceFilter,
+			itemPage
+		);
+
+		return new CachedCategoryItems<>(itemsByCategoryPage).toPage();
 	}
 }

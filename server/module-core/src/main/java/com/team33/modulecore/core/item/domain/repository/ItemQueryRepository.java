@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import com.team33.modulecore.core.category.domain.CategoryName;
-import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
-import com.team33.modulecore.core.item.dto.query.PriceFilter;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.item.dto.query.ItemPage;
+import com.team33.modulecore.core.item.dto.query.ItemQueryDto;
+import com.team33.modulecore.core.item.dto.query.PriceFilter;
 
 public interface ItemQueryRepository {
 
@@ -33,5 +33,5 @@ public interface ItemQueryRepository {
 		ItemPage pageDto
 	);
 
-	Page<ItemQueryDto> findByBrand(String keyword, ItemPage searchDto, PriceFilter priceFilter);
+	Page<ItemQueryDto> findByBrand(String keyword, ItemPage pageDto, PriceFilter priceFilter);
 }

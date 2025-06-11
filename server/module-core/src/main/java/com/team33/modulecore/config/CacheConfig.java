@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.team33.modulecore.cache.CategoryItemsExpiry;
-import com.team33.modulecore.cache.ItemCacheManager;
+import com.team33.modulecore.cache.ItemCacheLoader;
 import com.team33.modulecore.core.cart.event.CartSavedEvent;
 import com.team33.modulecore.core.cart.vo.CartVO;
 
@@ -29,14 +29,10 @@ public class CacheConfig {
 	@Autowired
 	private ApplicationEventPublisher eventPublisher;
 
-	@Autowired
-	private ItemCacheManager itemCacheManager;
-
 	@Bean
-	public CacheManager cacheManager() {
+	public CacheManager cacheManager(ItemCacheLoader itemCacheLoader) {
 
 		CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-
 
 		cacheManager.registerCustomCache(MAIN_ITEMS.name(), Caffeine.newBuilder()
 			.initialCapacity(10)
@@ -44,7 +40,7 @@ public class CacheConfig {
 			.refreshAfterWrite(Duration.ofDays(7))
 			.expireAfterWrite(Duration.ofDays(7).plusSeconds(20))
 			.recordStats()
-			.build(itemCacheManager::mainCategoryItems));
+			.build(itemCacheLoader::loadMainItemsFromDB));
 
 		cacheManager.registerCustomCache(CATEGORY_ITEMS.name(), Caffeine.newBuilder()
 			.initialCapacity(50)
@@ -52,7 +48,7 @@ public class CacheConfig {
 			.expireAfter(new CategoryItemsExpiry())
 			.refreshAfterWrite(7, TimeUnit.DAYS)
 			.recordStats()
-			.build(itemCacheManager::loadCategoryItems)
+			.build(itemCacheLoader::loadCategoryItemsFromDB)
 		);
 
 		cacheManager.registerCustomCache(CARTS.name(), Caffeine.newBuilder()

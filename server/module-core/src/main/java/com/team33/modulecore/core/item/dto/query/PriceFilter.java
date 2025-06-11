@@ -1,15 +1,17 @@
 package com.team33.modulecore.core.item.dto.query;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode
 @NoArgsConstructor
 @Getter
 public class PriceFilter {
 
-    private int Low;
-    private int High;
+    private int Low = 0;
+    private int High = 0;
 
     @Builder
     public PriceFilter(int Low, int High) {
@@ -28,13 +30,13 @@ public class PriceFilter {
         }
     }
 
+    public boolean isSumZero() {
+        return Low + High == 0;
+    }
+
     private void changePrice() {
         int tmp = this.Low;
         this.Low = this.High;
         this.High = tmp;
-    }
-
-    public boolean isSumZero() {
-        return Low + High == 0;
     }
 }

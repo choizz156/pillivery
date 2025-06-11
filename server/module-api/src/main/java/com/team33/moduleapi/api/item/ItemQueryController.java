@@ -134,9 +134,9 @@ public class ItemQueryController {
 	) {
 
 		PriceFilter priceFilter = itemQueryServiceMapper.toPriceFilterDto(low, high);
-		ItemPage searchDto = itemQueryServiceMapper.toItemPageDto(page, size, sort);
+		ItemPage itemPageDto = itemQueryServiceMapper.toItemPageDto(page, size, sort);
 
-		Page<ItemQueryDto> itemsPage = itemQueryService.findByBrand(brand, searchDto, priceFilter);
+		Page<ItemQueryDto> itemsPage = itemQueryService.findByBrand(brand,  priceFilter, itemPageDto);
 
 		return new MultiResponseDto<>(itemsPage.getContent(), itemsPage);
 	}
