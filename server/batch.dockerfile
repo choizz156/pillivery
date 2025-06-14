@@ -7,7 +7,7 @@ COPY --chown=gradle:gradle gradle/ ./gradle/
 COPY --chown=gradle:gradle deploy_script/ ./deploy_script/
 COPY --chown=gradle:gradle . .
 
-RUN ./gradlew clean :module-batch:build
+RUN ./gradlew clean :module-batch:build --parallel
 
 
 FROM openjdk:11.0.16-jre-slim-buster
