@@ -3,8 +3,6 @@ package com.team33.moduleexternalapi.config;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -22,7 +20,6 @@ import reactor.netty.resources.LoopResources;
 @RequiredArgsConstructor
 public class WebClientConfig {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
 	public static final String PAYMENT_API = "payment-api-";
 

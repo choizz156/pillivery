@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.web.client.HttpServerErrorException;
 
 import com.team33.modulebatch.domain.ErrorItemRepository;
@@ -43,7 +43,6 @@ public class PaymentStepConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 
-	private static final long BACK_OFF_PERIOD = 3_600_000L;
 	private static final int CHUNK_SIZE = 20;
 	private static final int RETRY_LIMIT = 3;
 	private static final int SKIP_LIMIT = 10;
@@ -70,8 +69,10 @@ public class PaymentStepConfig {
 	@Bean
 	public Step paymentJobStep() throws Exception {
 
-		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-		backOffPolicy.setBackOffPeriod(BACK_OFF_PERIOD);
+		ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+		backOffPolicy.setInitialInterval(1000L);
+		backOffPolicy.setMultiplier(2.0);
+		backOffPolicy.setMaxInterval(5 * 60000L);
 
 		return stepBuilderFactory.get("paymentJobStep")
 			.<SubscriptionOrderVO, SubscriptionOrderVO>chunk(CHUNK_SIZE)

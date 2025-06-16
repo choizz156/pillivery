@@ -29,6 +29,7 @@ public class DelayedSubscriptionManager {
 	public void add(long subscriptionOrderId, String responseBody) {
 
 		boolean exists = delayedItemRepository.existsDelayedItemBySubscriptionOrderIdAndStatus(subscriptionOrderId, ErrorStatus.DELAYED);
+
 		if(exists) {
 			return;
 		}
