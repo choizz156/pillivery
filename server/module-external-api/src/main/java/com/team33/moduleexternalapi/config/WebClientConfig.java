@@ -37,8 +37,7 @@ public class WebClientConfig {
 
 		ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 				.maxConnections(50)//vuser = 100 -> 50
-				.pendingAcquireTimeout(Duration.ofSeconds(10))
-				.maxLifeTime(Duration.ofMinutes(5))
+				.pendingAcquireTimeout(Duration.ofSeconds(3))
 				.evictInBackground(Duration.ofSeconds(30))
 				.build();
 
@@ -47,8 +46,8 @@ public class WebClientConfig {
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
 				.responseTimeout(Duration.ofSeconds(30))
 				.doOnConnected(conn ->
-					conn.addHandlerLast(new ReadTimeoutHandler(30, TimeUnit.SECONDS))
-						.addHandlerLast(new WriteTimeoutHandler(30, TimeUnit.SECONDS))
+					conn.addHandlerLast(new ReadTimeoutHandler(25, TimeUnit.SECONDS))
+						.addHandlerLast(new WriteTimeoutHandler(25, TimeUnit.SECONDS))
 				);
 
 		return WebClient.builder()
