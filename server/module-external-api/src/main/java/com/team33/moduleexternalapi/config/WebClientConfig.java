@@ -36,7 +36,7 @@ public class WebClientConfig {
 		LoopResources loopResources = LoopResources.create(PAYMENT_API, optimalThreadCount, false);
 
 		ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
-				.maxConnections(25) //vuser = 100 -> 50
+				.maxConnections(50)//vuser = 100 -> 50
 				.pendingAcquireTimeout(Duration.ofSeconds(10))
 				.maxLifeTime(Duration.ofMinutes(5))
 				.evictInBackground(Duration.ofSeconds(30))
