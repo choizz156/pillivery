@@ -29,7 +29,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.web.client.HttpServerErrorException;
 
-import com.team33.modulebatch.domain.ErrorItemRepository;
+import com.team33.modulebatch.domain.DelayedItemRepository;
 import com.team33.modulebatch.exception.ClientPaymentException;
 import com.team33.modulebatch.infra.PaymentApiDispatcher;
 import com.team33.modulebatch.listener.ItemSkipListener;
@@ -55,7 +55,7 @@ public class PaymentStepConfig {
 	private DataSource dataSource;
 
 	@Autowired
-	private ErrorItemRepository errorItemRepository;
+	private DelayedItemRepository delayedItemRepository;
 
 	@Autowired
 	private PaymentWriter paymentWriter;
@@ -85,7 +85,7 @@ public class PaymentStepConfig {
 			.retryLimit(RETRY_LIMIT)
 			.retry(HttpServerErrorException.class)
 			.backOffPolicy(backOffPolicy)
-			.listener(new ItemSkipListener(errorItemRepository))
+			.listener(new ItemSkipListener(delayedItemRepository))
 			.listener(new PaymentStepExecutionListener())
 			.build();
 	}
