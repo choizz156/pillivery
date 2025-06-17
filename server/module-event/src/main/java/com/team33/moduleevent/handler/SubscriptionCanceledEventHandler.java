@@ -23,8 +23,8 @@ public class SubscriptionCanceledEventHandler {
 
 	private final EventRepository eventsRepository;
 
-	@EventListener
 	@DistributedLock(key = "'subscription:canceled:' + #apiEvent.cancelParam")
+	@EventListener
 	public void onEventSet(KakaoSubscriptionCanceledEvent apiEvent) {
 
 		if (isPresentDuplicatedEvent(apiEvent)) {

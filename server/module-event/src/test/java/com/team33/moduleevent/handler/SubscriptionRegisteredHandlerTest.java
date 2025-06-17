@@ -32,7 +32,7 @@ import com.team33.moduleevent.domain.repository.EventRepository;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(OutputCaptureExtension.class)
-class SubscriptionRegisterHandlerTest {
+class SubscriptionRegisteredHandlerTest {
 
 	@Mock
 	private EventRepository eventRepository;
@@ -44,11 +44,11 @@ class SubscriptionRegisterHandlerTest {
 	@Mock
 	private OrderFindHelper orderFindHelper;
 
-	private SubscriptionRegisterHandler subscriptionRegisterHandler;
+	private SubscriptionRegisteredHandler subscriptionRegisteredHandler;
 
 	@BeforeEach
 	void setUp() {
-		subscriptionRegisterHandler = new SubscriptionRegisterHandler(
+		subscriptionRegisteredHandler = new SubscriptionRegisteredHandler(
 			subscriptionOrderService,
 			eventRepository,
 			orderFindHelper
@@ -70,7 +70,7 @@ class SubscriptionRegisterHandlerTest {
 		when(subscriptionOrderService.create(order)).thenReturn(List.of(subscriptionOrder));
 
 		// when
-		subscriptionRegisterHandler.onEventSet(event);
+		subscriptionRegisteredHandler.onEventSet(event);
 
 		// then
 		verify(orderFindHelper).findOrder(orderId);
@@ -85,7 +85,7 @@ class SubscriptionRegisterHandlerTest {
 		assertThat(capturedEvent.getContentType()).isEqualTo("String");
 		assertThat(capturedEvent.getParameters()).isEqualTo("101");
 		assertThat(capturedEvent.getUrl()).isEqualTo(
-			SubscriptionRegisterHandler.HOST + "/api/payments/subscriptionsFirst/");
+			SubscriptionRegisteredHandler.HOST + "/api/payments/subscriptionsFirst/");
 		assertThat(capturedEvent.getCreatedAt()).isNotNull();
 	}
 
@@ -106,7 +106,7 @@ class SubscriptionRegisterHandlerTest {
 		when(subscriptionOrderService.create(order)).thenReturn(List.of(subscriptionOrder1, subscriptionOrder2));
 
 		// when
-		subscriptionRegisterHandler.onEventSet(event);
+		subscriptionRegisteredHandler.onEventSet(event);
 
 		// then
 		verify(orderFindHelper).findOrder(orderId);
@@ -134,7 +134,7 @@ class SubscriptionRegisterHandlerTest {
 		})
 			.when(eventRepository).save(any(ApiEvent.class));
 
-		assertThatThrownBy(() -> subscriptionRegisterHandler.onEventSet(event))
+		assertThatThrownBy(() -> subscriptionRegisteredHandler.onEventSet(event))
 			.isInstanceOf(DataSaveException.class);
 
 		assertThat(capturedOutput.toString())
@@ -170,7 +170,7 @@ class SubscriptionRegisterHandlerTest {
 		for (int i = 0; i < threadCount; i++) {
 			new Thread(() -> {
 				try {
-					subscriptionRegisterHandler.onEventSet(event);
+					subscriptionRegisteredHandler.onEventSet(event);
 				} catch (Exception ignored) {
 				} finally {
 					latch.countDown();

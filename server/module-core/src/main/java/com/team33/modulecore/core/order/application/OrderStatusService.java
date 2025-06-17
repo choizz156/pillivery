@@ -46,16 +46,6 @@ public class OrderStatusService {
 		publishCartRefreshEvent(order, orderedItemsId);
 	}
 
-	public void processOneTimeStatus1(Order order) {
-
-		order.changeOrderStatus(OrderStatus.COMPLETE);
-
-		List<Long> orderedItemsId = getOrderedIds(order);
-
-		applicationContext.publishEvent(new ItemSaleCountedEvent(orderedItemsId));
-
-		publishCartRefreshEvent(order, orderedItemsId);
-	}
 
 	public void processCancel(Long orderId) {
 		Order order = orderFindHelper.findOrder(orderId);

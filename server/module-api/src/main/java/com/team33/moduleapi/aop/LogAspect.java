@@ -4,8 +4,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Component;
 public class LogAspect {
 
 	private static final String TARGET = "TARGET";
-	private static final Logger log = LoggerFactory.getLogger("fileLog");
 
 	@Pointcut("execution(* com.team33.moduleapi.api..*Controller.*(..))")
 	public void controllerPointcut() {
