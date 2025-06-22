@@ -21,7 +21,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team33.modulecore.core.item.domain.entity.QItem;
 import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.entity.QOrder;
 import com.team33.modulecore.core.order.domain.entity.QOrderItem;
@@ -29,6 +28,8 @@ import com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.OrderQueryDto;
+import com.team33.modulecore.core.order.dto.QOrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
 import com.team33.modulecore.core.order.dto.query.QOrderItemQueryDto;
 import com.team33.modulecore.core.order.dto.query.QSubscriptionOrderItemQueryDto;
@@ -138,6 +139,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 
 	@Override
 	public OrderItem findSubscriptionOrderItemBy(long id) {
+
 		OrderItem fetch = queryFactory
 			.select(orderItem)
 			.from(orderItem)
@@ -152,13 +154,34 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public Order findById(long id) {
+	public List<OrderQueryDto> findById(long id) {
 
-		Order fetch = queryFactory.selectFrom(order)
-			.join(order.orderItems, orderItem).fetchJoin()
-			.join(orderItem.item, item).fetchJoin()
+		List<OrderQueryDto> fetch = queryFactory.select(new QOrderQueryDto(
+				order.id,
+				order.totalItemsCount,
+				order.orderCommonInfo.price.totalPrice,
+				order.orderCommonInfo.price.totalDiscountPrice,
+				order.orderCommonInfo.price.expectPrice,
+				order.orderCommonInfo.orderStatus,
+				order.createdAt,
+				order.updatedAt,
+				order.orderCommonInfo.receiver,
+				order.orderCommonInfo.totalQuantity,
+				//item
+				item.id,
+				item.information.enterprise,
+				order.orderCommonInfo.mainItemName,
+				item.information.price.originPrice,
+				item.information.price.realPrice,
+				item.information.price.discountRate,
+				item.information.price.discountPrice
+
+			))
+			.from(order)
+			.join(order.orderItems, orderItem)
+			.join(orderItem.item, item)
 			.where(order.id.eq(id))
-			.fetchOne();
+			.fetch();
 
 		if (fetch == null) {
 			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
@@ -216,3 +239,4 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		return pageRequest == Direction.DESC ? orderItem.id.desc() : orderItem.id.asc();
 	}
 }
+

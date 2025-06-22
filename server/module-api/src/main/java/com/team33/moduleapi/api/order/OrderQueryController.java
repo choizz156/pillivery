@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.api.order.dto.OrderDetailResponse;
 import com.team33.moduleapi.response.MultiResponseDto;
-import com.team33.moduleapi.response.SingleResponseDto;
+import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.order.application.OrderQueryService;
-import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.OrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
 import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 
@@ -32,6 +31,7 @@ public class OrderQueryController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 	private final OrderQueryService orderQueryService;
+	private final ItemQueryRepository itemQueryRepository;
 
 	@GetMapping
 	public MultiResponseDto<OrderItemQueryDto> getOrders(
@@ -64,12 +64,10 @@ public class OrderQueryController {
 	}
 
 	@GetMapping("/{orderId}")
-	public SingleResponseDto<OrderDetailResponse> getOrder(
+	public MultiResponseDto<OrderQueryDto> getOrder(
 		@PathVariable Long orderId) {
 
-		Order order = orderQueryService.findOrder(orderId);
-		OrderDetailResponse orderDetailResponse = OrderDetailResponse.fromOrder(order);
-
-		return new SingleResponseDto<>(orderDetailResponse);
+		List<OrderQueryDto> orders = orderQueryService.findOrder(orderId);
+		return new MultiResponseDto<>(orders);
 	}
 }

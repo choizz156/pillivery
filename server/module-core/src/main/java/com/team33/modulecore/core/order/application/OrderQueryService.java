@@ -1,14 +1,16 @@
 package com.team33.modulecore.core.order.application;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team33.modulecore.core.order.domain.OrderStatus;
-import com.team33.modulecore.core.order.domain.entity.Order;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.OrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
 import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 
@@ -41,7 +43,7 @@ public class OrderQueryService {
 		);
 	}
 
-	public Order findOrder(Long orderId) {
+	public List<OrderQueryDto> findOrder(Long orderId) {
 		return orderQueryRepository.findById(orderId);
 	}
 }
