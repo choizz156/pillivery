@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team33.moduleapi.response.MultiResponseDto;
-import com.team33.modulecore.core.item.domain.repository.ItemQueryRepository;
 import com.team33.modulecore.core.order.application.OrderQueryService;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
 import com.team33.modulecore.core.order.dto.OrderQueryDto;
@@ -31,11 +30,10 @@ public class OrderQueryController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
 	private final OrderQueryService orderQueryService;
-	private final ItemQueryRepository itemQueryRepository;
 
 	@GetMapping
 	public MultiResponseDto<OrderItemQueryDto> getOrders(
-		@RequestParam long userId,
+		@RequestParam Long userId,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "8") int size,
 		@RequestParam(defaultValue = "DESC") Direction sort

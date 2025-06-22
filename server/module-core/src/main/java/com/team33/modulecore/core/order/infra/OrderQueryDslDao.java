@@ -55,13 +55,23 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		QItem i = item;
 		QOrder o = order;
 
-		List<OrderItemQueryDto> fetch = queryFactory.select(new QOrderItemQueryDto(o, oi, i))
+		List<OrderItemQueryDto> fetch = queryFactory.select(new QOrderItemQueryDto(
+				o.id,
+				oi.id,
+				oi.quantity,
+				i.id,
+				i.information.productName,
+				i.information.price.realPrice,
+				i.information.mainFunction,
+				i.information.image.thumbnail,
+				i.categories
+			))
 			.from(o)
 			.innerJoin(o.orderItems, oi)
 			.innerJoin(oi.item, i)
 			.where(
-				orderUserEq(orderFindCondition.getUserId()),
-				orderStatusEq(orderFindCondition.getOrderStatus())
+				orderStatusEq(orderFindCondition.getOrderStatus()),
+				orderUserEq(orderFindCondition.getUserId())
 			)
 			.offset(pageRequest.getOffset())
 			.limit(pageRequest.getSize())
