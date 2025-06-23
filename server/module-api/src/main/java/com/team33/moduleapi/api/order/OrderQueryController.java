@@ -1,7 +1,14 @@
 package com.team33.moduleapi.api.order;
 
+import com.team33.moduleapi.response.MultiResponseDto;
+import com.team33.moduleapi.response.SingleResponseDto;
+import com.team33.modulecore.core.order.application.OrderQueryService;
+import com.team33.modulecore.core.order.dto.OrderPageRequest;
+import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.OrderQueryDto;
+import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,15 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team33.moduleapi.response.MultiResponseDto;
-import com.team33.modulecore.core.order.application.OrderQueryService;
-import com.team33.modulecore.core.order.dto.OrderPageRequest;
-import com.team33.modulecore.core.order.dto.OrderQueryDto;
-import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
-import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
-
-import lombok.RequiredArgsConstructor;
-
 @RequiredArgsConstructor
 @Validated
 @RestController
@@ -29,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderQueryController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");
+
 	private final OrderQueryService orderQueryService;
 
 	@GetMapping
@@ -62,10 +61,10 @@ public class OrderQueryController {
 	}
 
 	@GetMapping("/{orderId}")
-	public MultiResponseDto<OrderQueryDto> getOrder(
+	public SingleResponseDto<OrderQueryDto> getOrder(
 		@PathVariable Long orderId) {
 
-		List<OrderQueryDto> orders = orderQueryService.findOrder(orderId);
-		return new MultiResponseDto<>(orders);
+		OrderQueryDto order = orderQueryService.findOrder(orderId);
+		return new SingleResponseDto<>(order);
 	}
 }

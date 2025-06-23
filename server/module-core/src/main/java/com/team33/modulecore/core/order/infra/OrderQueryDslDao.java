@@ -1,19 +1,10 @@
 package com.team33.modulecore.core.order.infra;
 
-import static com.team33.modulecore.core.item.domain.entity.QItem.*;
-import static com.team33.modulecore.core.order.domain.OrderStatus.*;
-import static com.team33.modulecore.core.order.domain.entity.QOrder.*;
-import static com.team33.modulecore.core.order.domain.entity.QOrderItem.*;
-import static com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder.*;
-
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.stereotype.Repository;
+import static com.team33.modulecore.core.item.domain.entity.QItem.item;
+import static com.team33.modulecore.core.order.domain.OrderStatus.SUBSCRIPTION;
+import static com.team33.modulecore.core.order.domain.entity.QOrder.order;
+import static com.team33.modulecore.core.order.domain.entity.QOrderItem.orderItem;
+import static com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder.subscriptionOrder;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -28,17 +19,25 @@ import com.team33.modulecore.core.order.domain.entity.QSubscriptionOrder;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
-import com.team33.modulecore.core.order.dto.OrderQueryDto;
-import com.team33.modulecore.core.order.dto.QOrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.OrderItemSimpleQueryDto;
+import com.team33.modulecore.core.order.dto.query.OrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.QOrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.QOrderItemSimpleQueryDto;
+import com.team33.modulecore.core.order.dto.query.QOrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.QSubscriptionOrderItemQueryDto;
 import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
 import com.team33.modulecore.exception.BusinessLogicException;
 import com.team33.modulecore.exception.ExceptionCode;
-
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -87,8 +86,8 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 			.from(order)
 			.join(order.orderItems, orderItem)
 			.where(
-				orderUserEq(orderFindCondition.getUserId()),
-				orderStatusEq(orderFindCondition.getOrderStatus())
+				orderStatusEq(orderFindCondition.getOrderStatus()),
+				orderUserEq(orderFindCondition.getUserId())
 			);
 
 		return PageableExecutionUtils.getPage(
@@ -111,7 +110,8 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 		QItem i = item;
 		QSubscriptionOrder so = subscriptionOrder;
 
-		List<SubscriptionOrderItemQueryDto> fetch = queryFactory.select(new QSubscriptionOrderItemQueryDto(so, oi, i))
+		List<SubscriptionOrderItemQueryDto> fetch = queryFactory.select(
+				new QSubscriptionOrderItemQueryDto(so, oi, i))
 			.from(so)
 			.innerJoin(so.orderItem, oi)
 			.innerJoin(oi.item, i)
@@ -164,9 +164,9 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public List<OrderQueryDto> findById(long id) {
+	public OrderQueryDto findById(long id) {
 
-		List<OrderQueryDto> fetch = queryFactory.select(new QOrderQueryDto(
+		OrderQueryDto orderQueryDto = queryFactory.select(new QOrderQueryDto(
 				order.id,
 				order.totalItemsCount,
 				order.orderCommonInfo.price.totalPrice,
@@ -176,28 +176,35 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 				order.createdAt,
 				order.updatedAt,
 				order.orderCommonInfo.receiver,
-				order.orderCommonInfo.totalQuantity,
-				//item
-				item.id,
-				item.information.enterprise,
-				order.orderCommonInfo.mainItemName,
-				item.information.price.originPrice,
-				item.information.price.realPrice,
-				item.information.price.discountRate,
-				item.information.price.discountPrice
-
+				order.orderCommonInfo.totalQuantity
 			))
 			.from(order)
-			.join(order.orderItems, orderItem)
-			.join(orderItem.item, item)
 			.where(order.id.eq(id))
-			.fetch();
+			.fetchOne();
 
-		if (fetch == null) {
+		if (orderQueryDto == null) {
 			throw new BusinessLogicException(ExceptionCode.ORDER_NOT_FOUND);
 		}
 
-		return fetch;
+		List<OrderItemSimpleQueryDto> orderItemSimpleQueryDtos = queryFactory.select(
+				new QOrderItemSimpleQueryDto(
+					orderItem.id,
+					orderItem.quantity,
+					item.id,
+					item.information.enterprise,
+					item.information.productName,
+					item.information.price.originPrice,
+					item.information.price.realPrice,
+					item.information.price.discountRate,
+					item.information.price.discountPrice
+				)).from(orderItem)
+			.join(orderItem.item, item)
+			.where(orderItem.order.id.eq(id))
+			.fetch();
+
+		orderQueryDto.setOrderItemSimpleQueryDtos(orderItemSimpleQueryDtos);
+
+		return orderQueryDto;
 	}
 
 	@Override
@@ -213,7 +220,8 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 	@Override
 	public String findTid(long orderId) {
 
-		return queryFactory.select(order.orderCommonInfo.paymentToken.tid).from(order).where(order.id.eq(orderId))
+		return queryFactory.select(order.orderCommonInfo.paymentToken.tid).from(order)
+			.where(order.id.eq(orderId))
 			.fetchOne();
 	}
 

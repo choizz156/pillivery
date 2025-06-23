@@ -1,21 +1,17 @@
 package com.team33.modulecore.core.order.application;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.team33.modulecore.core.order.domain.OrderStatus;
 import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
-import com.team33.modulecore.core.order.dto.OrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.OrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,16 +30,16 @@ public class OrderQueryService {
 	}
 
 	public Page<SubscriptionOrderItemQueryDto> findAllSubscriptions(
-			Long userId,
-			OrderPageRequest orderPageRequest
+		Long userId,
+		OrderPageRequest orderPageRequest
 	) {
 		return orderQueryRepository.findSubscriptionOrderItemsWithItems(
-				orderPageRequest,
-				OrderFindCondition.to(userId, OrderStatus.SUBSCRIPTION)
+			orderPageRequest,
+			OrderFindCondition.to(userId, OrderStatus.SUBSCRIPTION)
 		);
 	}
 
-	public List<OrderQueryDto> findOrder(Long orderId) {
+	public OrderQueryDto findOrder(Long orderId) {
 		return orderQueryRepository.findById(orderId);
 	}
 }

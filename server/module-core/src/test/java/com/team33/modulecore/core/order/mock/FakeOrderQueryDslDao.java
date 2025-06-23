@@ -1,15 +1,5 @@
 package com.team33.modulecore.core.order.mock;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-
 import com.team33.modulecore.FixtureMonkeyFactory;
 import com.team33.modulecore.core.item.domain.entity.Item;
 import com.team33.modulecore.core.order.domain.OrderStatus;
@@ -19,7 +9,16 @@ import com.team33.modulecore.core.order.domain.repository.OrderQueryRepository;
 import com.team33.modulecore.core.order.dto.OrderFindCondition;
 import com.team33.modulecore.core.order.dto.OrderPageRequest;
 import com.team33.modulecore.core.order.dto.query.OrderItemQueryDto;
+import com.team33.modulecore.core.order.dto.query.OrderQueryDto;
 import com.team33.modulecore.core.order.dto.query.SubscriptionOrderItemQueryDto;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 public class FakeOrderQueryDslDao implements OrderQueryRepository {
 
@@ -63,13 +62,15 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public Page<OrderItemQueryDto> findOrdersWithItems(OrderPageRequest pageRequest, OrderFindCondition orderFindCondition) {
+	public Page<OrderItemQueryDto> findOrdersWithItems(OrderPageRequest pageRequest,
+		OrderFindCondition orderFindCondition) {
 
 		return null;
 	}
 
 	@Override
-	public Page<SubscriptionOrderItemQueryDto> findSubscriptionOrderItemsWithItems(OrderPageRequest pageRequest,
+	public Page<SubscriptionOrderItemQueryDto> findSubscriptionOrderItemsWithItems(
+		OrderPageRequest pageRequest,
 		OrderFindCondition orderFindCondition) {
 
 		return Page.empty();
@@ -81,7 +82,7 @@ public class FakeOrderQueryDslDao implements OrderQueryRepository {
 	}
 
 	@Override
-	public Order findById(long id) {
+	public OrderQueryDto findById(long id) {
 		return null;
 	}
 
