@@ -24,20 +24,20 @@ public class OrderQueryDto {
 	private Receiver receiver;
 	private int totalQuantity;
 
-	private List<OrderItemSimpleQueryDto> orderItemSimpleQueryDtos;
+	private List<OrderItemSimpleQueryDto> orderItems;
 
 	@QueryProjection
 	@Builder
 	public OrderQueryDto(
-		long orderId,
-		int totalItems,
-		int totalPrice,
+		long orderId, 
+		int totalItems, 
+		int totalPrice, 
 		int totalDiscountPrice,
 		int expectPrice,
-		OrderStatus orderStatus,
-		ZonedDateTime createdAt,
+		OrderStatus orderStatus, 
+		ZonedDateTime createdAt, 
 		ZonedDateTime updatedAt,
-		Receiver receiver,
+		Receiver receiver, 
 		int totalQuantity
 	) {
 

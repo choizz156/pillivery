@@ -202,7 +202,7 @@ public class OrderQueryDslDao implements OrderQueryRepository {
 			.where(orderItem.order.id.eq(id))
 			.fetch();
 
-		orderQueryDto.setOrderItemSimpleQueryDtos(orderItemSimpleQueryDtos);
+		orderQueryDto.setOrderItems(orderItemSimpleQueryDtos);
 
 		return orderQueryDto;
 	}

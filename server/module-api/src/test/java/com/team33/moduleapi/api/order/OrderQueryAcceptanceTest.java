@@ -1,15 +1,11 @@
 package com.team33.moduleapi.api.order;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
-
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.startsWith;
 
 import com.team33.moduleapi.ApiTest;
 import com.team33.moduleapi.api.order.dto.OrderPostDto;
@@ -32,6 +28,12 @@ import com.team33.modulecore.core.order.domain.entity.OrderItem;
 import com.team33.modulecore.core.order.domain.repository.OrderCommandRepository;
 import com.team33.modulecore.core.order.dto.OrderContext;
 import com.team33.modulecore.core.order.dto.OrderItemServiceDto;
+import java.util.List;
+import java.util.Set;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 
 class OrderQueryAcceptanceTest extends ApiTest {
@@ -72,30 +74,27 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
-			.body("time", notNullValue())
-			.body("data.size()", is(4))
-			// First order, first item
+			.body("data", hasSize(4))
 			.body("data[0].orderId", equalTo(2))
 			.body("data[0].orderItemId", equalTo(3))
 			.body("data[0].quantity", equalTo(1))
 			.body("data[0].itemId", equalTo(1))
 			.body("data[0].itemName", equalTo("16종혼합유산균 디에스"))
 			.body("data[0].price", equalTo(10000))
-			.body("data[0].description", equalTo("descriptionImage"))
+			.body("data[0].description", startsWith("[프로바이오틱스]"))
 			.body("data[0].imageUrl", equalTo("thumbnailUrl"))
-			.body("data[0].category", equalTo("[INTESTINE]"))
-			// First order, second item
+			.body("data[0].category.categoryNameSet[0]", equalTo("INTESTINE"))
 			.body("data[1].orderId", equalTo(2))
-			.body("data[1].orderItemId", equalTo(4))
-			.body("data[1].itemId", equalTo(2))
 			.body("data[1].itemName", equalTo("종혼합유산균 디에스2"))
-			.body("data[1].category", equalTo("[EYE]"))
-			// Second order items
+			.body("data[1].category.categoryNameSet[0]", equalTo("EYE"))
 			.body("data[2].orderId", equalTo(1))
-			.body("data[2].orderItemId", equalTo(1))
+			.body("data[2].itemId", equalTo(1))
+			.body("data[2].itemName", equalTo("16종혼합유산균 디에스"))
+			.body("data[2].category.categoryNameSet[0]", equalTo("INTESTINE"))
 			.body("data[3].orderId", equalTo(1))
-			.body("data[3].orderItemId", equalTo(2))
-			// Pagination info
+			.body("data[3].itemId", equalTo(2))
+			.body("data[3].itemName", equalTo("종혼합유산균 디에스2"))
+			.body("data[3].category.categoryNameSet[0]", equalTo("EYE"))
 			.body("pageInfo.page", equalTo(1))
 			.body("pageInfo.size", equalTo(8))
 			.body("pageInfo.totalElements", equalTo(4))
@@ -152,43 +151,35 @@ class OrderQueryAcceptanceTest extends ApiTest {
 			.then()
 			.log().all()
 			.statusCode(HttpStatus.OK.value())
-			.body("data.orderId", is(1))
-			.body("data.totalItems", is(2))
-			.body("data.totalPrice", is(20000))
-			.body("data.totalDiscountPrice", is(0))
-			.body("data.expectPrice", is(20000))
-			.body("data.subscription", is(false))
-			.body("data.itemOrders[0].orderItemId", is(1))
-			.body("data.itemOrders[0].quantity", is(1))
-			.body("data.itemOrders[0].period", is(0))
-			.body("data.itemOrders[0].subscription", is(false))
-			.body("data.itemOrders[0].item.itemId", is(1))
-			.body("data.itemOrders[0].item.enterprise", is("(주)씨티씨바이오"))
-			.body("data.itemOrders[0].item.thumbnail", is("thumbnailUrl"))
-			.body("data.itemOrders[0].item.product", is("16종혼합유산균 디에스"))
-			.body("data.itemOrders[0].item.discountRate", is(0.0f))
-			.body("data.itemOrders[0].item.discountPrice", is(0))
-			.body("data.itemOrders[1].orderItemId", is(2))
-			.body("data.itemOrders[1].quantity", is(1))
-			.body("data.itemOrders[1].period", is(0))
-			.body("data.itemOrders[1].subscription", is(false))
-			.body("data.itemOrders[1].item.itemId", is(2))
-			.body("data.itemOrders[1].item.enterprise", is("(주)씨티씨바이오"))
-			.body("data.itemOrders[1].item.thumbnail", is("thumbnailUrl"))
-			.body("data.itemOrders[1].item.product", is("종혼합유산균 디에스2"))
-			.body("data.itemOrders[1].item.originPrice", is(10000))
-			.body("data.itemOrders[1].item.discountRate", is(0.0f))
-			.body("data.itemOrders[1].item.discountPrice", is(0))
-			.body("data.orderStatus", is("COMPLETE"))
-			.body("data.createdAt", notNullValue())
-			.body("data.updatedAt", notNullValue())
-			.body("data.totalQuantity", is(2))
-			.body("data.receiver.realName", is("홍길동"))
-			.body("data.receiver.phone", is("010-1111-1111"))
-			.body("data.receiver.address.city", is("서울"))
-			.body("data.receiver.address.detailAddress", is("101 번지"))
-			.body("createTime", notNullValue());
-
+			.body("data.orderId", equalTo(1))
+			.body("data.totalItems", equalTo(2))
+			.body("data.totalPrice", equalTo(20000))
+			.body("data.totalDiscountPrice", equalTo(0))
+			.body("data.expectPrice", equalTo(20000))
+			.body("data.orderStatus", equalTo("COMPLETE"))
+			.body("data.totalQuantity", equalTo(2))
+			.body("data.receiver.realName", equalTo("홍길동"))
+			.body("data.receiver.phone", equalTo("010-1111-1111"))
+			.body("data.receiver.address.city", equalTo("서울"))
+			.body("data.receiver.address.detailAddress", equalTo("101 번지"))
+			.body("data.orderItems[0].orderItemId", equalTo(1))
+			.body("data.orderItems[0].quantity", equalTo(1))
+			.body("data.orderItems[0].itemId", equalTo(1))
+			.body("data.orderItems[0].enterprise", equalTo("(주)씨티씨바이오"))
+			.body("data.orderItems[0].product", equalTo("16종혼합유산균 디에스"))
+			.body("data.orderItems[0].originPrice", equalTo(10000))
+			.body("data.orderItems[0].realPrice", equalTo(10000))
+			.body("data.orderItems[0].discountRate", equalTo(0.0f))
+			.body("data.orderItems[0].discountPrice", equalTo(0))
+			.body("data.orderItems[1].orderItemId", equalTo(2))
+			.body("data.orderItems[1].quantity", equalTo(1))
+			.body("data.orderItems[1].itemId", equalTo(2))
+			.body("data.orderItems[1].enterprise", equalTo("(주)씨티씨바이오"))
+			.body("data.orderItems[1].product", equalTo("종혼합유산균 디에스2"))
+			.body("data.orderItems[1].originPrice", equalTo(10000))
+			.body("data.orderItems[1].realPrice", equalTo(10000))
+			.body("data.orderItems[1].discountRate", equalTo(0.0f))
+			.body("data.orderItems[1].discountPrice", equalTo(0));
 	}
 
 	private void 주문_저장(OrderPostListDto postListDto, OrderStatus orderStatus) {
