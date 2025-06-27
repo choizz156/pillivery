@@ -29,7 +29,7 @@ public class WebClientSender {
 	private final ObjectMapper objectMapper;
 	private final WebClient webClient;
 
-	@Bulkhead(name = "paymentApiClient", type = Type.THREADPOOL)
+	@Bulkhead(name = "paymentLookupClient", type = Type.THREADPOOL)
 	@TimeLimiter(name = "paymentLookUpClient")
 	@Retry(name = "paymentLookUpClient")
 	@CircuitBreaker(name = "paymentApiClient", fallbackMethod = "externalApiAsyncFallback")
@@ -54,7 +54,7 @@ public class WebClientSender {
 	}
 
 
-	@Bulkhead(name = "paymentApiClient", type = Type.THREADPOOL)
+	@Bulkhead(name = "paymentApiClient", type = Type.SEMAPHORE)
 	@Retry(name = "paymentRetryApiClient")
 	@CircuitBreaker(name = "paymentApiClient", fallbackMethod = "externalApiSyncFallback")
 	public <T> T sendToPostSync(

@@ -24,23 +24,23 @@ spring:
       port: 6380
 
   datasource:
-#    main:
-#      username: admin
-#      password: 1234
-#      driver-class-name: com.mysql.cj.jdbc.Driver
-#      jdbc-url: jdbc:mysql://192.168.0.6:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
+    #    main:
+    #      username: admin
+    #      password: 1234
+    #      driver-class-name: com.mysql.cj.jdbc.Driver
+    #      jdbc-url: jdbc:mysql://192.168.0.6:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
 
-#      username: root
-#      password: 1234
-#      driver-class-name: com.mysql.cj.jdbc.Driver
-#      url: jdbc:mysql://host.docker.internal:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
-#      url: jdbc:mysql://localhost:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
+    #      username: root
+    #      password: 1234
+    #      driver-class-name: com.mysql.cj.jdbc.Driver
+    #      url: jdbc:mysql://host.docker.internal:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
+    #      url: jdbc:mysql://localhost:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
 
-      url: jdbc:h2:mem:testdb
-      username: sa
-      password:
-      driver-class-name: org.h2.Driver
-#
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  #
   security:
     oauth2:
       client:
@@ -71,8 +71,8 @@ spring:
             user-name-attribute: id
 
 management:
-#  server:
-#    port: 8080
+  #  server:
+  #    port: 8080
   health:
     circuitbreakers:
       enabled: true
@@ -122,13 +122,21 @@ resilience4j:
       paymentApiClient:
         base-config: default
 
-  thread-pool-bulkhead:
+
+  bulkhead:
     instances:
       paymentApiClient:
-        coreThreadPoolSize: 20
-        maxThreadPoolSize: 50
-        queueCapacity: 50
+        max-concurrent-calls: 50
+        max-wait-duration: 10s
+
+  thread-pool-bulkhead:
+    instances:
+      paymentLookupClient:
+        core-thread-pool-size: 20
+        max-thread-pool-size: 50
+        queue-capacity: 50
         keepAliveDuration: 15s
+
 
   timelimiter:
     instances:
