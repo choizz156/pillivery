@@ -1,23 +1,22 @@
 package com.team33.moduleexternalapi.infra;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team33.moduleexternalapi.exception.ExternalApiException;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead.Type;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team33.moduleexternalapi.exception.ExternalApiException;
-
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -30,14 +29,15 @@ public class WebClientSender {
 	private final ObjectMapper objectMapper;
 	private final WebClient webClient;
 
+	@Bulkhead(name = "paymentApiClient", type = Type.THREADPOOL)
 	@TimeLimiter(name = "paymentLookUpClient")
 	@Retry(name = "paymentLookUpClient")
 	@CircuitBreaker(name = "paymentApiClient", fallbackMethod = "externalApiAsyncFallback")
 	public <T> CompletableFuture<T> sendToPostAsync(
-			Map<String, Object> params,
-			String uri,
-			HttpHeaders headers,
-			Class<T> responseClass) throws JsonProcessingException {
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass) throws JsonProcessingException {
 
 		String kakaoRequest = objectMapper.writeValueAsString(params);
 
@@ -53,13 +53,15 @@ public class WebClientSender {
 			.toFuture();
 	}
 
+
+	@Bulkhead(name = "paymentApiClient", type = Type.THREADPOOL)
 	@Retry(name = "paymentRetryApiClient")
 	@CircuitBreaker(name = "paymentApiClient", fallbackMethod = "externalApiSyncFallback")
 	public <T> T sendToPostSync(
-			Map<String, Object> params,
-			String uri,
-			HttpHeaders headers,
-			Class<T> responseClass) throws JsonProcessingException {
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass) throws JsonProcessingException {
 
 		String kakaoRequest = objectMapper.writeValueAsString(params);
 
@@ -78,50 +80,53 @@ public class WebClientSender {
 	}
 
 	private <T> CompletableFuture<T> externalApiAsyncFallback(
-			Map<String, Object> params,
-			String uri,
-			HttpHeaders headers,
-			Class<T> responseClass,
-			Throwable throwable) {
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass,
+		Throwable throwable) {
 
-		LOGGER.error("api 통신 실패(externalApiAsyncFallback) - URI: {}, responseClass: {}, Params: {}, Headers: {}, message: {}",
-				uri,
-				responseClass,
-				params,
-				headers,
-				throwable.getMessage());
+		LOGGER.error(
+			"api 통신 실패(externalApiAsyncFallback) - URI: {}, responseClass: {}, Params: {}, Headers: {}, message: {}",
+			uri,
+			responseClass,
+			params,
+			headers,
+			throwable.getMessage());
 
 		throw new ExternalApiException("외부 API 비동기 호출 실패): " + throwable.getMessage(), throwable);
 	}
 
 	private <T> T externalApiSyncRetryFallback(
-			Map<String, Object> params,
-			String uri,
-			HttpHeaders headers,
-			Class<T> responseClass,
-			Throwable throwable) {
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass,
+		Throwable throwable) {
 		LOGGER.error("Retry  - URI: {}, responseClass: {}, Params: {}, Headers: {}, message: {}",
-				uri,
-				responseClass,
-				params,
-				headers,
-				throwable.getMessage());
-		throw new ExternalApiException("외부 API 동기 호출 실패 (Retry): " + throwable.getMessage(), throwable);
+			uri,
+			responseClass,
+			params,
+			headers,
+			throwable.getMessage());
+		throw new ExternalApiException("외부 API 동기 호출 실패 (Retry): " + throwable.getMessage(),
+			throwable);
 	}
 
 	private <T> T externalApiSyncFallback(
-			Map<String, Object> params,
-			String uri,
-			HttpHeaders headers,
-			Class<T> responseClass,
-			Throwable throwable) {
+		Map<String, Object> params,
+		String uri,
+		HttpHeaders headers,
+		Class<T> responseClass,
+		Throwable throwable) {
 
-		LOGGER.error("api 호출 실패(externalApiSyncFallback) - URI: {}, responseClass: {}, Params: {}, Headers: {}, message: {}",
-				uri,
-				responseClass,
-				params,
-				headers,
-				throwable.getMessage());
+		LOGGER.error(
+			"api 호출 실패(externalApiSyncFallback) - URI: {}, responseClass: {}, Params: {}, Headers: {}, message: {}",
+			uri,
+			responseClass,
+			params,
+			headers,
+			throwable.getMessage());
 		throw new ExternalApiException("외부 API 동기 호출 실패: " + throwable.getMessage(), throwable);
 	}
 

@@ -9,35 +9,36 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.team33.modulebatch.domain.ErrorItemRepository;
-import com.team33.modulebatch.domain.entity.ErrorItem;
+import com.team33.modulebatch.domain.DelayedItemRepository;
+import com.team33.modulebatch.domain.entity.DelayedItem;
 import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 @ExtendWith(MockitoExtension.class)
 class ItemSkipListenerTest {
 
-    @Mock
-    private ErrorItemRepository errorItemRepository;
+	@Mock
+	private DelayedItemRepository delayedItemRepository;
 
-    @DisplayName("결제 실패 시 에러 아이템을 저장한다")
-    @Test
-    void test1() {
-        // given
-        ItemSkipListener listener = new ItemSkipListener(errorItemRepository);
-        
-        SubscriptionOrderVO subscriptionOrderVO = new SubscriptionOrderVO();
-        subscriptionOrderVO.setIdempotencyKey("test");
-        
-        RuntimeException exception = new RuntimeException("결제 실패");
+	@DisplayName("결제 실패 시 에러 아이템을 저장한다")
+	@Test
+	void test1() {
+		// given
+		ItemSkipListener listener = new ItemSkipListener(delayedItemRepository);
 
-        // when
-        listener.onSkipInWrite(subscriptionOrderVO, exception);
+		SubscriptionOrderVO subscriptionOrderVO = new SubscriptionOrderVO();
+		subscriptionOrderVO.setIdempotencyKey("test");
+		subscriptionOrderVO.setSubscriptionOrderId(1L);
 
-        // then
-        ArgumentCaptor<ErrorItem> captor = ArgumentCaptor.forClass(ErrorItem.class);
-        verify(errorItemRepository, times(1)).save(captor.capture());
-        
-        ErrorItem savedItem = captor.getValue();
-        verify(errorItemRepository).save(savedItem);
-    }
+		RuntimeException exception = new RuntimeException("결제 실패");
+
+		// when
+		listener.onSkipInWrite(subscriptionOrderVO, exception);
+
+		// then
+		ArgumentCaptor<DelayedItem> captor = ArgumentCaptor.forClass(DelayedItem.class);
+		verify(delayedItemRepository, times(1)).save(captor.capture());
+
+		DelayedItem savedItem = captor.getValue();
+		verify(delayedItemRepository).save(savedItem);
+	}
 }

@@ -20,6 +20,14 @@ resilience4j:
           - java.util.concurrent.TimeoutException
           - java.net.ConnectException
 
+  thread-pool-bulkhead:
+    instances:
+      paymentApiClient:
+        coreThreadPoolSize: 20
+        maxThreadPoolSize: 50
+        queueCapacity: 50
+        keepAliveDuration: 15s
+
   timelimiter:
     instances:
       paymentLookUpClient:
@@ -34,12 +42,9 @@ resilience4j:
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
         retryExceptions:
-          - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
-          - java.io.IOException
-          - java.util.concurrent.TimeoutException
-          - io.netty.handler.timeout.ReadTimeoutException
           - java.net.ConnectException
+          - org.springframework.web.reactive.function.client.WebClientRequestException
         ignoreExceptions:
           - com.team33.moduleexternalapi.exception.PaymentApiException
 

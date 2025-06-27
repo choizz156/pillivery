@@ -23,7 +23,6 @@ public class OrderQueryDto {
 	private ZonedDateTime updatedAt;
 	private Receiver receiver;
 	private int totalQuantity;
-
 	private List<OrderItemSimpleQueryDto> orderItems;
 
 	@QueryProjection

@@ -15,6 +15,8 @@ spring:
           auto: none
         show_sql: true
         physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        default_batch_fetch_size: 100
+    open-in-view: false
 
   data:
     redis:
@@ -28,15 +30,16 @@ spring:
 #      driver-class-name: com.mysql.cj.jdbc.Driver
 #      jdbc-url: jdbc:mysql://192.168.0.6:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
 
-      username: root
-      password: 1234
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
-#    main:
-#      jdbc-url: jdbc:h2:mem:testdb
-#      username: sa
-#      password:
-#      driver-class-name: org.h2.Driver
+#      username: root
+#      password: 1234
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      url: jdbc:mysql://host.docker.internal:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
+#      url: jdbc:mysql://localhost:3306/pillivery?serverTimezone=Asia/Seoul&jdbcCompliantTruncation=false&rewriteBatchedStatements=true
+
+      url: jdbc:h2:mem:testdb
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
 #
   security:
     oauth2:
@@ -119,6 +122,13 @@ resilience4j:
       paymentApiClient:
         base-config: default
 
+  thread-pool-bulkhead:
+    instances:
+      paymentApiClient:
+        coreThreadPoolSize: 20
+        maxThreadPoolSize: 50
+        queueCapacity: 50
+        keepAliveDuration: 15s
 
   timelimiter:
     instances:
@@ -166,10 +176,10 @@ logging:
   config: classpath:logback-local.xml
 
 
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
+#  level:
+#    org:
+#      hibernate:
+#        SQL: DEBUG
 #    io.github.resilience4j.circuitbreaker: DEBUG
 
 
