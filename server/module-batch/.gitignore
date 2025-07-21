@@ -368,15 +368,9 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,macos,gradle
 
-application-auth.yml
-application-local.yml
-application-quartz.yml
-
 
 *.jqwik-database
-settings.gradle
 HELP.md
-gradlew
 
 
 **/module-core/src/main/generated/

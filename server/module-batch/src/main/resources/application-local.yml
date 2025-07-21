@@ -1,0 +1,115 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        hbm2ddl:
+          auto: create
+        show_sql: false
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+
+  datasource:
+    core:
+      jdbc-url: jdbc:h2:mem:testdb
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+
+    batch:
+      jdbc-url: jdbc:h2:mem:testdb2
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler-name: QRTZ_
+          threadPool:
+            threadCount: 5
+
+    job-store-type: memory
+    jdbc:
+      initialize-schema: never
+
+management:
+  server:
+    port: 8080
+  health:
+    circuitbreakers:
+      enabled: true
+
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
+    prometheus:
+      enabled: true
+    caches:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus, caches, circuitbreakers, circuitbreakerevents
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      internalPaymentApiClient:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+          - com.team33.modulebatch.exception.ClientPaymentException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - java.net.ConnectException
+
+  retry:
+    instances:
+      internalPaymentRetry:
+        maxAttempts: 3
+        waitDuration: 300ms
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+        ignoreExceptions:
+          - com.team33.modulebatch.exception.ClientPaymentException
+
+logging:
+  config: classpath:logback-local.xml
+
