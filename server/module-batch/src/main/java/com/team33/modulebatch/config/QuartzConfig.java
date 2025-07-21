@@ -1,9 +1,7 @@
 package com.team33.modulebatch.config;
 
 import java.util.Properties;
-
 import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,7 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Profile("!test")
+@Profile("prod")
 @Configuration
 public class QuartzConfig {
 

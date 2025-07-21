@@ -47,10 +47,15 @@ dependencies {
 
     //mysql
     implementation 'mysql:mysql-connector-java'
+    runtimeOnly 'com.h2database:h2'
 
 }
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 

@@ -91,7 +91,6 @@ project(':module-api') {
         implementation project(':module-redis')
         implementation project(':module-event')
         implementation project(':module-logging')
-        implementation project(':module-batch')
     }
 }
 
@@ -99,11 +98,17 @@ project(':module-batch') {
     bootJar {
         enabled = true
         archiveFileName = "${project.name}-boot.jar"
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        into('BOOT-INF/classes') {
+            from sourceSets.main.output.classesDirs
+            include 'com/team33/modulebatch/**'
+            include 'com/team33/modulecore/core/order/domain/**'
+            include 'com/team33/modulecore/core/item/domain/**'
+        }
     }
     jar { enabled = true }
 
     dependencies {
-        implementation project(':module-core')
         implementation project(':module-logging')
     }
 }
