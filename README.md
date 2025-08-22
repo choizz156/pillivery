@@ -717,12 +717,6 @@ graph LR
    통일된 Request-ID로 요청 흐름 추적
 ```
 
-<details>
-  <summary>이미지</summary>
-      
-</details>
-
-
 **Nignx 로그 설정**
 
 
@@ -887,9 +881,9 @@ scrape_configs:
 > - 외부 API 통신 과정에서 네트워크 지연이나 일시적 장애 상황 고려, 대비책 필요성 인식
 > - 외부 API 의존도가 높은 결제 시스템의 안정성에 대한 고민
 
-#### 3.1.1 주요 설계
+### 3.1.1 주요 설계
 
-**(1) 장애 감지 및 차단**
+#### (1) 장애 감지 및 차단
 
 - 실패율 임계치 60% 이상 시 Circuit Open 전환
 - Open 상태에서 10초 후 Half-Open으로 자동 전환
@@ -920,7 +914,7 @@ resilience4j:
 
 
 
-**(2) Retry 설정** 
+#### (2) Retry 설정
 
 - **횟수:** 3회
 - **조건:** 외부 API와 연결 실패 시 재시도하여 결제 중복 실행을 방지
@@ -941,7 +935,7 @@ resilience4j:
 
 
 
-**(3) 네트워크 커넥션 풀 설정 및 동시 요청 수 제한**
+#### (3) 네트워크 커넥션 풀 설정 및 동시 요청 수 제한
 
 - **네트워크 I/O**를 처리하는 **별도의 스레드들**을 설정
   - 네트워크 통신을 비동기로 처리하여 스레드 블로킹 악영향 최소화
@@ -987,14 +981,14 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 
 ​		
 
-**(4) Fast-Fail 응답 처리**
+#### (4) Fast-Fail 응답 처리
 
 - **시스템 부하 감소:** Circuit Open 상태에서 즉시 실패 응답으로 시스템 부하 감소
 - **빠른 피드백:** fallback메서드 사용
 
+---
 
-
-#### 3.1.2 Circuit Breaker 기능 테스트
+### 3.1.2 Circuit Breaker 기능 테스트
 
 > - Closed → Open → Half-Open이 정상적으로 동작하는지 검증
 > - 장애 상황에서 빠른 응답 처리 확인
@@ -1012,7 +1006,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 성공률: 100% ──────▶ 25% ─────▶ Fast-Fail ─▶ 제한적 허용
 ```
 
-**(1) Closed 상태**(초기 정상)
+#### (1) Closed 상태**(초기 정상)
 
 - Mock Server 성공률: **100%**
 
@@ -1022,7 +1016,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 
 
 
-**(2) Open 상태(장애 감지 및 차단)**
+#### (2) Open 상태(장애 감지 및 차단)
 
 - 실패율이 50% 초과 시 Open
 
@@ -1030,17 +1024,18 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 
   
 
-**(3) Half-Open 상태(복구 시도)**
+#### (3) Half-Open 상태(복구 시도)
 
 **검증 포인트**
 
 - Open 상태에서 제한적 요청으로 Closed 상태 변환 시도
 
-<img src="/Users/choi/Library/Application Support/typora-user-images/image-20250615141657187.png" alt="image-20250615141657187" style="zoom:25%;" />
+<img width="971" height="722" alt="image" src="https://github.com/user-attachments/assets/01aa2094-3a02-4f41-a4f5-cac0a6446d0b" />
 
 
+---
 
-#### 3.1.3 Retry 안정성 테스트
+### 3.1.3 Retry 안정성 테스트
 
 >  Retry를 통한 실패율 감소 및 안정성 확인
 
@@ -1053,7 +1048,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
   최종 실패율: \frac{174}{25777} \times 100 ≈ 0.6\%
   $$
 
-
+---
 
 ### 3.2 정기 결제 로직 고도화: Spring Scheduled → Quartz → Spring Batch
 
@@ -1098,7 +1093,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 
 #### **Phase 3: Spring Batch 기반 재설계**
 
-**(1) 주요 개선 사항**
+(1) 주요 개선 사항
 
 - **관심사 분리 :**정기 결제 요청(배치 서버)과 비즈니스 로직(비즈니스 서버) 분리
 
@@ -1108,7 +1103,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 
 
 
-**(2) Batch Job 구조** 
+(2) Batch Job 구조
 
 **step 기반 작업 분리**
 
@@ -1145,7 +1140,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 
     
 
-**(3) API 통신**
+(3) API 통신
 
 - **통신 구조:** 배치 서버 → 비즈니스 서버 → 외부 결제 API 통신 
 
@@ -1157,7 +1152,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 
   
 
-**(4) 재시도 구현**
+(4) 재시도 구현
 
 - 즉시 재시도
   - **외부 서버 통신 오류 시**
@@ -1168,14 +1163,10 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
     - 1일, 3일, 5일 단계적 재시도
     - 최종 실패시 정기 결제 취소
 
-**(5) 기능 추가 고려 사항**
+---
 
-- 정기 결제 취소 시, SID 취소 이벤트 발행
-- 유저에게 이메일/알람 발송
 
-<div style="page-break-after: always;"></div>
-
-## 4. 부하 테스트를 통한 성능 개선 및 문제 해결 
+# 4. 부하 테스트를 통한 성능 개선 및 문제 해결 
 
 > **목적**
 >
@@ -1217,12 +1208,12 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 > - VUser 값을 18로 두고 테스트하여 요청 시간이 0.2초를 유지한다면 대상 시스템은 86.8의 처리량을 보장한다고 가정할 수 있음
 > -  추정된 VUser 18은 너무 적다고 판단하여 그 이상의 수로 확장하여 테스트 수행
 
-<div class="project-section" style="page-break-inside: avoid;">
 
+---
 
-### 4.3  Profile & Explain을 통한 조회 쿼리 성능 개선
+## 4.3  Profile & Explain을 통한 조회 쿼리 성능 개선
 
-#### 4.3.1. 인덱스 → 조회 쿼리 성능 개선
+### 4.3.1. 인덱스 → 조회 쿼리 성능 개선
 
 > - VUser 30
 
@@ -1256,16 +1247,19 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 <div style="display: flex; justify-content: center; gap: 40px; text-align: left;">
   <div>
     <p><strong>Full Scan</strong></p>
-    <img src="/Users/choi/Library/Application Support/typora-user-images/image-20250618184936100.png" alt="Full Scan" width="500" />
+    <img width="889" height="659" alt="image" src="https://github.com/user-attachments/assets/afd71ea5-edb1-4bb6-a72e-f32b6c5340af" />
+
   </div>
   <div>
     <p><strong>Index</strong></p>
-    <img src="/Users/choi/Library/Application Support/typora-user-images/image-20250618185033983.png" alt="Index" width="500" />
+   <img width="881" height="667" alt="image" src="https://github.com/user-attachments/assets/0db650c5-bf15-4000-abc9-0d22ae6729cd" />
+
   </div>
 </div>
 
+---
 
-#### 4.3.2. 단건 조회 N + 1 문제 → DTO 성능 개선
+### 4.3.2. 단건 조회 N + 1 문제 → DTO 성능 개선
 
 > - VUser 100 
 > - DB server : cpus 2, memory 2G
@@ -1303,20 +1297,21 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 <div style="display: flex; justify-content: center; gap: 40px; text-align: left;">
   <div>
     <p><strong>N + 1</strong></p>
-    <img src="/Users/choi/Library/Application Support/typora-user-images/image-20250623195634432.png" alt="Full Scan" width="500" />
+   <img width="886" height="524" alt="image" src="https://github.com/user-attachments/assets/dd8a4d36-f638-46c4-966a-5bf3c073f2d0" />
+
   </div>
   <div>
     <p><strong>DTO 조회</strong></p>
-    <img src="/Users/choi/Library/Application Support/typora-user-images/image-20250623195740338.png" alt="Index" width="500" />
+    <img width="873" height="514" alt="image" src="https://github.com/user-attachments/assets/4b272b02-0d7b-4f9f-94b9-ecfd2cf8732b" />
+
   </div>
 </div>
 
 </div>
 
-<div class="project-section" style="page-break-inside: avoid;"><div style="page-break-after: always;"></div>
+---
 
-
-### 4.4 결제 승인 테스트 → DB 커넥션 풀(HikariCP) 부족 문제 해결
+## 4.4 결제 승인 테스트 → DB 커넥션 풀(HikariCP) 부족 문제 해결
 
 > -  외부 API와 관련된 API 
 >
@@ -1344,13 +1339,9 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 - **DB 커넥션 풀 오류 해결**
 - **트랜잭션 관리의 중요성과 외부 시스템 연동 시 고려사항** 학습
 
+---
 
-
-<img src="/Users/choi/Library/Application Support/typora-user-images/image-20250615144203986.png" alt="image-20250615144203986" style="zoom:20%;" />
-
-</div><div style="page-break-after: always;"></div>
-
-### 4.5 장바구니 API Test → 로컬 캐싱을 통한 성능 개선
+## 4.5 장바구니 API Test → 로컬 캐싱을 통한 성능 개선
 
 > - nGrinder 사용
 > - VUser 100
@@ -1377,17 +1368,19 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 <div style="display: flex; justify-content: center; gap: 40px; text-align: left;">
   <div>
     <p><strong>DB 통신</strong></p>
-    <img src="/Users/choi/Library/Application Support/typora-user-images/image-20250618191859877.png" alt="Full Scan" width="500" />
+   <img width="898" height="530" alt="image" src="https://github.com/user-attachments/assets/f4ecff95-6655-47c9-873c-9c408fb10193" />
+
   </div>
   <div>
     <p><strong>캐싱 처리</strong></p>
-    <img src="/Users/choi/Library/Application Support/typora-user-images/image-20250618191913508.png" alt="Index" width="500" />
+   <img width="903" height="526" alt="image" src="https://github.com/user-attachments/assets/1c4823a6-f34c-4cb7-83de-22860cf20ea3" />
+
   </div>
 </div>
 
+---
 
-
-#### **4.5.2 방어적 복사 → 데이터 정합성 확보**
+### **4.5.2 방어적 복사 → 데이터 정합성 확보**
 
 **배경 및 문제**
 
