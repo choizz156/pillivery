@@ -6,7 +6,7 @@
 :toclevels: 2
 :sectlinks:
 
-=== Header
+=== 인증 Header
 |===
 | name | 설명
 
@@ -27,7 +27,7 @@ include::{snippets}/user-signup/request-fields.adoc[]
 ==== HTTP Response
 include::{snippets}/user-signup/http-response.adoc[]
 
-=== Request Parameters
+==== Request Parameters
 |===
 | Parameter | Type | Description | Required
 | username | String | 사용자 이름 | true
@@ -36,7 +36,7 @@ include::{snippets}/user-signup/http-response.adoc[]
 | phone | String | 전화번호 | false
 |===
 
-=== Response Fields
+==== Response Fields
 |===
 | Path | Type | Description
 | `userId` | String | 사용자 ID
@@ -57,7 +57,7 @@ include::{snippets}/user-oauth-more-info/request-fields.adoc[]
 ==== HTTP Response
 include::{snippets}/user-oauth-more-info/http-response.adoc[]
 
-=== Request Fields
+==== Request Fields
 |===
 | Parameter | Type | Description | Required
 | name | String | 사용자 이름 | true
@@ -65,7 +65,7 @@ include::{snippets}/user-oauth-more-info/http-response.adoc[]
 | termsAgreed | Boolean | 약관 동의 여부 | true
 |===
 
-=== Response Fields
+==== Response Fields
 |===
 | Path | Type | Description
 | `userId` | String | 사용자 ID 
