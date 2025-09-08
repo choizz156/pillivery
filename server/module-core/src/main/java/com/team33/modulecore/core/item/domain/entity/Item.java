@@ -1,8 +1,13 @@
 package com.team33.modulecore.core.item.domain.entity;
 
+import com.team33.modulecore.core.category.domain.Categories;
+import com.team33.modulecore.core.category.domain.CategoryName;
+import com.team33.modulecore.core.category.infra.CategoryNameConverter;
+import com.team33.modulecore.core.common.BaseEntity;
+import com.team33.modulecore.core.item.domain.Information;
+import com.team33.modulecore.core.item.domain.Statistic;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -17,20 +22,11 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.DynamicUpdate;
-
-import com.team33.modulecore.core.category.domain.Categories;
-import com.team33.modulecore.core.category.domain.CategoryName;
-import com.team33.modulecore.core.category.infra.CategoryNameConverter;
-import com.team33.modulecore.core.common.BaseEntity;
-import com.team33.modulecore.core.item.domain.Information;
-import com.team33.modulecore.core.item.domain.Statistic;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -150,5 +146,9 @@ public class Item extends BaseEntity {
 
 	public void subtractCountAndStars(double star) {
 		this.statistics.subtractStarAvg(star);
+	}
+
+	public void chageInformation(Information information) {
+		this.information = information.toBuilder().build();
 	}
 }

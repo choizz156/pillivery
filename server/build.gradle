@@ -118,6 +118,7 @@ project(':module-admin') {
     jar { enabled = true }
 
     dependencies {
+        implementation project(':module-redis')
         implementation project(':module-core')
         implementation project(':module-logging')
     }

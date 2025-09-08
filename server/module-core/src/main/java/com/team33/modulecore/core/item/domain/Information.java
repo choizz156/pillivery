@@ -5,7 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Lob;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -57,7 +56,7 @@ public class Information {
     @Embedded
     private Image image;
 
-    @Builder
+    @Builder(toBuilder = true)
     public Information(
         String enterprise,
         String productName,
