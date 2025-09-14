@@ -1,7 +1,6 @@
 package com.team33.modulebatch.config;
 
 import javax.sql.DataSource;
-
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.explore.support.JobExplorerFactoryBean;
@@ -65,5 +64,4 @@ public class CustomBatchConfigurer extends DefaultBatchConfigurer {
 		factory.afterPropertiesSet();
 		return factory.getObject();
 	}
-
 }

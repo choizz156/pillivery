@@ -1,21 +1,18 @@
 package com.team33.modulebatch.infra;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.team33.modulebatch.step.SubscriptionOrderVO;
-
+import java.time.Duration;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class PaymentApiDispatcher {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fileLog");

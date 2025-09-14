@@ -1,8 +1,5 @@
 package com.team33.modulecore.core.payment.kakao.application.approve;
 
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-
 import com.team33.modulecore.core.order.domain.entity.SubscriptionOrder;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApprove;
 import com.team33.modulecore.core.payment.domain.approve.SubscriptionApproveService;
@@ -14,8 +11,9 @@ import com.team33.modulecore.core.payment.kakao.dto.KakaoApproveResponse;
 import com.team33.modulecore.core.payment.kakao.dto.KakaoResponseMapper;
 import com.team33.moduleexternalapi.dto.kakao.KakaoApiApproveResponse;
 import com.team33.moduleexternalapi.exception.SubscriptionPaymentException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
@@ -44,7 +42,6 @@ public class KakaoSubscriptionApproveService implements SubscriptionApproveServi
 
 		try {
 			response = kakaoSubscriptionApproveDispatcher.approveSubscription(subscriptionOrder);
-
 		} catch (SubscriptionPaymentException e) {
 			applicationEventPublisher.publishEvent(new SubscriptionFailedEvent(subscriptionOrder.getId()));
 			throw e;

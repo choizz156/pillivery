@@ -1,14 +1,22 @@
 package com.team33.modulebatch.config.step;
 
+import com.team33.modulebatch.domain.DelayedItemRepository;
+import com.team33.modulebatch.exception.ClientPaymentException;
+import com.team33.modulebatch.infra.PaymentApiDispatcher;
+import com.team33.modulebatch.listener.ItemSkipListener;
+import com.team33.modulebatch.listener.PaymentStepExecutionListener;
+import com.team33.modulebatch.step.PaymentItemProcessor;
+import com.team33.modulebatch.step.PaymentWriter;
+import com.team33.modulebatch.step.SubscriptionOrderVO;
+import java.net.ConnectException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.concurrent.TimeoutException;
 import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
@@ -27,16 +35,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
-import org.springframework.web.client.HttpServerErrorException;
-
-import com.team33.modulebatch.domain.DelayedItemRepository;
-import com.team33.modulebatch.exception.ClientPaymentException;
-import com.team33.modulebatch.infra.PaymentApiDispatcher;
-import com.team33.modulebatch.listener.ItemSkipListener;
-import com.team33.modulebatch.listener.PaymentStepExecutionListener;
-import com.team33.modulebatch.step.PaymentItemProcessor;
-import com.team33.modulebatch.step.PaymentWriter;
-import com.team33.modulebatch.step.SubscriptionOrderVO;
 
 @Configuration
 public class PaymentStepConfig {
@@ -83,7 +81,8 @@ public class PaymentStepConfig {
 			.skipLimit(SKIP_LIMIT)
 			.skip(ClientPaymentException.class)
 			.retryLimit(RETRY_LIMIT)
-			.retry(HttpServerErrorException.class)
+			.retry(TimeoutException.class)
+			.retry(ConnectException.class)
 			.backOffPolicy(backOffPolicy)
 			.listener(new ItemSkipListener(delayedItemRepository))
 			.listener(new PaymentStepExecutionListener())

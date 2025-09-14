@@ -1,10 +1,13 @@
 package com.team33.modulebatch.config.step;
 
+import com.team33.modulebatch.domain.DelayedItemRepository;
+import com.team33.modulebatch.domain.ErrorStatus;
+import com.team33.modulebatch.domain.entity.DelayedItem;
+import com.team33.modulebatch.listener.RetryStepListener;
+import com.team33.modulebatch.step.RetryItemProcessor;
 import java.time.LocalDate;
 import java.util.Map;
-
 import javax.persistence.EntityManagerFactory;
-
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -17,12 +20,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.team33.modulebatch.domain.DelayedItemRepository;
-import com.team33.modulebatch.domain.ErrorStatus;
-import com.team33.modulebatch.domain.entity.DelayedItem;
-import com.team33.modulebatch.listener.RetryStepListener;
-import com.team33.modulebatch.step.RetryItemProcessor;
 
 @Configuration
 public class RetryStepConfig3 {
@@ -98,6 +95,5 @@ public class RetryStepConfig3 {
 				}
 			);
 	}
-
 }
 
