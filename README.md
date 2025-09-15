@@ -1339,33 +1339,30 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 
 **배경 및 문제**
 
-- 부하 테스트 수행 시 Order 객체 단건 조회 N + 1 문제 발생으로 응답 시간이 목표치보다 낮음(1,842ms)
+- Load Test (VUser = 100) 중, Order 단건 조회 시 N+1 문제 발생
   - Order(1개) → OrderItem(10개) → Item(10개)
-- **Fetch Join**을 사용하여 해결했지만 **불필요 데이터 조회 및 데이터 중복 현상**으로 효율성이 떨어진다고 판단
+- 평균 응답 시간 1,842ms로, 목표치(200ms) 대비 성능 저하
 
 **해결 과정**
 
-- **DTO**를 통해 필요한 데이터만 조회
+- 초기에는 Fetch Join으로 해결 → N+1 해소는 되었으나 **불필요한 데이터 조회**, 중복 결과로 효율 저하 발생
+- **플랫 DTO 기반 조회**로 성능 개선(85ms) →  **여전한 중복 결과, 페이징 불가능**
+    | MySQL Profile | Fetch Join Query 1개(Order + OrderItem + Item) | DTO Query                    |
+  | ------------- | ---------------------------------------------- | ---------------------------- |
+  | execute       | **0.001262ms**                                 | **0.000181ms**               |
+  | Profile 총 합 | **약 0.003780 ms**                             | **약 0.000922 ms(4배 빠름)** |
 
-- **MySQL Profile**을 통해 Fetch Join 로직과 DTO 로직 비교 후 DTO 로직 사용
-
-  |               | Fetch Join Query 1개(Order+OrderItem + Item) | DTO Query 2개 합(Order, OrderItem + Item) |
-  | ------------- | -------------------------------------------- | ----------------------------------------- |
-  | execute       | **0.001262ms**                               | **0.000181ms**                            |
-  | Profile 총 합 | **약 0.003780 ms**                           | **약 0.000922 ms**                        |
+- **DTO(Order) + DTO(OrderItem + Item) 두 번 조회** **→ 균형잡힌 성능(93ms), 중복 결과 없음, 페이징 가능**
 
 **결과 및 배운 점**
+- Order 단건 조회 성능 개선
+| 항목                | N+1 문제 | Fetch Join 적용 | DTO 전환 | 개선률            |
+| ------------------- | -------- | --------------- | -------- | ----------------- |
+| **응답 시간**       | 1,842ms  | 140ms           | 93ms     | 약 **93% 개선**   |
+| **처리 성능 (TPS)** | 52       | 676             | 1,027    | 약 **1875% 증가** |
 
-- Order 단건 조회 API 응답 시간 **약 93% 개선 **
-  - N + 1: **1,842ms**
-  - Fetch Join: **140ms**
-  - DTO: **93ms**
-- TPS **1875% 증가**
-  - N + 1: **52**
-  - Fetch Join: **676** 
-  - DTO: **1027**
-- N + 1 문제 및 해결 방법 학습
-- **MySQL Profile**을 통한 쿼리 분석 학습
+- SQL Profile 활용법 학습 → 성능 분석 및 쿼리 튜닝 능력
+- 성능 vs 실용성 트레이드오프 경험
 
 <div style="display: flex; justify-content: center; gap: 40px; text-align: left;">
   <div>
@@ -1397,6 +1394,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 **배경 및 문제**
 
 - 성능 테스트 중 결제 승인 요청 시 **DB 커넥션 풀 timeout error** 발생
+  - `HikariPool-1 - Connection is not available, request timed out after 30001ms`
 - 외부 API 호출이 긴 시간 동안 **DB 트랜잭션 점유**
   - 외부 API 호출(2초 소요)과 DB 트랜잭션이 동일 로직에서 처리되어 커넥션 풀 효율성 저하
 - **비동기 로직에서 트랜잭션 추가 점유로 리소스 소모**
