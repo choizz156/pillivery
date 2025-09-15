@@ -429,6 +429,7 @@ graph LR
 >
 > - **Jenkins:** business, batch 두 개의 파이프라인 설정 필요성
 > - **Docker, Container Registry:** Container Registry를 통한 **도커 이미지 버전 관리** 가능
+> - **Rolling** : 단순한 배포, 배포 중 빠른 롤백 가능, 적은 인스턴스에 효과적
 
 - **내용**
   - Bastion 호스트를 통한 Private 서브넷 배포
