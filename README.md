@@ -982,8 +982,6 @@ resilience4j:
           - java.io.IOException
           - java.util.concurrent.TimeoutException
           - java.net.ConnectException
-          - io.netty.handler.timeout.ReadTimeoutException
-          - org.springframework.web.reactive.function.client.WebClientResponseException
 ```
 
 
@@ -1030,7 +1028,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 						   .addHandlerLast(new WriteTimeoutHandler(25, TimeUnit.SECONDS))
 ```
 
-- **BulkHaead → 동시 요청 수 제한: **
+-  **BulkHaead → 동시 요청 수 제한:**
 
   - **Semaphore BulkHead :** 결제 승인(동기) 시 최대 요청 수 제한
   - **ThreadPool BulkHead :** 결제 조회(비동기) 시 스레드 풀을 따로 생성하여 서버의 스레드 풀과 격리
@@ -1080,7 +1078,7 @@ ConnectionProvider provider = ConnectionProvider.builder("external-api-pool")
 성공률: 100% ──────▶ 25% ─────▶ Fast-Fail ─▶ 제한적 허용
 ```
 
-#### (1) Closed 상태**(초기 정상)
+#### (1) Closed 상태(초기 정상)
 
 - Mock Server 성공률: **100%**
 
